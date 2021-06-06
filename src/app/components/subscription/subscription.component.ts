@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms'
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { Customer } from './Customer';
 @Component({
   selector: 'app-subscription',
@@ -15,9 +15,9 @@ export class SubscriptionComponent implements OnInit {
 
   ngOnInit(): void {
     this.signupForm = this.formBuilder.group({
-      firstName: '',
-      lastName: '',
-      email: '',
+      firstName: ['', Validators.required, Validators.minLength(3)],
+      lastName: ['', Validators.required, Validators.maxLength(50)],
+      email: ['', Validators.required, Validators.email ],
       sendCatalog: true
     });
   }
