@@ -34,10 +34,12 @@ export class SubscriptionComponent implements OnInit {
   signupForm!: FormGroup;
   customer = new Customer();
   emailMessage: string = '';
+  confirmEmailMessage: string = '';
 
   private validationMessages = {
     required: 'Please enter your email address.',
-    email: 'Please enter a valid email address.'
+    email: 'Please enter a valid email address.',
+    match: 'The confirmation does not match the email address.'
   };
 
   constructor(private fb: FormBuilder) { }
@@ -53,12 +55,26 @@ export class SubscriptionComponent implements OnInit {
       phone: '',
       addresses: this.fb.array([this.buildAddress()])
     });
-    const emailControl = this.signupForm.get('emailGroup.email');
 
+    const emailControl = this.signupForm.get('emailGroup.email');
     emailControl?.valueChanges.pipe(
       debounceTime(1000)
     ).subscribe(
-      value => this.setMessage(emailControl)
+      value => this.emailMessage = this.setMessage(emailControl)
+    );
+
+    const confirmEmailControl = this.signupForm.get('emailGroup.confirmEmail');
+    confirmEmailControl?.valueChanges.pipe(
+      debounceTime(1000)
+    ).subscribe(
+      value => this.confirmEmailMessage = this.setMessage(confirmEmailControl)
+    );
+
+    const emailGroup = this.signupForm.get('emailGroup');
+    emailGroup?.valueChanges.pipe(
+      debounceTime(1000)
+    ).subscribe(
+      value => this.confirmEmailMessage = this.setMessage(emailGroup)
     );
   }
 
@@ -78,11 +94,12 @@ export class SubscriptionComponent implements OnInit {
     });
   }
 
-  setMessage(c: AbstractControl): void {
-    this.emailMessage = '';
+  setMessage(c: AbstractControl): string {
+    var messageString = '';
     if ((c.touched || c.dirty) && c.errors) {
-      this.emailMessage = Object.keys(c.errors).map(
+      messageString = Object.keys(c.errors).map(
         key => hasKey(this.validationMessages, key) ? this.validationMessages[key] : 'unknown error') .join(' ');
     }
+    return messageString;
   }
 }

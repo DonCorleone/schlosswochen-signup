@@ -76,17 +76,9 @@
                    type="email"
                    placeholder="Confirm Email (required)"
                    formControlName="confirmEmail"
-                   [ngClass]="{'is-invalid': signupForm.get('emailGroup')?.errors ||
-                                             ((signupForm.get('emailGroup.confirmEmail')?.touched ||
-                                             signupForm.get('emailGroup.confirmEmail')?.dirty) &&
-                                              !signupForm.get('emailGroup.confirmEmail')?.valid) }" />
+                   [ngClass]="{'is-invalid': confirmEmailMessage }" />
             <span class="invalid-feedback">
-              <span *ngIf="signupForm.get('emailGroup.confirmEmail')?.errors?.required">
-                Please confirm your email address.
-              </span>
-              <span *ngIf="signupForm.get('emailGroup')?.errors?.match">
-                The confirmation does not match the email address.
-              </span>
+              {{ confirmEmailMessage }}
             </span>
           </div>
         </div>
