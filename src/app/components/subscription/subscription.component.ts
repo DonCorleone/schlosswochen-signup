@@ -82,11 +82,7 @@ export class SubscriptionComponent implements OnInit {
     this.emailMessage = '';
     if ((c.touched || c.dirty) && c.errors) {
       this.emailMessage = Object.keys(c.errors).map(
-        key => {
-          if (hasKey(this.validationMessages, key)) {
-            this.validationMessages[key]
-          }
-        }).join(' '); // works fine!
+        key => hasKey(this.validationMessages, key) ? this.validationMessages[key] : 'unknown error') .join(' ');
     }
   }
 }
