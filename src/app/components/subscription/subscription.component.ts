@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms'
+import { Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { ApolloService } from 'src/app/service/apollo.service';
 
 import { Customer } from './Customer';
+import { InsertOneParticipant } from './Subscriptor';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -35,6 +38,7 @@ export class SubscriptionComponent implements OnInit {
   customer = new Customer();
   emailMessage: string = '';
   confirmEmailMessage: string = '';
+	eventDetail$!: Observable<InsertOneParticipant>;
 
   private validationMessages = {
     required: 'Please enter your email address.',
@@ -42,7 +46,7 @@ export class SubscriptionComponent implements OnInit {
     match: 'The confirmation does not match the email address.'
   };
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private eventService: ApolloService) { }
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
@@ -81,12 +85,13 @@ export class SubscriptionComponent implements OnInit {
   save(): void {
     console.log(this.signupForm);
     console.log('Saved: ' + JSON.stringify(this.signupForm.value));
+    this.eventService.InsertParticipant(1);
   }
 
   buildAddress(): FormGroup {
     return this.fb.group({
       addressType: 'home',
-      street1: ['', Validators.required],
+      street1: [''],
       street2: '',
       city: '',
       state: '',
