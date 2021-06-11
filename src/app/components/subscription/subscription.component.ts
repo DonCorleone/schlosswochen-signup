@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms'
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ApolloService } from 'src/app/service/apollo.service';
 
@@ -46,7 +46,9 @@ export class SubscriptionComponent implements OnInit {
     match: 'The confirmation does not match the email address.'
   };
 
-  constructor(private fb: FormBuilder, private eventService: ApolloService) { }
+  insertOneParticipant$: Observable<InsertOneParticipant | null | undefined> = EMPTY;
+
+  constructor(private fb: FormBuilder, private apolloService: ApolloService) { }
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
@@ -85,7 +87,7 @@ export class SubscriptionComponent implements OnInit {
   save(): void {
     console.log(this.signupForm);
     console.log('Saved: ' + JSON.stringify(this.signupForm.value));
-    this.eventService.InsertParticipant(1);
+    this.insertOneParticipant$ = this.apolloService.InsertParticipant(1);
   }
 
   buildAddress(): FormGroup {

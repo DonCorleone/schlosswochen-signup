@@ -18,6 +18,7 @@ const INSERT_PARTICIPANT = gql`
   }
 `;
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,8 +27,8 @@ export class ApolloService {
   constructor(private apollo: Apollo) {
   }
 
-	InsertParticipant(numChildren: number) {
-    this.apollo.mutate<InsertOneParticipant>({
+	InsertParticipant(numChildren: number):Observable<InsertOneParticipant | null | undefined> {
+   return this.apollo.mutate<InsertOneParticipant>({
       mutation: INSERT_PARTICIPANT,
       variables: {
         numOfChildren: numChildren,
@@ -35,11 +36,8 @@ export class ApolloService {
 				deadline: new Date(new Date().getTime() + ((10 + (numChildren*5))) * 60 * 1000),
         state:"reservation"
       }
-    }).subscribe(({ data }) => {
-      console.log('got data', data);
-      return data;
-    },(error) => {
-      console.log('there was an error sending the query', error);
-    });
+    }).pipe(
+      map(result => {return result.data})
+    )
   }
 }
