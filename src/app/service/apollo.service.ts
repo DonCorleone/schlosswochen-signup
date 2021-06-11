@@ -26,13 +26,14 @@ export class ApolloService {
   constructor(private apollo: Apollo) {
   }
 
-  InsertParticipant(numChildren: number) {
+	InsertParticipant(numChildren: number) {
     this.apollo.mutate<InsertOneParticipant>({
       mutation: INSERT_PARTICIPANT,
       variables: {
-        numOfChildren: 12,
+        numOfChildren: numChildren,
         reservationDate: new Date(),
-        state:"apollo"
+				deadline: new Date(new Date().getTime() + ((10 + (numChildren*5))) * 60 * 1000),
+        state:"reservation"
       }
     }).subscribe(({ data }) => {
       console.log('got data', data);
