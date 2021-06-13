@@ -4,12 +4,12 @@ export interface InsertOneParticipant {
     numOfChildren: number;
 }
 
-export interface Data {
+export interface InsertOneParticipantData {
     insertOneParticipant: InsertOneParticipant;
 }
 
 export interface Subscriptor {
-    data: Data;
+    data: InsertOneParticipantData;
 }
 
 export interface Participant {

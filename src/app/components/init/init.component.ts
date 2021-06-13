@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms'
+import { Router } from '@angular/router';
 import { EMPTY, Observable } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, map, tap } from 'rxjs/operators';
 import { ApolloService } from 'src/app/service/apollo.service';
-import { InsertOneParticipant } from '../subscription/Subscriptor';
+import { InsertOneParticipant, InsertOneParticipantData } from '../subscription/Subscriptor';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -26,13 +27,12 @@ export class InitComponent implements OnInit {
     match: 'The confirmation does not match the email address.'
   };
 
-  insertOneParticipant$: Observable<InsertOneParticipant | null | undefined> = EMPTY;
-
-  constructor(private fb: FormBuilder, private apolloService: ApolloService) { }
+  constructor(private fb: FormBuilder, private apolloService: ApolloService, private router: Router) { }
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
-      numOfChilds:0
+      weekNr:[0, [Validators.required, Validators.min(1)]],
+      numOfChilds:[0, [Validators.required, Validators.min(1)]],
     });
   }
 
@@ -41,7 +41,10 @@ export class InitComponent implements OnInit {
     console.log('Saved: ' + JSON.stringify(this.signupForm.value));
     const numOfChildren = this.signupForm.get('numOfChilds');
 
-    this.insertOneParticipant$ = this.apolloService.InsertParticipant(numOfChildren?.value);
+    this.apolloService.InsertParticipant(numOfChildren?.value)
+      .subscribe((res: InsertOneParticipant) => {
+        this.router.navigate(['/subscription/' + res._id]);
+      });
   }
 
   setMessage(c: AbstractControl): string {
