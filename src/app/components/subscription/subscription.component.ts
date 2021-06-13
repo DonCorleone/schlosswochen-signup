@@ -45,8 +45,6 @@ export class SubscriptionComponent implements OnInit {
     match: 'The confirmation does not match the email address.'
   };
 
-  insertOneParticipant$: Observable<InsertOneParticipant | null | undefined> = EMPTY;
-
   constructor(private fb: FormBuilder, private apolloService: ApolloService) { }
 
   ngOnInit(): void {
@@ -85,8 +83,6 @@ export class SubscriptionComponent implements OnInit {
 
   save(): void {
     console.log(this.signupForm);
-    console.log('Saved: ' + JSON.stringify(this.signupForm.value));
-    this.insertOneParticipant$ = this.apolloService.InsertParticipant(1);
   }
 
   buildAddress(): FormGroup {

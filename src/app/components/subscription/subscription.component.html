@@ -84,39 +84,6 @@
         </div>
       </div>
 
-      <div class="form-group row mb-2">
-        <label class="col-md-2 col-form-label pt-0">Number of children</label>
-        <div class="col-md-8">
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input"
-                     id="numOfChildsId"
-                     type="radio"
-                     value="2"
-                     name="numOfChilds"> 1
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input"
-                     id="numOfChildsId"
-                     type="radio"
-                     value="2"
-                     name="numOfChilds"> 2
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input"
-                     id="numOfChildsId"
-                     type="radio"
-                     value="3"
-                     name="numOfChilds"> 3
-            </label>
-          </div>
-        </div>
-      </div>
-
       <!--div class="form-group row mb-2">
         <div class="col-md-8">
           <div class="form-check">
@@ -211,4 +178,3 @@
 <br>Touched: {{ signupForm.touched }}
 <br>Valid: {{ signupForm.valid }}
 <br>Value: {{ signupForm.value | json }}
-<br>Feedback: {{ insertOneParticipant$ | async | json }}
