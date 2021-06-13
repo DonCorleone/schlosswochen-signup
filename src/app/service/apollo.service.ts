@@ -6,14 +6,16 @@ import { FetchResult } from '@apollo/client/core';
 import { InsertOneParticipant } from '../components/subscription/Subscriptor';
 
 const INSERT_PARTICIPANT = gql`
-  mutation insertParticipant($numOfChildren: Int!, $reservationDate: DateTime) {
+  mutation insertParticipant($numOfChildren: Int!, $reservationDate: DateTime, $deadline: DateTime) {
     insertOneParticipant(data: {
       status: "new"
       reservationDate: $reservationDate
+      deadline: $deadline
       numOfChildren: $numOfChildren
     }) {
       _id
-      reservationDate
+      deadline
+      numOfChildren
     }
   }
 `;

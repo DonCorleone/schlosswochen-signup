@@ -1,6 +1,7 @@
 export interface InsertOneParticipant {
     _id: string;
-    reservationDate: Date;
+    deadline: Date;
+    numOfChildren: number;
 }
 
 export interface Data {

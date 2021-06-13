@@ -4,13 +4,15 @@ import { HomeComponent } from './home.component';
 import { SubscriptionComponent } from '../components/subscription/subscription.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HomeRoutingModule } from './home-routing.module';
+import { InitComponent } from '../components/init/init.component';
 
 
 
 @NgModule({
   declarations: [
     HomeComponent,
-    SubscriptionComponent
+    SubscriptionComponent,
+    InitComponent
   ],
   imports: [
     CommonModule,

@@ -38,7 +38,6 @@ export class SubscriptionComponent implements OnInit {
   customer = new Customer();
   emailMessage: string = '';
   confirmEmailMessage: string = '';
-	eventDetail$!: Observable<InsertOneParticipant>;
 
   private validationMessages = {
     required: 'Please enter your email address.',
