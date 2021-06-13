@@ -39,9 +39,11 @@ export class InitComponent implements OnInit {
   save(): void {
     console.log(this.signupForm);
     console.log('Saved: ' + JSON.stringify(this.signupForm.value));
+
+    const week = this.signupForm.get('weekNr');
     const numOfChildren = this.signupForm.get('numOfChilds');
 
-    this.apolloService.InsertParticipant(numOfChildren?.value)
+    this.apolloService.InsertParticipant(week?.value, numOfChildren?.value)
       .subscribe((res: InsertOneParticipant) => {
         this.router.navigate(['/subscription/' + res._id]);
       });

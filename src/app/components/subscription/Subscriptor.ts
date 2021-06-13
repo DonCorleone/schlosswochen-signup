@@ -1,6 +1,7 @@
 export interface InsertOneParticipant {
     _id: string;
     deadline: Date;
+    week: number;
     numOfChildren: number;
 }
 

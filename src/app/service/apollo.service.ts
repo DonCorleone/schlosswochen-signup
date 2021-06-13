@@ -2,19 +2,20 @@ import { Injectable } from '@angular/core';
 import { catchError, map,tap  } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { Apollo, gql, Mutation } from 'apollo-angular';
-import { FetchResult } from '@apollo/client/core';
 import { InsertOneParticipant, InsertOneParticipantData } from '../components/subscription/Subscriptor';
 
 const INSERT_PARTICIPANT = gql`
-  mutation insertParticipant($numOfChildren: Int!, $reservationDate: DateTime, $deadline: DateTime) {
+  mutation insertParticipant($week: Int!,$numOfChildren: Int!, $reservationDate: DateTime, $deadline: DateTime) {
     insertOneParticipant(data: {
       state: "reservation"
       reservationDate: $reservationDate
       deadline: $deadline
+      week: $week
       numOfChildren: $numOfChildren
     }) {
       _id
       deadline
+      week
       numOfChildren
     }
   }
@@ -29,10 +30,11 @@ export class ApolloService {
   constructor(private apollo: Apollo) {
   }
 
-	InsertParticipant(numChildren: number):Observable<InsertOneParticipant> {
+	InsertParticipant(week: number, numChildren: number):Observable<InsertOneParticipant> {
    return this.apollo.mutate<InsertOneParticipantData>({
       mutation: INSERT_PARTICIPANT,
       variables: {
+        week: week,
         numOfChildren: numChildren,
         reservationDate: new Date(),
 				deadline: new Date(new Date().getTime() + ((10 + (numChildren*5))) * 60 * 1000)
