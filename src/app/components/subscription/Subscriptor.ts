@@ -1,22 +1,34 @@
 export interface InsertOneParticipant {
-    _id: string;
-    deadline: Date;
-    week: number;
-    numOfChildren: number;
+  _id: string;
+  deadline: Date;
+  week: number;
+  numOfChildren: number;
 }
 
 export interface InsertOneParticipantData {
-    insertOneParticipant: InsertOneParticipant;
+  insertOneParticipant: InsertOneParticipant;
 }
 
 export interface Subscriptor {
-    data: InsertOneParticipantData;
+  data: InsertOneParticipantData;
 }
 
-export interface Participant {
-    numOfChildren: number;
-    reservationDate: Date;
-    status: string;
+export interface WeeklyReservationState {
+  week:number;
+  reservationstates : ReservationState[];
 }
 
+export interface ReservationState {
+  state: string;
+  numOfChildren: number;
+}
+
+export interface ChildsPerState {
+  _id: string;
+  sumPerStateAndWeek: string;
+}
+
+export interface ChildsPerStateData {
+  childsPerState: ChildsPerState[];
+}
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { catchError, map,tap  } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { Apollo, gql, Mutation } from 'apollo-angular';
-import { InsertOneParticipant, InsertOneParticipantData } from '../components/subscription/Subscriptor';
+import { ChildsPerState, ChildsPerStateData, InsertOneParticipant, InsertOneParticipantData } from '../components/subscription/Subscriptor';
 
 const INSERT_PARTICIPANT = gql`
   mutation insertParticipant($week: Int!,$numOfChildren: Int!, $reservationDate: DateTime, $deadline: DateTime) {
@@ -20,6 +20,15 @@ const INSERT_PARTICIPANT = gql`
     }
   }
 `;
+
+const GET_RESERVATIONS_PER_WEEK= gql`
+    query GetReservationsPerWeek {
+        childsPerState {
+          _id
+          sumPerStateAndWeek
+        }
+      }
+  `;
 
 
 @Injectable({
@@ -45,6 +54,18 @@ export class ApolloService {
       catchError(this.handleError)
     )
   }
+
+  GetReservationsPerWeek():Observable<ChildsPerState[]> {
+    console.log(`GetStaff`);
+    return this.apollo
+      .watchQuery<ChildsPerStateData>({
+        query: GET_RESERVATIONS_PER_WEEK,
+      })
+      .valueChanges.pipe(
+        tap(result => console.log(JSON.stringify(result.data.childsPerState))),
+        map((result) => result.data.childsPerState));
+    }
+
 
   private handleError(err: any): Observable<never> {
     // in a real world app, we may send the server to some remote logging infrastructure
