@@ -1,3 +1,4 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms'
 import { Router } from '@angular/router';
@@ -37,13 +38,12 @@ export class WeeklySubscriptionsComponent implements OnInit {
       numOfChilds: [0, [Validators.required, Validators.min(1)]],
     });
 
-    var weeklyBookings: {[week: number]: ReservationState[] } = {};
-
-    this.apolloService.GetReservationsPerWeek(this.week)
-      .subscribe(
-          childsPerStates =>  {
-            this.childsPerStates$ = of(childsPerStates)
+    this.childsPerStates$ =  this.apolloService.GetReservationsPerWeek(this.week)
+      .pipe(
+          map( childsPerStates =>  {
+            return childsPerStates;
           }
+        )
       )
     }
 
