@@ -24,7 +24,7 @@ export interface ReservationState {
 }
 
 export interface ChildsPerState {
-  _id: string;
+  state: string;
   sumPerStateAndWeek: string;
 }
 

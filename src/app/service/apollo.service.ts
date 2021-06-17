@@ -22,12 +22,12 @@ const INSERT_PARTICIPANT = gql`
 `;
 
 const GET_RESERVATIONS_PER_WEEK= gql`
-    query GetReservationsPerWeek {
-        childsPerState {
-          _id
-          sumPerStateAndWeek
-        }
+    query GetReservationsPerWeek($week:Int!) {
+      childsPerState(input: $week) {
+        state
+        sumPerStateAndWeek
       }
+    }
   `;
 
 
@@ -55,11 +55,12 @@ export class ApolloService {
     )
   }
 
-  GetReservationsPerWeek():Observable<ChildsPerState[]> {
+  GetReservationsPerWeek(week: number):Observable<ChildsPerState[]> {
     console.log(`GetStaff`);
     return this.apollo
       .watchQuery<ChildsPerStateData>({
         query: GET_RESERVATIONS_PER_WEEK,
+        variables: {week: week}
       })
       .valueChanges.pipe(
         tap(result => console.log(JSON.stringify(result.data.childsPerState))),
