@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms'
-import { EMPTY, Observable } from 'rxjs';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms'
+import { ActivatedRoute } from '@angular/router';
 import { debounceTime } from 'rxjs/operators';
+import { ActionSequence } from 'selenium-webdriver';
 import { ApolloService } from 'src/app/service/apollo.service';
 
 import { Customer } from './Customer';
-import { InsertOneParticipant } from './Subscriptor';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -34,6 +34,10 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class SubscriptionComponent implements OnInit {
 
+  id: string | null = '0';
+  week: string | null = '0';
+  numOfChilds: string | null = '0';
+
   signupForm!: FormGroup;
   customer = new Customer();
   emailMessage: string = '';
@@ -45,9 +49,16 @@ export class SubscriptionComponent implements OnInit {
     match: 'The confirmation does not match the email address.'
   };
 
-  constructor(private fb: FormBuilder, private apolloService: ApolloService) { }
+  constructor(private fb: FormBuilder, private apolloService: ApolloService, private route: ActivatedRoute) {
+
+  }
 
   ngOnInit(): void {
+
+    this.id = this.route.snapshot.paramMap.get('id');
+    this.week = this.route.snapshot.paramMap.get('week')
+    this.numOfChilds = this.route.snapshot.paramMap.get('week')
+
     this.signupForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
