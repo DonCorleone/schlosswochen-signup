@@ -1,11 +1,11 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms'
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms'
 import { Router } from '@angular/router';
-import { EMPTY, Observable, of } from 'rxjs';
-import { debounceTime, map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApolloService } from 'src/app/service/apollo.service';
-import { ChildsPerState, InsertOneParticipant, InsertOneParticipantData, ReservationState } from '../subscription/Subscriptor';
+import { week } from '../init/init.component';
+import { ChildsPerState, InsertOneParticipant } from '../subscription/Subscriptor';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -20,7 +20,7 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class WeeklySubscriptionsComponent implements OnInit {
 
-  @Input()week: number = 0;
+  @Input()week: week | undefined;
 
   signupForm!: FormGroup;
   childsPerStates$: Observable<ChildsPerState[]> | undefined
@@ -38,7 +38,8 @@ export class WeeklySubscriptionsComponent implements OnInit {
       numOfChilds: [0, [Validators.required, Validators.min(1)]],
     });
 
-    this.childsPerStates$ =  this.apolloService.GetReservationsPerWeek(this.week)
+    if (this.week) {
+      this.childsPerStates$ =  this.apolloService.GetReservationsPerWeek(this.week?.weeknr)
       .pipe(
           map( childsPerStates =>  {
             return childsPerStates;
@@ -46,6 +47,7 @@ export class WeeklySubscriptionsComponent implements OnInit {
         )
       )
     }
+  }
 
   save(): void {
     console.log(this.signupForm);
@@ -54,10 +56,12 @@ export class WeeklySubscriptionsComponent implements OnInit {
    // const week = this.signupForm.get('weekNr');
     const numOfChildren = this.signupForm.get('numOfChilds');
 
-    this.apolloService.InsertParticipant(this.week, numOfChildren?.value)
+    if (this.week) {
+      this.apolloService.InsertParticipant(this.week.weeknr, numOfChildren?.value)
       .subscribe((res: InsertOneParticipant) => {
-        this.router.navigate(['/subscription/' + res._id]);
+        this.router.navigate(['/subscription', res._id, this.week?.weeknr, numOfChildren?.value]);
       });
+    }
   }
 
   setMessage(c: AbstractControl): string {

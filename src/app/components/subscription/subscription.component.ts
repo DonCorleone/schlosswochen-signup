@@ -57,7 +57,7 @@ export class SubscriptionComponent implements OnInit {
 
     this.id = this.route.snapshot.paramMap.get('id');
     this.week = this.route.snapshot.paramMap.get('week')
-    this.numOfChilds = this.route.snapshot.paramMap.get('week')
+    this.numOfChilds = this.route.snapshot.paramMap.get('numOfChilds')
 
     this.signupForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(3)]],
