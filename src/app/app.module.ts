@@ -9,8 +9,6 @@ import { APOLLO_OPTIONS } from 'apollo-angular';
 import * as realm from './realm';
 import { GraphQLModule } from './graphql.module';
 import { AppRoutingModule } from './app-routing.module';
-import { StoreModule } from '@ngrx/store';
-
 
 const uri = realm.graphqlUrl;
 
@@ -32,8 +30,7 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
     BrowserModule,
 		AppRoutingModule,
     GraphQLModule,
-    HttpClientModule,
-    StoreModule.forRoot({}, {})
+    HttpClientModule
   ],
 	providers: [
 		{

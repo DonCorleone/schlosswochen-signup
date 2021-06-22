@@ -13,7 +13,7 @@
 
 <div class="card">
   <div class="card-header">
-    Week {{week}}: Sign Up!
+    <span *ngIf="week">Week {{week.weeknr}}: </span>Sign Up!
   </div>
 
   <div class="card-body">
