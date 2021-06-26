@@ -2,17 +2,44 @@ import { Injectable } from '@angular/core';
 import { catchError, map,tap  } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { Apollo, gql, Mutation } from 'apollo-angular';
-import { ChildsPerState, ChildsPerStateData, InsertOneParticipant, InsertOneParticipantData } from '../components/subscription/Subscriptor';
+import { ChildsPerState, ChildsPerStateData, insertOneSubscription, insertOneSubscriptionData } from '../components/subscription/Subscriptor';
 
 const INSERT_PARTICIPANT = gql`
-  mutation insertParticipant($week: Int!,$numOfChildren: Int!, $reservationDate: DateTime, $deadline: DateTime) {
-    insertOneParticipant(data: {
-      state: "reservation"
-      reservationDate: $reservationDate
-      deadline: $deadline
-      week: $week
-      numOfChildren: $numOfChildren
-    }) {
+  mutation insertSubscription($week: Int!,$numOfChildren: Int!, $reservationDate: DateTime, $deadline: DateTime) {
+    insertOneSubscription(data: {
+      week: $week,
+      deadline: $deadline,
+      reservationDate: $reservationDate,
+      state: "Reservation",
+      numOfChildren: $numOfChildren,
+      Address: {
+        Anrede: "",
+        Name: "",
+        Vorname: "",
+        Adresse: "",
+        PLZ: 0,
+        Ort: "",
+        EMail: "",
+        TelefonM: ""
+      },
+      Childs: [
+        {
+          Anrede: "",
+          Name: "",
+          Vorname: "",
+          Geburtstag: "",
+          Bemerkung: ""
+        },
+        {
+          Anrede: "",
+          Name: "",
+          Vorname: "",
+          Geburtstag: "",
+          Bemerkung: ""
+        }
+      ]
+    }
+    ) {
       _id
       deadline
       week
@@ -21,9 +48,48 @@ const INSERT_PARTICIPANT = gql`
   }
 `;
 
+const UPDATE_PARTICIPANT = gql`
+  mutation insertSubscription($week: Int!,$numOfChildren: Int!, $reservationDate: DateTime, $deadline: DateTime) {
+    updateOneSubscription(
+      query: { _id: "60d3970f7bd51d855f38b914" }
+      set: {
+      Address: {
+        Anrede: "Frau",
+        Name: "Balthasar",
+        Vorname: "Barbara",
+        Adresse: "Stauffacherweg 2a",
+        PLZ: 6000,
+        Ort: "Luzern",
+        EMail: "schmidbar@gmail.com",
+        TelefonM: "079 335 93 50"
+      },
+      Childs: [
+        {
+          Anrede: "Ritter",
+          Name: "Balthasar",
+          Vorname: "Didier",
+          Geburtstag: "01.01.2018",
+          Bemerkung: "Welt"
+        },
+        {
+          Anrede: "Ritter",
+          Name: "Balthasar",
+          Vorname: "Jerome",
+          Geburtstag: "02.02.2017",
+          Bemerkung: "Kind"
+        }
+      ]
+    }
+    ) {
+      _id
+      state
+    }
+  }
+`;
+
 const GET_RESERVATIONS_PER_WEEK= gql`
     query GetReservationsPerWeek($week:Int!) {
-      childsPerState(input: $week) {
+      sumChildsPerState(input: $week) {
         state
         sumPerStateAndWeek
       }
@@ -39,8 +105,8 @@ export class ApolloService {
   constructor(private apollo: Apollo) {
   }
 
-	InsertParticipant(week: number, numChildren: number):Observable<InsertOneParticipant> {
-   return this.apollo.mutate<InsertOneParticipantData>({
+	InsertParticipant(week: number, numChildren: number):Observable<insertOneSubscription> {
+   return this.apollo.mutate<insertOneSubscriptionData>({
       mutation: INSERT_PARTICIPANT,
       variables: {
         week: week,
@@ -50,7 +116,7 @@ export class ApolloService {
       }
     }).pipe(
       tap(data => console.log('Products', JSON.stringify(data))),
-      map(result => {return (<InsertOneParticipantData>result.data).insertOneParticipant}),
+      map(result => {return (<insertOneSubscriptionData>result.data).insertOneSubscription}),
       catchError(this.handleError)
     )
   }
@@ -63,8 +129,8 @@ export class ApolloService {
         variables: {week: week}
       })
       .valueChanges.pipe(
-        tap(result => console.log(JSON.stringify(result.data.childsPerState))),
-        map((result) => result.data.childsPerState));
+        tap(result => console.log(JSON.stringify(result.data.sumChildsPerState))),
+        map((result) => result.data.sumChildsPerState));
     }
 
 

@@ -1,16 +1,16 @@
-export interface InsertOneParticipant {
+export interface insertOneSubscription {
   _id: string;
   deadline: Date;
   week: number;
   numOfChildren: number;
 }
 
-export interface InsertOneParticipantData {
-  insertOneParticipant: InsertOneParticipant;
+export interface insertOneSubscriptionData {
+  insertOneSubscription: insertOneSubscription;
 }
 
 export interface Subscriptor {
-  data: InsertOneParticipantData;
+  data: insertOneSubscriptionData;
 }
 
 export interface WeeklyReservationState {
@@ -29,6 +29,6 @@ export interface ChildsPerState {
 }
 
 export interface ChildsPerStateData {
-  childsPerState: ChildsPerState[];
+  sumChildsPerState: ChildsPerState[];
 }
 

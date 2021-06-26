@@ -2,10 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms'
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ApolloService } from 'src/app/service/apollo.service';
 import { week } from '../init/init.component';
-import { ChildsPerState, InsertOneParticipant } from '../subscription/Subscriptor';
+import { ChildsPerState, insertOneSubscription } from '../subscription/Subscriptor';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -41,8 +41,9 @@ export class WeeklySubscriptionsComponent implements OnInit {
     if (this.week) {
       this.childsPerStates$ =  this.apolloService.GetReservationsPerWeek(this.week?.weeknr)
       .pipe(
-          map( childsPerStates =>  {
-            return childsPerStates;
+          tap( returnz => { console.log(JSON.stringify(returnz)) }),
+          map( returnz =>  {
+            return returnz;
           }
         )
       )
@@ -58,7 +59,7 @@ export class WeeklySubscriptionsComponent implements OnInit {
 
     if (this.week) {
       this.apolloService.InsertParticipant(this.week.weeknr, numOfChildren?.value)
-      .subscribe((res: InsertOneParticipant) => {
+      .subscribe((res: insertOneSubscription) => {
         this.router.navigate(['/subscription', res._id, this.week?.weeknr, numOfChildren?.value]);
       });
     }

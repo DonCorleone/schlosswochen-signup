@@ -1,0 +1,36 @@
+{
+  "_id": {
+    "$oid": "60d20b4ce8f02a8b2fe2f032"
+  },
+  "week": $week,
+  "deadline": $deadline,
+  "Status": "Reservation",
+  "Address": {
+    "Korrespondenz-Anrede": "Frau",
+    "Korrespondenz-Name": "Balthasar",
+    "Korrespondenz-Vorname": "Barbara",
+    "Korrespondenz-Adresse": "Stauffacherweg 2a",
+    "Korrespondenz-PLZ": {
+      "$numberInt": "6006"
+    },
+    "Korrespondenz-Ort": "Luzern",
+    "Korrespondenz-EMail": "schmidbar@gmail.com",
+    "Korrespondenz-TelefonM": "079 335 93 50"
+  },
+  "Childs": [
+    {
+      "Anrede": "Ritter",
+      "Name": "Balthasar",
+      "Vorname": "Didier",
+      "Geburtstag": "01.01.2018",
+      "Bemerkung": "Welt"
+    },
+    {
+      "Anrede": "Ritter",
+      "Name": "Balthasar",
+      "Vorname": "Jerome",
+      "Geburtstag": "02.02.2017",
+      "Bemerkung": "Kind"
+    }
+  ]
+}
