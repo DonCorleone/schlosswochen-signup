@@ -36,7 +36,7 @@ export class SubscriptionComponent implements OnInit {
 
   id: string | null = '0';
   week: string | null = '0';
-  numOfChilds: string | null = '0';
+  numOfChilds: number | null = 0;
 
   signupForm!: FormGroup;
   yes = true;
@@ -58,10 +58,6 @@ export class SubscriptionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    this.id = this.route.snapshot.paramMap.get('id');
-    this.week = this.route.snapshot.paramMap.get('week')
-    this.numOfChilds = this.route.snapshot.paramMap.get('numOfChilds')
 
     this.signupForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(3)]],
@@ -99,10 +95,24 @@ export class SubscriptionComponent implements OnInit {
     ).subscribe(
       value => this.confirmEmailMessage = this.setMessage(emailGroup)
     );
+
+    this.id = this.route.snapshot.paramMap.get('id');
+    this.week = this.route.snapshot.paramMap.get('week');
+    let numOfChildsStr = this.route.snapshot.paramMap.get('numOfChilds');
+    if (numOfChildsStr){
+      this.numOfChilds = +numOfChildsStr;
+      for (let index = 0; index < this.numOfChilds - 1; index++) {
+        this.addChildren();
+      }
+    };
   }
 
   save(): void {
     console.log(this.signupForm);
+  }
+
+  addChildren():void{
+    this.childs.push(this.buildChildren());
   }
 
   buildChildren(): FormGroup {
