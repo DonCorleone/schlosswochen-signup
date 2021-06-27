@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms'
+import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray, FormArray } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router';
 import { debounceTime } from 'rxjs/operators';
 import { ActionSequence } from 'selenium-webdriver';
@@ -49,6 +49,10 @@ export class SubscriptionComponent implements OnInit {
     match: 'The confirmation does not match the email address.'
   };
 
+  get childs(): FormArray{
+    return <FormArray>(this.signupForm.get('childs'));
+  }
+
   constructor(private fb: FormBuilder, private apolloService: ApolloService, private route: ActivatedRoute) {
 
   }
@@ -72,14 +76,7 @@ export class SubscriptionComponent implements OnInit {
       city: '',
       state: '',
       zip: '',
-      childs: this.fb.group({
-        salutation: '',
-        firstNameChild: '',
-        lastNameChild: '',
-        birthday: '',
-        fotoAllowed: '',
-        comment: ''
-      })
+      childs: this.fb.array([this.buildChildren()])
     });
 
     const emailControl = this.signupForm.get('emailGroup.email');
@@ -114,8 +111,8 @@ export class SubscriptionComponent implements OnInit {
       firstNameChild: '',
       lastNameChild: '',
       birthday: '',
-      comment: '',
-      fotoAllowed: ''
+      fotoAllowed: '',
+      comment: ''
     });
   }
 
