@@ -39,7 +39,7 @@ export class SubscriptionComponent implements OnInit {
   numOfChilds: string | null = '0';
 
   signupForm!: FormGroup;
-  customer = new Customer();
+  yes = true;
   emailMessage: string = '';
   confirmEmailMessage: string = '';
 
@@ -67,7 +67,19 @@ export class SubscriptionComponent implements OnInit {
         confirmEmail: ['', Validators.required],
       }, { validator: emailMatcher }),
       phone: '',
-      addresses: this.fb.array([this.buildAddress()])
+      street1: [''],
+      street2: '',
+      city: '',
+      state: '',
+      zip: '',
+      childs: this.fb.group({
+        salutation: '',
+        firstNameChild: '',
+        lastNameChild: '',
+        birthday: '',
+        fotoAllowed: '',
+        comment: ''
+      })
     });
 
     const emailControl = this.signupForm.get('emailGroup.email');
@@ -96,14 +108,14 @@ export class SubscriptionComponent implements OnInit {
     console.log(this.signupForm);
   }
 
-  buildAddress(): FormGroup {
+  buildChildren(): FormGroup {
     return this.fb.group({
-      addressType: 'home',
-      street1: [''],
-      street2: '',
-      city: '',
-      state: '',
-      zip: ''
+      salutation: '',
+      firstNameChild: '',
+      lastNameChild: '',
+      birthday: '',
+      comment: '',
+      fotoAllowed: ''
     });
   }
 
