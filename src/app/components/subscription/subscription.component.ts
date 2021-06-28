@@ -38,6 +38,7 @@ export class SubscriptionComponent implements OnInit {
   id: string | null = '0';
   week: string | null = '0';
   numOfChilds: number | null = 0;
+  addresses: string | undefined;
 
   signupForm!: FormGroup;
   yes = true;
@@ -112,8 +113,13 @@ export class SubscriptionComponent implements OnInit {
 
   save(): void {
     console.log(this.signupForm);
+    this.addresses = this.signupForm.get('address')?.value;
+    console.log(this.addresses);
     if (this.week) {
-      this.apolloService.UpdateParticipant()
+      let x:Record<string, any> = {
+        address: { firstName: "ChiChi", lastName: "Arosa", phone: "", street1: "", street2: "", city: "", state: "", zip: "" }
+       };
+      this.apolloService.UpdateParticipant(x)
       .subscribe((res: insertOneSubscription) => {
 
         console.log(JSON.stringify(res));
