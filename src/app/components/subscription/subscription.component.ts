@@ -117,7 +117,7 @@ export class SubscriptionComponent implements OnInit {
     console.log(this.addresses);
     if (this.week) {
       let x:Record<string, any> = {
-        address: { firstName: "ChiChi", lastName: "Arosa", phone: "", street1: "", street2: "", city: "", state: "", zip: "" }
+        address: this.signupForm.get('address')?.value
        };
       this.apolloService.UpdateParticipant(x)
       .subscribe((res: insertOneSubscription) => {
