@@ -14,44 +14,8 @@ const INSERT_PARTICIPANT = gql`
       state: "Reservation",
       week: $week,
       address: {
-         firstName: "",
-         lastName: "",
-         emailGroup: {
-           email: "",
-           confirmEmail: ""
-        },
-         phone: "",
-         street1: "",
-         street2: "",
-         city: "",
-         state: "",
-         zip: ""
       },
        childs: [
-        {
-           salutation: "",
-           firstNameChild: "",
-           lastNameChild: "",
-           birthday: "",
-           fotoAllowed: "",
-           comment: ""
-        },
-        {
-           salutation: "",
-           firstNameChild: "",
-           lastNameChild: "",
-           birthday: "",
-           fotoAllowed: "",
-           comment: ""
-        },
-        {
-           salutation: "",
-           firstNameChild: "",
-           lastNameChild: "",
-           birthday: "",
-           fotoAllowed: "",
-           comment: ""
-        }
       ]
     }
     ) {
@@ -64,36 +28,12 @@ const INSERT_PARTICIPANT = gql`
 `;
 
 const UPDATE_PARTICIPANT = gql`
-  mutation insertSubscription($week: Int!,$numOfChildren: Int!, $reservationDate: DateTime, $deadline: DateTime) {
+  mutation insertSubscription($address: SubscriptionAddressUpdateInput!) {
     updateOneSubscription(
-      query: { _id: "60d3970f7bd51d855f38b914" }
+      query: { _id: "60da235a9a5b579c758f4945" }
       set: {
-      Address: {
-        Anrede: "Frau",
-        Name: "Balthasar",
-        Vorname: "Barbara",
-        Adresse: "Stauffacherweg 2a",
-        PLZ: 6000,
-        Ort: "Luzern",
-        EMail: "schmidbar@gmail.com",
-        TelefonM: "079 335 93 50"
-      },
-      Childs: [
-        {
-          Anrede: "Ritter",
-          Name: "Balthasar",
-          Vorname: "Didier",
-          Geburtstag: "01.01.2018",
-          Bemerkung: "Welt"
-        },
-        {
-          Anrede: "Ritter",
-          Name: "Balthasar",
-          Vorname: "Jerome",
-          Geburtstag: "02.02.2017",
-          Bemerkung: "Kind"
-        }
-      ]
+        address: $address
+
     }
     ) {
       _id
@@ -137,14 +77,11 @@ export class ApolloService {
   }
 
 
-	UpdateParticipant(week: number, numChildren: number):Observable<insertOneSubscription> {
+	UpdateParticipant():Observable<insertOneSubscription> {
     return this.apollo.mutate<insertOneSubscriptionData>({
-       mutation: INSERT_PARTICIPANT,
+       mutation: UPDATE_PARTICIPANT,
        variables: {
-         week: week,
-         numOfChildren: numChildren,
-         reservationDate: new Date(),
-         deadline: new Date(new Date().getTime() + ((10 + (numChildren*5))) * 60 * 1000)
+        address: { firstName: "Linus", lastName: "Wieland", phone: "", street1: "", street2: "", city: "", state: "", zip: "" }
        }
      }).pipe(
        tap(data => console.log('Products', JSON.stringify(data))),

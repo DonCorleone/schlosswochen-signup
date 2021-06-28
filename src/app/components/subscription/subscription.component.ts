@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray, FormArray } from '@angular/forms'
+import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router';
 import { debounceTime } from 'rxjs/operators';
 import { ActionSequence } from 'selenium-webdriver';
 import { ApolloService } from 'src/app/service/apollo.service';
 
 import { Customer } from './Customer';
+import { insertOneSubscription } from './Subscriptor';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -65,14 +66,14 @@ export class SubscriptionComponent implements OnInit {
         lastName: ['', [Validators.required, Validators.maxLength(50)]],
         emailGroup: this.fb.group({
           email: ['', [Validators.required, Validators.email]],
-          confirmEmail: ['', Validators.required],
+          confirmEmail: '',
         }, { validator: emailMatcher }),
-        phone: ['', Validators.required],
-        street1: ['', Validators.required],
+        phone: '',
+        street1: '',
         street2: '',
-        city: ['', Validators.required],
+        city: '',
         state: '',
-        zip: ['', Validators.required]
+        zip: ''
       }),
       childs: this.fb.array([this.buildChildren()])
     });
@@ -111,6 +112,13 @@ export class SubscriptionComponent implements OnInit {
 
   save(): void {
     console.log(this.signupForm);
+    if (this.week) {
+      this.apolloService.UpdateParticipant()
+      .subscribe((res: insertOneSubscription) => {
+
+        console.log(JSON.stringify(res));
+      });
+    }
   }
 
   addChildren():void{
