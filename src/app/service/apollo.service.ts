@@ -3,39 +3,54 @@ import { catchError, map,tap  } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { Apollo, gql, Mutation } from 'apollo-angular';
 import { ChildsPerState, ChildsPerStateData, insertOneSubscription, insertOneSubscriptionData } from '../components/subscription/Subscriptor';
+import { getLocaleExtraDayPeriodRules } from '@angular/common';
 
 const INSERT_PARTICIPANT = gql`
   mutation insertSubscription($week: Int!,$numOfChildren: Int!, $reservationDate: DateTime, $deadline: DateTime) {
     insertOneSubscription(data: {
-      week: $week,
       deadline: $deadline,
+      numOfChildren: $numOfChildren,
       reservationDate: $reservationDate,
       state: "Reservation",
-      numOfChildren: $numOfChildren,
-      Address: {
-        Anrede: "",
-        Name: "",
-        Vorname: "",
-        Adresse: "",
-        PLZ: 0,
-        Ort: "",
-        EMail: "",
-        TelefonM: ""
+      week: $week,
+      address: {
+         firstName: "",
+         lastName: "",
+         emailGroup: {
+           email: "",
+           confirmEmail: ""
+        },
+         phone: "",
+         street1: "",
+         street2: "",
+         city: "",
+         state: "",
+         zip: ""
       },
-      Childs: [
+       childs: [
         {
-          Anrede: "",
-          Name: "",
-          Vorname: "",
-          Geburtstag: "",
-          Bemerkung: ""
+           salutation: "",
+           firstNameChild: "",
+           lastNameChild: "",
+           birthday: "",
+           fotoAllowed: "",
+           comment: ""
         },
         {
-          Anrede: "",
-          Name: "",
-          Vorname: "",
-          Geburtstag: "",
-          Bemerkung: ""
+           salutation: "",
+           firstNameChild: "",
+           lastNameChild: "",
+           birthday: "",
+           fotoAllowed: "",
+           comment: ""
+        },
+        {
+           salutation: "",
+           firstNameChild: "",
+           lastNameChild: "",
+           birthday: "",
+           fotoAllowed: "",
+           comment: ""
         }
       ]
     }
@@ -120,6 +135,23 @@ export class ApolloService {
       catchError(this.handleError)
     )
   }
+
+
+	UpdateParticipant(week: number, numChildren: number):Observable<insertOneSubscription> {
+    return this.apollo.mutate<insertOneSubscriptionData>({
+       mutation: INSERT_PARTICIPANT,
+       variables: {
+         week: week,
+         numOfChildren: numChildren,
+         reservationDate: new Date(),
+         deadline: new Date(new Date().getTime() + ((10 + (numChildren*5))) * 60 * 1000)
+       }
+     }).pipe(
+       tap(data => console.log('Products', JSON.stringify(data))),
+       map(result => {return (<insertOneSubscriptionData>result.data).insertOneSubscription}),
+       catchError(this.handleError)
+     )
+   }
 
   GetReservationsPerWeek(week: number):Observable<ChildsPerState[]> {
     console.log(`GetStaff`);

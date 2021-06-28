@@ -60,18 +60,20 @@ export class SubscriptionComponent implements OnInit {
   ngOnInit(): void {
 
     this.signupForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(3)]],
-      lastName: ['', [Validators.required, Validators.maxLength(50)]],
-      emailGroup: this.fb.group({
-        email: ['', [Validators.required, Validators.email]],
-        confirmEmail: ['', Validators.required],
-      }, { validator: emailMatcher }),
-      phone: '',
-      street1: [''],
-      street2: '',
-      city: '',
-      state: '',
-      zip: '',
+      address: this.fb.group({
+        firstName: ['', [Validators.required, Validators.minLength(3)]],
+        lastName: ['', [Validators.required, Validators.maxLength(50)]],
+        emailGroup: this.fb.group({
+          email: ['', [Validators.required, Validators.email]],
+          confirmEmail: ['', Validators.required],
+        }, { validator: emailMatcher }),
+        phone: ['', Validators.required],
+        street1: ['', Validators.required],
+        street2: '',
+        city: ['', Validators.required],
+        state: '',
+        zip: ['', Validators.required]
+      }),
       childs: this.fb.array([this.buildChildren()])
     });
 
