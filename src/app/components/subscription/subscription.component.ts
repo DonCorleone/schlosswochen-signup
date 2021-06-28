@@ -116,10 +116,10 @@ export class SubscriptionComponent implements OnInit {
     this.addresses = this.signupForm.get('address')?.value;
     console.log(this.addresses);
     if (this.week) {
-      let x:Record<string, any> = {
-        address: this.signupForm.get('address')?.value
+      let param:Record<string, any> = {
+        subscriptionUpdateInput: this.signupForm.value
        };
-      this.apolloService.UpdateParticipant(x)
+      this.apolloService.UpdateParticipant(param)
       .subscribe((res: insertOneSubscription) => {
 
         console.log(JSON.stringify(res));

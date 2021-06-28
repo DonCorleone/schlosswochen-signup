@@ -28,13 +28,10 @@ const INSERT_PARTICIPANT = gql`
 `;
 
 const UPDATE_PARTICIPANT = gql`
-  mutation insertSubscription($address: SubscriptionAddressUpdateInput!) {
+  mutation insertSubscription($subscriptionUpdateInput: SubscriptionUpdateInput!) {
     updateOneSubscription(
       query: { _id: "60da23e89a5b579c758f9d0c" }
-      set: {
-        address: $address
-
-    }
+      set: $subscriptionUpdateInput
     ) {
       _id
       state
