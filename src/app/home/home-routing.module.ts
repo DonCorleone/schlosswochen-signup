@@ -5,7 +5,7 @@ import { SubscriptionComponent } from '../components/subscription/subscription.c
 
 const routes: Routes = [
   {path: '', component: InitComponent},
-  {path: 'subscription/:id/:week/:numOfChilds', component: SubscriptionComponent}
+  {path: 'subscription/:id/:week/:numOfChilds/:deadlineMs', component: SubscriptionComponent}
 ];
 
 @NgModule({

@@ -38,6 +38,8 @@ export class SubscriptionComponent implements OnInit {
   id: string | null = '0';
   week: string | null = '0';
   numOfChilds: number | null = 0;
+  deadlineM: number = 0;
+
   addresses: string | undefined;
 
   signupForm!: FormGroup;
@@ -51,7 +53,7 @@ export class SubscriptionComponent implements OnInit {
     match: 'The confirmation does not match the email address.'
   };
 
-  get childs(): FormArray{
+  get childs(): FormArray {
     return <FormArray>(this.signupForm.get('childs'));
   }
 
@@ -60,6 +62,10 @@ export class SubscriptionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let deadlineMsStr = this.route.snapshot.paramMap.get('deadlineMs');
+    if (deadlineMsStr) {
+      this.deadlineM = +deadlineMsStr / 60 / 1000;
+    }
 
     this.signupForm = this.fb.group({
       address: this.fb.group({
@@ -103,7 +109,7 @@ export class SubscriptionComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id');
     this.week = this.route.snapshot.paramMap.get('week');
     let numOfChildsStr = this.route.snapshot.paramMap.get('numOfChilds');
-    if (numOfChildsStr){
+    if (numOfChildsStr) {
       this.numOfChilds = +numOfChildsStr;
       for (let index = 0; index < this.numOfChilds - 1; index++) {
         this.addChildren();
@@ -115,19 +121,16 @@ export class SubscriptionComponent implements OnInit {
     console.log(this.signupForm);
     this.addresses = this.signupForm.get('address')?.value;
     console.log(this.addresses);
-    if (this.week) {
-      let param:Record<string, any> = {
-        subscriptionUpdateInput: this.signupForm.value
-       };
-      this.apolloService.UpdateParticipant(param)
-      .subscribe((res: insertOneSubscription) => {
+    if (this.week && this.id) {
+      this.apolloService.UpdateParticipant(this.id, this.signupForm.value)
+        .subscribe((res: insertOneSubscription) => {
 
-        console.log(JSON.stringify(res));
-      });
+          console.log(JSON.stringify(res));
+        });
     }
   }
 
-  addChildren():void{
+  addChildren(): void {
     this.childs.push(this.buildChildren());
   }
 
@@ -146,7 +149,7 @@ export class SubscriptionComponent implements OnInit {
     var messageString = '';
     if ((c.touched || c.dirty) && c.errors) {
       messageString = Object.keys(c.errors).map(
-        key => hasKey(this.validationMessages, key) ? this.validationMessages[key] : 'unknown error') .join(' ');
+        key => hasKey(this.validationMessages, key) ? this.validationMessages[key] : 'unknown error').join(' ');
     }
     return messageString;
   }

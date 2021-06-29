@@ -20,7 +20,7 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class WeeklySubscriptionsComponent implements OnInit {
 
-  @Input()week: week | undefined;
+  @Input() week: week | undefined;
 
   signupForm!: FormGroup;
   childsPerStates$: Observable<ChildsPerState[]> | undefined
@@ -39,14 +39,14 @@ export class WeeklySubscriptionsComponent implements OnInit {
     });
 
     if (this.week) {
-      this.childsPerStates$ =  this.apolloService.GetReservationsPerWeek(this.week?.weeknr)
-      .pipe(
-          tap( returnz => { console.log(JSON.stringify(returnz)) }),
-          map( returnz =>  {
+      this.childsPerStates$ = this.apolloService.GetReservationsPerWeek(this.week?.weeknr)
+        .pipe(
+          tap(returnz => { console.log(JSON.stringify(returnz)) }),
+          map(returnz => {
             return returnz;
           }
+          )
         )
-      )
     }
   }
 
@@ -54,14 +54,35 @@ export class WeeklySubscriptionsComponent implements OnInit {
     console.log(this.signupForm);
     console.log('Saved: ' + JSON.stringify(this.signupForm.value));
 
-   // const week = this.signupForm.get('weekNr');
-    const numOfChildren = this.signupForm.get('numOfChilds');
+    // const week = this.signupForm.get('weekNr');
+    const numOfChilds = this.signupForm.get('numOfChilds');
 
     if (this.week) {
-      this.apolloService.InsertParticipant(this.week.weeknr, numOfChildren?.value)
-      .subscribe((res: insertOneSubscription) => {
-        this.router.navigate(['/subscription', res._id, this.week?.weeknr, numOfChildren?.value]);
-      });
+
+
+
+      // week: week,
+      let numOfChildren = numOfChilds?.value;
+      // reservationDate: new Date(),
+      // deadline: new Date(new Date().getTime() + ((10 + (numChildren*5))) * 60 * 1000),
+
+      let deadlineMs = ((5 + (numOfChildren * 3))) * 60 * 1000;
+      let param: Record<string, any> = {
+        subscriptionInsertInput: {
+          deadline: new Date(new Date().getTime() + deadlineMs),
+          numOfChildren: numOfChildren,
+          reservationDate: new Date(),
+          state: "Reservation",
+          week: this.week.weeknr,
+          address: {
+          },
+          childs: [{}, {}, {}, {}]
+        }
+      };
+      this.apolloService.InsertParticipant(param)
+        .subscribe((res: insertOneSubscription) => {
+          this.router.navigate(['/subscription', res._id, this.week?.weeknr, numOfChildren, deadlineMs]);
+        });
     }
   }
 

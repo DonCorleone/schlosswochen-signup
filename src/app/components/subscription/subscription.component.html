@@ -1,3 +1,6 @@
+<div>
+  {{ deadlineM }} Minutes left!
+</div>
 <div class="card">
   <div class="card-header">
     <H2 class="H2">Week No {{week}} Sign Up!</H2>
@@ -148,20 +151,6 @@
           </div>
 
           <div class="form-group row mb-2">
-            <label class="col-md-2 col-form-label" attr.for="{{ 'birthdayId' + i }}">Birthday</label>
-            <div class="col-md-8">
-              <input class="form-control" id="{{ 'birthdayId' + i}}" type="date" placeholder="Birthday (required)"
-                formControlName="birthday"
-                [ngClass]="{'is-invalid': (signupForm.get('birthday')?.touched || signupForm.get('birthday')?.dirty) && !signupForm.get('birthday')?.valid }" />
-              <span class="invalid-feedback">
-                <span *ngIf="signupForm.get('birthday')?.errors?.required">
-                  Please enter the birthday.
-                </span>
-              </span>
-            </div>
-          </div>
-
-          <div class="form-group row mb-2">
             <label class="col-md-2 col-form-label" attr.for="{{ 'lastNameChildId' + i }}">Last Name</label>
             <div class="col-md-8">
               <input class="form-control" id="{{ 'lastNameChildId' + i}}" type="text" placeholder="Last Name (required)"
@@ -173,6 +162,21 @@
                 </span>
                 <span *ngIf="signupForm.get('lastNameChild')?.errors?.maxlength">
                   The last name must be less than 50 characters.
+                </span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="form-group row mb-2">
+            <label class="col-md-2 col-form-label" attr.for="{{ 'birthdayId' + i }}">Birthday</label>
+            <div class="col-md-8">
+              <input class="form-control" id="{{ 'birthdayId' + i}}" type="date" placeholder="Birthday (required)"
+                formControlName="birthday"
+                [ngClass]="{'is-invalid': (signupForm.get('birthday')?.touched || signupForm.get('birthday')?.dirty) && !signupForm.get('birthday')?.valid }" />
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('birthday')?.errors?.required">
+                  Please enter the birthday.
                 </span>
               </span>
             </div>

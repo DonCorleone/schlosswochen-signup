@@ -1,24 +1,15 @@
 import { Injectable } from '@angular/core';
-import { catchError, map,tap  } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { Apollo, gql, Mutation } from 'apollo-angular';
 import { ChildsPerState, ChildsPerStateData, insertOneSubscription, insertOneSubscriptionData } from '../components/subscription/Subscriptor';
 import { getLocaleExtraDayPeriodRules } from '@angular/common';
 
 const INSERT_PARTICIPANT = gql`
-  mutation insertSubscription($week: Int!,$numOfChildren: Int!, $reservationDate: DateTime, $deadline: DateTime) {
-    insertOneSubscription(data: {
-      deadline: $deadline,
-      numOfChildren: $numOfChildren,
-      reservationDate: $reservationDate,
-      state: "Reservation",
-      week: $week,
-      address: {
-      },
-       childs: [
-      ]
-    }
-    ) {
+  mutation insertSubscription($subscriptionInsertInput: SubscriptionInsertInput!) {
+    insertOneSubscription(
+      data: $subscriptionInsertInput
+    ){
       _id
       deadline
       week
@@ -28,9 +19,9 @@ const INSERT_PARTICIPANT = gql`
 `;
 
 const UPDATE_PARTICIPANT = gql`
-  mutation insertSubscription($subscriptionUpdateInput: SubscriptionUpdateInput!) {
+  mutation insertSubscription($id: ObjectId, $subscriptionUpdateInput: SubscriptionUpdateInput!) {
     updateOneSubscription(
-      query: { _id: "60da23e89a5b579c758f9d0c" }
+      query: { _id: $id }
       set: $subscriptionUpdateInput
     ) {
       _id
@@ -39,7 +30,7 @@ const UPDATE_PARTICIPANT = gql`
   }
 `;
 
-const GET_RESERVATIONS_PER_WEEK= gql`
+const GET_RESERVATIONS_PER_WEEK = gql`
     query GetReservationsPerWeek($week:Int!) {
       sumChildsPerState(input: $week) {
         state
@@ -57,45 +48,42 @@ export class ApolloService {
   constructor(private apollo: Apollo) {
   }
 
-	InsertParticipant(week: number, numChildren: number):Observable<insertOneSubscription> {
-   return this.apollo.mutate<insertOneSubscriptionData>({
+  InsertParticipant(variable: Record<string, any>): Observable<insertOneSubscription> {
+    return this.apollo.mutate<insertOneSubscriptionData>({
       mutation: INSERT_PARTICIPANT,
-      variables: {
-        week: week,
-        numOfChildren: numChildren,
-        reservationDate: new Date(),
-				deadline: new Date(new Date().getTime() + ((10 + (numChildren*5))) * 60 * 1000)
-      }
+      variables: variable
     }).pipe(
       tap(data => console.log('Products', JSON.stringify(data))),
-      map(result => {return (<insertOneSubscriptionData>result.data).insertOneSubscription}),
+      map(result => { return (<insertOneSubscriptionData>result.data).insertOneSubscription }),
       catchError(this.handleError)
     )
   }
 
 
-	UpdateParticipant(variable: Record<string, any>):Observable<insertOneSubscription> {
+  UpdateParticipant(id: string, variable: any): Observable<insertOneSubscription> {
     return this.apollo.mutate<insertOneSubscriptionData>({
-       mutation: UPDATE_PARTICIPANT,
-       variables: variable
-     }).pipe(
-       tap(data => console.log('Products', JSON.stringify(data))),
-       map(result => {return (<insertOneSubscriptionData>result.data).insertOneSubscription}),
-       catchError(this.handleError)
-     )
-   }
+      mutation: UPDATE_PARTICIPANT,
+      variables: {
+        id: id, subscriptionUpdateInput: variable
+      }
+    }).pipe(
+      tap(data => console.log('Products', JSON.stringify(data))),
+      map(result => { return (<insertOneSubscriptionData>result.data).insertOneSubscription }),
+      catchError(this.handleError)
+    )
+  }
 
-  GetReservationsPerWeek(week: number):Observable<ChildsPerState[]> {
+  GetReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
     console.log(`GetStaff`);
     return this.apollo
       .watchQuery<ChildsPerStateData>({
         query: GET_RESERVATIONS_PER_WEEK,
-        variables: {week: week}
+        variables: { week: week }
       })
       .valueChanges.pipe(
         tap(result => console.log(JSON.stringify(result.data.sumChildsPerState))),
         map((result) => result.data.sumChildsPerState));
-    }
+  }
 
 
   private handleError(err: any): Observable<never> {
