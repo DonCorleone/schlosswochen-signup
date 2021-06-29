@@ -82,7 +82,8 @@ export class SubscriptionComponent implements OnInit {
         state: '',
         zip: ''
       }),
-      childs: this.fb.array([this.buildChildren()])
+      childs: this.fb.array([this.buildChildren()]),
+      state:"Definitive"
     });
 
     const emailControl = this.signupForm.get('emailGroup.email');

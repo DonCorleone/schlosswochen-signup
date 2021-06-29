@@ -73,10 +73,7 @@ export class WeeklySubscriptionsComponent implements OnInit {
           numOfChildren: numOfChildren,
           reservationDate: new Date(),
           state: "Reservation",
-          week: this.week.weeknr,
-          address: {
-          },
-          childs: [{}, {}, {}, {}]
+          week: this.week.weeknr
         }
       };
       this.apolloService.InsertParticipant(param)
