@@ -3,11 +3,11 @@ import { Observable, of } from 'rxjs';
 import { week } from 'src/app/models/Week';
 
 @Component({
-  selector: 'app-init',
-  templateUrl: './init.component.html',
-  styleUrls: ['./init.component.scss']
+  selector: 'app-reservation',
+  templateUrl: './reservation.component.html',
+  styleUrls: ['./reservation.component.scss']
 })
-export class InitComponent {
+export class ReservationComponent {
   public weeks: Observable<week[]> = of([
     {weeknr: 1, numOfDefReservations: 0, numOfProvReservations: 0},
     {weeknr: 2, numOfDefReservations: 0, numOfProvReservations: 0},

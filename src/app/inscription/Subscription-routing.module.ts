@@ -1,10 +1,10 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import { InitComponent } from '../components/init/init.component';
 import { SubscriptionComponent } from '../components/subscription/subscription.component';
+import { ReservationComponent } from '../reservations/reservation/reservation.component';
 
 const routes: Routes = [
-  {path: '', component: InitComponent},
+  {path: '', component: ReservationComponent},
   {path: 'subscription/:id/:week/:numOfChilds/:deadlineMs', component: SubscriptionComponent}
 ];
 

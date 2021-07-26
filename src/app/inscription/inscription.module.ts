@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SubscriptionComponent } from '../components/subscription/subscription.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { inscriptionRoutingModule } from './Subscription-routing.module';
-import { InitComponent } from '../components/init/init.component';
+import { ReservationComponent } from '../reservations/reservation/reservation.component';
 import { inscriptionComponent } from './inscription/inscription.component';
 import { WeeklyReservationComponent } from '../reservations/weekly-reservation/weekly-reservation.component';
 
@@ -13,7 +13,7 @@ import { WeeklyReservationComponent } from '../reservations/weekly-reservation/w
   declarations: [
     inscriptionComponent,
     SubscriptionComponent,
-    InitComponent,
+    ReservationComponent,
     WeeklyReservationComponent
   ],
   imports: [
