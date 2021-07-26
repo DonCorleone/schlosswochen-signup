@@ -5,8 +5,8 @@ import { debounceTime } from 'rxjs/operators';
 import { ActionSequence } from 'selenium-webdriver';
 import { ApolloService } from 'src/app/service/apollo.service';
 
-import { Customer } from './Customer';
-import { insertOneSubscription } from './Subscriptor';
+import { Customer } from '../../models/Customer';
+import { insertOneSubscription } from '../../models/Subscriptor';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');

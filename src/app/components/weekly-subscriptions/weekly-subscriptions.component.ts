@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ApolloService } from 'src/app/service/apollo.service';
 import { week } from '../init/init.component';
-import { ChildsPerState, insertOneSubscription } from '../subscription/Subscriptor';
+import { ChildsPerState, insertOneSubscription } from '../../models/Subscriptor';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
