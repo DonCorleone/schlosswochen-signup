@@ -3,8 +3,8 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { week } from 'src/app/models/Week';
 import { ApolloService } from 'src/app/service/apollo.service';
-import { week } from '../init/init.component';
 import { ChildsPerState, insertOneSubscription } from '../../models/Subscriptor';
 
 // since an object key can be any of those types, our key can too
@@ -14,11 +14,11 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 }
 
 @Component({
-  selector: 'app-weekly-subscriptions',
-  templateUrl: './weekly-subscriptions.component.html',
-  styleUrls: ['./weekly-subscriptions.component.scss']
+  selector: 'app-weekly-reservation',
+  templateUrl: './weekly-reservation.component.html',
+  styleUrls: ['./weekly-reservation.component.scss']
 })
-export class WeeklySubscriptionsComponent implements OnInit {
+export class WeeklyReservationComponent implements OnInit {
 
   @Input() week: week | undefined;
 

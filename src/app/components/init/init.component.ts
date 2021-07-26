@@ -1,11 +1,6 @@
 import { Component } from '@angular/core';
 import { Observable, of } from 'rxjs';
-
-export interface week {
-  weeknr: number,
-  numOfDefReservations: number,
-  numOfProvReservations: number
-}
+import { week } from 'src/app/models/Week';
 
 @Component({
   selector: 'app-init',

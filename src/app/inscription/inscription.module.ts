@@ -4,8 +4,8 @@ import { SubscriptionComponent } from '../components/subscription/subscription.c
 import { ReactiveFormsModule } from '@angular/forms';
 import { inscriptionRoutingModule } from './Subscription-routing.module';
 import { InitComponent } from '../components/init/init.component';
-import { WeeklySubscriptionsComponent } from '../components/weekly-subscriptions/weekly-subscriptions.component';
 import { inscriptionComponent } from './inscription/inscription.component';
+import { WeeklyReservationComponent } from '../reservations/weekly-reservation/weekly-reservation.component';
 
 
 
@@ -14,7 +14,7 @@ import { inscriptionComponent } from './inscription/inscription.component';
     inscriptionComponent,
     SubscriptionComponent,
     InitComponent,
-    WeeklySubscriptionsComponent
+    WeeklyReservationComponent
   ],
   imports: [
     CommonModule,
