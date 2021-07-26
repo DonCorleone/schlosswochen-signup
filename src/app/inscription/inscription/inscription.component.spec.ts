@@ -1,20 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { InscriptionComponent } from './inscription.component';
 
-import { inscriptionComponent } from './inscription.component';
-
-describe('inscriptionComponent', () => {
-  let component: inscriptionComponent;
-  let fixture: ComponentFixture<inscriptionComponent>;
+describe('SubscriptionComponent', () => {
+  let component: InscriptionComponent;
+  let fixture: ComponentFixture<InscriptionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ inscriptionComponent ]
+      declarations: [ InscriptionComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(inscriptionComponent);
+    fixture = TestBed.createComponent(InscriptionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
