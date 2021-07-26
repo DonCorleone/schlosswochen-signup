@@ -1,23 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { inscriptionRoutingModule } from './Inscription-routing.module';
-import { ReservationComponent } from '../reservations/reservation/reservation.component';
-import { WeeklyReservationComponent } from '../reservations/weekly-reservation/weekly-reservation.component';
 import { InscriptionComponent } from './inscription/inscription.component';
-
-
+import { InscriptionRoutingModule } from './Inscription-routing.module';
 
 @NgModule({
   declarations: [
-    InscriptionComponent,
-    ReservationComponent,
-    WeeklyReservationComponent
+    InscriptionComponent
   ],
   imports: [
     CommonModule,
-		inscriptionRoutingModule,
+		InscriptionRoutingModule,
     ReactiveFormsModule
   ]
 })
-export class inscriptionModule { }
+export class InscriptionModule { }

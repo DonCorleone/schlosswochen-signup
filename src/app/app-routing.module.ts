@@ -3,18 +3,23 @@ import { CommonModule } from '@angular/common';
 import { RealmAuthGuard } from './realm-auth.guard';
 import { RouterModule, Routes } from '@angular/router';
 
-const routes: Routes = [	{
+const routes: Routes = [
+  {
     path: '',
-    loadChildren: () => import('./inscription/inscription.module').then(m => m.inscriptionModule),
+    loadChildren: () => import('./reservations/reservations.module').then(m => m.ReservationsModule),
     canActivate: [RealmAuthGuard]
+  },
+  {
+    path: 'inscription',
+    loadChildren: () => import('./inscription/inscription.module').then(m => m.InscriptionModule)
   }
 ]
 
 @NgModule({
-	imports: [
+  imports: [
     CommonModule,
-    RouterModule.forRoot(routes, {relativeLinkResolution: 'legacy'})
+    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })
   ],
-	exports: [RouterModule]
+  exports: [RouterModule]
 })
 export class AppRoutingModule { }

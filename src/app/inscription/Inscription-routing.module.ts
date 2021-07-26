@@ -1,16 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ReservationComponent } from '../reservations/reservation/reservation.component';
 import { InscriptionComponent } from './inscription/inscription.component';
 
 const routes: Routes = [
-  { path: '', component: ReservationComponent },
-  { path: 'subscription/:id/:week/:numOfChilds/:deadlineMs', component: InscriptionComponent }
+  { path: ':id/:week/:numOfChilds/:deadlineMs', component: InscriptionComponent }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class inscriptionRoutingModule {
+export class InscriptionRoutingModule {
 }

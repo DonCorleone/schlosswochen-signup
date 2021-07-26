@@ -78,7 +78,7 @@ export class WeeklyReservationComponent implements OnInit {
       };
       this.apolloService.InsertParticipant(param)
         .subscribe((res: insertOneSubscription) => {
-          this.router.navigate(['/subscription', res._id, this.week?.weeknr, numOfChildren, deadlineMs]);
+          this.router.navigate(['/inscription', res._id, this.week?.weeknr, numOfChildren, deadlineMs]);
         });
     }
   }

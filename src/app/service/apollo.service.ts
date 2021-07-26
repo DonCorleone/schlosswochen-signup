@@ -64,7 +64,7 @@ export class ApolloService {
     return this.apollo.mutate<insertOneSubscriptionData>({
       mutation: UPDATE_PARTICIPANT,
       variables: {
-        id: id, subscriptionUpdateInput: variable
+        id, subscriptionUpdateInput: variable
       }
     }).pipe(
       tap(data => console.log('Products', JSON.stringify(data))),
