@@ -10,6 +10,7 @@ import * as realm from './realm';
 import { GraphQLModule } from './graphql.module';
 import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { StoreModule } from '@ngrx/store';
 
 const uri = realm.graphqlUrl;
 
@@ -32,7 +33,8 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
 		AppRoutingModule,
     GraphQLModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StoreModule.forRoot({}, {})
   ],
 	providers: [
 		{
