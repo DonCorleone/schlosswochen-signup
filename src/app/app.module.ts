@@ -11,6 +11,8 @@ import { GraphQLModule } from './graphql.module';
 import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 
 const uri = realm.graphqlUrl;
 
@@ -34,7 +36,13 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
     GraphQLModule,
     HttpClientModule,
     ReactiveFormsModule,
-    StoreModule.forRoot({}, {})
+    StoreModule.forRoot({}, {}),
+    StoreDevtoolsModule.instrument(
+      {
+        name: 'Schlosswochen Inscription',
+        maxAge: 25,
+        logOnly: environment.production }
+      )
   ],
 	providers: [
 		{

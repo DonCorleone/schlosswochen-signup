@@ -5,6 +5,7 @@ import { ReservationComponent } from './reservation/reservation.component';
 import { WeeklyReservationComponent } from './weekly-reservation/weekly-reservation.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
+import { reservationReducer } from './state/reservation.reducer';
 
 
 @NgModule({
@@ -16,7 +17,7 @@ import { StoreModule } from '@ngrx/store';
     CommonModule,
     ReservationsRoutingModule,
     ReactiveFormsModule,
-    StoreModule.forFeature('reservations', {}) //reservationsReducer
+    StoreModule.forFeature('reservations', reservationReducer)
   ]
 })
 export class ReservationsModule { }

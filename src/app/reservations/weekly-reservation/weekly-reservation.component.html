@@ -21,9 +21,7 @@
   </div>
 
   <div class="card-body">
-    <form novalidate
-      (ngSubmit) = save()
-      [formGroup] = "signupForm">
+    <form novalidate (ngSubmit)=save() [formGroup]="signupForm">
 
 
       <div class="form-group row mb-2">
@@ -31,29 +29,20 @@
         <div class="col-md-8">
           <div class="form-check form-check-inline">
             <label class="form-check-label">
-              <input class="form-check-input"
-                     id="numOfChildsIdOne"
-                     type="radio"
-                     value="1"
-                     formControlName="numOfChilds"> 1 Child
+              <input class="form-check-input" [id]="'numOfChildsIdOne_week'+ week?.weeknr?.toString()" type="radio"
+                value="1" formControlName="numOfChilds"> 1 Child
             </label>
           </div>
           <div class="form-check form-check-inline">
             <label class="form-check-label">
-              <input class="form-check-input"
-                     id="numOfChildsIdTwo"
-                     type="radio"
-                     value="2"
-                     formControlName="numOfChilds"> 2 Children
+              <input class="form-check-input" [id]="'numOfChildsIdTwo_week'+ week?.weeknr?.toString()" type="radio"
+                value="2" formControlName="numOfChilds"> 2 Children
             </label>
           </div>
           <div class="form-check form-check-inline">
             <label class="form-check-label">
-              <input class="form-check-input"
-                     id="numOfChildsIdThree"
-                     type="radio"
-                     value="3"
-                     formControlName="numOfChilds"> 3 Children
+              <input class="form-check-input" [id]="'numOfChildsIdTwo_three'+ week?.weeknr?.toString()" type="radio"
+                value="3" formControlName="numOfChilds"> 3 Children
             </label>
           </div>
         </div>
@@ -61,10 +50,9 @@
 
       <div class="form-group row mb-2">
         <div class="offset-md-2 col-md-4">
-          <button class="btn btn-primary mr-3"
-                  type="submit"
-                  [title]="signupForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
-                  [disabled]="!signupForm.valid">
+          <button class="btn btn-primary mr-3" type="submit"
+            [title]="signupForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+            [disabled]="!signupForm.valid">
             Reserve
           </button>
         </div>
@@ -72,4 +60,3 @@
     </form>
   </div>
 </div>
-

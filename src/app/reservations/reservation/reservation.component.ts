@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { week } from 'src/app/models/Week';
 
@@ -7,7 +8,7 @@ import { week } from 'src/app/models/Week';
   templateUrl: './reservation.component.html',
   styleUrls: ['./reservation.component.scss']
 })
-export class ReservationComponent {
+export class ReservationComponent implements OnInit, OnDestroy {
 
   showCheatSheet: boolean = false;
 
@@ -17,7 +18,25 @@ export class ReservationComponent {
     {weeknr: 3, numOfDefReservations: 0, numOfProvReservations: 0}
   ]);
 
+  constructor(private store: Store<any>){
+
+  }
+  ngOnDestroy(): void {
+  }
+
+  ngOnInit(): void {
+    this.store.select('reservations').subscribe(
+      reservations => {
+        if (reservations) {
+          this.showCheatSheet = reservations.showCheatSheet;
+        }
+      }
+    )
+  }
+
   checkChanged(): void {
-    this.showCheatSheet = !this.showCheatSheet;
+    this.store.dispatch(
+      {type:'[Reservations] Toggle Show Cheat Sheet'}
+    )
   }
 }
