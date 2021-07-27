@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { week } from 'src/app/models/Week';
+import { State } from '../state/reservation.reducer';
 
 @Component({
   selector: 'app-reservation',
@@ -18,7 +19,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     {weeknr: 3, numOfDefReservations: 0, numOfProvReservations: 0}
   ]);
 
-  constructor(private store: Store<any>){
+  constructor(private store: Store<State>){
 
   }
   ngOnDestroy(): void {

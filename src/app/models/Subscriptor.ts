@@ -15,10 +15,10 @@ export interface Subscriptor {
 
 export interface WeeklyReservationState {
   week:number;
-  reservationstates : ReservationState[];
+  reservationstates : ReservationType[];
 }
 
-export interface ReservationState {
+export interface ReservationType {
   state: string;
   numOfChildren: number;
 }
