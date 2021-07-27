@@ -8,9 +8,16 @@ import { week } from 'src/app/models/Week';
   styleUrls: ['./reservation.component.scss']
 })
 export class ReservationComponent {
+
+  showCheatSheet: boolean = false;
+
   public weeks: Observable<week[]> = of([
     {weeknr: 1, numOfDefReservations: 0, numOfProvReservations: 0},
     {weeknr: 2, numOfDefReservations: 0, numOfProvReservations: 0},
     {weeknr: 3, numOfDefReservations: 0, numOfProvReservations: 0}
   ]);
+
+  checkChanged(): void {
+    this.showCheatSheet = !this.showCheatSheet;
+  }
 }
