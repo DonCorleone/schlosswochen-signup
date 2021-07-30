@@ -2,8 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { week } from 'src/app/models/Week';
-import { getShowCheatSheet } from '../state/reservation-selector';
+import { getShowCheatSheet } from '../state/reservation.selector';
 import { State } from '../state/reservation.reducer';
+import { showCheatSheetAction } from '../state/reaction.action';
 
 @Component({
   selector: 'app-reservation',
@@ -33,8 +34,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   checkChanged(): void {
-    this.store.dispatch(
-      {type:'[Reservations] Toggle Show Cheat Sheet'}
-    )
+    this.store.dispatch(showCheatSheetAction());
   }
 }
