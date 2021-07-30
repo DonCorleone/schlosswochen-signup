@@ -1,6 +1,6 @@
-import { createAction, createReducer, on } from "@ngrx/store";
+import { createReducer, on, Store } from "@ngrx/store";
 import * as AppState from '../../state/app.state';
-import { showCheatSheetAction } from "./reaction.action";
+import * as ReservationAction from "./reservation.action";
 
 export interface ReservationState {
   showCheatSheet:boolean,
@@ -20,10 +20,22 @@ const initialState: ReservationState = {
 
 export const reservationReducer = createReducer<ReservationState>(
   initialState,
-  on(showCheatSheetAction, (state): ReservationState => {
+  on(ReservationAction.showCheatSheetAction, (state): ReservationState => {
     return {
       ...state,
       showCheatSheet: !state.showCheatSheet
+    };
+  }),
+  on(ReservationAction.setNumberOfChildren, (state, action) => {
+    return {
+      ...state,
+      numberOfChildren: action.numberOfChildren
+    };
+  }),
+  on(ReservationAction.setWeekNumber, (state, action) => {
+    return {
+      ...state,
+      weekNumer: action.weekNumber
     };
   })
 );

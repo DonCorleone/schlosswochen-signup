@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { week } from 'src/app/models/Week';
 import { getShowCheatSheet } from '../state/reservation.selector';
 import { State } from '../state/reservation.reducer';
-import { showCheatSheetAction } from '../state/reaction.action';
+import * as ReservationAction from '../state/reservation.action';
 
 @Component({
   selector: 'app-reservation',
@@ -34,6 +34,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   checkChanged(): void {
-    this.store.dispatch(showCheatSheetAction());
+    this.store.dispatch(ReservationAction.showCheatSheetAction());
   }
 }
