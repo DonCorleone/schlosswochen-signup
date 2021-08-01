@@ -74,7 +74,20 @@ export class WeeklyReservationComponent implements OnInit {
     }
   }
 
-  changeNumberOfChildren (reservations: number):void{
+  changeReservation (weekNumber:number, numberOfChildren:number):void{
+    this.store.dispatch(
+      ReservationActions.setNumberOfChildren(
+        {numberOfChildren}
+      )
+    );
+    this.store.dispatch(
+      ReservationActions.setWeekNumber(
+        {weekNumber}
+      )
+    );
+  }
+
+  change (reservations: number):void{
     this.store.dispatch(
       ReservationActions.setNumberOfChildren(
         {numberOfChildren: reservations}
