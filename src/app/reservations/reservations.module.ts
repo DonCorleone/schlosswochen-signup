@@ -6,12 +6,14 @@ import { WeeklyReservationComponent } from './weekly-reservation/weekly-reservat
 import { ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 import { reservationReducer } from './state/reservation.reducer';
+import { CapacityComponent } from './capacity/capacity.component';
 
 
 @NgModule({
   declarations: [
     ReservationComponent,
-    WeeklyReservationComponent
+    WeeklyReservationComponent,
+    CapacityComponent
   ],
   imports: [
     CommonModule,

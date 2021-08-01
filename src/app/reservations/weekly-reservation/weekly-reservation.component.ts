@@ -27,7 +27,6 @@ export class WeeklyReservationComponent implements OnInit {
   @Input() week: week | undefined;
 
   signupForm!: FormGroup;
-  childsPerStates$: Observable<ChildsPerState[]> | undefined
 
   numberOfChildren$?: Observable<Number>;
 
@@ -47,16 +46,7 @@ export class WeeklyReservationComponent implements OnInit {
       numOfChilds: [0, [Validators.required, Validators.min(1)]],
     });
 
-    if (this.week) {
-      this.childsPerStates$ = this.apolloService.GetReservationsPerWeek(this.week?.weeknr)
-        .pipe(
-          tap(returnz => { console.log(JSON.stringify(returnz)) }),
-          map(returnz => {
-            return returnz;
-          }
-          )
-        )
-    }
+
   }
 
   changeNumberOfChildren (numberOfChildren: number):void{

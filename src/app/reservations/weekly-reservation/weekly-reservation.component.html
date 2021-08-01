@@ -16,9 +16,7 @@
     <span *ngIf="week">Week {{week.weeknr}}: </span>Sign Up!
   </div>
 
-  <div *ngFor="let childsPerState of childsPerStates$ | async" class="small">
-    {{childsPerState.sumPerStateAndWeek}} {{childsPerState.state}} Places
-  </div>
+  <app-capacity [week]=week></app-capacity>
 
   <div class="card-body">
     <form novalidate (ngSubmit)=save() [formGroup]="signupForm">
