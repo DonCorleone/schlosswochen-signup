@@ -1,11 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms'
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { week } from 'src/app/models/Week';
 import { ApolloService } from 'src/app/service/apollo.service';
 import { ChildsPerState, insertOneSubscription } from '../../models/Subscriptor';
+import { reservationReducer, ReservationState } from '../state/reservation.reducer';
+import * as ReservationActions from '../state/reservation.action';
+import * as ReservationSelectors from '../state/reservation.selector';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -25,15 +29,20 @@ export class WeeklyReservationComponent implements OnInit {
   signupForm!: FormGroup;
   childsPerStates$: Observable<ChildsPerState[]> | undefined
 
-  private validationMessages = {
-    required: 'Please enter your email address.',
-    email: 'Please enter a valid email address.',
-    match: 'The confirmation does not match the email address.'
-  };
+  numberOfChildren$?: Observable<Number>;
 
-  constructor(private fb: FormBuilder, private apolloService: ApolloService, private router: Router) { }
+  constructor(
+    private fb: FormBuilder,
+    private apolloService: ApolloService,
+    private router: Router,
+    private store: Store<ReservationState>) { }
 
   ngOnInit(): void {
+
+    this.numberOfChildren$ =
+      this.store.select(ReservationSelectors.getNumberOfChildren).
+        pipe(numberOfChildren => this.numberOfChildren$ = numberOfChildren);
+
     this.signupForm = this.fb.group({
       numOfChilds: [0, [Validators.required, Validators.min(1)]],
     });
@@ -50,6 +59,10 @@ export class WeeklyReservationComponent implements OnInit {
     }
   }
 
+  changeNumberOfChildren (numberOfChildren: number):void{
+    this.store.dispatch(ReservationActions.setNumberOfChildren({numberOfChildren}));
+  }
+
   save(): void {
     console.log(this.signupForm);
     console.log('Saved: ' + JSON.stringify(this.signupForm.value));
@@ -58,8 +71,6 @@ export class WeeklyReservationComponent implements OnInit {
     const numOfChilds = this.signupForm.get('numOfChilds');
 
     if (this.week) {
-
-
 
       // week: week,
       let numOfChildren = numOfChilds?.value;
@@ -76,19 +87,12 @@ export class WeeklyReservationComponent implements OnInit {
           week: this.week.weeknr
         }
       };
+
+
       this.apolloService.InsertParticipant(param)
         .subscribe((res: insertOneSubscription) => {
           this.router.navigate(['/inscription', res._id, this.week?.weeknr, numOfChildren, deadlineMs]);
         });
     }
-  }
-
-  setMessage(c: AbstractControl): string {
-    var messageString = '';
-    if ((c.touched || c.dirty) && c.errors) {
-      messageString = Object.keys(c.errors).map(
-        key => hasKey(this.validationMessages, key) ? this.validationMessages[key] : 'unknown error').join(' ');
-    }
-    return messageString;
   }
 }

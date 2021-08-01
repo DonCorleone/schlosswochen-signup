@@ -22,27 +22,25 @@
 
   <div class="card-body">
     <form novalidate (ngSubmit)=save() [formGroup]="signupForm">
-
-
       <div class="form-group row mb-2">
-        <label class="col-md-2 col-form-label pt-0"></label>
+        <label class="col-md-2 col-form-label pt-0">Number of Reservations</label>
         <div class="col-md-8">
           <div class="form-check form-check-inline">
             <label class="form-check-label">
               <input class="form-check-input" [id]="'numOfChildsIdOne_week'+ week?.weeknr?.toString()" type="radio"
-                value="1" formControlName="numOfChilds"> 1 Child
+                value="1" formControlName="numOfChilds" (change)="changeNumberOfChildren(1)"> 1 Child
             </label>
           </div>
           <div class="form-check form-check-inline">
             <label class="form-check-label">
               <input class="form-check-input" [id]="'numOfChildsIdTwo_week'+ week?.weeknr?.toString()" type="radio"
-                value="2" formControlName="numOfChilds"> 2 Children
+                value="2" formControlName="numOfChilds" (change)="changeNumberOfChildren(2)"> 2 Children
             </label>
           </div>
           <div class="form-check form-check-inline">
             <label class="form-check-label">
               <input class="form-check-input" [id]="'numOfChildsIdTwo_three'+ week?.weeknr?.toString()" type="radio"
-                value="3" formControlName="numOfChilds"> 3 Children
+                value="3" formControlName="numOfChilds" (change)="changeNumberOfChildren(3)"> 3 Children
             </label>
           </div>
         </div>
