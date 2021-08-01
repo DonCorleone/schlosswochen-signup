@@ -12,37 +12,36 @@
 </div> -->
 
 <div class="card">
-  <div class="card-header">
-    <span *ngIf="week">Week {{week.weeknr}}: </span>Sign Up!
-  </div>
-
-  <div *ngFor="let childsPerState of childsPerStates$ | async" class="small">
-    {{childsPerState.sumPerStateAndWeek}} {{childsPerState.state}} Places
-  </div>
-
   <div class="card-body">
     <form novalidate (ngSubmit)=save() [formGroup]="signupForm">
       <div class="form-group row mb-2">
-        <label class="col-md-2 col-form-label pt-0">Number of Reservations</label>
-        <div class="col-md-8">
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input" [id]="'numOfChildsIdOne_week'+ week?.weeknr?.toString()" type="radio"
-                value="1" formControlName="numOfChilds" (change)="changeNumberOfChildren(1)"> 1 Child
-            </label>
+        <div *ngFor="let week of weeks$ | async">
+          <h2>Week {{week}}</h2>
+          <app-capacity [week]=week>
+
+          </app-capacity>
+          <div class="week">
+            <div class="radio-header">
+              Numer of Reservations:
+            </div>
+            <div class="radio-container">
+              <div *ngFor="let reservation of reservations$ | async; index as i">
+
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input"
+                      [id]="'numOfChilds_' + reservation.toString()
+                          + '_week_'+ week.toString()"
+                      type="radio"
+                      [value]=createWeeklyReservation(week,reservation)
+                      formControlName="numOfChilds" (change)="changeReservation(week,reservation)">
+                    {{reservation}}
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input" [id]="'numOfChildsIdTwo_week'+ week?.weeknr?.toString()" type="radio"
-                value="2" formControlName="numOfChilds" (change)="changeNumberOfChildren(2)"> 2 Children
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input" [id]="'numOfChildsIdTwo_three'+ week?.weeknr?.toString()" type="radio"
-                value="3" formControlName="numOfChilds" (change)="changeNumberOfChildren(3)"> 3 Children
-            </label>
-          </div>
+          <hr>
         </div>
       </div>
 
