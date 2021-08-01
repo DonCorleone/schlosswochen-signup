@@ -7,7 +7,7 @@
 </label>
 
 <div *ngFor="let week of weeks | async">
-  <app-weekly-reservation [week] = week></app-weekly-reservation>
+  <app-weekly-reservation [maxReservations] = 5 [maxWeeks] = 4></app-weekly-reservation>
 </div>
 
 <ng-container *ngIf="showCheatSheet">

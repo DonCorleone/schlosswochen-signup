@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { week } from 'src/app/models/Week';
+import { Week } from 'src/app/models/Week';
 import { getShowCheatSheet } from '../state/reservation.selector';
 import { State } from '../state/reservation.reducer';
 import * as ReservationAction from '../state/reservation.action';
@@ -15,7 +15,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   showCheatSheet: boolean = false;
 
-  public weeks: Observable<week[]> = of([
+  public weeks: Observable<Week[]> = of([
     {weeknr: 1, numOfDefReservations: 0, numOfProvReservations: 0},
     {weeknr: 2, numOfDefReservations: 0, numOfProvReservations: 0},
     {weeknr: 3, numOfDefReservations: 0, numOfProvReservations: 0}

@@ -12,34 +12,32 @@
 </div> -->
 
 <div class="card">
-  <div class="card-header">
+  <!-- <div class="card-header">
     <span *ngIf="week">Week {{week.weeknr}}: </span>Sign Up!
-  </div>
+  </div> -->
 
-  <app-capacity [week]=week></app-capacity>
 
   <div class="card-body">
     <form novalidate (ngSubmit)=save() [formGroup]="signupForm">
       <div class="form-group row mb-2">
         <label class="col-md-2 col-form-label pt-0">Number of Reservations</label>
-        <div class="col-md-8">
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input" [id]="'numOfChildsIdOne_week'+ week?.weeknr?.toString()" type="radio"
-                value="1" formControlName="numOfChilds" (change)="changeNumberOfChildren(1)"> 1 Child
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input" [id]="'numOfChildsIdTwo_week'+ week?.weeknr?.toString()" type="radio"
-                value="2" formControlName="numOfChilds" (change)="changeNumberOfChildren(2)"> 2 Children
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input" [id]="'numOfChildsIdTwo_three'+ week?.weeknr?.toString()" type="radio"
-                value="3" formControlName="numOfChilds" (change)="changeNumberOfChildren(3)"> 3 Children
-            </label>
+        <div class="radio-container">
+          <div *ngFor="let weeklyReservations of weeklyReservations$ | async; index as i" [ngClass]="{'break': i+1 % maxReservations === 0}">
+            <app-capacity *ngIf="i % maxReservations === 0" [week]=weeklyReservations.weeknr>
+
+            </app-capacity>
+            <div class="form-check form-check-inline">
+              <label class="form-check-label">
+                <input class="form-check-input"
+                  [id]="'numOfChilds_' + weeklyReservations.numberOfReservations.toString()
+                      + '_week_'+ weeklyReservations.weeknr.toString()"
+                  type="radio" [value]=weeklyReservations
+                  formControlName="numOfChilds" (change)="changeNumberOfChildren(weeklyReservations)">
+                ix: {{i}}
+                Week: {{weeklyReservations.weeknr}}
+                Reservations {{weeklyReservations.numberOfReservations}}
+              </label>
+            </div>
           </div>
         </div>
       </div>

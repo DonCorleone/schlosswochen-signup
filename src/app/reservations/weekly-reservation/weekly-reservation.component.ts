@@ -2,9 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms'
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { week } from 'src/app/models/Week';
+import { Week, WeeklyReservation } from 'src/app/models/Week';
 import { ApolloService } from 'src/app/service/apollo.service';
 import { ChildsPerState, insertOneSubscription } from '../../models/Subscriptor';
 import { reservationReducer, ReservationState } from '../state/reservation.reducer';
@@ -24,11 +24,14 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class WeeklyReservationComponent implements OnInit {
 
-  @Input() week: week | undefined;
+  @Input() maxWeeks: number = 1;
+  @Input() maxReservations: number = 1;
+
+  weeklyReservations$?: Observable<WeeklyReservation[]>;
 
   signupForm!: FormGroup;
 
-  numberOfChildren$?: Observable<Number>;
+  numberOfChildren$?: Observable<number>;
 
   constructor(
     private fb: FormBuilder,
@@ -37,6 +40,20 @@ export class WeeklyReservationComponent implements OnInit {
     private store: Store<ReservationState>) { }
 
   ngOnInit(): void {
+
+    // filling up Observable array dynamically
+    var weeklyReservations: WeeklyReservation[] = [];
+
+    for (var w = 1; w <= this.maxWeeks; w++) {
+      for (var r = 1; r <= this.maxReservations; r++) {
+        weeklyReservations.push({
+          weeknr:w,
+          numberOfReservations:r
+        });
+
+        this.weeklyReservations$ = of(weeklyReservations);
+      }
+    }
 
     this.numberOfChildren$ =
       this.store.select(ReservationSelectors.getNumberOfChildren).
@@ -49,8 +66,12 @@ export class WeeklyReservationComponent implements OnInit {
 
   }
 
-  changeNumberOfChildren (numberOfChildren: number):void{
-    this.store.dispatch(ReservationActions.setNumberOfChildren({numberOfChildren}));
+  changeNumberOfChildren (weeklyReservation: WeeklyReservation):void{
+    this.store.dispatch(
+      ReservationActions.setNumberOfChildren(
+        {numberOfChildren: weeklyReservation.numberOfReservations}
+      )
+    );
   }
 
   save(): void {
@@ -58,30 +79,30 @@ export class WeeklyReservationComponent implements OnInit {
     console.log('Saved: ' + JSON.stringify(this.signupForm.value));
 
     // const week = this.signupForm.get('weekNr');
-    const numOfChilds = this.signupForm.get('numOfChilds');
+    const weeklyReservationControl = this.signupForm.get('numOfChilds');
 
-    if (this.week) {
+    if (weeklyReservationControl) {
 
       // week: week,
-      let numOfChildren = numOfChilds?.value;
+      let weeklyReservation:WeeklyReservation= weeklyReservationControl?.value;
       // reservationDate: new Date(),
       // deadline: new Date(new Date().getTime() + ((10 + (numChildren*5))) * 60 * 1000),
 
-      let deadlineMs = ((5 + (numOfChildren * 3))) * 60 * 1000;
+      let deadlineMs = ((5 + (weeklyReservation.numberOfReservations * 3))) * 60 * 1000;
       let param: Record<string, any> = {
         subscriptionInsertInput: {
           deadline: new Date(new Date().getTime() + deadlineMs),
-          numOfChildren: numOfChildren,
+          numOfChildren: weeklyReservation.numberOfReservations,
           reservationDate: new Date(),
           state: "Reservation",
-          week: this.week.weeknr
+          week: weeklyReservation.weeknr
         }
       };
 
 
       this.apolloService.InsertParticipant(param)
         .subscribe((res: insertOneSubscription) => {
-          this.router.navigate(['/inscription', res._id, this.week?.weeknr, numOfChildren, deadlineMs]);
+          this.router.navigate(['/inscription', res._id, weeklyReservation.weeknr, weeklyReservation.numberOfReservations, deadlineMs]);
         });
     }
   }
