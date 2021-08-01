@@ -1,12 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms'
+import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
 import { ApolloService } from 'src/app/service/apollo.service';
-import { ChildsPerState, insertOneSubscription } from '../../models/Subscriptor';
-import { reservationReducer, ReservationState } from '../state/reservation.reducer';
+import { insertOneSubscription } from '../../models/Subscriptor';
+import { ReservationState } from '../state/reservation.reducer';
 import * as ReservationActions from '../state/reservation.action';
 import * as ReservationSelectors from '../state/reservation.selector';
 import { WeeklyReservation } from 'src/app/models/Week';
@@ -29,9 +28,10 @@ export class WeeklyReservationComponent implements OnInit {
 
   signupForm!: FormGroup;
 
-  numberOfChildren$?: Observable<number>;
+  // numberOfChildren$?: Observable<number>;
   reservations$?: Observable<number[]>;
   weeks$?: Observable<number[]>;
+  weeklyReservation$?: Observable<WeeklyReservation>;
 
   constructor(
     private fb: FormBuilder,
@@ -56,15 +56,29 @@ export class WeeklyReservationComponent implements OnInit {
     }
     this.weeks$ = of(weeks);
 
-    this.numberOfChildren$ =
-      this.store.select(ReservationSelectors.getNumberOfChildren).
-        pipe(numberOfChildren => this.numberOfChildren$ = numberOfChildren);
+    // this.numberOfChildren$ =
+    //   this.store.select(getNumberOfChildren).
+    //     pipe(numberOfChildren => this.numberOfChildren$ = numberOfChildren);
 
     this.signupForm = this.fb.group({
       numOfChilds: [0, [Validators.required, Validators.min(1)]],
     });
 
+    this.weeklyReservation$ = this.store.select(ReservationSelectors.getWeeklyReservation).pipe(
+      weeklyReservation => {
+        return weeklyReservation;
+      }
+    );
 
+    this.weeklyReservation$.subscribe(
+      weeklyReservation => {
+        if (weeklyReservation.numberOfReservations > 0 && weeklyReservation.weeknr > 0) {
+         // this.signupForm.controls.numOfChilds.setValue(weeklyReservation);
+        }
+      }
+    );
+
+  //
   }
 
   createWeeklyReservation(week:number, reservations:number): WeeklyReservation{
@@ -75,25 +89,36 @@ export class WeeklyReservationComponent implements OnInit {
   }
 
   changeReservation (weekNumber:number, numberOfChildren:number):void{
+
+    // this.store.dispatch(
+    //   ReservationActions.setNumberOfChildren(
+    //     {numberOfChildren}
+    //   )
+    // );
+    // this.store.dispatch(
+    //   ReservationActions.setWeekNumber(
+    //     {weekNumber}
+    //   )
+    // );
+
+    var weeklyReservation: WeeklyReservation = {
+      weeknr: weekNumber,
+      numberOfReservations: numberOfChildren
+    };
     this.store.dispatch(
-      ReservationActions.setNumberOfChildren(
-        {numberOfChildren}
-      )
-    );
-    this.store.dispatch(
-      ReservationActions.setWeekNumber(
-        {weekNumber}
+      ReservationActions.setWeeklyReservation(
+        {weeklyReservation}
       )
     );
   }
 
-  change (reservations: number):void{
-    this.store.dispatch(
-      ReservationActions.setNumberOfChildren(
-        {numberOfChildren: reservations}
-      )
-    );
-  }
+  // change (reservations: number):void{
+  //   this.store.dispatch(
+  //     ReservationActions.setNumberOfChildren(
+  //       {numberOfChildren: reservations}
+  //     )
+  //   );
+  // }
 
   save(): void {
     console.log(this.signupForm);
