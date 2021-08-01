@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Week, WeeklyReservation } from 'src/app/models/Week';
 import { ApolloService } from 'src/app/service/apollo.service';
 import { ChildsPerState, insertOneSubscription } from '../../models/Subscriptor';
 import { reservationReducer, ReservationState } from '../state/reservation.reducer';
 import * as ReservationActions from '../state/reservation.action';
 import * as ReservationSelectors from '../state/reservation.selector';
+import { WeeklyReservation } from 'src/app/models/Week';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -27,11 +27,11 @@ export class WeeklyReservationComponent implements OnInit {
   @Input() maxWeeks: number = 1;
   @Input() maxReservations: number = 1;
 
-  weeklyReservations$?: Observable<WeeklyReservation[]>;
-
   signupForm!: FormGroup;
 
   numberOfChildren$?: Observable<number>;
+  reservations$?: Observable<number[]>;
+  weeks$?: Observable<number[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -42,18 +42,19 @@ export class WeeklyReservationComponent implements OnInit {
   ngOnInit(): void {
 
     // filling up Observable array dynamically
-    var weeklyReservations: WeeklyReservation[] = [];
 
-    for (var w = 1; w <= this.maxWeeks; w++) {
-      for (var r = 1; r <= this.maxReservations; r++) {
-        weeklyReservations.push({
-          weeknr:w,
-          numberOfReservations:r
-        });
 
-        this.weeklyReservations$ = of(weeklyReservations);
-      }
+    var reservations: number[] = [];
+    for (var r = 1; r <= this.maxReservations; r++) {
+      reservations.push(r);
     }
+    this.reservations$ = of(reservations);
+
+    var weeks: number[] = [];
+    for (var r = 1; r <= this.maxWeeks; r++) {
+      weeks.push(r);
+    }
+    this.weeks$ = of(weeks);
 
     this.numberOfChildren$ =
       this.store.select(ReservationSelectors.getNumberOfChildren).
@@ -66,10 +67,17 @@ export class WeeklyReservationComponent implements OnInit {
 
   }
 
-  changeNumberOfChildren (weeklyReservation: WeeklyReservation):void{
+  createWeeklyReservation(week:number, reservations:number): WeeklyReservation{
+    return {
+      weeknr:week,
+      numberOfReservations:reservations
+    }
+  }
+
+  changeNumberOfChildren (reservations: number):void{
     this.store.dispatch(
       ReservationActions.setNumberOfChildren(
-        {numberOfChildren: weeklyReservation.numberOfReservations}
+        {numberOfChildren: reservations}
       )
     );
   }

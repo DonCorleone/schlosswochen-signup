@@ -3,7 +3,11 @@
   flex-direction: row;
   flex-wrap: wrap;
 }
+.radio-header {
+  margin-right: 15px;
+}
 
-.break{
-  flex-basis: 100%;
+.week {
+  display:flex;
+  flex-wrap: wrap;
 }

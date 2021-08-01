@@ -20,23 +20,30 @@
   <div class="card-body">
     <form novalidate (ngSubmit)=save() [formGroup]="signupForm">
       <div class="form-group row mb-2">
-        <label class="col-md-2 col-form-label pt-0">Number of Reservations</label>
-        <div class="radio-container">
-          <div *ngFor="let weeklyReservations of weeklyReservations$ | async; index as i" [ngClass]="{'break': i+1 % maxReservations === 0}">
-            <app-capacity *ngIf="i % maxReservations === 0" [week]=weeklyReservations.weeknr>
+        <div *ngFor="let week of weeks$ | async">
+          <h2>Week {{week}}</h2>
+          <app-capacity [week]=week>
 
-            </app-capacity>
-            <div class="form-check form-check-inline">
-              <label class="form-check-label">
-                <input class="form-check-input"
-                  [id]="'numOfChilds_' + weeklyReservations.numberOfReservations.toString()
-                      + '_week_'+ weeklyReservations.weeknr.toString()"
-                  type="radio" [value]=weeklyReservations
-                  formControlName="numOfChilds" (change)="changeNumberOfChildren(weeklyReservations)">
-                ix: {{i}}
-                Week: {{weeklyReservations.weeknr}}
-                Reservations {{weeklyReservations.numberOfReservations}}
-              </label>
+          </app-capacity>
+          <div class="week">
+            <div class="radio-header">
+              Numer of Reservations:
+            </div>
+            <div class="radio-container">
+              <div *ngFor="let reservation of reservations$ | async; index as i">
+
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input"
+                      [id]="'numOfChilds_' + reservation.toString()
+                          + '_week_'+ week.toString()"
+                      type="radio"
+                      [value]=createWeeklyReservation(week,reservation)
+                      formControlName="numOfChilds" (change)="changeNumberOfChildren(reservation)">
+                    {{reservation}}
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>

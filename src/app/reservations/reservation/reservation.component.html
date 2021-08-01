@@ -6,9 +6,7 @@
   Show Cheatsheet
 </label>
 
-<div *ngFor="let week of weeks | async">
-  <app-weekly-reservation [maxReservations] = 5 [maxWeeks] = 4></app-weekly-reservation>
-</div>
+<app-weekly-reservation [maxReservations] = 5 [maxWeeks] = 4></app-weekly-reservation>
 
 <ng-container *ngIf="showCheatSheet">
   <div class="bd-cheatsheet container-fluid bg-body">

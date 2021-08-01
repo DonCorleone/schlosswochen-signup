@@ -15,12 +15,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   showCheatSheet: boolean = false;
 
-  public weeks: Observable<Week[]> = of([
-    {weeknr: 1, numOfDefReservations: 0, numOfProvReservations: 0},
-    {weeknr: 2, numOfDefReservations: 0, numOfProvReservations: 0},
-    {weeknr: 3, numOfDefReservations: 0, numOfProvReservations: 0}
-  ]);
-
   constructor(private store: Store<State>){
   }
 
