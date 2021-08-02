@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { InscriptionComponent } from './inscription/inscription.component';
-import { InscriptionRoutingModule } from './inscription-routing.module';
+import { InscriptionsRoutingModule } from './inscriptions-routing.module';
 import { StoreModule } from '@ngrx/store';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -11,9 +11,9 @@ import { StoreModule } from '@ngrx/store';
   ],
   imports: [
     CommonModule,
-		InscriptionRoutingModule,
+		InscriptionsRoutingModule,
     ReactiveFormsModule,
-    StoreModule.forFeature('inscriptions', {}) //inscriptionsReducer
+   // StoreModule.forFeature('inscriptions', {inscriptionsReducer}) //inscriptionsReducer
   ]
 })
-export class InscriptionModule { }
+export class InscriptionsModule { }

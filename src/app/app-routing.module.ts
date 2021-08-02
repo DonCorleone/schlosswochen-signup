@@ -9,10 +9,10 @@ const routes: Routes = [
     loadChildren: () => import('./reservations/reservations.module').then(m => m.ReservationsModule),
     canActivate: [RealmAuthGuard]
   },
-  {
-    path: 'inscription',
-    loadChildren: () => import('./inscription/inscription.module').then(m => m.InscriptionModule)
-  }
+  // {
+  //   path: '', // ToDo inscription
+  //   loadChildren: () => import('./inscriptions/inscriptions.module').then(m => m.InscriptionsModule)
+  // }
 ]
 
 @NgModule({
