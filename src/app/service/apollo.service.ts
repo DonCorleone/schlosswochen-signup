@@ -74,11 +74,12 @@ export class ApolloService {
   }
 
   GetReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
-    console.log(`GetStaff`);
+    console.log(`Get Reservations Per Week`);
     return this.apollo
       .watchQuery<ChildsPerStateData>({
         query: GET_RESERVATIONS_PER_WEEK,
-        variables: { week: week }
+        variables: { week: week },
+        fetchPolicy: 'no-cache'
       })
       .valueChanges.pipe(
         tap(result => console.log(JSON.stringify(result.data.sumChildsPerState))),

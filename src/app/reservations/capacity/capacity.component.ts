@@ -23,12 +23,11 @@ export class CapacityComponent implements OnInit {
     if (this.week) {
       this.childsPerStates$ = this.apolloService.GetReservationsPerWeek(this.week)
         .pipe(
-          tap(returnz => { console.log(JSON.stringify(returnz)) }),
           map(returnz => {
             return returnz;
           }
-          )
         )
+      )
     }
   }
 
