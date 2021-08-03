@@ -1,0 +1,15 @@
+[
+    {
+        "name": "deleteTempRecords",
+        "private": false
+    },
+    {
+        "name": "sumChildsPerState",
+        "private": false,
+        "can_evaluate": {}
+    },
+    {
+        "name": "CountChildArraysPerWeekAndState",
+        "private": false
+    }
+]

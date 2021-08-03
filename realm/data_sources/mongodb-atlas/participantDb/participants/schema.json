@@ -1,0 +1,23 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "deadline": {
+            "bsonType": "date"
+        },
+        "numOfChildren": {
+            "bsonType": "int"
+        },
+        "reservationDate": {
+            "bsonType": "date"
+        },
+        "state": {
+            "bsonType": "string"
+        },
+        "week": {
+            "bsonType": "int"
+        }
+    },
+    "title": "participant"
+}

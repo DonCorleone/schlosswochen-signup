@@ -1,0 +1,75 @@
+{
+    "properties": {
+        "Address": {
+            "bsonType": "object",
+            "properties": {
+                "Adresse": {
+                    "bsonType": "string"
+                },
+                "Anrede": {
+                    "bsonType": "string"
+                },
+                "EMail": {
+                    "bsonType": "string"
+                },
+                "Name": {
+                    "bsonType": "string"
+                },
+                "Ort": {
+                    "bsonType": "string"
+                },
+                "PLZ": {
+                    "bsonType": "int"
+                },
+                "TelefonM": {
+                    "bsonType": "string"
+                },
+                "Vorname": {
+                    "bsonType": "string"
+                }
+            }
+        },
+        "Childs": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "Anrede": {
+                        "bsonType": "string"
+                    },
+                    "Bemerkung": {
+                        "bsonType": "string"
+                    },
+                    "Geburtstag": {
+                        "bsonType": "string"
+                    },
+                    "Name": {
+                        "bsonType": "string"
+                    },
+                    "Vorname": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "deadline": {
+            "bsonType": "date"
+        },
+        "numOfChildren": {
+            "bsonType": "int"
+        },
+        "reservationDate": {
+            "bsonType": "date"
+        },
+        "state": {
+            "bsonType": "string"
+        },
+        "week": {
+            "bsonType": "int"
+        }
+    },
+    "title": "fromBom"
+}

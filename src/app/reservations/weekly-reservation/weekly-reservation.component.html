@@ -1,0 +1,59 @@
+<!-- <div class="accordion-item">
+  <h2 class="accordion-header" id="heading{{week}}">
+    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{week}}" aria-expanded="true" aria-controls="collapse{{week}}">
+      {{ week }}
+    </button>
+  </h2>
+  <div id="collapse{{week}}" class="accordion-collapse collapse show" aria-labelledby="heading{{week}}" data-bs-parent="#accordionExample">
+    <div class="accordion-body">
+      <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+    </div>
+  </div>
+</div> -->
+
+<div class="card">
+  <div class="card-body">
+    <form novalidate (ngSubmit)=save() [formGroup]="signupForm">
+      <div class="form-group row mb-2">
+        <div *ngFor="let week of weeks$ | async">
+          <h2>Week {{week}}</h2>
+          <app-capacity [week]=week>
+
+          </app-capacity>
+          <div class="week">
+            <div class="radio-header">
+              Numer of Reservations:
+            </div>
+            <div class="radio-container">
+              <div *ngFor="let reservation of reservations$ | async; index as i">
+
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input"
+                      [id]="'numOfChilds_' + reservation.toString()
+                          + '_week_'+ week.toString()"
+                      type="radio"
+                      [value]=createWeeklyReservation(week,reservation)
+                      formControlName="numOfChilds" (change)="changeReservation(week,reservation)">
+                    {{reservation}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr>
+        </div>
+      </div>
+
+      <div class="form-group row mb-2">
+        <div class="offset-md-2 col-md-4">
+          <button class="btn btn-primary mr-3" type="submit"
+            [title]="signupForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+            [disabled]="!signupForm.valid">
+            Reserve
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

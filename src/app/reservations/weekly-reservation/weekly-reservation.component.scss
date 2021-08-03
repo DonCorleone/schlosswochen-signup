@@ -1,0 +1,14 @@
+.radio-container{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.radio-header {
+  margin-right: 15px;
+  padding: 10px 0 5px 0;
+}
+
+.week {
+  display:flex;
+  flex-wrap: wrap;
+}

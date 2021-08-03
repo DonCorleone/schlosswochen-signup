@@ -1,0 +1,89 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "address": {
+            "bsonType": "object",
+            "properties": {
+                "city": {
+                    "bsonType": "string"
+                },
+                "emailGroup": {
+                    "bsonType": "object",
+                    "properties": {
+                        "confirmEmail": {
+                            "bsonType": "string"
+                        },
+                        "email": {
+                            "bsonType": "string"
+                        }
+                    }
+                },
+                "firstName": {
+                    "bsonType": "string"
+                },
+                "lastName": {
+                    "bsonType": "string"
+                },
+                "phone": {
+                    "bsonType": "string"
+                },
+                "state": {
+                    "bsonType": "string"
+                },
+                "street1": {
+                    "bsonType": "string"
+                },
+                "street2": {
+                    "bsonType": "string"
+                },
+                "zip": {
+                    "bsonType": "string"
+                }
+            }
+        },
+        "childs": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "birthday": {
+                        "bsonType": "string"
+                    },
+                    "comment": {
+                        "bsonType": "string"
+                    },
+                    "firstNameChild": {
+                        "bsonType": "string"
+                    },
+                    "fotoAllowed": {
+                        "bsonType": "string"
+                    },
+                    "lastNameChild": {
+                        "bsonType": "string"
+                    },
+                    "salutation": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "deadline": {
+            "bsonType": "date"
+        },
+        "numOfChildren": {
+            "bsonType": "int"
+        },
+        "reservationDate": {
+            "bsonType": "date"
+        },
+        "state": {
+            "bsonType": "string"
+        },
+        "week": {
+            "bsonType": "int"
+        }
+    },
+    "title": "subscription"
+}
