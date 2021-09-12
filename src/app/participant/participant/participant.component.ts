@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms'
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { debounceTime } from 'rxjs/operators';
 import { ApolloService } from 'src/app/service/apollo.service';
 
@@ -27,11 +27,11 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 }
 
 @Component({
-  selector: 'app-inscription',
-  templateUrl: './inscription.component.html',
-  styleUrls: ['./inscription.component.scss']
+  selector: 'app-participant',
+  templateUrl: './participant.component.html',
+  styleUrls: ['./participant.component.scss']
 })
-export class InscriptionComponent implements OnInit {
+export class ParticipantComponent implements OnInit {
 
   id: string | null = '0';
   week: string | null = '0';
@@ -55,11 +55,7 @@ export class InscriptionComponent implements OnInit {
     return <FormArray>(this.signupForm.get('childs'));
   }
 
-  constructor(
-    private fb: FormBuilder,
-    private apolloService: ApolloService,
-    private route: ActivatedRoute,
-    private router: Router) {
+  constructor(private fb: FormBuilder, private apolloService: ApolloService, private route: ActivatedRoute) {
 
   }
 
@@ -70,36 +66,47 @@ export class InscriptionComponent implements OnInit {
     }
 
     this.signupForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(3)]],
-      lastName: ['', [Validators.required, Validators.maxLength(50)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: '',
-      street1: '',
-      street2: '',
-      city: '',
-      state: 'Incomplete',
-      zip: ''
+      childs: this.fb.array([this.buildChildren()]),
+      state:"Definitive"
     });
-
-    const emailControl = this.signupForm.get('emailGroup.email');
-    emailControl?.valueChanges.pipe(
-      debounceTime(1000)
-    ).subscribe(
-      value => this.emailMessage = this.setMessage(emailControl)
-    );
 
     this.id = this.route.snapshot.paramMap.get('id');
     this.week = this.route.snapshot.paramMap.get('week');
     let numOfChildsStr = this.route.snapshot.paramMap.get('numOfChilds');
+    if (numOfChildsStr) {
+      this.numOfChilds = +numOfChildsStr;
+      for (let index = 0; index < this.numOfChilds - 1; index++) {
+        this.addChildren();
+      }
+    };
   }
 
   save(): void {
+    console.log(this.signupForm);
+    this.addresses = this.signupForm.get('address')?.value;
+    console.log(this.addresses);
     if (this.week && this.id) {
       this.apolloService.UpdateParticipant(this.id, this.signupForm.value)
         .subscribe((res: insertOneSubscription) => {
-          this.router.navigate(['/participant']);
+
+          console.log(JSON.stringify(res));
         });
     }
+  }
+
+  addChildren(): void {
+    this.childs.push(this.buildChildren());
+  }
+
+  buildChildren(): FormGroup {
+    return this.fb.group({
+      salutation: '',
+      firstNameChild: '',
+      lastNameChild: '',
+      birthday: '',
+      fotoAllowed: '',
+      comment: ''
+    });
   }
 
   setMessage(c: AbstractControl): string {
