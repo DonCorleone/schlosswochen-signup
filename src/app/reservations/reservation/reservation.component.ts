@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { Week } from 'src/app/models/Week';
-import { getShowCheatSheet } from '../state/reservation.selector';
 import { State } from '../state/reservation.reducer';
 import * as ReservationAction from '../state/reservation.action';
 
@@ -22,12 +21,12 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.store.select(getShowCheatSheet).subscribe(
-      showCheatSheet => this.showCheatSheet = showCheatSheet
-    );
+    // this.store.select(getShowCheatSheet).subscribe(
+    //   showCheatSheet => this.showCheatSheet = showCheatSheet
+    // );
   }
 
   checkChanged(): void {
-    this.store.dispatch(ReservationAction.showCheatSheetAction());
+  //  this.store.dispatch(ReservationAction.showCheatSheetAction());
   }
 }

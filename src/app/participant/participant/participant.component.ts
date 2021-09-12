@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router';
-import { debounceTime } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { Participant } from 'src/app/models/Participant';
 import { ApolloService } from 'src/app/service/apollo.service';
 
 import { insertOneSubscription } from '../../models/Subscriptor';
+import { getCurrentParticipant, State } from '../state/participant.reducer';
+import * as ParticipantActions from '../state/participant.actions';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -45,6 +48,11 @@ export class ParticipantComponent implements OnInit {
   emailMessage: string = '';
   confirmEmailMessage: string = '';
 
+  participant: Participant[] = [];
+
+  // Used to highlight the selected product in the list
+  selectedParticipant: Participant | null = null;
+
   private validationMessages = {
     required: 'Please enter your email address.',
     email: 'Please enter a valid email address.',
@@ -55,11 +63,23 @@ export class ParticipantComponent implements OnInit {
     return <FormArray>(this.signupForm.get('childs'));
   }
 
-  constructor(private fb: FormBuilder, private apolloService: ApolloService, private route: ActivatedRoute) {
+  constructor(
+    private fb: FormBuilder,
+    private apolloService: ApolloService,
+    private route: ActivatedRoute,
+    private store: Store<State>, ) {
 
   }
 
   ngOnInit(): void {
+
+    // this.store.select(getCurrentParticipant).subscribe(
+    //   currentProduct => this.selectedParticipant = currentProduct
+    // );
+
+    this.store.dispatch(ParticipantActions.initializeCurrentParticipant());
+
+
     let deadlineMsStr = this.route.snapshot.paramMap.get('deadlineMs');
     if (deadlineMsStr) {
       this.deadlineM = +deadlineMsStr / 60 / 1000;
