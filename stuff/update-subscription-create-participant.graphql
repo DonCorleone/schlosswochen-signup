@@ -9,7 +9,7 @@ mutation{
         create:[{
           firstNameParticipant: "secondChildFirstName"
           lastNameParticipant: "secondChildLastName"
-          participant_id:"6140c6fbd0940be104bea85c"
+          participant_id: "6140c6fbd0940be104bea85c"
         }]
       }
   	}
