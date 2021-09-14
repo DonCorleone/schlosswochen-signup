@@ -1,0 +1,24 @@
+mutation{
+  insertOneSubscription(
+    data:{
+      state:"created"
+      firstName:"firstChico"
+      lastName:"lastChico"
+      numOfChildren:2
+      week:1
+  	}
+  ){
+    _id
+		state
+    participants {
+      _id
+      birthday
+      comment
+      firstNameParticipant
+      fotoAllowed
+      lastNameParticipant
+      participant_id
+      salutation
+    }
+  }
+}
