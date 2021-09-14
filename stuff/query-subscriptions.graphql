@@ -1,0 +1,10 @@
+query{
+  subscriptions{
+    firstName
+    lastName
+ 		participants{
+     	firstNameParticipant
+      lastNameParticipant
+    }
+  }
+}
