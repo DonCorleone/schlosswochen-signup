@@ -1,0 +1,13 @@
+mutation{
+  insertOneParticipant(
+    data:{
+      firstNameParticipant:"fistChildFirstName"
+      lastNameParticipant:"fistChildLastName"
+      participant_id: "6140c2852b2a4cb49c17e943"
+  	}
+  )
+  {
+  	_id
+		participant_id
+  }
+}
