@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime } from 'rxjs/operators';
 import { ApolloService } from 'src/app/service/apollo.service';
+import { SubscriptionService } from 'src/app/service/subscription.service';
 
 import { insertOneSubscription } from '../../models/Subscriptor';
 
@@ -57,7 +58,7 @@ export class InscriptionComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private apolloService: ApolloService,
+    private subscriptionService: SubscriptionService,
     private route: ActivatedRoute,
     private router: Router) {
 
@@ -95,7 +96,7 @@ export class InscriptionComponent implements OnInit {
 
   save(): void {
     if (this.week && this.id) {
-      this.apolloService.UpdateParticipant(this.id, this.signupForm.value)
+      this.subscriptionService.updateSubscription(this.id, this.signupForm.value)
         .subscribe((res: insertOneSubscription) => {
           this.router.navigate(['/participant']);
         });
@@ -106,7 +107,9 @@ export class InscriptionComponent implements OnInit {
     var messageString = '';
     if ((c.touched || c.dirty) && c.errors) {
       messageString = Object.keys(c.errors).map(
-        key => hasKey(this.validationMessages, key) ? this.validationMessages[key] : 'unknown error').join(' ');
+        key => hasKey(this.validationMessages, key)
+          ? this.validationMessages[key]
+          : 'unknown error').join(' ');
     }
     return messageString;
   }

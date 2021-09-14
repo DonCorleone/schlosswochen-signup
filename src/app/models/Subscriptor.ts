@@ -9,6 +9,7 @@ export interface insertOneSubscriptionData {
   insertOneSubscription: insertOneSubscription;
 }
 
+
 export interface Subscriptor {
   data: insertOneSubscriptionData;
 }

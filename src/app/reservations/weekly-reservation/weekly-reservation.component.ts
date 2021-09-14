@@ -1,14 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { ApolloService } from 'src/app/service/apollo.service';
 import { insertOneSubscription } from '../../models/Subscriptor';
 import { ReservationState } from '../state/reservation.reducer';
 import * as ReservationActions from '../state/reservation.action';
 import * as ReservationSelectors from '../state/reservation.selector';
 import { WeeklyReservation } from 'src/app/models/Week';
+import { ReservationService } from 'src/app/service/reservation.service';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -21,7 +22,7 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
   templateUrl: './weekly-reservation.component.html',
   styleUrls: ['./weekly-reservation.component.scss']
 })
-export class WeeklyReservationComponent implements OnInit {
+export class WeeklyReservationComponent implements OnInit, OnDestroy {
 
   @Input() maxWeeks: number = 1;
   @Input() maxReservations: number = 1;
@@ -32,17 +33,16 @@ export class WeeklyReservationComponent implements OnInit {
   reservations$?: Observable<number[]>;
   weeks$?: Observable<number[]>;
   weeklyReservation$?: Observable<WeeklyReservation>;
+  reservationSubscription: Subscription = new Subscription;
 
   constructor(
     private fb: FormBuilder,
-    private apolloService: ApolloService,
+    private reservationService: ReservationService,
     private router: Router,
     private store: Store<ReservationState>) { }
 
+
   ngOnInit(): void {
-
-    // filling up Observable array dynamically
-
 
     var reservations: number[] = [];
     for (var r = 1; r <= this.maxReservations; r++) {
@@ -56,10 +56,6 @@ export class WeeklyReservationComponent implements OnInit {
     }
     this.weeks$ = of(weeks);
 
-    // this.numberOfChildren$ =
-    //   this.store.select(getNumberOfChildren).
-    //     pipe(numberOfChildren => this.numberOfChildren$ = numberOfChildren);
-
     this.signupForm = this.fb.group({
       numOfChilds: [0, [Validators.required, Validators.min(1)]],
     });
@@ -69,16 +65,6 @@ export class WeeklyReservationComponent implements OnInit {
         return weeklyReservation;
       }
     );
-
-    this.weeklyReservation$.subscribe(
-      weeklyReservation => {
-        if (weeklyReservation.numberOfReservations > 0 && weeklyReservation.weeknr > 0) {
-         // this.signupForm.controls.numOfChilds.setValue(weeklyReservation);
-        }
-      }
-    );
-
-  //
   }
 
   createWeeklyReservation(week:number, reservations:number): WeeklyReservation{
@@ -121,11 +107,15 @@ export class WeeklyReservationComponent implements OnInit {
         }
       };
 
-      this.apolloService.InsertParticipant(param)
-        .subscribe((res: insertOneSubscription) => {
-          this.store.dispatch(ReservationActions.setSubscriptionId({ subscriptionId: res._id}));
-          this.router.navigate(['/inscriptions', res._id, weeklyReservation.weeknr, weeklyReservation.numberOfReservations, deadlineMs]);
+      this.reservationSubscription = this.reservationService.createWeeklyReservation(param)
+        .subscribe((subscriptionId: string) => {
+          this.store.dispatch(ReservationActions.setSubscriptionId({ subscriptionId }));
+          this.router.navigate(['/inscriptions', subscriptionId, weeklyReservation.weeknr, weeklyReservation.numberOfReservations, deadlineMs]);
         });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.reservationSubscription.unsubscribe();
   }
 }

@@ -4,6 +4,7 @@ import { map, tap } from 'rxjs/operators';
 import { ChildsPerState } from 'src/app/models/Subscriptor';
 import { Week } from 'src/app/models/Week';
 import { ApolloService } from 'src/app/service/apollo.service';
+import { ReservationService } from 'src/app/service/reservation.service';
 
 @Component({
   selector: 'app-capacity',
@@ -14,21 +15,20 @@ export class CapacityComponent implements OnInit {
 
   @Input() week: number = 0;
 
-  childsPerStates$: Observable<ChildsPerState[]> | undefined
+  childsPerStates$: Observable<ChildsPerState[]> | undefined;
 
   constructor(
-    private apolloService: ApolloService) { }
+    private reservationService: ReservationService) { }
 
   ngOnInit(): void {
     if (this.week) {
-      this.childsPerStates$ = this.apolloService.GetReservationsPerWeek(this.week)
+      this.childsPerStates$ = this.reservationService.GetReservationsPerWeek(this.week)
         .pipe(
           map(returnz => {
             return returnz;
           }
         )
       )
-    }
+    };
   }
-
 }
