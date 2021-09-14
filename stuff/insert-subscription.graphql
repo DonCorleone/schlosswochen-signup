@@ -2,8 +2,8 @@ mutation{
   insertOneSubscription(
     data:{
       state:"created"
-      firstName:"firstChico"
-      lastName:"lastChico"
+      firstName:"firstParent"
+      lastName:"lastParent"
       numOfChildren:2
       week:1
   	}
