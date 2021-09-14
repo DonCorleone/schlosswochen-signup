@@ -90,17 +90,6 @@ export class WeeklyReservationComponent implements OnInit {
 
   changeReservation (weekNumber:number, numberOfChildren:number):void{
 
-    // this.store.dispatch(
-    //   ReservationActions.setNumberOfChildren(
-    //     {numberOfChildren}
-    //   )
-    // );
-    // this.store.dispatch(
-    //   ReservationActions.setWeekNumber(
-    //     {weekNumber}
-    //   )
-    // );
-
     var weeklyReservation: WeeklyReservation = {
       weeknr: weekNumber,
       numberOfReservations: numberOfChildren
@@ -112,28 +101,15 @@ export class WeeklyReservationComponent implements OnInit {
     );
   }
 
-  // change (reservations: number):void{
-  //   this.store.dispatch(
-  //     ReservationActions.setNumberOfChildren(
-  //       {numberOfChildren: reservations}
-  //     )
-  //   );
-  // }
-
   save(): void {
     console.log(this.signupForm);
     console.log('Saved: ' + JSON.stringify(this.signupForm.value));
 
-    // const week = this.signupForm.get('weekNr');
     const weeklyReservationControl = this.signupForm.get('numOfChilds');
 
     if (weeklyReservationControl) {
 
-      // week: week,
-      let weeklyReservation:WeeklyReservation= weeklyReservationControl?.value;
-      // reservationDate: new Date(),
-      // deadline: new Date(new Date().getTime() + ((10 + (numChildren*5))) * 60 * 1000),
-
+      let weeklyReservation: WeeklyReservation = weeklyReservationControl?.value;
       let deadlineMs = ((5 + (weeklyReservation.numberOfReservations * 3))) * 60 * 1000;
       let param: Record<string, any> = {
         subscriptionInsertInput: {
@@ -145,9 +121,9 @@ export class WeeklyReservationComponent implements OnInit {
         }
       };
 
-
       this.apolloService.InsertParticipant(param)
         .subscribe((res: insertOneSubscription) => {
+          this.store.dispatch(ReservationActions.setSubscriptionId({ subscriptionId: res._id}));
           this.router.navigate(['/inscriptions', res._id, weeklyReservation.weeknr, weeklyReservation.numberOfReservations, deadlineMs]);
         });
     }

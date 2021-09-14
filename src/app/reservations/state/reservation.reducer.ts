@@ -9,13 +9,15 @@ export interface State extends AppState.State {
 
 export interface ReservationState {
   weeklyReservation: WeeklyReservation
+  subscriptionId: String
 };
 
 const initialState: ReservationState = {
   weeklyReservation: {
-    weeknr:0,
+    weeknr: 0,
     numberOfReservations: 0
-  }
+  },
+  subscriptionId: ''
 };
 
 export const reservationReducer = createReducer<ReservationState>(
@@ -24,6 +26,12 @@ export const reservationReducer = createReducer<ReservationState>(
     return {
       ...state,
       weeklyReservation: action.weeklyReservation
+    };
+  }),
+  on(ReservationAction.setSubscriptionId, (state, action) => {
+    return {
+      ...state,
+      subscriptionId: action.subscriptionId
     };
   })
 );

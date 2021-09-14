@@ -5,3 +5,8 @@ export const setWeeklyReservation= createAction(
   '[Reservation] Set Weekly Reservation',
   props<{weeklyReservation: WeeklyReservation}>()
 );
+
+export const setSubscriptionId= createAction(
+  '[Reservation] Set Subscription ID',
+  props<{subscriptionId: String}>()
+);

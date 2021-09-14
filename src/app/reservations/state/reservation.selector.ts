@@ -7,3 +7,8 @@ export const getWeeklyReservation = createSelector(
   getReservationFeatureSector,
   state => state.weeklyReservation
 )
+
+export const getSubscriptionId = createSelector(
+  getReservationFeatureSector,
+  state => state.subscriptionId
+)

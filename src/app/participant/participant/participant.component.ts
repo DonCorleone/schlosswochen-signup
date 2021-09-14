@@ -76,9 +76,9 @@ export class ParticipantComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // this.store.select(getCurrentParticipant).subscribe(
-    //   currentProduct => this.selectedParticipant = currentProduct
-    // );
+    this.store.select(getCurrentParticipant).subscribe(
+      currentParticipant => this.selectedParticipant = currentParticipant
+    );
 
     this.store.dispatch(ParticipantActions.initializeCurrentParticipant());
 
