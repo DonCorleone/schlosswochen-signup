@@ -1,0 +1,97 @@
+mutation{
+  updateOneSubscription(
+    query:{
+      _id:"613e4cb42b2a4cb49cd4a13d"
+    }
+    set:{
+      state:"superstate"
+      participants:{
+        link:[
+          "613a75e3ac1fda6b7a1a5ff1"
+          "6116d5ac788d7cb1cb1d723f"
+        ]
+      }
+  	}
+  ){
+    _id
+		state
+    participants {
+      _id
+      birthday
+      comment
+      firstNameParticipant
+      fotoAllowed
+      lastNameParticipant
+      participant_id
+      salutation
+    }
+  }
+}
+
+mutation{
+  updateOneSubscription(
+    query:{
+      _id:"613e4cb42b2a4cb49cd4a13d"
+    }
+    set:{
+      state:"superstate"
+      participants:{
+        link:[
+          "613a75e3ac1fda6b7a1a5ff1"
+          "6116d5ac788d7cb1cb1d723f"
+          "613fb7f957d2377e6477c0b0"
+          "613fb861d6166258247e0480"
+          "613fb861d6166258247e0492"
+          "613fb885d0940be10431917e"
+          "613fb885d0940be104319187"
+        ]
+        create:[{
+          birthday: "2001-04-01",
+          comment: "yeas",
+          firstNameParticipant: "Göngöng",
+          fotoAllowed: "true",
+          lastNameParticipant: "schnüderi",
+          participant_id: "613e4cb42b2a4cb49cd4a13d",
+          salutation: "drdr"
+        }
+        {
+          birthday: "1999-04-01",
+          comment: "eee",
+          firstNameParticipant: "sadsdas",
+          fotoAllowed: "true",
+          lastNameParticipant: "cyxcyx",
+          participant_id: "613e4cb42b2a4cb49cd4a13d",
+          salutation: "sadas"
+        }]
+
+      }
+  	}
+  ){
+    _id
+		state
+    participants {
+      _id
+      birthday
+      comment
+      firstNameParticipant
+      fotoAllowed
+      lastNameParticipant
+      participant_id
+      salutation
+    }
+  }
+}
+
+query{
+  subscriptions{
+    _id
+    state
+    lastName
+    firstName
+  	participants{
+      _id
+      firstNameParticipant
+      lastNameParticipant
+    }
+  }
+}

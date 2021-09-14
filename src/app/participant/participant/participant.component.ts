@@ -8,6 +8,7 @@ import { ApolloService } from 'src/app/service/apollo.service';
 import { insertOneSubscription } from '../../models/Subscriptor';
 import { getCurrentParticipant, State } from '../state/participant.reducer';
 import * as ParticipantActions from '../state/participant.actions';
+import { ParticipantService } from 'src/app/service/participant.service';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -43,10 +44,12 @@ export class ParticipantComponent implements OnInit {
 
   addresses: string | undefined;
 
-  signupForm!: FormGroup;
+  participantForm!: FormGroup;
   yes = true;
   emailMessage: string = '';
   confirmEmailMessage: string = '';
+
+  errorMessage = '';
 
   participant: Participant[] = [];
 
@@ -60,13 +63,13 @@ export class ParticipantComponent implements OnInit {
   };
 
   get childs(): FormArray {
-    return <FormArray>(this.signupForm.get('childs'));
+    return <FormArray>(this.participantForm.get('childs'));
   }
 
   constructor(
     private fb: FormBuilder,
-    private apolloService: ApolloService,
     private route: ActivatedRoute,
+    private participantService: ParticipantService,
     private store: Store<State>, ) {
 
   }
@@ -85,7 +88,7 @@ export class ParticipantComponent implements OnInit {
       this.deadlineM = +deadlineMsStr / 60 / 1000;
     }
 
-    this.signupForm = this.fb.group({
+    this.participantForm = this.fb.group({
       childs: this.fb.array([this.buildChildren()]),
       state:"Definitive"
     });
@@ -101,16 +104,26 @@ export class ParticipantComponent implements OnInit {
     };
   }
 
-  save(): void {
-    console.log(this.signupForm);
-    this.addresses = this.signupForm.get('address')?.value;
-    console.log(this.addresses);
-    if (this.week && this.id) {
-      this.apolloService.UpdateParticipant(this.id, this.signupForm.value)
-        .subscribe((res: insertOneSubscription) => {
+  saveParticipant(originalParticipant: Participant): void {
+    if (this.participantForm.valid) {
+      if (this.participantForm.dirty) {
+        // Copy over all of the original participant properties
+        // Then copy over the values from the form
+        // This ensures values not on the form, such as the Id, are retained
+        const participant = { ...originalParticipant, ...this.participantForm.value };
 
-          console.log(JSON.stringify(res));
-        });
+        if (participant.id === 0) {
+          this.participantService.createParticipant(participant).subscribe({
+            next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
+            error: err => this.errorMessage = err
+          });
+        } else {
+          this.participantService.updateParticipant(participant).subscribe({
+            next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
+            error: err => this.errorMessage = err
+          });
+        }
+      }
     }
   }
 
