@@ -1,13 +1,13 @@
 mutation{
   updateOneSubscription(
     query:{
-      _id:"6140c2852b2a4cb49c17e943"
+      _id:"6140c6fbd0940be104bea85c"
     }
     set:{
       state:"childOneAdded"
       participants:{
         link:[
-          "6140c3df57d2377e6403c910"
+          "6140c6fbd0940be104bea85c-1"
         ]
       }
   	}
