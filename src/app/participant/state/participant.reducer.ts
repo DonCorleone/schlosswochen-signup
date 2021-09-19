@@ -81,16 +81,6 @@ export const participantReducer = createReducer<ParticipantState>(
         firstNameParticipant: '',
         lastNameParticipant: ''
       },
-      participants: set(currentParticipantNumber, {
-        _id: '',
-        birthday: new Date(),
-        fotoAllowed: false,
-        salutation: '',
-        comment: '',
-        participant_id: '',
-        firstNameParticipant: '',
-        lastNameParticipant: ''
-      })
     };
   })
 );
