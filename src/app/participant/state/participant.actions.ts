@@ -2,6 +2,18 @@
 import { createAction, props } from '@ngrx/store';
 import { Participant } from 'src/app/models/Participant';
 
+export const increaseCurrentParticipantNumber = createAction(
+  '[Participant] Increase Current ParticipantNumber'
+);
+
+export const decreaseCurrentParticipantNumber = createAction(
+  '[Participant] Decrease Current ParticipantNumber'
+);
+
+export const getCurrentParticipantNumber = createAction(
+  '[Participant] Get Current ParticipantNumber'
+);
+
 export const setCurrentParticipant = createAction(
   '[Participant] Set Current Participant',
   props<{ participant: Participant }>()

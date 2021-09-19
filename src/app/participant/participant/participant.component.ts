@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms'
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Participant } from 'src/app/models/Participant';
 import { ApolloService } from 'src/app/service/apollo.service';
 
 import { insertOneSubscription } from '../../models/Subscriptor';
-import { getCurrentParticipant, State } from '../state/participant.reducer';
+import { getCurrentParticipant, getCurrentParticipantNumber, participantReducer, State } from '../state/participant.reducer';
 import * as ParticipantActions from '../state/participant.actions';
 import { ParticipantService } from 'src/app/service/participant.service';
 
@@ -39,7 +39,7 @@ export class ParticipantComponent implements OnInit {
 
   id: string | null = '0';
   week: string | null = '0';
-  numOfChilds: number | null = 0;
+  numOfChilds: number = 0;
   deadlineM: number = 0;
 
   addresses: string | undefined;
@@ -54,13 +54,14 @@ export class ParticipantComponent implements OnInit {
   participant: Participant[] = [];
 
   // Used to highlight the selected product in the list
-  selectedParticipant: Participant | null = null;
+  currentParticipant: Participant | null = null;
 
   private validationMessages = {
     required: 'Please enter your email address.',
     email: 'Please enter a valid email address.',
     match: 'The confirmation does not match the email address.'
   };
+  currentParticipantNumber: number = 0;
 
   get childs(): FormArray {
     return <FormArray>(this.participantForm.get('childs'));
@@ -69,15 +70,20 @@ export class ParticipantComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
+    private router: Router,
     private participantService: ParticipantService,
-    private store: Store<State>, ) {
-
-  }
+    private store: Store<State>, ) { }
 
   ngOnInit(): void {
 
+    this.store.dispatch(ParticipantActions.increaseCurrentParticipantNumber());
+
+    this.store.select(getCurrentParticipantNumber).subscribe(
+      currentParticipantNumber => this.currentParticipantNumber = currentParticipantNumber
+    );
+
     this.store.select(getCurrentParticipant).subscribe(
-      currentParticipant => this.selectedParticipant = currentParticipant
+      currentParticipant => this.currentParticipant = currentParticipant
     );
 
     this.store.dispatch(ParticipantActions.initializeCurrentParticipant());
@@ -95,13 +101,12 @@ export class ParticipantComponent implements OnInit {
 
     this.id = this.route.snapshot.paramMap.get('id');
     this.week = this.route.snapshot.paramMap.get('week');
-    let numOfChildsStr = this.route.snapshot.paramMap.get('numOfChilds');
-    if (numOfChildsStr) {
-      this.numOfChilds = +numOfChildsStr;
-      for (let index = 0; index < this.numOfChilds - 1; index++) {
-        this.addChildren();
-      }
-    };
+
+    // this.store.select(ReservationSelectors.getWeeklyReservation).subscribe(weeklySubscription => this.numOfChilds = weeklySubscription.
+    //   for (let index = 0; index < this.numOfChilds - 1; index++) {
+    //     this.addChildren();
+    //   }
+
   }
 
   saveParticipant(originalParticipant: Participant): void {
@@ -112,17 +117,21 @@ export class ParticipantComponent implements OnInit {
         // This ensures values not on the form, such as the Id, are retained
         const participant = { ...originalParticipant, ...this.participantForm.value };
 
-        if (participant.id === 0) {
-          this.participantService.createParticipant(participant).subscribe({
-            next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
-            error: err => this.errorMessage = err
-          });
-        } else {
-          this.participantService.updateParticipant(participant).subscribe({
-            next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
-            error: err => this.errorMessage = err
-          });
-        }
+        // if (participant.id === 0) {
+        //   this.participantService.createParticipant(participant).subscribe({
+        //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
+        //     error: err => this.errorMessage = err
+        //   });
+        // } else {
+        //   this.participantService.updateParticipant(participant).subscribe({
+        //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
+        //     error: err => this.errorMessage = err
+        //   });
+        // }
+      }
+
+      if (this.currentParticipantNumber < this.numOfChilds) {
+        this.router.navigate(['/participant/']);
       }
     }
   }

@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { debounceTime } from 'rxjs/operators';
 import { ApolloService } from 'src/app/service/apollo.service';
 import { SubscriptionService } from 'src/app/service/subscription.service';
+import { State } from 'src/app/state/app.state';
 
 import { insertOneSubscription } from '../../models/Subscriptor';
 
@@ -60,11 +62,11 @@ export class InscriptionComponent implements OnInit {
     private fb: FormBuilder,
     private subscriptionService: SubscriptionService,
     private route: ActivatedRoute,
-    private router: Router) {
-
-  }
+    private router: Router,
+    private store: Store<State>) { }
 
   ngOnInit(): void {
+
     let deadlineMsStr = this.route.snapshot.paramMap.get('deadlineMs');
     if (deadlineMsStr) {
       this.deadlineM = +deadlineMsStr / 60 / 1000;
@@ -98,7 +100,7 @@ export class InscriptionComponent implements OnInit {
     if (this.week && this.id) {
       this.subscriptionService.updateSubscription(this.id, this.signupForm.value)
         .subscribe((res: insertOneSubscription) => {
-          this.router.navigate(['/participant']);
+          this.router.navigate(['/participant/1']);
         });
     }
   }

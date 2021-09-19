@@ -1,13 +1,13 @@
 <div>
   {{ deadlineM }} Minutes left!
 </div>
-<div class="card" *ngIf="selectedParticipant">
+<div class="card" *ngIf="currentParticipant">
   <div class="card-header">
     <H2 class="H2">Week No {{week}} Sign Up!</H2>
   </div>
 
   <div class="card-body">
-    <form novalidate (ngSubmit)="saveParticipant(selectedParticipant)" [formGroup]="participantForm">
+    <form novalidate (ngSubmit)="saveParticipant(currentParticipant)" [formGroup]="participantForm">
 
       <div formArrayName="childs" *ngFor="let child of childs.controls; let i=index">
         <h3 class="h3">Child No {{i + 1}}</h3>

@@ -13,19 +13,24 @@ export interface State extends AppState.State {
 
 // State for this feature (Participant)
 export interface ParticipantState {
-  showParticipantCode: boolean;
+  currentParticipantNumber: number;
   currentParticipant: Participant;
-  participants: Participant[];
+  participants: Map<number,Participant>;
 }
 
 const initialState: ParticipantState = {
-  showParticipantCode: true,
+  currentParticipantNumber: 0!,
   currentParticipant: null!,
-  participants: []
+  participants: new Map<number, Participant>()
 };
 
 // Selector functions
 const getParticipantFeatureState = createFeatureSelector<ParticipantState>('participants');
+
+export const getCurrentParticipantNumber = createSelector(
+  getParticipantFeatureState,
+  state => state.currentParticipantNumber
+);
 
 export const getCurrentParticipant = createSelector(
   getParticipantFeatureState,
@@ -39,6 +44,18 @@ export const getParticipants = createSelector(
 
 export const participantReducer = createReducer<ParticipantState>(
   initialState,
+  on(ParticipantActions.increaseCurrentParticipantNumber, (state): ParticipantState => {
+    return {
+      ...state,
+      currentParticipantNumber: state.currentParticipantNumber + 1
+    };
+  }),
+  on(ParticipantActions.decreaseCurrentParticipantNumber, (state): ParticipantState => {
+    return {
+      ...state,
+      currentParticipantNumber: state.currentParticipantNumber - 1
+    };
+  }),
   on(ParticipantActions.setCurrentParticipant, (state, action): ParticipantState => {
     return {
       ...state,
@@ -63,7 +80,17 @@ export const participantReducer = createReducer<ParticipantState>(
         participant_id: '',
         firstNameParticipant: '',
         lastNameParticipant: ''
-      }
+      },
+      participants: set(currentParticipantNumber, {
+        _id: '',
+        birthday: new Date(),
+        fotoAllowed: false,
+        salutation: '',
+        comment: '',
+        participant_id: '',
+        firstNameParticipant: '',
+        lastNameParticipant: ''
+      })
     };
   })
 );
