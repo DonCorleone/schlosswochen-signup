@@ -21,8 +21,8 @@
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "customWebpackConfig": {
-							"path": "./webpack-dev.config.js"
-						},
+              "path": "./webpack-dev.config.js"
+            },
             "outputPath": "dist/Schlosswochen-Inscription",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -40,9 +40,9 @@
           },
           "configurations": {
             "production": {
-							"customWebpackConfig": {
+              "customWebpackConfig": {
                 "path": "webpack-prod.config.js"
-            	},
+              },
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -133,5 +133,8 @@
       }
     }
   },
-  "defaultProject": "Schlosswochen-Inscription"
+  "defaultProject": "Schlosswochen-Inscription",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }

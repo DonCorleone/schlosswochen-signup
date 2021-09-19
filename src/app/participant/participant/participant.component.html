@@ -1,92 +1,88 @@
 <div>
   {{ deadlineM }} Minutes left!
 </div>
-<div class="card" *ngIf="currentParticipant">
+<div class="card">
   <div class="card-header">
     <H2 class="H2">Week No {{week}} Sign Up!</H2>
   </div>
 
   <div class="card-body">
-    <form novalidate (ngSubmit)="saveParticipant(currentParticipant)" [formGroup]="participantForm">
+    <form novalidate (ngSubmit)="saveParticipant()" [formGroup]="participantForm">
 
-      <div formArrayName="childs" *ngFor="let child of childs.controls; let i=index">
-        <h3 class="h3">Child No {{i + 1}}</h3>
-        <div [formGroupName]="i">
-          <div class="form-group row mb-2">
-            <label class="col-md-2 col-form-label" attr.for="{{ 'salutationId' + i }}">Salutation</label>
-            <div class="col-md-8">
-              <select class="form-control" id="{{ 'salutationId' + i}}" name="salutation">
-                <option value="" disabled selected hidden>Select a Salutation...</option>
-                <option value="M">Ritter</option>
-                <option value="F">Prinzessin</option>
-              </select>
-            </div>
-          </div>
+      <h3 class="h3">Child No </h3>
+      <div class="form-group row mb-2">
+        <label class="col-md-2 col-form-label" attr.for="{{ 'salutationId' }}">Salutation</label>
+        <div class="col-md-8">
+          <select class="form-control" id="{{ 'salutationId' }}" name="salutation">
+            <option value="" disabled selected hidden>Select a Salutation...</option>
+            <option value="M">Ritter</option>
+            <option value="F">Prinzessin</option>
+          </select>
+        </div>
+      </div>
 
-          <div class="form-group row mb-2">
-            <label class="col-md-2 col-form-label" attr.for="{{ 'firstNameChildId' + i }}">First Name</label>
-            <div class="col-md-8">
-              <input class="form-control" id="{{ 'firstNameChildId' + i}}" type="text"
-                placeholder="First Name (required)" formControlName="firstNameChild"
-                [ngClass]="{'is-invalid': (participantForm.get('firstNameChild')?.touched || participantForm.get('firstNameChild')?.dirty) && !participantForm.get('firstNameChild')?.valid }" />
-              <span class="invalid-feedback">
-                <span *ngIf="participantForm.get('firstNameChild')?.errors?.required">
-                  Please enter the first name.
-                </span>
-                <span *ngIf="participantForm.get('firstNameChild')?.errors?.minlength">
-                  The first name must be longer than 3 characters.
-                </span>
-              </span>
-            </div>
-          </div>
+      <div class="form-group row mb-2">
+        <label class="col-md-2 col-form-label" attr.for="{{ 'firstNameChildId'  }}">First Name</label>
+        <div class="col-md-8">
+          <input class="form-control" id="{{ 'firstNameChildId' }}" type="text"
+            placeholder="First Name (required)" formControlName="firstNameChild"
+            [ngClass]="{'is-invalid': (participantForm.get('firstNameChild')?.touched || participantForm.get('firstNameChild')?.dirty) && !participantForm.get('firstNameChild')?.valid }" />
+          <span class="invalid-feedback">
+            <span *ngIf="participantForm.get('firstNameChild')?.errors?.required">
+              Please enter the first name.
+            </span>
+            <span *ngIf="participantForm.get('firstNameChild')?.errors?.minlength">
+              The first name must be longer than 3 characters.
+            </span>
+          </span>
+        </div>
+      </div>
 
-          <div class="form-group row mb-2">
-            <label class="col-md-2 col-form-label" attr.for="{{ 'lastNameChildId' + i }}">Last Name</label>
-            <div class="col-md-8">
-              <input class="form-control" id="{{ 'lastNameChildId' + i}}" type="text" placeholder="Last Name (required)"
-                formControlName="lastNameChild"
-                [ngClass]="{'is-invalid': (participantForm.get('lastNameChild')?.touched || participantForm.get('lastNameChild')?.dirty) && !participantForm.get('lastName')?.valid }" />
-              <span class="invalid-feedback">
-                <span *ngIf="participantForm.get('lastNameChild')?.errors?.required">
-                  Please enter the last name.
-                </span>
-                <span *ngIf="participantForm.get('lastNameChild')?.errors?.maxlength">
-                  The last name must be less than 50 characters.
-                </span>
-              </span>
-            </div>
-          </div>
+      <div class="form-group row mb-2">
+        <label class="col-md-2 col-form-label" attr.for="{{ 'lastNameChildId'  }}">Last Name</label>
+        <div class="col-md-8">
+          <input class="form-control" id="{{ 'lastNameChildId' }}" type="text" placeholder="Last Name (required)"
+            formControlName="lastNameChild"
+            [ngClass]="{'is-invalid': (participantForm.get('lastNameChild')?.touched || participantForm.get('lastNameChild')?.dirty) && !participantForm.get('lastName')?.valid }" />
+          <span class="invalid-feedback">
+            <span *ngIf="participantForm.get('lastNameChild')?.errors?.required">
+              Please enter the last name.
+            </span>
+            <span *ngIf="participantForm.get('lastNameChild')?.errors?.maxlength">
+              The last name must be less than 50 characters.
+            </span>
+          </span>
+        </div>
+      </div>
 
-          <div class="form-group row mb-2">
-            <label class="col-md-2 col-form-label" attr.for="{{ 'birthdayId' + i }}">Birthday</label>
-            <div class="col-md-8">
-              <input class="form-control" id="{{ 'birthdayId' + i}}" type="date" placeholder="Birthday (required)"
-                formControlName="birthday"
-                [ngClass]="{'is-invalid': (participantForm.get('birthday')?.touched || participantForm.get('birthday')?.dirty) && !participantForm.get('birthday')?.valid }" />
-              <span class="invalid-feedback">
-                <span *ngIf="participantForm.get('birthday')?.errors?.required">
-                  Please enter the birthday.
-                </span>
-              </span>
-            </div>
-          </div>
+      <div class="form-group row mb-2">
+        <label class="col-md-2 col-form-label" attr.for="{{ 'birthdayId'  }}">Birthday</label>
+        <div class="col-md-8">
+          <input class="form-control" id="{{ 'birthdayId' }}" type="date" placeholder="Birthday (required)"
+            formControlName="birthday"
+            [ngClass]="{'is-invalid': (participantForm.get('birthday')?.touched || participantForm.get('birthday')?.dirty) && !participantForm.get('birthday')?.valid }" />
+          <span class="invalid-feedback">
+            <span *ngIf="participantForm.get('birthday')?.errors?.required">
+              Please enter the birthday.
+            </span>
+          </span>
+        </div>
+      </div>
 
-          <div class="form-group row mb-2">
-            <label class="col-md-2 col-form-label form-check-label" attr.for="{{ 'fotoAllowedId' + i }}">Foto
-              allowed</label>
-            <div class="col-md-8">
-              <input class="form-check-input" id="{{ 'fotoAllowedId' + i}}" type="checkbox" value="true"
-                formControlName="fotoAllowed" />
-            </div>
-          </div>
+      <div class="form-group row mb-2">
+        <label class="col-md-2 col-form-label form-check-label" attr.for="{{ 'fotoAllowedId'  }}">Foto
+          allowed</label>
+        <div class="col-md-8">
+          <input class="form-check-input" id="{{ 'fotoAllowedId' }}" type="checkbox" value="true"
+            formControlName="fotoAllowed" />
+        </div>
+      </div>
 
-          <div class="form-group row mb-2">
-            <label class="col-md-2 col-form-label" attr.for="{{ 'commentId' + i }}">Comment</label>
-            <div class="col-md-8">
-              <textarea class="form-control" id="{{ 'commentId' + i}}" formControlName="textArea" placeholder="Comment"
-                formControlName="comment"></textarea>
-            </div>
-          </div>
+      <div class="form-group row mb-2">
+        <label class="col-md-2 col-form-label" attr.for="{{ 'commentId'  }}">Comment</label>
+        <div class="col-md-8">
+          <textarea class="form-control" id="{{ 'commentId' }}" formControlName="textArea" placeholder="Comment"
+            formControlName="comment"></textarea>
         </div>
       </div>
 

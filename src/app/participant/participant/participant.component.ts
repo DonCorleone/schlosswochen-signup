@@ -9,6 +9,7 @@ import { insertOneSubscription } from '../../models/Subscriptor';
 import { getCurrentParticipant, getCurrentParticipantNumber, participantReducer, State } from '../state/participant.reducer';
 import * as ParticipantActions from '../state/participant.actions';
 import { ParticipantService } from 'src/app/service/participant.service';
+import { getWeeklyReservation } from 'src/app/reservations/state/reservation.selector';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -54,7 +55,7 @@ export class ParticipantComponent implements OnInit {
   participant: Participant[] = [];
 
   // Used to highlight the selected product in the list
-  currentParticipant: Participant | null = null;
+  currentParticipant: Participant | undefined = undefined;
 
   private validationMessages = {
     required: 'Please enter your email address.',
@@ -62,10 +63,6 @@ export class ParticipantComponent implements OnInit {
     match: 'The confirmation does not match the email address.'
   };
   currentParticipantNumber: number = 0;
-
-  get childs(): FormArray {
-    return <FormArray>(this.participantForm.get('childs'));
-  }
 
   constructor(
     private fb: FormBuilder,
@@ -82,12 +79,11 @@ export class ParticipantComponent implements OnInit {
       currentParticipantNumber => this.currentParticipantNumber = currentParticipantNumber
     );
 
+    this.id = this.route.snapshot.paramMap.get('id');
+
     this.store.select(getCurrentParticipant).subscribe(
       currentParticipant => this.currentParticipant = currentParticipant
-    );
-
-    this.store.dispatch(ParticipantActions.initializeCurrentParticipant());
-
+    )
 
     let deadlineMsStr = this.route.snapshot.paramMap.get('deadlineMs');
     if (deadlineMsStr) {
@@ -95,28 +91,31 @@ export class ParticipantComponent implements OnInit {
     }
 
     this.participantForm = this.fb.group({
-      childs: this.fb.array([this.buildChildren()]),
-      state:"Definitive"
+      salutation: '',
+      firstNameChild: '',
+      lastNameChild: '',
+      birthday: '',
+      fotoAllowed: '',
+      comment: ''
     });
 
-    this.id = this.route.snapshot.paramMap.get('id');
+
     this.week = this.route.snapshot.paramMap.get('week');
 
-    // this.store.select(ReservationSelectors.getWeeklyReservation).subscribe(weeklySubscription => this.numOfChilds = weeklySubscription.
-    //   for (let index = 0; index < this.numOfChilds - 1; index++) {
-    //     this.addChildren();
-    //   }
-
+    this.store.select(getWeeklyReservation).subscribe( // ToDo LIW : unsubscribe
+      weeklySubscription => this.numOfChilds = weeklySubscription.numberOfReservations
+    );
   }
 
-  saveParticipant(originalParticipant: Participant): void {
+  saveParticipant(): void {
     if (this.participantForm.valid) {
       if (this.participantForm.dirty) {
         // Copy over all of the original participant properties
         // Then copy over the values from the form
         // This ensures values not on the form, such as the Id, are retained
-        const participant = { ...originalParticipant, ...this.participantForm.value };
+        const participant = { ...this.participantForm.value, id: this.currentParticipantNumber };
 
+        this.store.dispatch(ParticipantActions.addParticipant({participant}));
         // if (participant.id === 0) {
         //   this.participantService.createParticipant(participant).subscribe({
         //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
@@ -131,26 +130,10 @@ export class ParticipantComponent implements OnInit {
       }
 
       if (this.currentParticipantNumber < this.numOfChilds) {
-        this.router.navigate(['/participant/']);
+        this.router.navigate(['/participant/' + (this.currentParticipantNumber + 1).toString()]);
       }
     }
   }
-
-  addChildren(): void {
-    this.childs.push(this.buildChildren());
-  }
-
-  buildChildren(): FormGroup {
-    return this.fb.group({
-      salutation: '',
-      firstNameChild: '',
-      lastNameChild: '',
-      birthday: '',
-      fotoAllowed: '',
-      comment: ''
-    });
-  }
-
   setMessage(c: AbstractControl): string {
     var messageString = '';
     if ((c.touched || c.dirty) && c.errors) {

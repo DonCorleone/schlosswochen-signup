@@ -4,8 +4,7 @@ import { StoreModule } from '@ngrx/store';
 import { ParticipantRoutingModule } from './participant-routing.module';
 import { ParticipantComponent } from './participant/participant.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { participantReducer } from './state/participant.reducer';
-
+import * as fromParticipant from './state/participant.reducer';
 
 @NgModule({
   declarations: [ParticipantComponent],
@@ -13,7 +12,7 @@ import { participantReducer } from './state/participant.reducer';
     CommonModule,
     ParticipantRoutingModule,
     ReactiveFormsModule,
-    StoreModule.forFeature('participants', participantReducer)
+    StoreModule.forFeature(fromParticipant.participantsFeatureKey, fromParticipant.participantReducer)
   ]
 })
 export class ParticipantModule { }

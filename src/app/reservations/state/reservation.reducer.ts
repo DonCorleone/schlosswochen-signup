@@ -3,10 +3,6 @@ import { WeeklyReservation } from "src/app/models/Week";
 import * as AppState from '../../state/app.state';
 import * as ReservationAction from "./reservation.action";
 
-export interface State extends AppState.State {
-  reservations: ReservationState
-};
-
 export interface ReservationState {
   weeklyReservation: WeeklyReservation
   subscriptionId: String

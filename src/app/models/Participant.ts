@@ -1,4 +1,5 @@
 export interface Participant {
+  id:number;
   _id: string | null;
   birthday: Date;
   fotoAllowed: boolean;

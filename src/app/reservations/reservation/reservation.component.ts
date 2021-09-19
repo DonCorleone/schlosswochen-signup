@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { Week } from 'src/app/models/Week';
-import { State } from '../state/reservation.reducer';
+import { State } from 'src/app/state/app.state';
+
 import * as ReservationAction from '../state/reservation.action';
 
 @Component({
