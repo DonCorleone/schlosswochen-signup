@@ -66,29 +66,44 @@ export class ParticipantComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private route: ActivatedRoute,
+    private activeRoute: ActivatedRoute,
     private router: Router,
     private participantService: ParticipantService,
     private store: Store<State>, ) { }
 
   ngOnInit(): void {
 
-    this.store.dispatch(ParticipantActions.increaseCurrentParticipantNumber());
+    this.activeRoute.queryParams.subscribe(queryParams => {
+      this.id = queryParams['id'];
+    });
 
-    this.store.select(getCurrentParticipantNumber).subscribe(
-      currentParticipantNumber => this.currentParticipantNumber = currentParticipantNumber
+    this.activeRoute.params.subscribe(routeParams => {
+      this.loadParticipantDetail(routeParams.id);
+    });
+
+    let deadlineMsStr = this.activeRoute.snapshot.paramMap.get('deadlineMs');
+    if (deadlineMsStr) {
+      this.deadlineM = +deadlineMsStr / 60 / 1000;
+    }
+
+    this.week = this.activeRoute.snapshot.paramMap.get('week');
+
+    this.store.select(getWeeklyReservation).subscribe( // ToDo LIW : unsubscribe
+      weeklySubscription => this.numOfChilds = weeklySubscription.numberOfReservations
     );
+  }
 
-    this.id = this.route.snapshot.paramMap.get('id');
+  loadParticipantDetail(id: number) {
 
     this.store.select(getCurrentParticipant).subscribe(
       currentParticipant => this.currentParticipant = currentParticipant
     )
 
-    let deadlineMsStr = this.route.snapshot.paramMap.get('deadlineMs');
-    if (deadlineMsStr) {
-      this.deadlineM = +deadlineMsStr / 60 / 1000;
-    }
+    this.store.dispatch(ParticipantActions.increaseCurrentParticipantNumber());
+
+    this.store.select(getCurrentParticipantNumber).subscribe(
+      currentParticipantNumber => this.currentParticipantNumber = currentParticipantNumber
+    );
 
     this.participantForm = this.fb.group({
       salutation: '',
@@ -98,13 +113,6 @@ export class ParticipantComponent implements OnInit {
       fotoAllowed: '',
       comment: ''
     });
-
-
-    this.week = this.route.snapshot.paramMap.get('week');
-
-    this.store.select(getWeeklyReservation).subscribe( // ToDo LIW : unsubscribe
-      weeklySubscription => this.numOfChilds = weeklySubscription.numberOfReservations
-    );
   }
 
   saveParticipant(): void {
@@ -130,7 +138,7 @@ export class ParticipantComponent implements OnInit {
       }
 
       if (this.currentParticipantNumber < this.numOfChilds) {
-        this.router.navigate(['/participant/' + (this.currentParticipantNumber + 1).toString()]);
+        this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
       }
     }
   }

@@ -100,7 +100,7 @@ export class InscriptionComponent implements OnInit {
     if (this.week && this.id) {
       this.subscriptionService.updateSubscription(this.id, this.signupForm.value)
         .subscribe((res: insertOneSubscription) => {
-          this.router.navigate(['/participant/1']);
+          this.router.navigate(['/participant', 1]);
         });
     }
   }
