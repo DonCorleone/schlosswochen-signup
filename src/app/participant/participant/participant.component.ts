@@ -6,7 +6,7 @@ import { Participant } from 'src/app/models/Participant';
 import { ApolloService } from 'src/app/service/apollo.service';
 
 import { insertOneSubscription } from '../../models/Subscriptor';
-import { getCurrentParticipant, getCurrentParticipantNumber, participantReducer, State } from '../state/participant.reducer';
+import { getCurrentParticipant, getCurrentParticipantNumber, State } from '../state/participant.reducer';
 import * as ParticipantActions from '../state/participant.actions';
 import { ParticipantService } from 'src/app/service/participant.service';
 import { getWeeklyReservation } from 'src/app/reservations/state/reservation.selector';

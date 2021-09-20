@@ -3,11 +3,10 @@ import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { debounceTime } from 'rxjs/operators';
-import { ApolloService } from 'src/app/service/apollo.service';
-import { SubscriptionService } from 'src/app/service/subscription.service';
-import { State } from 'src/app/state/app.state';
+import { SubscriptionService } from '../../service/subscription.service';
 
-import { insertOneSubscription } from '../../models/Subscriptor';
+import { State } from '../state/inscription.reducer';
+import * as InscriptionActions from '../state/inscription.actions'
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -81,7 +80,8 @@ export class InscriptionComponent implements OnInit {
       street2: '',
       city: '',
       state: 'Incomplete',
-      zip: ''
+      zip: '',
+      participants:[]
     });
 
     const emailControl = this.signupForm.get('emailGroup.email');
@@ -96,12 +96,16 @@ export class InscriptionComponent implements OnInit {
     let numOfChildsStr = this.route.snapshot.paramMap.get('numOfChilds');
   }
 
-  save(): void {
+  next(): void {
     if (this.week && this.id) {
-      this.subscriptionService.updateSubscription(this.id, this.signupForm.value)
-        .subscribe((res: insertOneSubscription) => {
+
+      const inscription = { inscription: this.signupForm.value };
+
+      this.store.dispatch(InscriptionActions.setInscription(inscription));
+     // this.subscriptionService.updateSubscription(this.id, this.signupForm.value)
+     //   .subscribe((res: insertOneSubscription) => {
           this.router.navigate(['/participant', 1]);
-        });
+     //   });
     }
   }
 

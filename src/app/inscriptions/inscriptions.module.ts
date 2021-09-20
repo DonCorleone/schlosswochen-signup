@@ -4,6 +4,7 @@ import { InscriptionComponent } from './inscription/inscription.component';
 import { InscriptionsRoutingModule } from './inscriptions-routing.module';
 import { StoreModule } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
+import * as fromState from './state/inscription.reducer';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,7 @@ import { CommonModule } from '@angular/common';
     CommonModule,
 		InscriptionsRoutingModule,
     ReactiveFormsModule,
-   // StoreModule.forFeature('inscriptions', {inscriptionsReducer}) //inscriptionsReducer
+    StoreModule.forFeature(fromState.inscriptionFeatureKey, fromState.inscriptionReducer),
   ]
 })
 export class InscriptionsModule { }
