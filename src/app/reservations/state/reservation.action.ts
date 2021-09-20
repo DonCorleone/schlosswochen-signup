@@ -1,4 +1,4 @@
-import { ActionCreator, createAction, props } from "@ngrx/store";
+import { createAction, props } from "@ngrx/store";
 import { WeeklyReservation } from "src/app/models/Week";
 
 export const setWeeklyReservation= createAction(
