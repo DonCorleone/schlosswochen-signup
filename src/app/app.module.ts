@@ -39,7 +39,7 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
     StoreModule.forRoot({}, {}),
     StoreDevtoolsModule.instrument(
       {
-        name: 'Schlosswochen Inscription',
+        name: 'Schlosswochen Subscription',
         maxAge: 25,
         logOnly: environment.production }
       )

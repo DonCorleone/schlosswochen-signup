@@ -5,8 +5,8 @@ import { Store } from '@ngrx/store';
 import { debounceTime } from 'rxjs/operators';
 import { SubscriptionService } from '../../service/subscription.service';
 
-import { State } from '../state/inscription.reducer';
-import * as InscriptionActions from '../state/inscription.actions'
+import { State } from '../state/subscription.reducer';
+import * as SubscriptionActions from '../state/subscription.actions'
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -29,11 +29,11 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 }
 
 @Component({
-  selector: 'app-inscription',
-  templateUrl: './inscription.component.html',
-  styleUrls: ['./inscription.component.scss']
+  selector: 'app-subscription',
+  templateUrl: './subscription.component.html',
+  styleUrls: ['./subscription.component.scss']
 })
-export class InscriptionComponent implements OnInit {
+export class SubscriptionComponent implements OnInit {
 
   id: string | null = '0';
   week: string | null = '0';
@@ -99,9 +99,9 @@ export class InscriptionComponent implements OnInit {
   next(): void {
     if (this.week && this.id) {
 
-      const inscription = { inscription: this.signupForm.value };
+      const subscription = { subscription: this.signupForm.value };
 
-      this.store.dispatch(InscriptionActions.setInscription(inscription));
+      this.store.dispatch(SubscriptionActions.setSubscription(subscription));
      // this.subscriptionService.updateSubscription(this.id, this.signupForm.value)
      //   .subscribe((res: insertOneSubscription) => {
           this.router.navigate(['/participant', 1]);

@@ -11,11 +11,11 @@ const routes: Routes = [
     canActivate: [RealmAuthGuard]
   },
   {
-    path: 'inscriptions', // ToDo inscription
-    loadChildren: () => import('./inscriptions/inscriptions.module').then(m => m.InscriptionsModule)
+    path: 'subscriptions', // ToDo subscription
+    loadChildren: () => import('./subscription/subscription.module').then(m => m.SubscriptionsModule)
   },
   {
-    path: 'participant', // ToDo inscription
+    path: 'participant', // ToDo subscription
     loadChildren: () => import('./participant/participant.module').then(m => m.ParticipantModule)
   }
 ]

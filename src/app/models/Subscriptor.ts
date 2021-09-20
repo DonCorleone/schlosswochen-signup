@@ -11,8 +11,18 @@ export interface insertOneSubscriptionData {
 
 
 export interface Subscriptor {
-  data: insertOneSubscriptionData;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  street1: string;
+  street2: string;
+  city: string;
+  state: string;
+  zip: string;
+  participants: any[];
 }
+
 
 export interface WeeklyReservationState {
   week:number;

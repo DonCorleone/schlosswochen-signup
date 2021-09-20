@@ -3,11 +3,9 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
-import { ApolloService } from 'src/app/service/apollo.service';
-import { insertOneSubscription } from '../../models/Subscriptor';
 import { ReservationState } from '../state/reservation.reducer';
 import * as ReservationActions from '../state/reservation.action';
-import * as ReservationSelectors from '../state/reservation.selector';
+import * as ReservationReducer from '../state/reservation.reducer';
 import { WeeklyReservation } from 'src/app/models/Week';
 import { ReservationService } from 'src/app/service/reservation.service';
 
@@ -60,7 +58,7 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
       numOfChilds: [0, [Validators.required, Validators.min(1)]],
     });
 
-    this.weeklyReservation$ = this.store.select(ReservationSelectors.getWeeklyReservation).pipe(
+    this.weeklyReservation$ = this.store.select(ReservationReducer.getWeeklyReservation).pipe(
       weeklyReservation => {
         return weeklyReservation;
       }
@@ -110,7 +108,7 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
       this.reservationSubscription = this.reservationService.createWeeklyReservation(param)
         .subscribe((subscriptionId: string) => {
           this.store.dispatch(ReservationActions.setSubscriptionId({ subscriptionId }));
-          this.router.navigate(['/inscriptions', subscriptionId, weeklyReservation.weeknr, weeklyReservation.numberOfReservations, deadlineMs]);
+          this.router.navigate(['/subscriptions', subscriptionId, weeklyReservation.weeknr, weeklyReservation.numberOfReservations, deadlineMs]);
         });
     }
   }

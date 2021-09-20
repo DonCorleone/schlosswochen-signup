@@ -3,13 +3,10 @@ import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Participant } from 'src/app/models/Participant';
-import { ApolloService } from 'src/app/service/apollo.service';
-
-import { insertOneSubscription } from '../../models/Subscriptor';
 import { getCurrentParticipant, getCurrentParticipantNumber, State } from '../state/participant.reducer';
 import * as ParticipantActions from '../state/participant.actions';
+import * as ReservationReducer from '../../reservations/state/reservation.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
-import { getWeeklyReservation } from 'src/app/reservations/state/reservation.selector';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -88,7 +85,7 @@ export class ParticipantComponent implements OnInit {
 
     this.week = this.activeRoute.snapshot.paramMap.get('week');
 
-    this.store.select(getWeeklyReservation).subscribe( // ToDo LIW : unsubscribe
+    this.store.select(ReservationReducer.getWeeklyReservation).subscribe( // ToDo LIW : unsubscribe
       weeklySubscription => this.numOfChilds = weeklySubscription.numberOfReservations
     );
   }

@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { InscriptionComponent } from './inscription/inscription.component';
+import { SubscriptionComponent } from './subscription/subscription.component';
 
 const routes: Routes = [
-  { path: ':id/:week/:numOfChilds/:deadlineMs', component: InscriptionComponent }
+  { path: ':id/:week/:numOfChilds/:deadlineMs', component: SubscriptionComponent }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class InscriptionsRoutingModule {
+export class SubscriptionsRoutingModule {
 }
