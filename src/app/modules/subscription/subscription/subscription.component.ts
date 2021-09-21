@@ -3,10 +3,11 @@ import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { debounceTime } from 'rxjs/operators';
-import { SubscriptionService } from '../../service/subscription.service';
+import { SubscriptionService } from '../../../service/subscription.service';
 
 import { State } from '../state/subscription.reducer';
 import * as SubscriptionActions from '../state/subscription.actions'
+import { insertOneSubscription } from 'src/app/models/Subscriptor';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -101,11 +102,11 @@ export class SubscriptionComponent implements OnInit {
 
       const subscription = { subscription: this.signupForm.value };
 
-      this.store.dispatch(SubscriptionActions.setSubscription(subscription));
-     // this.subscriptionService.updateSubscription(this.id, this.signupForm.value)
-     //   .subscribe((res: insertOneSubscription) => {
+      this.subscriptionService.updateSubscription(this.id, subscription.subscription)
+        .subscribe((res: insertOneSubscription) => {
+          this.store.dispatch(SubscriptionActions.setSubscription(subscription));
           this.router.navigate(['/participant', 1]);
-     //   });
+      });
     }
   }
 

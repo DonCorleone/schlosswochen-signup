@@ -1,4 +1,4 @@
-import * as AppState from '../../state/app.state';
+import * as AppState from '../../../state/app.state';
 
 import { Subscriptor } from "src/app/models/Subscriptor";
 import * as SubscriptionAction from "./subscription.actions"
@@ -16,6 +16,7 @@ export interface SubscriptionState {
 
 const initialState: SubscriptionState = {
   subscription: {
+    _id:'',
     firstName: '',
     lastName: '',
     email: '',

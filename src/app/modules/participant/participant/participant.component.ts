@@ -136,9 +136,15 @@ export class ParticipantComponent implements OnInit {
 
       if (this.currentParticipantNumber < this.numOfChilds) {
         this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
+      }else{
+        this.saveTheBounch();
       }
     }
   }
+  saveTheBounch() {
+
+  }
+
   setMessage(c: AbstractControl): string {
     var messageString = '';
     if ((c.touched || c.dirty) && c.errors) {
@@ -148,3 +154,4 @@ export class ParticipantComponent implements OnInit {
     return messageString;
   }
 }
+

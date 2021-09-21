@@ -1,7 +1,7 @@
 /* NgRx */
 import { createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
 import * as ParticipantActions from './participant.actions';
-import * as AppState from '../../state/app.state';
+import * as AppState from '../../../state/app.state';
 import { Participant } from 'src/app/models/Participant';
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 
