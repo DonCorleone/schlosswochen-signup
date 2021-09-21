@@ -104,9 +104,9 @@ export class ParticipantComponent implements OnInit {
 
     this.participantForm = this.fb.group({
       salutation: '',
-      firstNameChild: '',
-      lastNameChild: '',
-      birthday: '',
+      firstNameParticipant: '',
+      lastNameParticipant: '',
+    //  birthday: '',
       fotoAllowed: '',
       comment: ''
     });
@@ -120,7 +120,12 @@ export class ParticipantComponent implements OnInit {
         // This ensures values not on the form, such as the Id, are retained
         const participant = { ...this.participantForm.value, id: this.currentParticipantNumber };
 
-        this.store.dispatch(ParticipantActions.addParticipant({participant}));
+        this.participantService.createParticipant(this.participantForm.value).subscribe(
+          res => {
+            this.store.dispatch(ParticipantActions.addParticipant({participant}));
+          }
+        );
+
         // if (participant.id === 0) {
         //   this.participantService.createParticipant(participant).subscribe({
         //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),

@@ -22,16 +22,16 @@
       </div>
 
       <div class="form-group row mb-2">
-        <label class="col-md-2 col-form-label" attr.for="{{ 'firstNameChildId'  }}">First Name</label>
+        <label class="col-md-2 col-form-label" attr.for="{{ 'firstNameParticipantId'  }}">First Name</label>
         <div class="col-md-8">
-          <input class="form-control" id="{{ 'firstNameChildId' }}" type="text"
-            placeholder="First Name (required)" formControlName="firstNameChild"
-            [ngClass]="{'is-invalid': (participantForm.get('firstNameChild')?.touched || participantForm.get('firstNameChild')?.dirty) && !participantForm.get('firstNameChild')?.valid }" />
+          <input class="form-control" id="{{ 'firstNameParticipantId' }}" type="text"
+            placeholder="First Name (required)" formControlName="firstNameParticipant"
+            [ngClass]="{'is-invalid': (participantForm.get('firstNameParticipant')?.touched || participantForm.get('firstNameParticipant')?.dirty) && !participantForm.get('firstNameParticipant')?.valid }" />
           <span class="invalid-feedback">
-            <span *ngIf="participantForm.get('firstNameChild')?.errors?.required">
+            <span *ngIf="participantForm.get('firstNameParticipant')?.errors?.required">
               Please enter the first name.
             </span>
-            <span *ngIf="participantForm.get('firstNameChild')?.errors?.minlength">
+            <span *ngIf="participantForm.get('firstNameParticipant')?.errors?.minlength">
               The first name must be longer than 3 characters.
             </span>
           </span>
@@ -39,23 +39,23 @@
       </div>
 
       <div class="form-group row mb-2">
-        <label class="col-md-2 col-form-label" attr.for="{{ 'lastNameChildId'  }}">Last Name</label>
+        <label class="col-md-2 col-form-label" attr.for="{{ 'lastNameParticipantId'  }}">Last Name</label>
         <div class="col-md-8">
-          <input class="form-control" id="{{ 'lastNameChildId' }}" type="text" placeholder="Last Name (required)"
-            formControlName="lastNameChild"
-            [ngClass]="{'is-invalid': (participantForm.get('lastNameChild')?.touched || participantForm.get('lastNameChild')?.dirty) && !participantForm.get('lastName')?.valid }" />
+          <input class="form-control" id="{{ 'lastNameParticipantId' }}" type="text" placeholder="Last Name (required)"
+            formControlName="lastNameParticipant"
+            [ngClass]="{'is-invalid': (participantForm.get('lastNameParticipant')?.touched || participantForm.get('lastNameParticipant')?.dirty) && !participantForm.get('lastName')?.valid }" />
           <span class="invalid-feedback">
-            <span *ngIf="participantForm.get('lastNameChild')?.errors?.required">
+            <span *ngIf="participantForm.get('lastNameParticipant')?.errors?.required">
               Please enter the last name.
             </span>
-            <span *ngIf="participantForm.get('lastNameChild')?.errors?.maxlength">
+            <span *ngIf="participantForm.get('lastNameParticipant')?.errors?.maxlength">
               The last name must be less than 50 characters.
             </span>
           </span>
         </div>
       </div>
 
-      <div class="form-group row mb-2">
+      <!-- <div class="form-group row mb-2">
         <label class="col-md-2 col-form-label" attr.for="{{ 'birthdayId'  }}">Birthday</label>
         <div class="col-md-8">
           <input class="form-control" id="{{ 'birthdayId' }}" type="date" placeholder="Birthday (required)"
@@ -67,7 +67,7 @@
             </span>
           </span>
         </div>
-      </div>
+      </div> -->
 
       <div class="form-group row mb-2">
         <label class="col-md-2 col-form-label form-check-label" attr.for="{{ 'fotoAllowedId'  }}">Foto

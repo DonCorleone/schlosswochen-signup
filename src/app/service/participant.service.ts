@@ -2,9 +2,22 @@ import { Injectable } from '@angular/core';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Observable, of, throwError } from 'rxjs';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import { Participant } from '../models/Participant';
+import { MutationInsertOneParticipantArgs, ParticipantInsertInput } from '../models/Graphqlx';
+import { Apollo, gql } from 'apollo-angular';
+
+const UPDATE = gql`
+  mutation ($participantInsertInput: ParticipantInsertInput!) {
+    insertOneParticipant(
+    data: $participantInsertInput
+  ) {
+  	_id
+		participant_id
+    }
+  }
+`;
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +27,7 @@ export class ParticipantService {
   private participantsUrl = 'api/participants';
   private participants: Participant[] = [];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private apollo: Apollo) { }
 
   getParticipants(): Observable<Participant[]> {
     if (this.participants) {
@@ -28,18 +41,20 @@ export class ParticipantService {
       );
   }
 
-  createParticipant(participant: Participant): Observable<Participant> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    // Participant Id must be null for the Web API to assign an Id
-    const newParticipant = { ...participant, id: null };
-    return this.http.post<Participant>(this.participantsUrl, newParticipant, { headers })
-      .pipe(
-        tap(data => console.log('createParticipant: ' + JSON.stringify(data))),
-        tap(data => {
-          this.participants.push(data);
-        }),
-        catchError(this.handleError)
-      );
+  createParticipant(variable: ParticipantInsertInput): Observable<String> {
+  //  insertOneParticipant(data: ParticipantInsertInput!): Participant
+
+  //  ParticipantInsertInput
+    return this.apollo.mutate<MutationInsertOneParticipantArgs>({
+      mutation: UPDATE,
+      variables: {
+        participantInsertInput: variable
+      }
+    }).pipe(
+      tap(data => console.log('Products', JSON.stringify(data))),
+      map(result => { return (<MutationInsertOneParticipantArgs>result).data._id}),
+      catchError(this.handleError)
+    )
   }
 
   deleteParticipant(id: string): Observable<{}> {
