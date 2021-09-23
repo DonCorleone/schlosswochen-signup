@@ -6,8 +6,11 @@ import { Participant } from 'src/app/models/Participant';
 import { getCurrentParticipant, getCurrentParticipantNumber, State } from '../state/participant.reducer';
 import * as ParticipantActions from '../state/participant.actions';
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
+import * as SubscritionReducer from '../../subscription/state/subscription.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
-import { ParticipantInsertInput } from 'src/app/models/Graphqlx';
+import { ParticipantInsertInput, SubscriptionParticipantsRelationInput, SubscriptionUpdateInput } from 'src/app/models/Graphqlx';
+import { Subscription } from 'rxjs';
+import { SubscriptionService } from 'src/app/service/subscription.service';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -36,14 +39,14 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class ParticipantComponent implements OnInit {
 
-  subscription_id: string | null = '0';
-  week: number | null = 0;
+  subscription_id: string = "";
+  week: number = 0;
   numOfChilds: number = 0;
   deadlineM: number = 0;
 
   addresses: string | undefined;
 
-  participantForm!: FormGroup;
+  signupForm!: FormGroup;
   yes = true;
   emailMessage: string = '';
   confirmEmailMessage: string = '';
@@ -51,8 +54,6 @@ export class ParticipantComponent implements OnInit {
   errorMessage = '';
 
   participant: Participant[] = [];
-
-  // Used to highlight the selected product in the list
   currentParticipant: Participant | undefined = undefined;
 
   private validationMessages = {
@@ -67,7 +68,8 @@ export class ParticipantComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private router: Router,
     private participantService: ParticipantService,
-    private store: Store<State>, ) { }
+    private subscriptionService: SubscriptionService,
+    private store: Store<State>,) { }
 
   ngOnInit(): void {
 
@@ -113,7 +115,7 @@ export class ParticipantComponent implements OnInit {
 
     const participant_id = this.subscription_id + "-" + this.currentParticipantNumber;
 
-    this.participantForm = this.fb.group({
+    this.signupForm = this.fb.group({
       salutation: '',
       firstNameParticipant: '',
       lastNameParticipant: '',
@@ -123,27 +125,15 @@ export class ParticipantComponent implements OnInit {
     });
   }
 
-  saveParticipant(): void {
-    if (this.participantForm.valid) {
-      if (this.participantForm.dirty) {
+  next(): void {
+    if (this.signupForm.valid) {
+      if (this.signupForm.dirty) {
         // Copy over all of the original participant properties
         // Then copy over the values from the form
         // This ensures values not on the form, such as the Id, are retained
 
-        const participantInsertInput: ParticipantInsertInput = this.participantForm.value;
-        this.participantService.createParticipant(participantInsertInput).subscribe(
-          res => {
-            const participant = { ...this.participantForm.value, id: this.currentParticipantNumber };
-            this.store.dispatch(ParticipantActions.addParticipant({ participant }));
-            if (this.currentParticipantNumber < this.numOfChilds) {
-              this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
-            }else{
-              this.saveTheBounch();
-            }
-         //   this.store.dispatch(ParticipantActions.upsertParticipant().setParticipantId({ participant_id }));
-          }
-        );
-
+        this.saveParticipant();
+        this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
         // if (participant.id === 0) {
         //   this.participantService.createParticipant(participant).subscribe({
         //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
@@ -158,8 +148,76 @@ export class ParticipantComponent implements OnInit {
       }
     }
   }
-  saveTheBounch() {
+  saveParticipant() {
+    const participantInsertInput: ParticipantInsertInput = this.signupForm.value;
+    this.participantService.createParticipant(participantInsertInput).subscribe(
+      res => {
+        const participant = { ...this.signupForm.value, id: this.currentParticipantNumber };
+        this.store.dispatch(ParticipantActions.addParticipant({ participant }));
+        //   this.store.dispatch(ParticipantActions.upsertParticipant().setParticipantId({ participant_id }));
+      }
+    );
+  }
 
+  save(): void {
+    if (this.signupForm.valid) {
+      if (this.signupForm.dirty) {
+
+        this.saveParticipant();
+      }
+    }
+
+    this.saveSubscription();
+
+
+    // if (participant.id === 0) {
+    //   this.participantService.createParticipant(participant).subscribe({
+    //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
+    //     error: err => this.errorMessage = err
+    //   });
+    // } else {
+    //   this.participantService.updateParticipant(participant).subscribe({
+    //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
+    //     error: err => this.errorMessage = err
+    //   });
+    // }
+
+  }
+  saveSubscription() {
+    this.store.select(SubscritionReducer.getSubscription).subscribe(
+      subscriptionStore => {
+
+        const link:string[] = [];
+        for (let index = 1; index <= this.numOfChilds; index++) {
+          link.push(this.subscription_id + '-' + index)
+        }
+        const subscriptionParticipantsRelationInput: SubscriptionParticipantsRelationInput = {
+          link:link
+        };
+        const subscription: SubscriptionUpdateInput = {
+          firstName: subscriptionStore.firstName,
+          lastName: subscriptionStore.lastName,
+          _id:subscriptionStore._id,
+          email: subscriptionStore.email,
+          phone: subscriptionStore.phone,
+          street1: subscriptionStore.street1,
+          street2: subscriptionStore.street2,
+          city: subscriptionStore.city,
+          state: subscriptionStore.state,
+          zip: subscriptionStore.zip,
+          participants:subscriptionParticipantsRelationInput
+        }
+        subscription.participants = subscriptionParticipantsRelationInput;
+        this.subscriptionService.updateSubscription(this.subscription_id, subscription).subscribe(
+          res => {
+        //     // const participant = { ...this.signupForm.value, id: this.currentParticipantNumber };
+        //     // this.store.dispatch(ParticipantActions.addParticipant({ participant }));
+        //     //   this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
+        //     //   this.store.dispatch(ParticipantActions.upsertParticipant().setParticipantId({ participant_id }));
+          }
+        );
+      }
+    )
   }
 
   setMessage(c: AbstractControl): string {
