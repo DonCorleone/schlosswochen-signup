@@ -25,6 +25,12 @@ export const addParticipant = createAction(
   props<{ participant: Participant }>()
 );
 
+export const setParticipantId = createAction(
+  '[Participant/API] Set Participant_Id',
+  props<{ participant_id: string }>()
+);
+
+
 export const upsertParticipant = createAction(
   '[Participant/API] Upsert Participant',
   props<{ participant: Participant }>()
@@ -73,3 +79,4 @@ export const loadParticipantsFailure = createAction(
   '[Participant] Load Fail',
   props<{ error: string }>()
 );
+

@@ -41,7 +41,7 @@ export class ParticipantService {
       );
   }
 
-  createParticipant(variable: ParticipantInsertInput): Observable<String> {
+  createParticipant(variable: ParticipantInsertInput): Observable<ParticipantInsertInput> {
   //  insertOneParticipant(data: ParticipantInsertInput!): Participant
 
   //  ParticipantInsertInput
@@ -52,7 +52,7 @@ export class ParticipantService {
       }
     }).pipe(
       tap(data => console.log('Products', JSON.stringify(data))),
-      map(result => { return (<MutationInsertOneParticipantArgs>result).data._id}),
+      map(result => { return <ParticipantInsertInput>result.data?.data}),
       catchError(this.handleError)
     )
   }

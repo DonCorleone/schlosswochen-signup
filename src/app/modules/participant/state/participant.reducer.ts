@@ -55,6 +55,9 @@ export const participantReducer = createReducer(
   on(ParticipantActions.addParticipant,
     (state, action) => adapter.addOne(action.participant, state)
   ),
+  // on(ParticipantActions.setParticipantId,
+  //   (state, action) => adapter.updateOne(action.participant, state)
+  // ),
   on(ParticipantActions.upsertParticipant,
     (state, action) => adapter.upsertOne(action.participant, state)
   ),

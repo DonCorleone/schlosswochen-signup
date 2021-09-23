@@ -7,6 +7,7 @@ import { getCurrentParticipant, getCurrentParticipantNumber, State } from '../st
 import * as ParticipantActions from '../state/participant.actions';
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
+import { ParticipantInsertInput } from 'src/app/models/Graphqlx';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -35,8 +36,8 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class ParticipantComponent implements OnInit {
 
-  id: string | null = '0';
-  week: string | null = '0';
+  subscription_id: string | null = '0';
+  week: number | null = 0;
   numOfChilds: number = 0;
   deadlineM: number = 0;
 
@@ -70,24 +71,32 @@ export class ParticipantComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.activeRoute.queryParams.subscribe(queryParams => {
-      this.id = queryParams['id'];
-    });
-
-    this.activeRoute.params.subscribe(routeParams => {
-      this.loadParticipantDetail(routeParams.id);
-    });
+    // this.activeRoute.queryParams.subscribe(queryParams => {
+    //   this.subscription_id = queryParams['id'];
+    // });
 
     let deadlineMsStr = this.activeRoute.snapshot.paramMap.get('deadlineMs');
     if (deadlineMsStr) {
       this.deadlineM = +deadlineMsStr / 60 / 1000;
     }
 
-    this.week = this.activeRoute.snapshot.paramMap.get('week');
+    // this.week = this.activeRoute.snapshot.paramMap.get('week');
 
     this.store.select(ReservationReducer.getWeeklyReservation).subscribe( // ToDo LIW : unsubscribe
-      weeklySubscription => this.numOfChilds = weeklySubscription.numberOfReservations
+      weeklySubscription => {
+        this.numOfChilds = weeklySubscription.numberOfReservations;
+        this.week = weeklySubscription.weeknr
+      }
     );
+    this.store.select(ReservationReducer.getSubscriptionId).subscribe( // ToDo LIW : unsubscribe
+      subscriptionId => {
+        this.subscription_id = subscriptionId
+      }
+    );
+
+    this.activeRoute.params.subscribe(routeParams => {
+      this.loadParticipantDetail(routeParams.id);
+    });
   }
 
   loadParticipantDetail(id: number) {
@@ -102,11 +111,13 @@ export class ParticipantComponent implements OnInit {
       currentParticipantNumber => this.currentParticipantNumber = currentParticipantNumber
     );
 
+    const participant_id = this.subscription_id + "-" + this.currentParticipantNumber;
+
     this.participantForm = this.fb.group({
       salutation: '',
       firstNameParticipant: '',
       lastNameParticipant: '',
-    //  birthday: '',
+      participant_id: participant_id,
       fotoAllowed: '',
       comment: ''
     });
@@ -118,11 +129,18 @@ export class ParticipantComponent implements OnInit {
         // Copy over all of the original participant properties
         // Then copy over the values from the form
         // This ensures values not on the form, such as the Id, are retained
-        const participant = { ...this.participantForm.value, id: this.currentParticipantNumber };
 
-        this.participantService.createParticipant(this.participantForm.value).subscribe(
+        const participantInsertInput: ParticipantInsertInput = this.participantForm.value;
+        this.participantService.createParticipant(participantInsertInput).subscribe(
           res => {
-            this.store.dispatch(ParticipantActions.addParticipant({participant}));
+            const participant = { ...this.participantForm.value, id: this.currentParticipantNumber };
+            this.store.dispatch(ParticipantActions.addParticipant({ participant }));
+            if (this.currentParticipantNumber < this.numOfChilds) {
+              this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
+            }else{
+              this.saveTheBounch();
+            }
+         //   this.store.dispatch(ParticipantActions.upsertParticipant().setParticipantId({ participant_id }));
           }
         );
 
@@ -137,12 +155,6 @@ export class ParticipantComponent implements OnInit {
         //     error: err => this.errorMessage = err
         //   });
         // }
-      }
-
-      if (this.currentParticipantNumber < this.numOfChilds) {
-        this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
-      }else{
-        this.saveTheBounch();
       }
     }
   }

@@ -4,7 +4,7 @@ import * as ReservationAction from "./reservation.action";
 
 export interface ReservationState {
   weeklyReservation: WeeklyReservation
-  subscriptionId: String
+  subscriptionId: string
 };
 
 const initialState: ReservationState = {
