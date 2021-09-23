@@ -27,7 +27,6 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
 
   signupForm!: FormGroup;
 
-  // numberOfChildren$?: Observable<number>;
   reservations$?: Observable<number[]>;
   weeks$?: Observable<number[]>;
   weeklyReservation$?: Observable<WeeklyReservation>;

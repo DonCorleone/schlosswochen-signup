@@ -9,7 +9,6 @@ import * as ReservationReducer from '../../reservations/state/reservation.reduce
 import * as SubscritionReducer from '../../subscription/state/subscription.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
 import { ParticipantInsertInput, SubscriptionParticipantsRelationInput, SubscriptionUpdateInput } from 'src/app/models/Graphqlx';
-import { Subscription } from 'rxjs';
 import { SubscriptionService } from 'src/app/service/subscription.service';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {

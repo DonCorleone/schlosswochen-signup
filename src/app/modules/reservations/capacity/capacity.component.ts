@@ -1,9 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ChildsPerState } from 'src/app/models/Subscriptor';
-import { Week } from 'src/app/models/Week';
-import { ApolloService } from 'src/app/service/apollo.service';
 import { ReservationService } from 'src/app/service/reservation.service';
 
 @Component({
