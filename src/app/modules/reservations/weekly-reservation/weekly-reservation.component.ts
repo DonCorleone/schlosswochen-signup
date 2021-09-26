@@ -94,9 +94,11 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
 
       let weeklyReservation: WeeklyReservation = weeklyReservationControl?.value;
       let deadlineMs = ((5 + (weeklyReservation.numberOfReservations * 3))) * 60 * 1000;
+      let deadline = new Date(new Date().getTime() + deadlineMs);
+
       let param: Record<string, any> = {
         subscriptionInsertInput: {
-          deadline: new Date(new Date().getTime() + deadlineMs),
+          deadline,
           numOfChildren: weeklyReservation.numberOfReservations,
           reservationDate: new Date(),
           state: "Reservation",
@@ -107,6 +109,7 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
       this.reservationSubscription = this.reservationService.createWeeklyReservation(param)
         .subscribe((subscriptionId: string) => {
           this.store.dispatch(ReservationActions.setSubscriptionId({ subscriptionId }));
+          this.store.dispatch(ReservationActions.setDeadline({ deadline }));
           this.router.navigate(['/subscriptions', subscriptionId, weeklyReservation.weeknr, weeklyReservation.numberOfReservations, deadlineMs]);
         });
     }

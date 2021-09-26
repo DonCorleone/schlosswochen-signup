@@ -10,3 +10,8 @@ export const setSubscriptionId= createAction(
   '[Reservation] Set Subscription ID',
   props<{subscriptionId: string}>()
 );
+
+export const setDeadline= createAction(
+  '[Reservation] Set Deadline',
+  props<{deadline: Date}>()
+);

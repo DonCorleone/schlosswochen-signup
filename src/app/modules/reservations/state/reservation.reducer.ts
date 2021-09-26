@@ -4,7 +4,8 @@ import * as ReservationAction from "./reservation.action";
 
 export interface ReservationState {
   weeklyReservation: WeeklyReservation
-  subscriptionId: string
+  subscriptionId: string,
+  deadline: Date
 };
 
 const initialState: ReservationState = {
@@ -12,7 +13,8 @@ const initialState: ReservationState = {
     weeknr: 0,
     numberOfReservations: 0
   },
-  subscriptionId: ''
+  subscriptionId: '',
+  deadline: new Date()
 };
 
 export const reservationFeatureKey = 'reservations';
@@ -29,6 +31,11 @@ export const getSubscriptionId = createSelector(
   state => state.subscriptionId
 )
 
+export const getDeadline = createSelector(
+  getReservationFeatureSector,
+  state => state.deadline
+)
+
 export const reservationReducer = createReducer<ReservationState>(
   initialState,
   on(ReservationAction.setWeeklyReservation, (state, action) => {
@@ -41,6 +48,12 @@ export const reservationReducer = createReducer<ReservationState>(
     return {
       ...state,
       subscriptionId: action.subscriptionId
+    };
+  }),
+  on(ReservationAction.setDeadline, (state, action) => {
+    return {
+      ...state,
+      deadline: action.deadline
     };
   })
 );

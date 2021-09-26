@@ -10,6 +10,8 @@ import * as SubscritionReducer from '../../subscription/state/subscription.reduc
 import { ParticipantService } from 'src/app/service/participant.service';
 import { ParticipantInsertInput, SubscriptionParticipantsRelationInput, SubscriptionUpdateInput } from 'src/app/models/Graphqlx';
 import { SubscriptionService } from 'src/app/service/subscription.service';
+import { Observable, timer } from 'rxjs';
+import { scan, takeWhile } from 'rxjs/operators';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -43,6 +45,8 @@ export class ParticipantComponent implements OnInit {
   numOfChilds: number = 0;
   deadlineM: number = 0;
 
+  timer$: Observable<number> | undefined;
+
   addresses: string | undefined;
 
   signupForm!: FormGroup;
@@ -72,17 +76,17 @@ export class ParticipantComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // this.activeRoute.queryParams.subscribe(queryParams => {
-    //   this.subscription_id = queryParams['id'];
-    // });
+    const nowInS = new Date().getTime();
 
-    let deadlineMsStr = this.activeRoute.snapshot.paramMap.get('deadlineMs');
-    if (deadlineMsStr) {
-      this.deadlineM = +deadlineMsStr / 60 / 1000;
-    }
-
-    // this.week = this.activeRoute.snapshot.paramMap.get('week');
-
+    this.store.select(ReservationReducer.getDeadline).subscribe( // ToDo LIW : unsubscribe
+      deadline => {
+       // this.deadlineM = (deadline.getMinutes()- new Date().getMinutes());
+        this.timer$ = timer(0, 60000).pipe(
+          scan(acc => --acc, Math.trunc((deadline.getTime() - nowInS) / 1000 / 60)),
+          takeWhile(x => x >= 0)
+        );
+      }
+    );
     this.store.select(ReservationReducer.getWeeklyReservation).subscribe( // ToDo LIW : unsubscribe
       weeklySubscription => {
         this.numOfChilds = weeklySubscription.numberOfReservations;
