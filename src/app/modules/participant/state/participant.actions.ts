@@ -11,10 +11,6 @@ export const decreaseCurrentParticipantNumber = createAction(
   '[Participant] Decrease Current ParticipantNumber'
 );
 
-export const getCurrentParticipantNumber = createAction(
-  '[Participant] Get Current ParticipantNumber'
-);
-
 export const loadParticipants = createAction(
   '[Participant/API] Load Participants',
   props<{ participants: Participant[] }>()

@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, scan, takeWhile } from 'rxjs/operators';
 import { SubscriptionService } from '../../../service/subscription.service';
 
-import { State } from '../state/subscription.reducer';
+import * as SubscriptionReducer from '../state/subscription.reducer'
+import * as ReservationReducer from '../../reservations/state/reservation.reducer';
+
 import * as SubscriptionActions from '../state/subscription.actions'
 import { insertOneSubscription } from 'src/app/models/Subscriptor';
+import { Observable, timer } from 'rxjs';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -39,7 +42,7 @@ export class SubscriptionComponent implements OnInit {
   id: string | null = '0';
   week: string | null = '0';
   numOfChilds: number | null = 0;
-  deadlineM: number = 0;
+  timer$: Observable<number> | undefined;
 
   addresses: string | undefined;
 
@@ -63,14 +66,19 @@ export class SubscriptionComponent implements OnInit {
     private subscriptionService: SubscriptionService,
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store<State>) { }
+    private store: Store<SubscriptionReducer.State>) { }
 
   ngOnInit(): void {
-
-    let deadlineMsStr = this.route.snapshot.paramMap.get('deadlineMs');
-    if (deadlineMsStr) {
-      this.deadlineM = +deadlineMsStr / 60 / 1000;
-    }
+    const nowInS = new Date().getTime();
+    this.store.select(ReservationReducer.getDeadline).subscribe( // ToDo LIW : unsubscribe
+      deadline => {
+       // this.deadlineM = (deadline.getMinutes()- new Date().getMinutes());
+        this.timer$ = timer(0, 60000).pipe(
+          scan(acc => --acc, Math.trunc((deadline.getTime() - nowInS) / 1000 / 60)),
+          takeWhile(x => x >= 0)
+        );
+      }
+    );
 
     this.signupForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(3)]],
@@ -80,7 +88,7 @@ export class SubscriptionComponent implements OnInit {
       street1: '',
       street2: '',
       city: '',
-      state: 'Incomplete',
+      state: 'temporary',
       zip: '',
       participants:[]
     });

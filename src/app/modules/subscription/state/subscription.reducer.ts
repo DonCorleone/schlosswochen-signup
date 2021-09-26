@@ -24,7 +24,7 @@ const initialState: SubscriptionState = {
     street1: '',
     street2: '',
     city: '',
-    state: 'Initialized',
+    state: 'temporary',
     zip: '',
     participants:[]
   }

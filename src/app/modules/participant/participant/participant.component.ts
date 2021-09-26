@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Participant } from 'src/app/models/Participant';
-import { getCurrentParticipant, getCurrentParticipantNumber, State } from '../state/participant.reducer';
+import * as ParticipantReducer from '../state/participant.reducer';
 import * as ParticipantActions from '../state/participant.actions';
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
 import * as SubscritionReducer from '../../subscription/state/subscription.reducer';
@@ -43,7 +43,6 @@ export class ParticipantComponent implements OnInit {
   subscription_id: string = "";
   week: number = 0;
   numOfChilds: number = 0;
-  deadlineM: number = 0;
 
   timer$: Observable<number> | undefined;
 
@@ -72,7 +71,7 @@ export class ParticipantComponent implements OnInit {
     private router: Router,
     private participantService: ParticipantService,
     private subscriptionService: SubscriptionService,
-    private store: Store<State>,) { }
+    private store: Store<ParticipantReducer.State>,) { }
 
   ngOnInit(): void {
 
@@ -106,13 +105,13 @@ export class ParticipantComponent implements OnInit {
 
   loadParticipantDetail(id: number) {
 
-    this.store.select(getCurrentParticipant).subscribe(
+    this.store.select(ParticipantReducer.getCurrentParticipant).subscribe(
       currentParticipant => this.currentParticipant = currentParticipant
     )
 
     this.store.dispatch(ParticipantActions.increaseCurrentParticipantNumber());
 
-    this.store.select(getCurrentParticipantNumber).subscribe(
+    this.store.select(ParticipantReducer.getCurrentParticipantNumber).subscribe(
       currentParticipantNumber => this.currentParticipantNumber = currentParticipantNumber
     );
 
@@ -206,7 +205,7 @@ export class ParticipantComponent implements OnInit {
           street1: subscriptionStore.street1,
           street2: subscriptionStore.street2,
           city: subscriptionStore.city,
-          state: subscriptionStore.state,
+          state: "definitive",
           zip: subscriptionStore.zip,
           participants:subscriptionParticipantsRelationInput
         }

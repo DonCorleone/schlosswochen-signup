@@ -101,7 +101,7 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
           deadline,
           numOfChildren: weeklyReservation.numberOfReservations,
           reservationDate: new Date(),
-          state: "Reservation",
+          state: "temporary",
           week: weeklyReservation.weeknr
         }
       };
