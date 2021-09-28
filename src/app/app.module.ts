@@ -20,6 +20,8 @@ import { PageNotFoundComponent } from './home/page-not-found.component';
 import { ShellComponent } from './home/shell.component';
 import { WelcomeComponent } from './home/welcome.component';
 import { CoreModule } from './modules/core/core.module';
+import { SigninRedirectCallbackComponent } from './home/signin-redirect-callback.component';
+import { SignoutRedirectCallbackComponent } from './home/signout-redirect-callback.component';
 
 const uri = realm.graphqlUrl;
 
@@ -39,7 +41,9 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
     ShellComponent,
     MenuComponent,
     WelcomeComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    SigninRedirectCallbackComponent,
+    SignoutRedirectCallbackComponent
   ],
   imports: [
     BrowserModule,
