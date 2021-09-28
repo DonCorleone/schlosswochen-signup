@@ -23,31 +23,31 @@ export class AuthService {
       authority: Constants.stsAuthority,
       client_id: Constants.clientId,
       redirect_uri: `${Constants.clientRoot}signin-callback`,
-      scope: 'openid profile projects-api',
+      scope: 'openid profile schlosswochen-api',
       response_type: 'code',
-      post_logout_redirect_uri: `${Constants.clientRoot}signout-callback`,
+      // post_logout_redirect_uri: `${Constants.clientRoot}signout-callback`,
       // automaticSilentRenew: true,
       // silent_redirect_uri: `${Constants.clientRoot}assets/silent-callback.html`
-      // metadata: {
-      //   issuer: `${Constants.stsAuthority}`,
-      //   authorization_endpoint: `${Constants.stsAuthority}authorize?audience=projects-api`,
-      //   jwks_uri: `${Constants.stsAuthority}.well-known/jwks.json`,
-      //   token_endpoint: `${Constants.stsAuthority}oauth/token`,
-      //   userinfo_endpoint: `${Constants.stsAuthority}userinfo`,
-      //   end_session_endpoint: `${Constants.stsAuthority}v2/logout?client_id=${Constants.clientId}&returnTo=${encodeURI(Constants.clientRoot)}signout-callback`
-      // }
+      metadata: {
+        issuer: `${Constants.stsAuthority}`,
+        authorization_endpoint: `${Constants.stsAuthority}authorize?audience=schlosswochen-api`,
+        jwks_uri: `${Constants.stsAuthority}.well-known/jwks.json`,
+        token_endpoint: `${Constants.stsAuthority}oauth/token`,
+        userinfo_endpoint: `${Constants.stsAuthority}userinfo`,
+        end_session_endpoint: `${Constants.stsAuthority}v2/logout?client_id=${Constants.clientId}&returnTo=${encodeURI(Constants.clientRoot)}signout-callback`
+      }
     };
     this._userManager = new UserManager(stsSettings);
-    this._userManager.events.addAccessTokenExpired(_ => {
-      this._loginChangedSubject.next(false);
-    });
-    this._userManager.events.addUserLoaded(user => {
-      if (this._user !== user) {
-        this._user = user;
-        this.loadSecurityContext();
-        this._loginChangedSubject.next(!!user && !user.expired);
-      }
-    });
+    // this._userManager.events.addAccessTokenExpired(_ => {
+    //   this._loginChangedSubject.next(false);
+    // });
+    // this._userManager.events.addUserLoaded(user => {
+    //   if (this._user !== user) {
+    //     this._user = user;
+    //     this.loadSecurityContext();
+    //     this._loginChangedSubject.next(!!user && !user.expired);
+    //   }
+    // });
 
   }
 
@@ -61,9 +61,9 @@ export class AuthService {
       if (this._user !== user) {
         this._loginChangedSubject.next(userCurrent);
       }
-      if (userCurrent && !this.authContext) {
-        this.loadSecurityContext();
-      }
+      // if (userCurrent && !this.authContext) {
+      //   this.loadSecurityContext();
+      // }
       this._user = user;
       return userCurrent;
     });
@@ -98,17 +98,17 @@ export class AuthService {
     });
   }
 
-  loadSecurityContext(): void {
-    this._httpClient
-      .get<AuthContext>(`${Constants.apiRoot}Projects/AuthContext`)
-      .subscribe(
-        context => {
-          this.authContext = new AuthContext();
-          this.authContext.claims = context.claims;
-          this.authContext.userProfile = context.userProfile;
-        },
-        error => console.error(error)
-      );
-  }
+  // loadSecurityContext(): void {
+  //   this._httpClient
+  //     .get<AuthContext>(`${Constants.apiRoot}Projects/AuthContext`)
+  //     .subscribe(
+  //       context => {
+  //         this.authContext = new AuthContext();
+  //         this.authContext.claims = context.claims;
+  //         this.authContext.userProfile = context.userProfile;
+  //       },
+  //       error => console.error(error)
+  //     );
+  // }
 
 }
