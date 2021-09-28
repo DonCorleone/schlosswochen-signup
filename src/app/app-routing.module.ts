@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RealmAuthGuard } from './realm-auth.guard';
 import { RouterModule, Routes } from '@angular/router';
-import { ParticipantModule } from './modules/participant/participant.module';
 import { PageNotFoundComponent } from './home/page-not-found.component';
 import { WelcomeComponent } from './home/welcome.component';
 import { ShellComponent } from './home/shell.component';
+import { SigninRedirectCallbackComponent } from './home/signin-redirect-callback.component';
 
 const routes: Routes =
 [
@@ -30,6 +30,7 @@ const routes: Routes =
       { path: '', redirectTo: 'welcome', pathMatch: 'full' },
     ]
   },
+  { path: 'signin-callback', component: SigninRedirectCallbackComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 

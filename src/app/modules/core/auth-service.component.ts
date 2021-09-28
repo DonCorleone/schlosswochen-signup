@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
-import { UserManager, User } from 'oidc-client';
-import { Constants } from '../../constants';
-import { Subject } from 'rxjs';
-import { CoreModule } from './core.module';
 import { HttpClient } from '@angular/common/http';
+
+import { Subject } from 'rxjs';
+
+import { UserManager, User, SignoutResponse } from 'oidc-client';
+
+import { Constants } from '../../constants';
+import { CoreModule } from './core.module';
 import { AuthContext } from '../../models/auth-context';
 
-@Injectable()
+@Injectable({providedIn: CoreModule})
 export class AuthService {
   private _userManager: UserManager;
   private _user: User | null;
@@ -23,8 +26,8 @@ export class AuthService {
       scope: 'openid profile projects-api',
       response_type: 'code',
       post_logout_redirect_uri: `${Constants.clientRoot}signout-callback`,
-      automaticSilentRenew: true,
-      silent_redirect_uri: `${Constants.clientRoot}assets/silent-callback.html`
+      // automaticSilentRenew: true,
+      // silent_redirect_uri: `${Constants.clientRoot}assets/silent-callback.html`
       // metadata: {
       //   issuer: `${Constants.stsAuthority}`,
       //   authorization_endpoint: `${Constants.stsAuthority}authorize?audience=projects-api`,
@@ -48,7 +51,7 @@ export class AuthService {
 
   }
 
-  login() {
+  login(): Promise<void> {
     return this._userManager.signinRedirect();
   }
 
@@ -66,7 +69,7 @@ export class AuthService {
     });
   }
 
-  completeLogin() {
+  completeLogin(): Promise<User> {
     return this._userManager.signinRedirectCallback().then(user => {
       this._user = user;
       this._loginChangedSubject.next(!!user && !user.expired);
@@ -74,17 +77,17 @@ export class AuthService {
     });
   }
 
-  logout() {
+  logout():void {
     this._userManager.signoutRedirect();
   }
 
-  completeLogout() {
+  completeLogout(): Promise<SignoutResponse> {
     this._user = null;
     this._loginChangedSubject.next(false);
     return this._userManager.signoutRedirectCallback();
   }
 
-  getAccessToken() {
+  getAccessToken(): Promise<String | null> {
     return this._userManager.getUser().then(user => {
       if (!!user && !user.expired) {
         return user.access_token;
@@ -95,7 +98,7 @@ export class AuthService {
     });
   }
 
-  loadSecurityContext() {
+  loadSecurityContext(): void {
     this._httpClient
       .get<AuthContext>(`${Constants.apiRoot}Projects/AuthContext`)
       .subscribe(

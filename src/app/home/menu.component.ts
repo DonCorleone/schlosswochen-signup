@@ -9,9 +9,11 @@ import { AuthService } from '../modules/core/auth-service.component';
 export class MenuComponent implements OnInit {
   pageTitle = 'Schlosswochen';
 
-  get isLoggedIn(): boolean {
-    return false;// ToDo securing this.authService.isLoggedIn();
-  }
+  isLoggedIn: boolean;
+
+ // ToDo securingget isLoggedIn(): boolean {
+ //   return this.authService.isLoggedIn();
+ // }
 
   get userName(): string {
 
@@ -21,13 +23,25 @@ export class MenuComponent implements OnInit {
     return '';
   }
 
-  constructor(private router: Router, private authService: AuthService) { }
 
-  ngOnInit() {
+  constructor(private _authService: AuthService) {
+    this._authService.loginChanged.subscribe(loggedIn => {
+      this.isLoggedIn = loggedIn;
+    });
+  }
+
+  ngOnInit(): void {
+    this._authService.isLoggedIn().then (loggedIn => {
+      this.isLoggedIn = loggedIn
+    });
+  }
+
+  login(){
+    this._authService.login();
   }
 
   logOut(): void {
-    this.authService.logout();
-    this.router.navigate(['/welcome']);
+    this._authService.logout();
+  // ToDo ACME  this.router.navigate(['/welcome']);
   }
 }
