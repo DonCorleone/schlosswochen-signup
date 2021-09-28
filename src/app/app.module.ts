@@ -3,16 +3,23 @@ import { NgModule } from '@angular/core';
 import { InMemoryCache } from '@apollo/client/core';
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { ApolloClientOptions } from '@apollo/client/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
 import { HttpLink } from 'apollo-angular/http';
 import { AppComponent } from './app.component';
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import * as realm from './realm';
 import { GraphQLModule } from './graphql.module';
 import { AppRoutingModule } from './app-routing.module';
-import { ReactiveFormsModule } from '@angular/forms';
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
 import { environment } from '../environments/environment';
+import { MenuComponent } from './home/menu.component';
+import { PageNotFoundComponent } from './home/page-not-found.component';
+import { ShellComponent } from './home/shell.component';
+import { WelcomeComponent } from './home/welcome.component';
+import { CoreModule } from './modules/core/core.module';
 
 const uri = realm.graphqlUrl;
 
@@ -28,7 +35,11 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ShellComponent,
+    MenuComponent,
+    WelcomeComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -36,6 +47,7 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
     GraphQLModule,
     HttpClientModule,
     ReactiveFormsModule,
+    CoreModule,
     StoreModule.forRoot({}, {}),
     StoreDevtoolsModule.instrument(
       {
