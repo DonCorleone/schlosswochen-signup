@@ -7,7 +7,7 @@ import { AuthService } from '../modules/core/auth-service.component';
   templateUrl: './menu.component.html'
 })
 export class MenuComponent implements OnInit {
-  pageTitle = 'Acme Product Management';
+  pageTitle = 'Schlosswochen';
 
   get isLoggedIn(): boolean {
     return false;// ToDo securing this.authService.isLoggedIn();
