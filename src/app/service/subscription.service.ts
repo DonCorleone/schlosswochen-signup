@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Apollo, gql } from 'apollo-angular';
+import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import { Observable, throwError } from 'rxjs';
 import { tap, map, catchError } from 'rxjs/operators';
 import { insertOneSubscription, insertOneSubscriptionData } from '../models/Subscriptor';
@@ -22,7 +22,11 @@ const UPDATE_SUBSCRITION = gql`
 })
 export class SubscriptionService {
 
-  constructor(private apollo: Apollo) { }
+  private apollo: ApolloBase;
+  constructor(private apolloProvider: Apollo) {
+    this.apollo = this.apolloProvider.use('writeClient');
+  }
+
 
   updateSubscription(id: string, variable: graphqlx.SubscriptionUpdateInput): Observable<insertOneSubscription> {
     return this.apollo.mutate<insertOneSubscriptionData>({

@@ -9,7 +9,7 @@ import { Constants } from '../../constants';
 import { CoreModule } from './core.module';
 import { AuthContext } from '../../models/auth-context';
 
-@Injectable({providedIn: CoreModule})
+@Injectable()
 export class AuthService {
   private _userManager: UserManager;
   private _user: User | null;
@@ -25,9 +25,9 @@ export class AuthService {
       redirect_uri: `${Constants.clientRoot}signin-callback`,
       scope: 'openid profile schlosswochen-api',
       response_type: 'code',
-      // post_logout_redirect_uri: `${Constants.clientRoot}signout-callback`,
-      // automaticSilentRenew: true,
-      // silent_redirect_uri: `${Constants.clientRoot}assets/silent-callback.html`
+      post_logout_redirect_uri: `${Constants.clientRoot}signout-callback`,
+      automaticSilentRenew: true,
+      silent_redirect_uri: `${Constants.clientRoot}assets/silent-callback.html`,
       metadata: {
         issuer: `${Constants.stsAuthority}`,
         authorization_endpoint: `${Constants.stsAuthority}authorize?audience=schlosswochen-api`,
@@ -38,16 +38,16 @@ export class AuthService {
       }
     };
     this._userManager = new UserManager(stsSettings);
-    // this._userManager.events.addAccessTokenExpired(_ => {
-    //   this._loginChangedSubject.next(false);
-    // });
-    // this._userManager.events.addUserLoaded(user => {
-    //   if (this._user !== user) {
-    //     this._user = user;
-    //     this.loadSecurityContext();
-    //     this._loginChangedSubject.next(!!user && !user.expired);
-    //   }
-    // });
+    this._userManager.events.addAccessTokenExpired(_ => {
+      this._loginChangedSubject.next(false);
+    });
+    this._userManager.events.addUserLoaded(user => {
+      if (this._user !== user) {
+        this._user = user;
+       // this.loadSecurityContext();
+        this._loginChangedSubject.next(!!user && !user.expired);
+      }
+    });
 
   }
 

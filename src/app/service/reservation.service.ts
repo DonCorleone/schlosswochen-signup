@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Apollo, gql } from 'apollo-angular';
+import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { ChildsPerState, ChildsPerStateData, insertOneSubscription, insertOneSubscriptionData } from '../models/Subscriptor';
@@ -42,7 +42,10 @@ export class ReservationService {
     )
   }
 
-  constructor(private apollo: Apollo) { }
+  private apollo: ApolloBase;
+  constructor(private apolloProvider: Apollo) {
+    this.apollo = this.apolloProvider.use('readAndWriteClient');
+  }
 
   GetReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
     console.log(`Get Reservations Per Week`);

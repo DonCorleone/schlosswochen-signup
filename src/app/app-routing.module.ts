@@ -7,6 +7,7 @@ import { WelcomeComponent } from './home/welcome.component';
 import { ShellComponent } from './home/shell.component';
 import { SigninRedirectCallbackComponent } from './home/signin-redirect-callback.component';
 import { SignoutRedirectCallbackComponent } from './home/signout-redirect-callback.component';
+import { UnauthorizedComponent } from './home/unauthorized.component';
 
 const routes: Routes =
 [
@@ -33,6 +34,7 @@ const routes: Routes =
   },
   { path: 'signin-callback', component: SigninRedirectCallbackComponent },
   { path: 'signout-callback', component: SignoutRedirectCallbackComponent },
+  { path: 'unauthorized', component: UnauthorizedComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 

@@ -6,7 +6,7 @@ import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import { Participant } from '../models/Participant';
 import { MutationInsertOneParticipantArgs, ParticipantInsertInput } from '../models/Graphqlx';
-import { Apollo, gql } from 'apollo-angular';
+import { Apollo, ApolloBase, gql } from 'apollo-angular';
 
 const UPDATE = gql`
   mutation ($participantInsertInput: ParticipantInsertInput!) {
@@ -27,7 +27,10 @@ export class ParticipantService {
   private participantsUrl = 'api/participants';
   private participants: Participant[] = [];
 
-  constructor(private http: HttpClient, private apollo: Apollo) { }
+  private apollo: ApolloBase;
+  constructor(private http: HttpClient, private apolloProvider: Apollo) {
+    this.apollo = this.apolloProvider.use('readAndWriteClient');
+  }
 
   getParticipants(): Observable<Participant[]> {
     if (this.participants) {
@@ -45,6 +48,7 @@ export class ParticipantService {
   //  insertOneParticipant(data: ParticipantInsertInput!): Participant
 
   //  ParticipantInsertInput
+
     return this.apollo.mutate<MutationInsertOneParticipantArgs>({
       mutation: UPDATE,
       variables: {

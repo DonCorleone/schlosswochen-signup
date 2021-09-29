@@ -9,9 +9,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { HttpLink } from 'apollo-angular/http';
 import { AppComponent } from './app.component';
-import { APOLLO_OPTIONS } from 'apollo-angular';
+import { APOLLO_NAMED_OPTIONS, APOLLO_OPTIONS, NamedOptions } from 'apollo-angular';
 import * as realm from './realm';
-import { GraphQLModule } from './graphql.module';
 import { AppRoutingModule } from './app-routing.module';
 
 import { environment } from '../environments/environment';
@@ -22,18 +21,7 @@ import { WelcomeComponent } from './home/welcome.component';
 import { CoreModule } from './modules/core/core.module';
 import { SigninRedirectCallbackComponent } from './home/signin-redirect-callback.component';
 import { SignoutRedirectCallbackComponent } from './home/signout-redirect-callback.component';
-
-const uri = realm.graphqlUrl;
-
-export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
-	return {
-		link: httpLink.create({
-			uri,
-			headers: new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`)
-		}),
-		cache: new InMemoryCache()
-	};
-}
+import { UnauthorizedComponent } from './home/unauthorized.component';
 
 @NgModule({
   declarations: [
@@ -43,12 +31,12 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
     WelcomeComponent,
     PageNotFoundComponent,
     SigninRedirectCallbackComponent,
-    SignoutRedirectCallbackComponent
+    SignoutRedirectCallbackComponent,
+    UnauthorizedComponent
   ],
   imports: [
     BrowserModule,
 		AppRoutingModule,
-    GraphQLModule,
     HttpClientModule,
     ReactiveFormsModule,
     CoreModule,
@@ -60,13 +48,32 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
         logOnly: environment.production }
       )
   ],
-	providers: [
-		{
-			provide: APOLLO_OPTIONS,
-			useFactory: createApollo,
-			deps: [HttpLink]
-		}
-	],
+  providers: [
+    {
+      provide: APOLLO_NAMED_OPTIONS, // <-- Different from standard initialization
+      useFactory(httpLink: HttpLink): NamedOptions {
+        return {
+          readAndWriteClient: {
+            // <-- this settings will be saved by name: newClientName
+            cache: new InMemoryCache(),
+            link: httpLink.create({
+              uri: realm.graphqlUrl,
+              headers: new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`)
+            }),
+          },
+          writeClient: {
+            // <-- this settings will be saved by name: newClientName
+            cache: new InMemoryCache(),
+            link: httpLink.create({
+              uri: realm.graphqlUrl,
+              headers: new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`)
+            }),
+          },
+        };
+      },
+      deps: [HttpLink],
+    }
+  ],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }
