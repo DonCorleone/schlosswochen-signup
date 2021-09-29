@@ -8,17 +8,6 @@ import { Participant } from '../models/Participant';
 import { MutationInsertOneParticipantArgs, ParticipantInsertInput } from '../models/Graphqlx';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
 
-const UPDATE = gql`
-  mutation ($participantInsertInput: ParticipantInsertInput!) {
-    insertOneParticipant(
-    data: $participantInsertInput
-  ) {
-  	_id
-		participant_id
-    }
-  }
-`;
-
 @Injectable({
   providedIn: 'root',
 })
@@ -50,7 +39,16 @@ export class ParticipantService {
   //  ParticipantInsertInput
 
     return this.apollo.mutate<MutationInsertOneParticipantArgs>({
-      mutation: UPDATE,
+      mutation: gql`
+        mutation ($participantInsertInput: ParticipantInsertInput!) {
+          insertOneParticipant(
+          data: $participantInsertInput
+        ) {
+          _id
+          participant_id
+          }
+        }
+      `,
       variables: {
         participantInsertInput: variable
       }

@@ -4,28 +4,6 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { ChildsPerState, ChildsPerStateData, insertOneSubscription, insertOneSubscriptionData } from '../models/Subscriptor';
 
-const GET_RESERVATIONS_PER_WEEK = gql`
-    query GetReservationsPerWeek($week:Int!) {
-      sumChildsPerState(input: $week) {
-        state
-        sumPerStateAndWeek
-      }
-    }
-  `;
-
-const INSERT_RESERVATIONS_PER_WEEK = gql`
-  mutation insertSubscription($subscriptionInsertInput: SubscriptionInsertInput!) {
-    insertOneSubscription(
-      data: $subscriptionInsertInput
-    ){
-      _id
-      deadline
-      week
-      numOfChildren
-    }
-  }
-`;
-
 @Injectable({
   providedIn: 'root'
 })
@@ -33,7 +11,18 @@ export class ReservationService {
 
   createWeeklyReservation(variable: Record<string, any>): Observable<string> {
     return this.apollo.mutate<insertOneSubscriptionData>({
-      mutation: INSERT_RESERVATIONS_PER_WEEK,
+      mutation: gql`
+        mutation insertSubscription($subscriptionInsertInput: SubscriptionInsertInput!) {
+          insertOneSubscription(
+            data: $subscriptionInsertInput
+          ){
+            _id
+            deadline
+            week
+            numOfChildren
+          }
+        }
+      `,
       variables: variable
     }).pipe(
       tap(data => console.log('Products', JSON.stringify(data))),
@@ -51,7 +40,14 @@ export class ReservationService {
     console.log(`Get Reservations Per Week`);
     return this.apollo
       .watchQuery<ChildsPerStateData>({
-        query: GET_RESERVATIONS_PER_WEEK,
+        query: gql`
+          query GetReservationsPerWeek($week:Int!) {
+            sumChildsPerState(input: $week) {
+              state
+              sumPerStateAndWeek
+            }
+          }
+        `,
         variables: { week: week },
         fetchPolicy: 'no-cache'
       })

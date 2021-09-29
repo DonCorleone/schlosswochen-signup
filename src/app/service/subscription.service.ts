@@ -5,18 +5,6 @@ import { tap, map, catchError } from 'rxjs/operators';
 import { insertOneSubscription, insertOneSubscriptionData } from '../models/Subscriptor';
 import * as graphqlx from '../models/Graphqlx';
 
-const UPDATE_SUBSCRITION = gql`
-  mutation ($id: ObjectId, $subscriptionUpdateInput: SubscriptionUpdateInput!) {
-    updateOneSubscription(
-      query: { _id: $id }
-      set: $subscriptionUpdateInput
-    ) {
-      _id
-      state
-    }
-  }
-`;
-
 @Injectable({
   providedIn: 'root'
 })
@@ -30,7 +18,17 @@ export class SubscriptionService {
 
   updateSubscription(id: string, variable: graphqlx.SubscriptionUpdateInput): Observable<insertOneSubscription> {
     return this.apollo.mutate<insertOneSubscriptionData>({
-      mutation: UPDATE_SUBSCRITION,
+      mutation: gql`
+        mutation ($id: ObjectId, $subscriptionUpdateInput: SubscriptionUpdateInput!) {
+          updateOneSubscription(
+            query: { _id: $id }
+            set: $subscriptionUpdateInput
+          ) {
+            _id
+            state
+          }
+        }
+      `,
       variables: {
         id, subscriptionUpdateInput: variable
       }
