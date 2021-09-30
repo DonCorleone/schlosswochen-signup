@@ -17,6 +17,7 @@ export interface SubscriptionState {
 const initialState: SubscriptionState = {
   subscription: {
     _id:'',
+    salutation: '',
     firstName: '',
     lastName: '',
     email: '',
@@ -26,7 +27,8 @@ const initialState: SubscriptionState = {
     city: '',
     state: 'temporary',
     zip: '',
-    participants:[]
+    participants:[],
+    externalUserId:''
   }
 }
 

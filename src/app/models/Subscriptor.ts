@@ -11,7 +11,8 @@ export interface insertOneSubscriptionData {
 
 
 export interface Subscriptor {
-  _id:string
+  _id: string
+  salutation: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -22,6 +23,7 @@ export interface Subscriptor {
   state: string;
   zip: string;
   participants: any[];
+  externalUserId: string;
 }
 
 

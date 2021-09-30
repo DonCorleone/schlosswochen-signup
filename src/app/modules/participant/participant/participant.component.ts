@@ -121,7 +121,9 @@ export class ParticipantComponent implements OnInit {
       salutation: '',
       firstNameParticipant: '',
       lastNameParticipant: '',
+      birthday: new Date(),
       participant_id: participant_id,
+      externalUserId: '',
       fotoAllowed: '',
       comment: ''
     });
@@ -207,7 +209,8 @@ export class ParticipantComponent implements OnInit {
           city: subscriptionStore.city,
           state: "definitive",
           zip: subscriptionStore.zip,
-          participants:subscriptionParticipantsRelationInput
+          participants:subscriptionParticipantsRelationInput,
+          externalUserId:''
         }
         subscription.participants = subscriptionParticipantsRelationInput;
         this.subscriptionService.updateSubscription(this.subscription_id, subscription).subscribe(

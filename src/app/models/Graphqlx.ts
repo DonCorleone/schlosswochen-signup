@@ -1155,14 +1155,15 @@ export enum PressSortByInput {
 }
 
 export type ParticipantInsertInput = {
-  birthday?: Maybe<Scalars["String"]>
+  birthday?: Maybe<Scalars["DateTime"]>
   comment?: Maybe<Scalars["String"]>
   firstNameParticipant?: Maybe<Scalars["String"]>
-  fotoAllowed?: Maybe<Scalars["String"]>
+  fotoAllowed?: Maybe<Scalars["Boolean"]>
   lastNameParticipant?: Maybe<Scalars["String"]>
   participant_id?: Maybe<Scalars["String"]>
   salutation?: Maybe<Scalars["String"]>
   _id?: Maybe<Scalars["ObjectId"]>
+  externalUserId?: Maybe<Scalars["String"]>
 }
 
 export type PressUpdateInput = {
@@ -2602,6 +2603,8 @@ export type SubscriptionUpdateInput = {
   phone?: Maybe<Scalars["String"]>
   state_unset?: Maybe<Scalars["Boolean"]>
   reservationDate_unset?: Maybe<Scalars["Boolean"]>
+  externalUserId?: Maybe<Scalars["String"]>
+  salutation?: Maybe<Scalars["String"]>
 }
 
 export type EventDetailTicketTypeTicketTypeInfoUpdateInput = {

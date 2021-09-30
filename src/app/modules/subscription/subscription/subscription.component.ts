@@ -81,6 +81,7 @@ export class SubscriptionComponent implements OnInit {
     );
 
     this.signupForm = this.fb.group({
+      salutation: '',
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
       email: ['', [Validators.required, Validators.email]],
@@ -90,7 +91,8 @@ export class SubscriptionComponent implements OnInit {
       city: '',
       state: 'temporary',
       zip: '',
-      participants:[]
+      participants:[],
+      externalUserId: ''
     });
 
     const emailControl = this.signupForm.get('emailGroup.email');
