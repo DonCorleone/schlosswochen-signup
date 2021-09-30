@@ -8,6 +8,7 @@ import { ShellComponent } from './home/shell.component';
 import { SigninRedirectCallbackComponent } from './home/signin-redirect-callback.component';
 import { SignoutRedirectCallbackComponent } from './home/signout-redirect-callback.component';
 import { UnauthorizedComponent } from './home/unauthorized.component';
+import { RealmAuthGuardReadWrite } from './realm-auth-readwrite.guard';
 
 const routes: Routes =
 [
@@ -23,11 +24,13 @@ const routes: Routes =
       },
       {
         path: 'subscriptions', // ToDo subscription
-        loadChildren: () => import('./modules/subscription/subscription.module').then(m => m.SubscriptionsModule)
+        loadChildren: () => import('./modules/subscription/subscription.module').then(m => m.SubscriptionsModule),
+        canActivate: [RealmAuthGuard]
       },
       {
         path: 'participant', // ToDo subscription
-        loadChildren: () => import('./modules/participant/participant.module').then(m => m.ParticipantModule)
+        loadChildren: () => import('./modules/participant/participant.module').then(m => m.ParticipantModule),
+        canActivate: [RealmAuthGuard]
       },
       { path: '', redirectTo: 'welcome', pathMatch: 'full' },
     ]

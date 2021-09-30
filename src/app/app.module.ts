@@ -57,8 +57,8 @@ import { UnauthorizedComponent } from './home/unauthorized.component';
             // <-- this settings will be saved by name: newClientName
             cache: new InMemoryCache(),
             link: httpLink.create({
-              uri: realm.graphqlUrl,
-              headers: new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`)
+              uri: realm.graphqlUrlReadWrite,
+              headers: new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('tokenReadWrite')}`)
             }),
           },
           writeClient: {

@@ -33,7 +33,7 @@ export class ReservationService {
 
   private apollo: ApolloBase;
   constructor(private apolloProvider: Apollo) {
-    this.apollo = this.apolloProvider.use('readAndWriteClient');
+    this.apollo = this.apolloProvider.use('writeClient');
   }
 
   GetReservationsPerWeek(week: number): Observable<ChildsPerState[]> {

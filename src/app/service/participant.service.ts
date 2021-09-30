@@ -18,7 +18,7 @@ export class ParticipantService {
 
   private apollo: ApolloBase;
   constructor(private http: HttpClient, private apolloProvider: Apollo) {
-    this.apollo = this.apolloProvider.use('readAndWriteClient');
+    this.apollo = this.apolloProvider.use('writeClient');
   }
 
   getParticipants(): Observable<Participant[]> {
