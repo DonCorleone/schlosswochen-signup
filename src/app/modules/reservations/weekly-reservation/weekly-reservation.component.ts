@@ -132,7 +132,7 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
  // }
 
   goToPreviousStep() {
-  //  this.router.navigate(['personal']);
+    this.router.navigate(['welcome']);
   }
 
   ngOnDestroy(): void {

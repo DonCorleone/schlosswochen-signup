@@ -1,7 +1,7 @@
-﻿<div class="card">
-  <div class="card-header">
-    {{pageTitle}}
-  </div>
-  <div class="card-body">
-  </div>
-</div>
+﻿<app-wizard-step
+  [title]="title"
+  (previousStepClicked)="goToPreviousStep()"
+  (nextStepClicked)="goToNextStep()"
+>
+<div class="content"></div>
+</app-wizard-step>

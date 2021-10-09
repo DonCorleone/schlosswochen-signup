@@ -1,8 +1,22 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
-    templateUrl: './welcome.component.html'
+    templateUrl: './welcome.component.html',
+    styleUrls: ['./welcome.component.scss']
 })
 export class WelcomeComponent {
-    public pageTitle = 'Welcome';
+
+  public title = 'Wilkommen zur Schlosswochen-Anmeldung';
+
+  constructor(
+    private router: Router) { }
+
+  goToPreviousStep() {
+  //  this.router.navigate(['personal']);
+  }
+
+  goToNextStep(): void {
+    this.router.navigate(['reservation']);
+  }
 }
