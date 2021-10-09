@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, tap } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
-import { Apollo, gql, Mutation } from 'apollo-angular';
-import { ChildsPerState, ChildsPerStateData, insertOneSubscription, insertOneSubscriptionData } from '../models/Subscriptor';
-import { getLocaleExtraDayPeriodRules } from '@angular/common';
+import { Apollo } from 'apollo-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +8,6 @@ import { getLocaleExtraDayPeriodRules } from '@angular/common';
 export class ApolloService {
 
   constructor(private apollo: Apollo) {}
-
-
 
   private handleError(err: any): Observable<never> {
     // in a real world app, we may send the server to some remote logging infrastructure

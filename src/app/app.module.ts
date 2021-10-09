@@ -22,6 +22,7 @@ import { CoreModule } from './modules/core/core.module';
 import { SigninRedirectCallbackComponent } from './home/signin-redirect-callback.component';
 import { SignoutRedirectCallbackComponent } from './home/signout-redirect-callback.component';
 import { UnauthorizedComponent } from './home/unauthorized.component';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { UnauthorizedComponent } from './home/unauthorized.component';
     HttpClientModule,
     ReactiveFormsModule,
     CoreModule,
+    SharedModule,
     StoreModule.forRoot({}, {}),
     StoreDevtoolsModule.instrument(
       {

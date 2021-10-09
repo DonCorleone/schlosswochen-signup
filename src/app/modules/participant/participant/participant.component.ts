@@ -40,6 +40,8 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class ParticipantComponent implements OnInit {
 
+  title = 'Participant';
+
   subscription_id: string = "";
   week: number = 0;
   numOfChilds: number = 0;
@@ -129,7 +131,26 @@ export class ParticipantComponent implements OnInit {
     });
   }
 
-  next(): void {
+ // goToNextStep() {
+    // if (this.addressForm.invalid) {
+    //   this.submitted = true;
+    //   return;
+    // }
+
+   // this.router.navigate(['experience']);
+//  }
+
+  goToPreviousStep() {
+  //  this.router.navigate(['personal']);
+  }
+
+  goToNextStep(): void {
+
+    if (this.signupForm.invalid) {
+      // this.submitted = true;
+      return;
+    }
+
     if (this.signupForm.valid) {
       if (this.signupForm.dirty) {
         // Copy over all of the original participant properties

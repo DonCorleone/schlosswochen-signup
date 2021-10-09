@@ -22,6 +22,8 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class WeeklyReservationComponent implements OnInit, OnDestroy {
 
+  title = 'Reservation';
+
   @Input() maxWeeks: number = 1;
   @Input() maxReservations: number = 1;
 
@@ -84,9 +86,14 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
     );
   }
 
-  save(): void {
+  goToNextStep(): void {
     console.log(this.signupForm);
     console.log('Saved: ' + JSON.stringify(this.signupForm.value));
+
+    if (this.signupForm.invalid) {
+      // this.submitted = true;
+      return;
+    }
 
     const weeklyReservationControl = this.signupForm.get('numOfChilds');
 
@@ -113,6 +120,19 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
           this.router.navigate(['/subscriptions', subscriptionId, weeklyReservation.weeknr, weeklyReservation.numberOfReservations, deadlineMs]);
         });
     }
+  }
+
+  // goToNextStep() {
+    // if (this.addressForm.invalid) {
+    //   this.submitted = true;
+    //   return;
+    // }
+
+   // this.router.navigate(['experience']);
+ // }
+
+  goToPreviousStep() {
+  //  this.router.navigate(['personal']);
   }
 
   ngOnDestroy(): void {

@@ -1,15 +1,6 @@
+.card {
+  width: 100%;
+}
 .form-check-input {
   vertical-align: -webkit-baseline-middle;
-}
-
-.btn-row{
-  display: flex;
-  flex-direction: row ;
-  justify-content: space-between;
-
-  button{
-    flex: 1 1 0px;
-    flex-basis: 0;
-    max-width: 100px;
-  }
 }

@@ -7,6 +7,7 @@ import { StoreModule } from '@ngrx/store';
 import * as fromState from './state/reservation.reducer';
 import { CapacityComponent } from './capacity/capacity.component';
 import { CommonModule } from '@angular/common';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { CommonModule } from '@angular/common';
     CommonModule,
     ReservationsRoutingModule,
     ReactiveFormsModule,
+    SharedModule,
     StoreModule.forFeature(fromState.reservationFeatureKey, fromState.reservationReducer)
   ]
 })

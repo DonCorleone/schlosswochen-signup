@@ -39,6 +39,8 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class SubscriptionComponent implements OnInit {
 
+  title = 'Subscription';
+
   id: string | null = '0';
   week: string | null = '0';
   numOfChilds: number | null = 0;
@@ -106,8 +108,25 @@ export class SubscriptionComponent implements OnInit {
     this.week = this.route.snapshot.paramMap.get('week');
     let numOfChildsStr = this.route.snapshot.paramMap.get('numOfChilds');
   }
+ // goToNextStep() {
+    // if (this.addressForm.invalid) {
+    //   this.submitted = true;
+    //   return;
+    // }
 
-  next(): void {
+   // this.router.navigate(['experience']);
+ // }
+
+  goToPreviousStep() {
+  //  this.router.navigate(['personal']);
+  }
+  goToNextStep(): void {
+
+    if (this.signupForm.invalid) {
+     // this.submitted = true;
+      return;
+    }
+
     if (this.week && this.id) {
 
       const subscription = { subscription: this.signupForm.value };

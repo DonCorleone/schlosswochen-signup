@@ -1,121 +1,129 @@
-<div>
-  {{ timer$ | async  }} Minutes left!
-</div>
-<div class="card">
-  <div class="card-header">
-    <H2 class="H2">Week No {{week}} Sign Up!</H2>
-  </div>
+<app-wizard-step
+  [title]="title"
+  [saveStep]="currentParticipantNumber >= numOfChilds"
+  (previousStepClicked)="goToPreviousStep()"
+  (nextStepClicked)="goToNextStep()"
+>
 
-  <div class="card-body">
-    <form novalidate [formGroup]="signupForm">
+  <div class="card">
+    <div class="card-header">
+      <H2 class="H2">Week No {{week}} Sign Up!</H2>
+    </div>
 
-      <h3 class="h3">Child No </h3>
-      <div class="form-group row mb-2">
-        <label class="col-md-2 col-form-label" attr.for="{{ 'salutationId' }}">Salutation</label>
-        <div class="col-md-8">
-          <select class="form-control" id="{{ 'salutationId' }}" name="salutation">
-            <option value="" disabled selected hidden>Select a Salutation...</option>
-            <option value="M">Ritter</option>
-            <option value="F">Prinzessin</option>
-          </select>
-        </div>
+    <div class="card-body">
+      <div>
+        {{ timer$ | async  }} Minutes left!
       </div>
+      <form novalidate [formGroup]="signupForm">
 
-      <div class="form-group row mb-2">
-        <label class="col-md-2 col-form-label" attr.for="{{ 'firstNameParticipantId'  }}">First Name</label>
-        <div class="col-md-8">
-          <input class="form-control" id="{{ 'firstNameParticipantId' }}" type="text"
-            placeholder="First Name (required)" formControlName="firstNameParticipant"
-            [ngClass]="{'is-invalid': (signupForm.get('firstNameParticipant')?.touched || signupForm.get('firstNameParticipant')?.dirty) && !signupForm.get('firstNameParticipant')?.valid }" />
-          <span class="invalid-feedback">
-            <span *ngIf="signupForm.get('firstNameParticipant')?.errors?.required">
-              Please enter the first name.
+        <h3 class="h3">Child No </h3>
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label" attr.for="{{ 'salutationId' }}">Salutation</label>
+          <div class="col-md-8">
+            <select class="form-control" id="{{ 'salutationId' }}" name="salutation">
+              <option value="" disabled selected hidden>Select a Salutation...</option>
+              <option value="M">Ritter</option>
+              <option value="F">Prinzessin</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label" attr.for="{{ 'firstNameParticipantId'  }}">First Name</label>
+          <div class="col-md-8">
+            <input class="form-control" id="{{ 'firstNameParticipantId' }}" type="text"
+              placeholder="First Name (required)" formControlName="firstNameParticipant"
+              [ngClass]="{'is-invalid': (signupForm.get('firstNameParticipant')?.touched || signupForm.get('firstNameParticipant')?.dirty) && !signupForm.get('firstNameParticipant')?.valid }" />
+            <span class="invalid-feedback">
+              <span *ngIf="signupForm.get('firstNameParticipant')?.errors?.required">
+                Please enter the first name.
+              </span>
+              <span *ngIf="signupForm.get('firstNameParticipant')?.errors?.minlength">
+                The first name must be longer than 3 characters.
+              </span>
             </span>
-            <span *ngIf="signupForm.get('firstNameParticipant')?.errors?.minlength">
-              The first name must be longer than 3 characters.
+          </div>
+        </div>
+
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label" attr.for="{{ 'lastNameParticipantId'  }}">Last Name</label>
+          <div class="col-md-8">
+            <input class="form-control" id="{{ 'lastNameParticipantId' }}" type="text" placeholder="Last Name (required)"
+              formControlName="lastNameParticipant"
+              [ngClass]="{'is-invalid': (signupForm.get('lastNameParticipant')?.touched || signupForm.get('lastNameParticipant')?.dirty) && !signupForm.get('lastName')?.valid }" />
+            <span class="invalid-feedback">
+              <span *ngIf="signupForm.get('lastNameParticipant')?.errors?.required">
+                Please enter the last name.
+              </span>
+              <span *ngIf="signupForm.get('lastNameParticipant')?.errors?.maxlength">
+                The last name must be less than 50 characters.
+              </span>
             </span>
-          </span>
+          </div>
         </div>
-      </div>
 
-      <div class="form-group row mb-2">
-        <label class="col-md-2 col-form-label" attr.for="{{ 'lastNameParticipantId'  }}">Last Name</label>
-        <div class="col-md-8">
-          <input class="form-control" id="{{ 'lastNameParticipantId' }}" type="text" placeholder="Last Name (required)"
-            formControlName="lastNameParticipant"
-            [ngClass]="{'is-invalid': (signupForm.get('lastNameParticipant')?.touched || signupForm.get('lastNameParticipant')?.dirty) && !signupForm.get('lastName')?.valid }" />
-          <span class="invalid-feedback">
-            <span *ngIf="signupForm.get('lastNameParticipant')?.errors?.required">
-              Please enter the last name.
+        <!-- <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label" attr.for="{{ 'birthdayId'  }}">Birthday</label>
+          <div class="col-md-8">
+            <input class="form-control" id="{{ 'birthdayId' }}" type="date" placeholder="Birthday (required)"
+              formControlName="birthday"
+              [ngClass]="{'is-invalid': (signupForm.get('birthday')?.touched || signupForm.get('birthday')?.dirty) && !signupForm.get('birthday')?.valid }" />
+            <span class="invalid-feedback">
+              <span *ngIf="signupForm.get('birthday')?.errors?.required">
+                Please enter the birthday.
+              </span>
             </span>
-            <span *ngIf="signupForm.get('lastNameParticipant')?.errors?.maxlength">
-              The last name must be less than 50 characters.
-            </span>
-          </span>
-        </div>
-      </div>
+          </div>
+        </div> -->
 
-      <!-- <div class="form-group row mb-2">
-        <label class="col-md-2 col-form-label" attr.for="{{ 'birthdayId'  }}">Birthday</label>
-        <div class="col-md-8">
-          <input class="form-control" id="{{ 'birthdayId' }}" type="date" placeholder="Birthday (required)"
-            formControlName="birthday"
-            [ngClass]="{'is-invalid': (signupForm.get('birthday')?.touched || signupForm.get('birthday')?.dirty) && !signupForm.get('birthday')?.valid }" />
-          <span class="invalid-feedback">
-            <span *ngIf="signupForm.get('birthday')?.errors?.required">
-              Please enter the birthday.
-            </span>
-          </span>
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label form-check-label" attr.for="{{ 'fotoAllowedId'  }}">Foto
+            allowed</label>
+          <div class="col-md-8">
+            <input class="form-check-input" id="{{ 'fotoAllowedId' }}" type="checkbox" value="true"
+              formControlName="fotoAllowed" />
+          </div>
         </div>
-      </div> -->
 
-      <div class="form-group row mb-2">
-        <label class="col-md-2 col-form-label form-check-label" attr.for="{{ 'fotoAllowedId'  }}">Foto
-          allowed</label>
-        <div class="col-md-8">
-          <input class="form-check-input" id="{{ 'fotoAllowedId' }}" type="checkbox" value="true"
-            formControlName="fotoAllowed" />
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label" attr.for="{{ 'commentId'  }}">Comment</label>
+          <div class="col-md-8">
+            <textarea class="form-control" id="{{ 'commentId' }}" formControlName="textArea" placeholder="Comment"
+              formControlName="comment"></textarea>
+          </div>
         </div>
-      </div>
 
-      <div class="form-group row mb-2">
-        <label class="col-md-2 col-form-label" attr.for="{{ 'commentId'  }}">Comment</label>
-        <div class="col-md-8">
-          <textarea class="form-control" id="{{ 'commentId' }}" formControlName="textArea" placeholder="Comment"
-            formControlName="comment"></textarea>
-        </div>
-      </div>
-
-      <div class="form-group row mb-2">
-        <div class="col-md-2 col-form-label">
-        </div>
-        <div class="col-md-8 btn-row">
-          <button class="btn btn-primary mr-3"
-            [title]="signupForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
-            [disabled]="!signupForm.valid">
-            Previous
-          </button>
-          <ng-container *ngIf="currentParticipantNumber < numOfChilds else saveCase">
+        <!-- <div class="form-group row mb-2">
+          <div class="col-md-2 col-form-label">
+          </div>
+          <div class="col-md-8 btn-row">
             <button class="btn btn-primary mr-3"
-              (click)="next()"
               [title]="signupForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
               [disabled]="!signupForm.valid">
-              Next
+              Previous
             </button>
-          </ng-container>
-          <ng-template #saveCase>
-            <button class="btn btn-primary mr-3"
-              (click)="save()"
-              [title]="signupForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
-              [disabled]="!signupForm.valid">
-              Save
-            </button>
-          </ng-template>
-        </div>
-      </div>
-    </form>
+            <ng-container *ngIf="currentParticipantNumber < numOfChilds else saveCase">
+              <button class="btn btn-primary mr-3"
+                (click)="next()"
+                [title]="signupForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+                [disabled]="!signupForm.valid">
+                Next
+              </button>
+            </ng-container>
+            <ng-template #saveCase>
+              <button class="btn btn-primary mr-3"
+                (click)="save()"
+                [title]="signupForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+                [disabled]="!signupForm.valid">
+                Save
+              </button>
+            </ng-template>
+          </div>
+        </div> -->
+      </form>
+    </div>
   </div>
-</div>
+</app-wizard-step>
 <br>ID: {{ subscription_id }}
 <br>Week: {{ week }}
 <br>Amount of childs: {{ numOfChilds }}
