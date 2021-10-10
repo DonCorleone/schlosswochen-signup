@@ -7,6 +7,11 @@
     <div class="card-body">
       <form [formGroup]="signupForm">
         <div class="form-group row mb-2">
+          <div *ngIf="submitted && reservationsPerWeekCtlr?.errors?.min"
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert">
+            A selection is required
+          </div>
           <div *ngFor="let week of weeks$ | async">
             <div class="weekBlock">
               <div class="weekSituation">

@@ -27,12 +27,11 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
   @Input() maxWeeks: number = 1;
   @Input() maxReservations: number = 1;
 
-  signupForm!: FormGroup;
-
   reservations$?: Observable<number[]>;
   weeks$?: Observable<number[]>;
   weeklyReservation$?: Observable<WeeklyReservation>;
   reservationSubscription: Subscription = new Subscription;
+  submitted = false;
 
   constructor(
     private fb: FormBuilder,
@@ -40,6 +39,11 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store<ReservationState>) { }
 
+  signupForm = this.fb.group({
+      numOfChilds: [0, [Validators.required, Validators.min(1)]],
+  });
+
+  reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
 
   ngOnInit(): void {
 
@@ -54,10 +58,6 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
       weeks.push(r);
     }
     this.weeks$ = of(weeks);
-
-    this.signupForm = this.fb.group({
-      numOfChilds: [0, [Validators.required, Validators.min(1)]],
-    });
 
     this.weeklyReservation$ = this.store.select(ReservationReducer.getWeeklyReservation).pipe(
       weeklyReservation => {
@@ -91,7 +91,7 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
     console.log('Saved: ' + JSON.stringify(this.signupForm.value));
 
     if (this.signupForm.invalid) {
-      // this.submitted = true;
+      this.submitted = true;
       return;
     }
 
