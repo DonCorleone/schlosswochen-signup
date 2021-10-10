@@ -8,27 +8,31 @@
       <form [formGroup]="signupForm">
         <div class="form-group row mb-2">
           <div *ngFor="let week of weeks$ | async">
-            <h2>Week {{week}}</h2>
-            <app-capacity [week]=week>
-
-            </app-capacity>
-            <div class="week">
-              <div class="radio-header">
-                Numer of Reservations:
+            <div class="weekBlock">
+              <div class="weekSituation">
+                <h2>Week {{week}}</h2>
+                <app-capacity [week]=week></app-capacity>
               </div>
-              <div class="radio-container">
-                <div *ngFor="let reservation of reservations$ | async; index as i">
+              <div class="weekReservation">
+                <div class="radio-header">
+                  Numer of Reservations:
+                </div>
+                <div class="radio-container">
+                  <div *ngFor="let reservation of reservations$ | async; index as i">
 
-                  <div class="form-check form-check-inline">
-                    <label class="form-check-label">
-                      <input class="form-check-input"
-                        [id]="'numOfChilds_' + reservation.toString()
-                            + '_week_'+ week.toString()"
-                        type="radio"
-                        [value]=createWeeklyReservation(week,reservation)
-                        formControlName="numOfChilds" (change)="changeReservation(week,reservation)">
-                      {{reservation}}
-                    </label>
+                    <div class="">
+                      <label class="form-check-label">
+                        <span>{{reservation}}</span>
+                        <input class="form-check-input"
+
+                          [id]="'numOfChilds_' + reservation.toString()
+                              + '_week_'+ week.toString()"
+                          type="radio"
+                          [value]=createWeeklyReservation(week,reservation)
+                          formControlName="numOfChilds" (change)="changeReservation(week,reservation)">
+
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>

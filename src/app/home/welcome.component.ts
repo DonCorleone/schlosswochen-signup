@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 })
 export class WelcomeComponent {
 
-  public title = 'Wilkommen zur Schlosswochen-Anmeldung';
+  public title = 'Anmeldung';
 
   constructor(
     private router: Router) { }

@@ -8,10 +8,40 @@
 }
 .radio-header {
   margin-right: 15px;
+}
+
+.weekBlock {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.weekSituation {
+  padding-right: 2rem;
+}
+
+.weekReservation {
+  font-size: 1.2rem;
+  display:flex;
+  flex-wrap: wrap;
   padding: 10px 0 5px 0;
 }
 
-.week {
-  display:flex;
-  flex-wrap: wrap;
+label {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-right: 1rem;
+  text-align: center;
+
+  span {
+    color: white;
+    font-size: 1.2rem;
+    width: 100%;
+  }
+
+  &:hover,
+  &:focus-within {
+   // outline: 1px white solid;
+  }
 }
