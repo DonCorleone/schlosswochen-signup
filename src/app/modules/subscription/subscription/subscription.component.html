@@ -47,15 +47,20 @@
           </div>
 
           <div class="form-group row mb-2">
-            <label class="col-md-2 col-form-label" for="phoneId">Phone</label>
+            <label class="col-md-2 col-form-label"
+                   for="phoneId">Phone</label>
             <div class="col-md-8">
-              <input class="form-control" id="phoneId" type="tel" placeholder="Phone" formControlName="phone" />
-              <!--   [ngClass]="{'is-invalid': !signupForm.get('phone')?.valid }" />
+              <input class="form-control"
+                     id="phoneId"
+                     type="tel"
+                     placeholder="Phone"
+                     formControlName="phone"
+                     [ngClass]="{'is-invalid': !signupForm.get('phone')?.valid }" />
               <span class="invalid-feedback">
                 <span *ngIf="signupForm.get('phone')?.errors?.required">
                   Please enter your phone number.
                 </span>
-              </span> -->
+              </span>
             </div>
           </div>
 
