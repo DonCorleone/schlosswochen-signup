@@ -6,6 +6,7 @@ import { StoreModule } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
 import * as fromState from './state/subscription.reducer';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
+import { ReservationsModule } from '../reservations/reservations.module';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { SharedModule } from 'src/app/modules/shared/shared.module';
     CommonModule,
 		SubscriptionsRoutingModule,
     ReactiveFormsModule,
+    ReservationsModule,
     SharedModule,
     StoreModule.forFeature(fromState.subscriptionFeatureKey, fromState.subscriptionReducer),
   ]

@@ -2,13 +2,13 @@ import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/
 import { WeeklyReservation } from "src/app/models/Week";
 import * as ReservationAction from "./reservation.action";
 
-export interface ReservationState {
+export interface State {
   weeklyReservation: WeeklyReservation
   subscriptionId: string,
   deadline: Date
 };
 
-const initialState: ReservationState = {
+const initialState: State = {
   weeklyReservation: {
     weeknr: 0,
     numberOfReservations: 0
@@ -19,7 +19,7 @@ const initialState: ReservationState = {
 
 export const reservationFeatureKey = 'reservations';
 
-const getReservationFeatureSector = createFeatureSelector<ReservationState>(reservationFeatureKey);
+const getReservationFeatureSector = createFeatureSelector<State>(reservationFeatureKey);
 
 export const getWeeklyReservation = createSelector(
   getReservationFeatureSector,
@@ -36,7 +36,7 @@ export const getDeadline = createSelector(
   state => state.deadline
 )
 
-export const reservationReducer = createReducer<ReservationState>(
+export const reservationReducer = createReducer<State>(
   initialState,
   on(ReservationAction.setWeeklyReservation, (state, action) => {
     return {

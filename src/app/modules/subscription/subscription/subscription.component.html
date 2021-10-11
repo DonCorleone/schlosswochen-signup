@@ -9,18 +9,7 @@
       <form novalidate [formGroup]="signupForm">
 
         <div class="form-group row mb-2">
-          <label class="col-md-2 col-form-label"></label>
-          <div class="col-md-8">
-            <div class="alert alert-primary show" role="alert">
-              <span>Week no: {{ week }}</span>
-            </div>
-            <div class="alert alert-primary show" role="alert">
-              <span>Reserved Places: {{ numOfChilds }}</span>
-            </div>
-            <div class="alert alert-success show" role="alert">
-              {{ timer$ | async }} Minutes left!
-            </div>
-          </div>
+          <app-header></app-header>
         </div>
 
           <div class="form-group row mb-2">
@@ -123,8 +112,6 @@
   </div>
 </app-wizard-step>
 <br>ID: {{ id }}
-<br>Week: {{ week }}
-<br>Amount of childs: {{ numOfChilds }}
 <br>Dirty: {{ signupForm.dirty }}
 <br>Touched: {{ signupForm.touched }}
 <br>Valid: {{ signupForm.valid }}

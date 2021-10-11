@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
-import { ReservationState } from '../state/reservation.reducer';
+import { State } from '../state/reservation.reducer';
 import * as ReservationActions from '../state/reservation.action';
 import * as ReservationReducer from '../state/reservation.reducer';
 import { WeeklyReservation } from 'src/app/models/Week';
@@ -37,7 +37,7 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private reservationService: ReservationService,
     private router: Router,
-    private store: Store<ReservationState>) { }
+    private store: Store<State>) { }
 
   signupForm = this.fb.group({
       numOfChilds: [0, [Validators.required, Validators.min(1)]],
