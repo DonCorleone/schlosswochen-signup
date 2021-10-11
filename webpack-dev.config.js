@@ -4,4 +4,7 @@ module.exports = {
   plugins: [
     new Dotenv(),
   ],
+  resolve: {
+    fallback: { "crypto": false }
+  }
 };
