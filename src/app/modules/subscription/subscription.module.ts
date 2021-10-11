@@ -5,7 +5,7 @@ import { SubscriptionsRoutingModule } from './subscription-routing.module';
 import { StoreModule } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
 import * as fromState from './state/subscription.reducer';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from 'src/app/modules/shared/shared.module';
 
 @NgModule({
   declarations: [

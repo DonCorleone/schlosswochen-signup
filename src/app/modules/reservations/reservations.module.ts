@@ -7,7 +7,7 @@ import { StoreModule } from '@ngrx/store';
 import * as fromState from './state/reservation.reducer';
 import { CapacityComponent } from './capacity/capacity.component';
 import { CommonModule } from '@angular/common';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from 'src/app/modules/shared/shared.module';
 
 
 @NgModule({
