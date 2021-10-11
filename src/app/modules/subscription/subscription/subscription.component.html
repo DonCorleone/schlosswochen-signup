@@ -3,17 +3,26 @@
   (previousStepClicked)="goToPreviousStep()"
   (nextStepClicked)="goToNextStep()"
 >
-
   <div class="card">
-    <div class="card-header">
-      <H2 class="H2">Week No {{week}} Sign Up!</H2>
-    </div>
-
     <div class="card-body">
-      <div>
-        {{ timer$ | async }} Minutes left!
-      </div>
+
       <form novalidate [formGroup]="signupForm">
+
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label"></label>
+          <div class="col-md-8">
+            <div class="alert alert-primary show" role="alert">
+              <span>Week no: {{ week }}</span>
+            </div>
+            <div class="alert alert-primary show" role="alert">
+              <span>Reserved Places: {{ numOfChilds }}</span>
+            </div>
+            <div class="alert alert-success show" role="alert">
+              {{ timer$ | async }} Minutes left!
+            </div>
+          </div>
+        </div>
+
           <div class="form-group row mb-2">
             <label class="col-md-2 col-form-label" for="firstNameId">First Name</label>
             <div class="col-md-8">

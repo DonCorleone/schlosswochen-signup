@@ -39,11 +39,11 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class SubscriptionComponent implements OnInit {
 
-  title = 'Subscription';
+  title = 'Contact';
 
   id: string | null = '0';
   week: string | null = '0';
-  numOfChilds: number | null = 0;
+  numOfChilds: string | null = '0';
   timer$: Observable<number> | undefined;
 
   addresses: string | undefined;
@@ -106,7 +106,7 @@ export class SubscriptionComponent implements OnInit {
 
     this.id = this.route.snapshot.paramMap.get('id');
     this.week = this.route.snapshot.paramMap.get('week');
-    let numOfChildsStr = this.route.snapshot.paramMap.get('numOfChilds');
+    this.numOfChilds = this.route.snapshot.paramMap.get('numOfChilds');
   }
  // goToNextStep() {
     // if (this.addressForm.invalid) {
