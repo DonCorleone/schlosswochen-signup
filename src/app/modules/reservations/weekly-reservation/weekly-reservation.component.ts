@@ -24,8 +24,8 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
 
   title = 'Reservation';
 
-  @Input() maxWeeks: number = 1;
-  @Input() maxReservations: number = 1;
+  maxWeeks: number = 1;
+  maxReservations: number = 1;
 
   reservations$?: Observable<number[]>;
   weeks$?: Observable<number[]>;
@@ -37,7 +37,12 @@ export class WeeklyReservationComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private reservationService: ReservationService,
     private router: Router,
-    private store: Store<State>) { }
+    private store: Store<State>) {
+
+      this.maxWeeks = +process.env.MAX_NUMBER_OF_WEEKS!;
+      this.maxReservations = +process.env.MAX_NUMBER_OF_RESERVATIONS!;
+
+    }
 
   signupForm = this.fb.group({
       numOfChilds: [0, [Validators.required, Validators.min(1)]],
