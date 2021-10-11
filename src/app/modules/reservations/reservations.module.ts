@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { ReservationsRoutingModule } from './reservations-routing.module';
 import { ReservationComponent } from './reservation/reservation.component';
-import { WeeklyReservationComponent } from './weekly-reservation/weekly-reservation.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 import * as fromState from './state/reservation.reducer';
@@ -14,7 +13,6 @@ import { HeaderComponent } from './header/header.component';
 @NgModule({
   declarations: [
     ReservationComponent,
-    WeeklyReservationComponent,
     CapacityComponent,
     HeaderComponent
   ],
