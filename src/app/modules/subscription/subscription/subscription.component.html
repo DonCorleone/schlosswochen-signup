@@ -5,19 +5,18 @@
 >
   <div class="card">
     <div class="card-body">
-
       <form novalidate [formGroup]="signupForm">
-
         <div class="form-group row mb-2">
           <app-header></app-header>
         </div>
-
           <div class="form-group row mb-2">
             <label class="col-md-2 col-form-label" for="firstNameId">First Name</label>
             <div class="col-md-8">
-              <input class="form-control" id="firstNameId" type="text" placeholder="First Name (required)"
-                formControlName="firstName"
-                [ngClass]="{'is-invalid': (signupForm.get('firstName')?.touched || signupForm.get('firstName')?.dirty) && !signupForm.get('firstName')?.valid }" />
+              <input id="firstNameId"
+                    class="form-control"
+                    type="text" placeholder="First Name (required)"
+                    formControlName="firstName"
+                    [ngClass]="{'is-invalid': (signupForm.get('firstName')?.touched || signupForm.get('firstName')?.dirty) && !signupForm.get('firstName')?.valid }" />
               <span class="invalid-feedback">
                 <span *ngIf="signupForm.get('firstName')?.errors?.required">
                   Please enter your first name.
@@ -34,11 +33,12 @@
               Last Name
             </label>
             <div class="col-md-8">
-              <input class="form-control" id="lastNameId"
-              type="text"
-              placeholder="Last Name (required)"
-                formControlName="lastName"
-                [ngClass]="{'is-invalid': (signupForm.get('lastName')?.touched || signupForm.get('lastName')?.dirty) && !signupForm.get('lastName')?.valid }" />
+              <input id="lastNameId"
+                    class="form-control"
+                    type="text"
+                    placeholder="Last Name (required)"
+                    formControlName="lastName"
+                    [ngClass]="{'is-invalid': (signupForm.get('lastName')?.touched || signupForm.get('lastName')?.dirty) && !signupForm.get('lastName')?.valid }" />
               <span class="invalid-feedback">
                 <span *ngIf="signupForm.get('lastName')?.errors?.required">
                   Please enter your last name.
@@ -55,12 +55,12 @@
                    Phone
             </label>
             <div class="col-md-8">
-              <input class="form-control"
-                     id="phoneId"
-                     type="tel"
-                     placeholder="Phone (required)"
-                     formControlName="phone"
-                     [ngClass]="{'is-invalid': (signupForm.get('phone')?.touched || signupForm.get('phone')?.dirty) &&  !signupForm.get('phone')?.valid }" />
+              <input id="phoneId"
+                    class="form-control"
+                    type="tel"
+                    placeholder="Phone (required)"
+                    formControlName="phone"
+                    [ngClass]="{'is-invalid': (signupForm.get('phone')?.touched || signupForm.get('phone')?.dirty) &&  !signupForm.get('phone')?.valid }" />
               <span class="invalid-feedback">
                 <span *ngIf="signupForm.get('phone')?.errors?.required">
                   Please enter your phone number.
@@ -96,25 +96,12 @@
           </div>
 
           <div class="form-group row mb-2">
-            <label class="col-md-2 col-form-label" for="cityId">City, State, Zip Code</label>
+            <label class="col-md-2 col-form-label" for="cityId">Zip Code | City</label>
             <div class="col-md-3">
-              <input class="form-control" id="cityId" type="text" placeholder="City" name="city">
-            </div>
-            <div class="col-md-3">
-              <select class="form-control" id="stateId" name="state">
-                <option value="" disabled selected hidden>Select a State...</option>
-                <option value="AL">Alabama</option>
-                <option value="AK">Alaska</option>
-                <option value="AZ">Arizona</option>
-                <option value="AR">Arkansas</option>
-                <option value="CA">California</option>
-                <option value="CO">Colorado</option>
-                <option value="WI">Wisconsin</option>
-                <option value="WY">Wyoming</option>
-              </select>
-            </div>
-            <div class="col-md-2">
               <input class="form-control" id="zipId" type="number" placeholder="Zip Code" name="zip">
+            </div>
+            <div class="col-md-5">
+              <input class="form-control" id="cityId" type="text" placeholder="City" name="city">
             </div>
           </div>
       </form>
