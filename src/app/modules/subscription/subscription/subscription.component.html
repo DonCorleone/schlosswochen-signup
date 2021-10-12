@@ -30,9 +30,13 @@
           </div>
 
           <div class="form-group row mb-2">
-            <label class="col-md-2 col-form-label" for="lastNameId">Last Name</label>
+            <label class="col-md-2 col-form-label" for="lastNameId">
+              Last Name
+            </label>
             <div class="col-md-8">
-              <input class="form-control" id="lastNameId" type="text" placeholder="Last Name (required)"
+              <input class="form-control" id="lastNameId"
+              type="text"
+              placeholder="Last Name (required)"
                 formControlName="lastName"
                 [ngClass]="{'is-invalid': (signupForm.get('lastName')?.touched || signupForm.get('lastName')?.dirty) && !signupForm.get('lastName')?.valid }" />
               <span class="invalid-feedback">
@@ -47,15 +51,16 @@
           </div>
 
           <div class="form-group row mb-2">
-            <label class="col-md-2 col-form-label"
-                   for="phoneId">Phone</label>
+            <label class="col-md-2 col-form-label" for="phoneId">
+                   Phone
+            </label>
             <div class="col-md-8">
               <input class="form-control"
                      id="phoneId"
                      type="tel"
-                     placeholder="Phone"
+                     placeholder="Phone (required)"
                      formControlName="phone"
-                     [ngClass]="{'is-invalid': !signupForm.get('phone')?.valid }" />
+                     [ngClass]="{'is-invalid': (signupForm.get('phone')?.touched || signupForm.get('phone')?.dirty) &&  !signupForm.get('phone')?.valid }" />
               <span class="invalid-feedback">
                 <span *ngIf="signupForm.get('phone')?.errors?.required">
                   Please enter your phone number.

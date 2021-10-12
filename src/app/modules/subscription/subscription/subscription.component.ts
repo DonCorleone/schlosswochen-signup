@@ -10,20 +10,6 @@ import * as SubscriptionReducer from '../state/subscription.reducer'
 import * as SubscriptionActions from '../state/subscription.actions'
 import { insertOneSubscription } from 'src/app/models/Subscriptor';
 
-function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
-  const emailControl = c.get('email');
-  const confirmControl = c.get('confirmEmail');
-
-  if (emailControl?.pristine || confirmControl?.pristine) {
-    return null;
-  }
-
-  if (emailControl?.value === confirmControl?.value) {
-    return null;
-  }
-  return { match: true };
-}
-
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
 function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
