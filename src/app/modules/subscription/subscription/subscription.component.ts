@@ -1,8 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { Store } from '@ngrx/store';
+
+import {FormlyFieldConfig, FormlyFormOptions} from '@ngx-formly/core';
+
 import { debounceTime } from 'rxjs/operators';
+
 import { SubscriptionService } from '../../../service/subscription.service';
 
 import * as SubscriptionReducer from '../state/subscription.reducer'
@@ -45,6 +50,21 @@ export class SubscriptionComponent implements OnInit {
     return <FormArray>(this.signupForm.get('childs'));
   }
 
+  model = { email: 'email@gmail.com' };
+  options: FormlyFormOptions = {};
+  fields: FormlyFieldConfig[] = [
+    {
+      key: 'email',
+      type: 'input',
+      wrappers: ['row'],
+      templateOptions: {
+        label: 'Email address',
+        placeholder: 'Enter email',
+        required: true,
+      }
+    }
+  ];
+
   constructor(
     private fb: FormBuilder,
     private subscriptionService: SubscriptionService,
@@ -53,8 +73,6 @@ export class SubscriptionComponent implements OnInit {
     private store: Store<SubscriptionReducer.State>) { }
 
   ngOnInit(): void {
-
-
     this.signupForm = this.fb.group({
       salutation: '',
       firstName: ['', [Validators.required, Validators.minLength(3)]],
@@ -69,6 +87,7 @@ export class SubscriptionComponent implements OnInit {
       participants:[],
       externalUserId: ''
     });
+
 
     const emailControl = this.signupForm.get('emailGroup.email');
     emailControl?.valueChanges.pipe(

@@ -2,14 +2,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { InMemoryCache } from '@apollo/client/core';
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { ApolloClientOptions } from '@apollo/client/core';
 import { ReactiveFormsModule } from '@angular/forms';
+
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { HttpLink } from 'apollo-angular/http';
 import { AppComponent } from './app.component';
-import { APOLLO_NAMED_OPTIONS, APOLLO_OPTIONS, NamedOptions } from 'apollo-angular';
+import { APOLLO_NAMED_OPTIONS, NamedOptions } from 'apollo-angular';
 import * as realm from './realm';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -23,6 +23,8 @@ import { SigninRedirectCallbackComponent } from './home/signin-redirect-callback
 import { SignoutRedirectCallbackComponent } from './home/signout-redirect-callback.component';
 import { UnauthorizedComponent } from './home/unauthorized.component';
 import { SharedModule } from './modules/shared/shared.module';
+import { FormlyModule } from '@ngx-formly/core';
+import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,9 @@ import { SharedModule } from './modules/shared/shared.module';
         name: 'Schlosswochen Subscription',
         maxAge: 25,
         logOnly: environment.production }
-      )
+      ),
+    FormlyModule.forRoot({ extras: { lazyRender: true } }),
+    FormlyBootstrapModule
   ],
   providers: [
     {
