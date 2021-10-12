@@ -21,8 +21,8 @@
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "customWebpackConfig": {
-							"path": "./webpack-dev.config.js"
-						},
+              "path": "./webpack-dev.config.js"
+            },
             "outputPath": "dist/Schlosswochen-Inscription",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -31,18 +31,30 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              {
+                  "glob": "**/*",
+                  "input": "src/assets/",
+                  "ignore": ["**/*.scss"],
+                  "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "./node_modules/bootstrap-dark-5/dist/js",
+                "output": "./assets/js/"
+              }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "./node_modules/bootstrap-dark-5/dist/css/bootstrap-blackbox.css"
             ],
-            "scripts": []
+            "scripts": [
+            ]
           },
           "configurations": {
             "production": {
-							"customWebpackConfig": {
+              "customWebpackConfig": {
                 "path": "webpack-prod.config.js"
-            	},
+              },
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -97,7 +109,12 @@
             "karmaConfig": "karma.conf.js",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              {
+                "glob": "**/*",
+                "input": "src/assets/",
+                "ignore": ["**/*.scss"],
+                "output": "/assets/"
+              }
             ],
             "styles": [
               "src/styles.scss"
@@ -133,5 +150,8 @@
       }
     }
   },
-  "defaultProject": "Schlosswochen-Inscription"
+  "defaultProject": "Schlosswochen-Inscription",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }

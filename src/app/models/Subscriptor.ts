@@ -9,9 +9,23 @@ export interface insertOneSubscriptionData {
   insertOneSubscription: insertOneSubscription;
 }
 
+
 export interface Subscriptor {
-  data: insertOneSubscriptionData;
+  _id: string
+  salutation: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  street1: string;
+  street2: string;
+  city: string;
+  state: string;
+  zip: string;
+  participants: any[];
+  externalUserId: string;
 }
+
 
 export interface WeeklyReservationState {
   week:number;

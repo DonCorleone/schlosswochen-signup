@@ -6,4 +6,7 @@ module.exports = {
       systemvars: true,
     }),
   ],
+  resolve: {
+    fallback: { "crypto": false }
+  }
 };

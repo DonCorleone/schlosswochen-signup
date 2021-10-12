@@ -13,6 +13,6 @@ export class RealmAuthGuard implements CanActivate {
       return realm.getValidAccessToken().then(accessToken => {
         return !!accessToken;
       });
-  }
-
+  };
 }
+
