@@ -39,24 +39,20 @@ export class SubscriptionComponent implements OnInit {
     match: 'The confirmation does not match the email address.'
   };
 
-  get childs(): FormArray {
-    return <FormArray>(this.signupForm.get('childs'));
-  }
-
-  model = { email: 'email@gmail.com' };
-  options: FormlyFormOptions = {};
-  fields: FormlyFieldConfig[] = [
-    {
-      key: 'email',
-      type: 'input',
-      wrappers: ['row'],
-      templateOptions: {
-        label: 'Email address',
-        placeholder: 'Enter email',
-        required: true,
-      }
-    }
-  ];
+  // model = { email: 'email@gmail.com' };
+  // options: FormlyFormOptions = {};
+  // fields: FormlyFieldConfig[] = [
+  //   {
+  //     key: 'email',
+  //     type: 'input',
+  //     wrappers: ['row'],
+  //     templateOptions: {
+  //       label: 'Email address',
+  //       placeholder: 'Enter email',
+  //       required: true,
+  //     }
+  //   }
+  // ];
 
   constructor(
     private fb: FormBuilder,
@@ -77,6 +73,7 @@ export class SubscriptionComponent implements OnInit {
       city: '',
       state: 'temporary',
       zip: '',
+      country: 'Switzerland',
       participants:[],
       externalUserId: ''
     });
