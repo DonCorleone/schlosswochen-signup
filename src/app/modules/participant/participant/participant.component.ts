@@ -184,7 +184,7 @@ export class ParticipantComponent implements OnInit {
     );
   }
 
-  save(): void {
+  goToSaveStep(): void {
     if (this.signupForm.valid) {
       if (this.signupForm.dirty) {
 

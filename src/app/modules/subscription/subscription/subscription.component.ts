@@ -9,9 +9,7 @@ import {FormlyFieldConfig, FormlyFormOptions} from '@ngx-formly/core';
 import { debounceTime } from 'rxjs/operators';
 
 import { SubscriptionService } from '../../../service/subscription.service';
-
 import * as SubscriptionReducer from '../state/subscription.reducer'
-
 import * as SubscriptionActions from '../state/subscription.actions'
 import { insertOneSubscription } from 'src/app/models/Subscriptor';
 
@@ -29,14 +27,9 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 export class SubscriptionComponent implements OnInit {
 
   title = 'Contact';
-
   id: string | null = '0';
-
-
   addresses: string | undefined;
-
   signupForm!: FormGroup;
-  yes = true;
   emailMessage: string = '';
   confirmEmailMessage: string = '';
 
