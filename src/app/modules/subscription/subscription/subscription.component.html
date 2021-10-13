@@ -9,7 +9,12 @@
         <div class="form-group row mb-2">
           <app-header></app-header>
         </div>
-        <formly-form [form]="signupForm" [fields]="fields" [model]="model" [options]="options"></formly-form>
+        <formly-form
+          [form]="signupForm"
+          [fields]="fields"
+          [model]="model"
+          [options]="options">
+        </formly-form>
           <div class="form-group row mb-2">
             <label class="col-md-2 col-form-label" for="firstNameId">First Name</label>
             <div class="col-md-8">

@@ -12,7 +12,6 @@ import { SharedModule } from 'src/app/modules/shared/shared.module';
 import { ReservationsModule } from '../reservations/reservations.module';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { SubscriptionsRoutingModule } from './subscription-routing.module';
-import { RowWrapperComponent } from '../shared/formly-wrappers/row-wrapper.component';
 
 @NgModule({
   declarations: [
