@@ -122,9 +122,17 @@
                 type="email"
                 placeholder="Email (required)"
                 formControlName="email"
-                [ngClass]="{'is-invalid': emailMessage }">
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('email')?.touched
+                  || signupForm.get('email')?.dirty)
+                  && !signupForm.get('email')?.valid }">
               <span class="invalid-feedback">
-                {{ emailMessage }}
+                <span *ngIf="signupForm.get('email')?.errors?.required">
+                  Please enter your email address.
+                </span>
+                <span *ngIf="emailMessage">
+                  {{emailMessage}}
+                </span>
               </span>
             </div>
           </div>
@@ -171,11 +179,11 @@
                   signupForm.get('zip')?.touched
                   || signupForm.get('zip')?.dirty)
                   && !signupForm.get('zip')?.valid }">
-                  <span class="invalid-feedback">
-                    <span *ngIf="signupForm.get('zip')?.errors?.required">
-                      Please enter a zip.
-                    </span>
-                  </span>
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('zip')?.errors?.required">
+                  Please enter a zip.
+                </span>
+              </span>
             </div>
             <div class="col-md-5">
               <input id="cityId"
@@ -187,11 +195,11 @@
                   signupForm.get('city')?.touched
                   || signupForm.get('city')?.dirty)
                   && !signupForm.get('city')?.valid }">
-                  <span class="invalid-feedback">
-                    <span *ngIf="signupForm.get('city')?.errors?.required">
-                      Please enter a city.
-                    </span>
-                  </span>
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('city')?.errors?.required">
+                  Please enter a city.
+                </span>
+              </span>
             </div>
           </div>
 
@@ -210,11 +218,11 @@
                   signupForm.get('country')?.touched
                   || signupForm.get('country')?.dirty)
                   && !signupForm.get('country')?.valid }">
-                <span class="invalid-feedback">
-                  <span *ngIf="signupForm.get('country')?.errors?.required">
-                    Please enter a country.
-                  </span>
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('country')?.errors?.required">
+                  Please enter a country.
                 </span>
+              </span>
             </div>
           </div>
       </form>

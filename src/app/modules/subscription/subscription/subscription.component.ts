@@ -34,9 +34,7 @@ export class SubscriptionComponent implements OnInit {
   confirmEmailMessage: string = '';
 
   private validationMessages = {
-    required: 'Please enter your email address.',
-    email: 'Please enter a valid email address.',
-    match: 'The confirmation does not match the email address.'
+    email: 'Please enter a valid email address.'
   };
 
   // model = { email: 'email@gmail.com' };
@@ -79,7 +77,7 @@ export class SubscriptionComponent implements OnInit {
     });
 
 
-    const emailControl = this.signupForm.get('emailGroup.email');
+    const emailControl = this.signupForm.get('email');
     emailControl?.valueChanges.pipe(
       debounceTime(1000)
     ).subscribe(
