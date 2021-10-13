@@ -23,11 +23,20 @@
             <div class="col-md-8">
               <select id="salutationId"
                 class="form-control"
-                formControlName="salutation">
+                formControlName="salutation"
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('salutation')?.touched
+                  || signupForm.get('salutation')?.dirty)
+                  && !signupForm.get('salutation')?.valid }">
                   <option value="" disabled selected hidden>Select a Salutation...</option>
                   <option value="F">Madame</option>
                   <option value="M">Sir</option>
               </select>
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('salutation')?.errors?.required">
+                  Please enter a salutation.
+                </span>
+              </span>
             </div>
           </div>
           <div class="form-group row mb-2">
@@ -41,8 +50,10 @@
                 type="text"
                 placeholder="First Name (required)"
                 formControlName="firstName"
-                [ngClass]="{'is-invalid': (signupForm.get('firstName')?.touched || signupForm.get('firstName')?.dirty) && !signupForm.get('firstName')?.valid }"
-              />
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('firstName')?.touched
+                  || signupForm.get('firstName')?.dirty)
+                  && !signupForm.get('firstName')?.valid }">
               <span class="invalid-feedback">
                 <span *ngIf="signupForm.get('firstName')?.errors?.required">
                   Please enter your first name.
@@ -64,8 +75,10 @@
                 type="text"
                 placeholder="Last Name (required)"
                 formControlName="lastName"
-                [ngClass]="{'is-invalid': (signupForm.get('lastName')?.touched || signupForm.get('lastName')?.dirty) && !signupForm.get('lastName')?.valid }"
-              />
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('lastName')?.touched
+                  || signupForm.get('lastName')?.dirty)
+                  && !signupForm.get('lastName')?.valid }">
               <span class="invalid-feedback">
                 <span *ngIf="signupForm.get('lastName')?.errors?.required">
                   Please enter your last name.
@@ -87,8 +100,10 @@
                 type="tel"
                 placeholder="Phone (required)"
                 formControlName="phone"
-                [ngClass]="{'is-invalid': (signupForm.get('phone')?.touched || signupForm.get('phone')?.dirty) &&  !signupForm.get('phone')?.valid }"
-              />
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('phone')?.touched
+                  || signupForm.get('phone')?.dirty)
+                  &&  !signupForm.get('phone')?.valid }">
               <span class="invalid-feedback">
                 <span *ngIf="signupForm.get('phone')?.errors?.required">
                   Please enter your phone number.
@@ -107,8 +122,7 @@
                 type="email"
                 placeholder="Email (required)"
                 formControlName="email"
-                [ngClass]="{'is-invalid': emailMessage }"
-              />
+                [ngClass]="{'is-invalid': emailMessage }">
               <span class="invalid-feedback">
                 {{ emailMessage }}
               </span>
@@ -125,7 +139,7 @@
                 type="text"
                 placeholder="Street address"
                 formControlName="street1"
-              />
+              >
             </div>
           </div>
           <div class="form-group row mb-2">
@@ -139,7 +153,7 @@
                 type="text"
                 placeholder="Street address (second line)"
                 formControlName="street2"
-              />
+              >
             </div>
           </div>
           <div class="form-group row mb-2">
@@ -153,15 +167,31 @@
                 type="number"
                 placeholder="Zip Code"
                 formControlName="zip"
-              />
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('zip')?.touched
+                  || signupForm.get('zip')?.dirty)
+                  && !signupForm.get('zip')?.valid }">
+                  <span class="invalid-feedback">
+                    <span *ngIf="signupForm.get('zip')?.errors?.required">
+                      Please enter a zip.
+                    </span>
+                  </span>
             </div>
             <div class="col-md-5">
               <input id="cityId"
                 class="form-control"
                 type="text"
-                placeholder="City"
+                placeholder="City (required)"
                 formControlName="city"
-              />
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('city')?.touched
+                  || signupForm.get('city')?.dirty)
+                  && !signupForm.get('city')?.valid }">
+                  <span class="invalid-feedback">
+                    <span *ngIf="signupForm.get('city')?.errors?.required">
+                      Please enter a city.
+                    </span>
+                  </span>
             </div>
           </div>
 
@@ -176,7 +206,15 @@
                 type="text"
                 placeholder="Country (required)"
                 formControlName="country"
-              />
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('country')?.touched
+                  || signupForm.get('country')?.dirty)
+                  && !signupForm.get('country')?.valid }">
+                <span class="invalid-feedback">
+                  <span *ngIf="signupForm.get('country')?.errors?.required">
+                    Please enter a country.
+                  </span>
+                </span>
             </div>
           </div>
       </form>

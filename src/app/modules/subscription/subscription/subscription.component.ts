@@ -63,17 +63,17 @@ export class SubscriptionComponent implements OnInit {
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
-      salutation: '',
+      salutation: ['', [Validators.required]],
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.pattern('[- +()0-9]+')]],
       street1: '',
       street2: '',
-      city: '',
+      city: ['', [Validators.required]],
       state: 'temporary',
-      zip: '',
-      country: 'Switzerland',
+      zip: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(5)]],
+      country: ['Switzerland', [Validators.required]],
       participants:[],
       externalUserId: ''
     });
