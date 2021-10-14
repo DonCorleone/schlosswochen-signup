@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -6,12 +6,14 @@ import { Store } from '@ngrx/store';
 
 import {FormlyFieldConfig, FormlyFormOptions} from '@ngx-formly/core';
 
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, map } from 'rxjs/operators';
 
+import * as ReservationReducer from '../../reservations/state/reservation.reducer'
 import { SubscriptionService } from '../../../service/subscription.service';
 import * as SubscriptionReducer from '../state/subscription.reducer'
 import * as SubscriptionActions from '../state/subscription.actions'
 import { insertOneSubscription } from 'src/app/models/Subscriptor';
+import { Observable, Subscription } from 'rxjs';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -24,14 +26,15 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
   templateUrl: './subscription.component.html',
   styleUrls: ['./subscription.component.scss']
 })
-export class SubscriptionComponent implements OnInit {
+export class SubscriptionComponent implements OnInit, OnDestroy {
 
   title = 'Contact';
-  id: string | null = '0';
+  id: string;
   addresses: string | undefined;
   signupForm!: FormGroup;
   emailMessage: string = '';
   confirmEmailMessage: string = '';
+  idSubscription: Subscription;
 
   private validationMessages = {
     email: 'Please enter a valid email address.'
@@ -84,7 +87,8 @@ export class SubscriptionComponent implements OnInit {
       value => this.emailMessage = this.setMessage(emailControl)
     );
 
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.idSubscription = this.store.select(ReservationReducer.getSubscriptionId).subscribe(id => this.id = id);
+   // this.id = this.route.snapshot.paramMap.get('id');
   }
  // goToNextStep() {
     // if (this.addressForm.invalid) {
@@ -106,14 +110,12 @@ export class SubscriptionComponent implements OnInit {
     }
 
     if (this.id) {
-
       const subscription = { subscription: this.signupForm.value };
-
-      this.subscriptionService.updateSubscription(this.id, subscription.subscription)
+        this.subscriptionService.updateSubscription(this.id, subscription.subscription)
         .subscribe((res: insertOneSubscription) => {
           this.store.dispatch(SubscriptionActions.setSubscription(subscription));
           this.router.navigate(['/participant', 1]);
-      });
+        });
     }
   }
 
@@ -126,5 +128,8 @@ export class SubscriptionComponent implements OnInit {
           : 'unknown error').join(' ');
     }
     return messageString;
+  }
+  ngOnDestroy(): void {
+    this.idSubscription.unsubscribe();
   }
 }
