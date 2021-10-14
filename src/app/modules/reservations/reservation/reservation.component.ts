@@ -1,9 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms'
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
+
 import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
-import { State } from '../state/reservation.reducer';
+
 import * as ReservationActions from '../state/reservation.action';
 import * as ReservationReducer from '../state/reservation.reducer';
 import { WeeklyReservation } from 'src/app/models/Week';
@@ -37,7 +38,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private reservationService: ReservationService,
     private router: Router,
-    private store: Store<State>) {
+    private store: Store<ReservationReducer.State>) {
 
       this.maxWeeks = +process.env.MAX_NUMBER_OF_WEEKS!;
       this.maxReservations = +process.env.MAX_NUMBER_OF_RESERVATIONS!;

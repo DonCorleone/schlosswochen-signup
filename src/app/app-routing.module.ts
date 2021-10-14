@@ -32,6 +32,10 @@ const routes: Routes =
         loadChildren: () => import('./modules/participant/participant.module').then(m => m.ParticipantModule),
         canActivate: [RealmAuthGuard]
       },
+      {
+        path: 'finnish', // ToDo subscription
+        loadChildren: () => import('./modules/finnish/finnish.module').then(m => m.FinnishModule)
+      },
       { path: '', redirectTo: 'welcome', pathMatch: 'full' },
     ]
   },

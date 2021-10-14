@@ -194,7 +194,7 @@ export class ParticipantComponent implements OnInit {
     }
 
     this.saveSubscription();
-
+    this.router.navigate(['/finnish']);
 
     // if (participant.id === 0) {
     //   this.participantService.createParticipant(participant).subscribe({

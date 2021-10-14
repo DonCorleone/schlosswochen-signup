@@ -9,6 +9,8 @@ import { AuthService } from 'src/app/modules/core/auth-service.component';
 export class WizardStepComponent implements OnInit {
   @Input() title: string;
   @Input() saveStep: boolean = false;
+  @Input() nextEnabled: boolean = true;
+  @Input() previousEnabled: boolean = false;
   @Output() previousStepClicked = new EventEmitter();
   @Output() saveStepClicked = new EventEmitter();
   @Output() nextStepClicked = new EventEmitter();

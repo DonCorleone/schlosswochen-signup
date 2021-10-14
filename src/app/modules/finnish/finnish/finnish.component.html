@@ -1,0 +1,9 @@
+<app-wizard-step
+  [title]="title"
+  (previousStepClicked)="goToPreviousStep()"
+  [nextEnabled]="false"
+>
+<div class="card">
+  {{ content | async}}
+</div>
+</app-wizard-step>
