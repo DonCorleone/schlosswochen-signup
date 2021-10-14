@@ -28,9 +28,9 @@
                   signupForm.get('salutation')?.touched
                   || signupForm.get('salutation')?.dirty)
                   && !signupForm.get('salutation')?.valid }">
-                  <option value="" disabled selected hidden>Select a Salutation...</option>
-                  <option value="F">Madame</option>
-                  <option value="M">Sir</option>
+                  <option value = "" disabled selected hidden>Select a Salutation...</option>
+                  <option value = "F">Madame</option>
+                  <option value = "M">Sir</option>
               </select>
               <span class="invalid-feedback">
                 <span *ngIf="signupForm.get('salutation')?.errors?.required">

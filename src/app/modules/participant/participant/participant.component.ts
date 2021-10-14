@@ -126,7 +126,7 @@ export class ParticipantComponent implements OnInit {
       birthday: new Date(),
       participant_id: participant_id,
       externalUserId: '',
-      fotoAllowed: '',
+      fotoAllowed: true,
       comment: ''
     });
   }
@@ -175,6 +175,7 @@ export class ParticipantComponent implements OnInit {
   }
   saveParticipant() {
     const participantInsertInput: ParticipantInsertInput = this.signupForm.value;
+    participantInsertInput.birthday = new Date(participantInsertInput.birthday);
     this.participantService.createParticipant(participantInsertInput).subscribe(
       res => {
         const participant = { ...this.signupForm.value, id: this.currentParticipantNumber };

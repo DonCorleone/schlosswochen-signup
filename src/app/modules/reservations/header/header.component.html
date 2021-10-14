@@ -5,6 +5,9 @@
   <div class="alert alert-primary show" role="alert">
     <span>Reserved Places: {{ reservation.numberOfReservations }}</span>
   </div>
+  <div *ngIf="externalInput" class="alert alert-warning show" role="alert">
+    <span>{{ externalInput }}</span>
+  </div>
   <div class="alert alert-success show" role="alert">
     {{ timer$ | async }} Minutes left!
   </div>
