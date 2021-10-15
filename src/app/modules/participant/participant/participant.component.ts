@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -10,7 +10,7 @@ import * as SubscritionReducer from '../../subscription/state/subscription.reduc
 import { ParticipantService } from 'src/app/service/participant.service';
 import { ParticipantInsertInput, SubscriptionParticipantsRelationInput, SubscriptionUpdateInput } from 'src/app/models/Graphqlx';
 import { SubscriptionService } from 'src/app/service/subscription.service';
-import { Observable, timer } from 'rxjs';
+import { Observable, Subscription, timer } from 'rxjs';
 import { scan, takeWhile } from 'rxjs/operators';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
@@ -36,9 +36,10 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 @Component({
   selector: 'app-participant',
   templateUrl: './participant.component.html',
-  styleUrls: ['./participant.component.scss']
+  styleUrls: ['./participant.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ParticipantComponent implements OnInit {
+export class ParticipantComponent implements OnInit, OnDestroy {
 
   title = 'Participant';
 
@@ -66,6 +67,14 @@ export class ParticipantComponent implements OnInit {
     match: 'The confirmation does not match the email address.'
   };
   currentParticipantNumber: number = 0;
+  deadlineSubscription: Subscription;
+  weeklySubscription: Subscription;
+  subscriptionIdSubscription: Subscription;
+  routeParamSubscription: Subscription;
+  currentParticipantSubscription: Subscription;
+  currentParticipantNumberSubscription: Subscription;
+  subscriptionSubscription: Subscription;
+  subscriptionUpdateSubscription: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -73,13 +82,25 @@ export class ParticipantComponent implements OnInit {
     private router: Router,
     private participantService: ParticipantService,
     private subscriptionService: SubscriptionService,
-    private store: Store<ParticipantReducer.State>,) { }
+    private store: Store<ParticipantReducer.State>,
+    private ref: ChangeDetectorRef) { }
+
+  ngOnDestroy(): void {
+    this.deadlineSubscription.unsubscribe();
+    this.weeklySubscription.unsubscribe();
+    this.subscriptionIdSubscription.unsubscribe();
+    this.routeParamSubscription.unsubscribe();
+    this.currentParticipantSubscription.unsubscribe();
+    this.currentParticipantNumberSubscription.unsubscribe();
+    this.subscriptionSubscription.unsubscribe();
+    this.subscriptionUpdateSubscription.unsubscribe();
+  }
 
   ngOnInit(): void {
 
     const nowInS = new Date().getTime();
 
-    this.store.select(ReservationReducer.getDeadline).subscribe( // ToDo LIW : unsubscribe
+    this.deadlineSubscription = this.store.select(ReservationReducer.getDeadline).subscribe( // ToDo LIW : unsubscribe
       deadline => {
        // this.deadlineM = (deadline.getMinutes()- new Date().getMinutes());
         this.timer$ = timer(0, 60000).pipe(
@@ -88,32 +109,33 @@ export class ParticipantComponent implements OnInit {
         );
       }
     );
-    this.store.select(ReservationReducer.getWeeklyReservation).subscribe( // ToDo LIW : unsubscribe
-      weeklySubscription => {
-        this.numOfChilds = weeklySubscription.numberOfReservations;
-        this.week = weeklySubscription.weeknr
+    this.weeklySubscription = this.store.select(ReservationReducer.getWeeklyReservation).subscribe( // ToDo LIW : unsubscribe
+      weeklyReservation => {
+        this.numOfChilds = weeklyReservation.numberOfReservations;
+        this.week = weeklyReservation.weeknr
       }
     );
-    this.store.select(ReservationReducer.getSubscriptionId).subscribe( // ToDo LIW : unsubscribe
+    this.subscriptionIdSubscription = this.store.select(ReservationReducer.getSubscriptionId).subscribe( // ToDo LIW : unsubscribe
       subscriptionId => {
         this.subscription_id = subscriptionId
       }
     );
 
-    this.activeRoute.params.subscribe(routeParams => {
+    this.routeParamSubscription = this.activeRoute.params.subscribe(routeParams => {
       this.loadParticipantDetail(routeParams.id);
+      this.ref.markForCheck();
     });
   }
 
   loadParticipantDetail(id: number) {
 
-    this.store.select(ParticipantReducer.getCurrentParticipant).subscribe(
+    this.currentParticipantSubscription = this.store.select(ParticipantReducer.getCurrentParticipant).subscribe(
       currentParticipant => this.currentParticipant = currentParticipant
     )
 
     this.store.dispatch(ParticipantActions.increaseCurrentParticipantNumber());
 
-    this.store.select(ParticipantReducer.getCurrentParticipantNumber).subscribe(
+    this.currentParticipantNumberSubscription = this.store.select(ParticipantReducer.getCurrentParticipantNumber).subscribe(
       currentParticipantNumber => this.currentParticipantNumber = currentParticipantNumber
     );
 
@@ -197,7 +219,6 @@ export class ParticipantComponent implements OnInit {
     }
 
     this.saveSubscription();
-    this.router.navigate(['/finnish']);
 
     // if (participant.id === 0) {
     //   this.participantService.createParticipant(participant).subscribe({
@@ -213,7 +234,7 @@ export class ParticipantComponent implements OnInit {
 
   }
   saveSubscription() {
-    this.store.select(SubscritionReducer.getSubscription).subscribe(
+    this.subscriptionSubscription = this.store.select(SubscritionReducer.getSubscription).subscribe(
       subscriptionStore => {
 
         const link:string[] = [];
@@ -238,12 +259,14 @@ export class ParticipantComponent implements OnInit {
           externalUserId:''
         }
         subscription.participants = subscriptionParticipantsRelationInput;
-        this.subscriptionService.updateSubscription(this.subscription_id, subscription).subscribe(
+        this.subscriptionUpdateSubscription = this.subscriptionService.updateSubscription(this.subscription_id, subscription).subscribe(
           res => {
         //     // const participant = { ...this.signupForm.value, id: this.currentParticipantNumber };
         //     // this.store.dispatch(ParticipantActions.addParticipant({ participant }));
         //     //   this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
         //     //   this.store.dispatch(ParticipantActions.upsertParticipant().setParticipantId({ participant_id }));
+
+            this.router.navigate(['/finnish']);
           }
         );
       }
