@@ -3,7 +3,5 @@
   (previousStepClicked)="goToPreviousStep()"
   [nextEnabled]="false"
 >
-<div class="card">
-  {{ content | async}}
-</div>
+  <pre><p>{{content | async | json}}</p></pre>
 </app-wizard-step>

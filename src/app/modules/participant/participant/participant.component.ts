@@ -157,8 +157,7 @@ export class ParticipantComponent implements OnInit {
         // Then copy over the values from the form
         // This ensures values not on the form, such as the Id, are retained
 
-        this.saveParticipant();
-        this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
+        this.saveParticipant(true);
         // if (participant.id === 0) {
         //   this.participantService.createParticipant(participant).subscribe({
         //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
@@ -173,13 +172,17 @@ export class ParticipantComponent implements OnInit {
       }
     }
   }
-  saveParticipant() {
+  saveParticipant(routeToNext: boolean) {
     const participantInsertInput: ParticipantInsertInput = this.signupForm.value;
     participantInsertInput.birthday = new Date(participantInsertInput.birthday);
     this.participantService.createParticipant(participantInsertInput).subscribe(
       res => {
         const participant = { ...this.signupForm.value, id: this.currentParticipantNumber };
         this.store.dispatch(ParticipantActions.addParticipant({ participant }));
+
+        if (routeToNext) {
+          this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
+        }
         //   this.store.dispatch(ParticipantActions.upsertParticipant().setParticipantId({ participant_id }));
       }
     );
@@ -189,7 +192,7 @@ export class ParticipantComponent implements OnInit {
     if (this.signupForm.valid) {
       if (this.signupForm.dirty) {
 
-        this.saveParticipant();
+        this.saveParticipant(false);
       }
     }
 
