@@ -1,5 +1,9 @@
 [
     {
+        "name": "CountChildArraysPerWeekAndState",
+        "private": false
+    },
+    {
         "name": "deleteTempRecords",
         "private": false
     },
@@ -9,7 +13,27 @@
         "can_evaluate": {}
     },
     {
-        "name": "CountChildArraysPerWeekAndState",
+        "name": "minEventDatesPerFacebookPixelId",
+        "private": false
+    },
+    {
+        "name": "maxEventDatesPerFacebookPixelId",
+        "private": false
+    },
+    {
+        "name": "maxEventDetailsPerFaceBookIdOld",
+        "private": false
+    },
+    {
+        "name": "recover_mail_mock",
+        "private": false
+    },
+    {
+        "name": "Mailing_Function",
+        "private": false
+    },
+    {
+        "name": "TestMail",
         "private": false
     }
 ]

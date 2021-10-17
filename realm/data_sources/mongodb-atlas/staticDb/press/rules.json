@@ -1,14 +1,15 @@
 {
-    "collection": "subscriptions",
-    "database": "participantDb",
+    "collection": "press",
+    "database": "staticDb",
     "roles": [
         {
             "name": "default",
             "apply_when": {},
-            "write": true,
-            "insert": true,
+            "read": true,
+            "write": false,
+            "insert": false,
             "delete": false,
-            "search": false,
+            "search": true,
             "additional_fields": {}
         }
     ]

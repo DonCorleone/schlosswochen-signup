@@ -3,30 +3,30 @@
         "_id": {
             "bsonType": "objectId"
         },
-        "birthday": {
+        "author": {
+            "bsonType": "string"
+        },
+        "date": {
             "bsonType": "date"
         },
-        "comment": {
+        "desc": {
             "bsonType": "string"
         },
-        "externalUserId": {
+        "fileExtension": {
             "bsonType": "string"
         },
-        "firstNameParticipant": {
+        "link": {
             "bsonType": "string"
         },
-        "fotoAllowed": {
-            "bsonType": "bool"
-        },
-        "lastNameParticipant": {
+        "nr": {
             "bsonType": "string"
         },
-        "participant_id": {
+        "quote": {
             "bsonType": "string"
         },
-        "salutation": {
+        "source": {
             "bsonType": "string"
         }
     },
-    "title": "participant"
+    "title": "press"
 }

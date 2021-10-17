@@ -1,0 +1,30 @@
+{
+    "id": "616af262bada7328062e33fa",
+    "name": "Mailing_Trigger",
+    "type": "DATABASE",
+    "config": {
+        "operation_types": [
+            "UPDATE"
+        ],
+        "database": "participantDb",
+        "collection": "subscriptions",
+        "service_name": "mongodb-atlas",
+        "match": {
+            "updateDescription.updatedFields.state": {
+                "$eq": "definitive"
+            }
+        },
+        "project": {},
+        "full_document": true,
+        "full_document_before_change": false,
+        "unordered": true
+    },
+    "disabled": false,
+    "event_processors": {
+        "FUNCTION": {
+            "config": {
+                "function_name": "Mailing_Function"
+            }
+        }
+    }
+}
