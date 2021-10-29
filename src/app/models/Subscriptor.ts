@@ -1,15 +1,17 @@
+import {Subscription} from "./Graphqlx";
+
 export interface insertOneSubscription {
   _id: string;
   deadline: Date;
   week: number;
   numOfChildren: number;
 }
-
+export interface updateOneSubscriptionData {
+  updateOneSubscription: Subscription;
+}
 export interface insertOneSubscriptionData {
   insertOneSubscription: insertOneSubscription;
 }
-
-
 export interface Subscriptor {
   _id: string
   salutation: string;
@@ -25,24 +27,10 @@ export interface Subscriptor {
   participants: any[];
   externalUserId: string;
 }
-
-
-export interface WeeklyReservationState {
-  week:number;
-  reservationstates : ReservationType[];
-}
-
-export interface ReservationType {
-  state: string;
-  numOfChildren: number;
-}
-
 export interface ChildsPerState {
   state: string;
   sumPerStateAndWeek: string;
 }
-
 export interface ChildsPerStateData {
   sumChildsPerState: ChildsPerState[];
 }
-

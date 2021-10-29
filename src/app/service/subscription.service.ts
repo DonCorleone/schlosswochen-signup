@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import { Observable, throwError } from 'rxjs';
 import { tap, map, catchError } from 'rxjs/operators';
-import { insertOneSubscription, insertOneSubscriptionData } from '../models/Subscriptor';
+import {
+  updateOneSubscriptionData
+} from '../models/Subscriptor';
 import * as graphqlx from '../models/Graphqlx';
 
 @Injectable({
@@ -16,8 +18,8 @@ export class SubscriptionService {
   }
 
 
-  updateSubscription(id: string, variable: graphqlx.SubscriptionUpdateInput): Observable<insertOneSubscription> {
-    return this.apollo.mutate<insertOneSubscriptionData>({
+  updateSubscription(id: string, variable: graphqlx.SubscriptionUpdateInput): Observable<string> {
+    return this.apollo.mutate<updateOneSubscriptionData>({
       mutation: gql`
         mutation ($id: ObjectId, $subscriptionUpdateInput: SubscriptionUpdateInput!) {
           updateOneSubscription(
@@ -25,7 +27,6 @@ export class SubscriptionService {
             set: $subscriptionUpdateInput
           ) {
             _id
-            state
           }
         }
       `,
@@ -33,11 +34,32 @@ export class SubscriptionService {
         id, subscriptionUpdateInput: variable
       }
     }).pipe(
-      tap(data => console.log('Products', JSON.stringify(data))),
-      map(result => { return (<insertOneSubscriptionData>result.data).insertOneSubscription }),
+     // tap(result => console.log('SubscriptionService.updateSubscription: updateOneSubscriptionData', JSON.stringify(result))),
+      map(result => { return (<updateOneSubscriptionData>result?.data)?.updateOneSubscription?._id?.toString()}),
       catchError(this.handleError)
     )
   }
+  updateExternalUserId(id: string, variable: string): Observable<string> {
+    return this.apollo.mutate<updateOneSubscriptionData>({
+      mutation: gql
+        `mutation ($id: ObjectId, $externalUserId: String!) {
+            updateOneSubscription(
+              query: { _id: $id }
+            set: {externalUserId: $externalUserId}
+          ) {
+              _id
+            }
+          }`,
+      variables: {
+        id, externalUserId: variable
+      }
+    }).pipe(
+   //   tap(result => console.log('SubscriptionService.updateExternalUserId: updateOneSubscriptionData', JSON.stringify(result))),
+      map(result => { return (<updateOneSubscriptionData>result.data).updateOneSubscription?._id?.toString()}),
+      catchError(this.handleError)
+    )
+  }
+
   private handleError(err: any): Observable<never> {
     // in a real world app, we may send the server to some remote logging infrastructure
     // instead of just logging it to the console

@@ -14,6 +14,7 @@ import * as SubscriptionReducer from '../state/subscription.reducer'
 import * as SubscriptionActions from '../state/subscription.actions'
 import { insertOneSubscription } from 'src/app/models/Subscriptor';
 import { Observable, Subscription } from 'rxjs';
+import * as graphqlx from "../../../models/Graphqlx";
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -112,7 +113,7 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
     if (this.id) {
       const subscription = { subscription: this.signupForm.value };
         this.subscriptionService.updateSubscription(this.id, subscription.subscription)
-        .subscribe((res: insertOneSubscription) => {
+        .subscribe((res: string) => {
           this.store.dispatch(SubscriptionActions.setSubscription(subscription));
           this.router.navigate(['/participant', 1]);
         });

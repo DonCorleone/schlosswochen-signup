@@ -11,7 +11,7 @@ import { ParticipantService } from 'src/app/service/participant.service';
 import { ParticipantInsertInput, SubscriptionParticipantsRelationInput, SubscriptionUpdateInput } from 'src/app/models/Graphqlx';
 import { SubscriptionService } from 'src/app/service/subscription.service';
 import { Observable, Subscription, timer } from 'rxjs';
-import { scan, takeWhile } from 'rxjs/operators';
+import { scan, takeWhile, map } from 'rxjs/operators';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -73,8 +73,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   routeParamSubscription: Subscription;
   currentParticipantSubscription: Subscription;
   currentParticipantNumberSubscription: Subscription;
-  subscriptionSubscription: Subscription;
-  subscriptionUpdateSubscription: Subscription;
+  private subSubscription: Subscription;
+  private subExIdSubscription: Subscription;
+  private partExIdSubscription: Subscription;
+  private subStoreSubscription: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -92,8 +94,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this.routeParamSubscription.unsubscribe();
     this.currentParticipantSubscription.unsubscribe();
     this.currentParticipantNumberSubscription.unsubscribe();
-    this.subscriptionSubscription.unsubscribe();
-    this.subscriptionUpdateSubscription.unsubscribe();
+    this.subSubscription.unsubscribe();
+    this.subExIdSubscription.unsubscribe();
+    this.partExIdSubscription.unsubscribe();
+    this.subStoreSubscription.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -234,7 +238,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   }
   saveSubscription() {
-    this.subscriptionSubscription = this.store.select(SubscritionReducer.getSubscription).subscribe(
+    this.subStoreSubscription = this.store.select(SubscritionReducer.getSubscription).subscribe(
       subscriptionStore => {
 
         const link:string[] = [];
@@ -259,14 +263,24 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           externalUserId:''
         }
         subscription.participants = subscriptionParticipantsRelationInput;
-        this.subscriptionUpdateSubscription = this.subscriptionService.updateSubscription(this.subscription_id, subscription).subscribe(
-          res => {
+        this.subSubscription = this.subscriptionService.updateSubscription(this.subscription_id, subscription).subscribe(
+          subscriptionId => {
         //     // const participant = { ...this.signupForm.value, id: this.currentParticipantNumber };
         //     // this.store.dispatch(ParticipantActions.addParticipant({ participant }));
         //     //   this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
         //     //   this.store.dispatch(ParticipantActions.upsertParticipant().setParticipantId({ participant_id }));
 
-            this.router.navigate(['/finnish']);
+          this.subExIdSubscription =  this.subscriptionService.updateExternalUserId(this.subscription_id, "xxx").subscribe(
+              subscriptionResult => {
+                this.partExIdSubscription = this.participantService.updateExternalUserId(link, "oo").subscribe(
+                  participantResult => {
+                    if (participantResult == link.length) {
+                      this.router.navigate(['/finnish']);
+                    }
+                  }
+                );
+              }
+            );
           }
         );
       }

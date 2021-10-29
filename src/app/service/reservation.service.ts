@@ -25,7 +25,7 @@ export class ReservationService {
       `,
       variables: variable
     }).pipe(
-      tap(data => console.log('Products', JSON.stringify(data))),
+      tap(data => console.log('ReservationService.createWeeklyReservation.insertOneSubscription', JSON.stringify(data))),
       map(result => { return (<insertOneSubscriptionData>result.data).insertOneSubscription._id }),
       catchError(this.handleError)
     )
