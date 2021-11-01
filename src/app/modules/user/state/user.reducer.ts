@@ -16,22 +16,15 @@ export interface State {
 }
 
 interface UserState {
-  maskUserName: boolean;
   currentUser: User;
 }
 
 const initialState: UserState = {
-  maskUserName: true,
   currentUser: null!,
 };
 
 // Selector functions
 const getUserFeatureState = createFeatureSelector<UserState>('user');
-
-export const getMaskUserName = createSelector(
-  getUserFeatureState,
-  (state) => state.maskUserName
-);
 
 export const getCurrentUser = createSelector(
   getUserFeatureState,
@@ -40,12 +33,6 @@ export const getCurrentUser = createSelector(
 
 export const userReducer = createReducer<UserState>(
   initialState,
-  on(UserActions.maskUserName, (state): UserState => {
-    return {
-      ...state,
-      maskUserName: !state.maskUserName,
-    };
-  }),
   on(UserActions.setUser, (state, action): UserState => {
     return {
       ...state,

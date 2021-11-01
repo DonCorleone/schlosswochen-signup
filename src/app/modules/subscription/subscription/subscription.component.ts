@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
 
-import { debounceTime, map } from 'rxjs/operators';
+import {debounceTime, map, tap} from 'rxjs/operators';
 
 import { SubscriptionService } from '../../../service/subscription.service';
 import * as UserReducer from '../../user/state/user.reducer';
@@ -33,7 +33,6 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
   title = 'Contact';
 
   inscription: graphqlModels.Subscription;
-  id: string;
   addresses: string | undefined;
   signupForm!: FormGroup;
   emailMessage: string = '';
@@ -81,29 +80,32 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
         (value) => (this.emailMessage = this.setMessage(emailControl))
       );
 
-    this.route.url.subscribe((urlSegment) => {
+    this.store.select(UserReducer.getCurrentUser).subscribe((externalUser) => {
+      let externalUserId = '';
+      let id = '';
 
-      this.isEditMode = urlSegment.length == 0;
-    }).add(
-      this.route.params.subscribe((params) => {
-        this.id = params['id'];
-      }).add(
-        this.store.select(UserReducer.getCurrentUser).subscribe((externalUser) => {
-          let externalUserId = '';
-          if (this.isEditMode) {
-            externalUserId = externalUser?.profile?.sub;
-          }
+      this.route.url.subscribe((urlSegment) => {
 
+        this.isEditMode = urlSegment.length == 0;
+
+        if (this.isEditMode) {
+          externalUserId = externalUser?.profile?.sub;
+        }
+
+        this.route.params.subscribe((params) => {
+          id = params['id'];
+
+          if (externalUserId?.length > 0 || id?.length > 0)
           this.subscriptionService
-            .getSubscription(externalUserId, this.id)
+            .getInscription(externalUserId, id)
             .subscribe({
               next: (subscription: graphqlModels.Subscription) =>
                 this.displaySubscription(subscription),
               error: (err) => (this.errorMessage = err),
             });
-        })
-      )
-    )
+        });
+      });
+    });
   }
 
   goToPreviousStep() {
@@ -116,17 +118,15 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.id) {
-      const subscription = { subscription: this.signupForm.value };
-      this.subscriptionService
-        .updateSubscription(this.id, subscription.subscription)
-        .subscribe((res: string) => {
-          this.store.dispatch(
-            SubscriptionActions.setSubscription(subscription)
-          );
-          this.router.navigate(['/participant', 1]);
-        });
-    }
+    const subscription = { subscription: this.signupForm.value };
+    this.subscriptionService
+      .updateSubscription(subscription.subscription._id, subscription.subscription)
+      .subscribe((res: string) => {
+        this.store.dispatch(
+          SubscriptionActions.setSubscription(subscription)
+        );
+        this.router.navigate(['/participant', 1]);
+      });
   }
 
   setMessage(c: AbstractControl): string {

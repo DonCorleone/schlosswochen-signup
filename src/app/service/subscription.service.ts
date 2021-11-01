@@ -21,8 +21,8 @@ export class SubscriptionService {
     this.apollo = this.apolloProvider.use('writeClient');
   }
 
-  getSubscription(externalUserId: string, id: string): Observable<graphqlModels.Subscription>{
-    if (externalUserId == ''){
+  getInscription(externalUserId: string, id: string): Observable<graphqlModels.Subscription>{
+    if (externalUserId == '' && id != ''){
       return of(this.initializeInscription(id))
     }
     return this.apollo

@@ -113,11 +113,7 @@ export class AuthService implements OnInit{
   }
 
   ngOnInit(): void {
-    this.currentUser$ = this.store.select(UserReducer.getCurrentUser).pipe(
-      currentUser => {
-        return currentUser;
-      }
-    );
+
   }
 
   // loadSecurityContext(): void {
