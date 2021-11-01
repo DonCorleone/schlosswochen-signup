@@ -23,7 +23,7 @@ export class WelcomeComponent {
   }
 
   goToNextStep(): void {
-    this.router.navigate(['reservation']);
+    this.router.navigate(['reservation']).then();
   }
 
   isLoggedIn: boolean;
@@ -47,6 +47,11 @@ export class WelcomeComponent {
   }
 
   login(){
-    this._authService.login();
+    this._authService.login().then();
+  }
+
+  logout(): void {
+    this._authService.logout();
+    this.router.navigate(['/welcome']).then();
   }
 }
