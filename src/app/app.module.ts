@@ -25,6 +25,7 @@ import { UnauthorizedComponent } from './home/unauthorized.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
+import { UserModule } from './modules/user/user.module';
 
 @NgModule({
   declarations: [
@@ -35,24 +36,24 @@ import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
     PageNotFoundComponent,
     SigninRedirectCallbackComponent,
     SignoutRedirectCallbackComponent,
-    UnauthorizedComponent
+    UnauthorizedComponent,
   ],
   imports: [
     BrowserModule,
-		AppRoutingModule,
+    AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
     CoreModule,
+    UserModule,
     SharedModule,
     StoreModule.forRoot({}, {}),
-    StoreDevtoolsModule.instrument(
-      {
-        name: 'Schlosswochen Subscription',
-        maxAge: 25,
-        logOnly: environment.production }
-      ),
+    StoreDevtoolsModule.instrument({
+      name: 'Schlosswochen Subscription',
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
     FormlyModule.forRoot({ extras: { lazyRender: true } }),
-    FormlyBootstrapModule
+    FormlyBootstrapModule,
   ],
   providers: [
     {
@@ -64,7 +65,10 @@ import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
             cache: new InMemoryCache(),
             link: httpLink.create({
               uri: realm.graphqlUrlReadWrite,
-              headers: new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('tokenReadWrite')}`)
+              headers: new HttpHeaders().set(
+                'Authorization',
+                `Bearer ${localStorage.getItem('tokenReadWrite')}`
+              ),
             }),
           },
           writeClient: {
@@ -72,14 +76,17 @@ import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
             cache: new InMemoryCache(),
             link: httpLink.create({
               uri: realm.graphqlUrl,
-              headers: new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`)
+              headers: new HttpHeaders().set(
+                'Authorization',
+                `Bearer ${localStorage.getItem('token')}`
+              ),
             }),
           },
         };
       },
       deps: [HttpLink],
-    }
+    },
   ],
-	bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

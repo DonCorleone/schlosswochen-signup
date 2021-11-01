@@ -1,24 +1,35 @@
-import { Injectable } from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
-import { Subject } from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 
 import { UserManager, User, SignoutResponse } from 'oidc-client';
 
 import { Constants } from '../../constants';
 import { CoreModule } from './core.module';
 import { AuthContext } from '../../models/auth-context';
+// import * as AppState from '../user/state/user.actions';
+import * as UserActions from '../user/state/user.actions';
+import * as UserReducer from '../user/state/user.reducer';
+
+import {Store} from "@ngrx/store";
+import * as ParticipantReducer from "../participant/state/participant.reducer";
+import {userReducer} from "../user/state/user.reducer";
+import * as ReservationReducer from "../reservations/state/reservation.reducer";
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnInit{
   private _userManager: UserManager;
   private _user: User | null;
   private _loginChangedSubject = new Subject<boolean>();
 
   loginChanged = this._loginChangedSubject.asObservable();
   authContext: AuthContext;
+  private currentUser$: Observable<User>;
 
-  constructor(private _httpClient: HttpClient) {
+  constructor(
+    private _httpClient: HttpClient,
+    private store: Store<UserReducer.State>) {
+
     const stsSettings = {
       authority: Constants.stsAuthority,
       client_id: Constants.clientId,
@@ -65,6 +76,9 @@ export class AuthService {
       //   this.loadSecurityContext();
       // }
       this._user = user;
+      if (user){
+        this.store.dispatch(UserActions.setUser({currentUser: user}));
+      }
       return userCurrent;
     });
   }
@@ -96,6 +110,14 @@ export class AuthService {
         return null;
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.currentUser$ = this.store.select(UserReducer.getCurrentUser).pipe(
+      currentUser => {
+        return currentUser;
+      }
+    );
   }
 
   // loadSecurityContext(): void {

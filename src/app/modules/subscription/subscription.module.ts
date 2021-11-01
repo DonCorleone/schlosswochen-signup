@@ -14,18 +14,19 @@ import { SubscriptionComponent } from './subscription/subscription.component';
 import { SubscriptionsRoutingModule } from './subscription-routing.module';
 
 @NgModule({
-  declarations: [
-    SubscriptionComponent
-  ],
+  declarations: [SubscriptionComponent],
   imports: [
     CommonModule,
-		SubscriptionsRoutingModule,
+    SubscriptionsRoutingModule,
     ReactiveFormsModule,
     FormlyModule.forRoot(),
     FormlyBootstrapModule,
     ReservationsModule,
     SharedModule,
-    StoreModule.forFeature(fromState.subscriptionFeatureKey, fromState.subscriptionReducer),
-  ]
+    StoreModule.forFeature(
+      fromState.subscriptionFeatureKey,
+      fromState.subscriptionReducer
+    ),
+  ],
 })
-export class SubscriptionsModule { }
+export class SubscriptionsModule {}
