@@ -52,7 +52,7 @@ export class ReservationService {
         fetchPolicy: 'no-cache'
       })
       .valueChanges.pipe(
-        tap(result => console.log(JSON.stringify(result.data.sumChildsPerState))),
+        tap(result => console.log(JSON.stringify(result))),
         map((result) => result.data.sumChildsPerState));
   }
 

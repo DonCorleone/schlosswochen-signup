@@ -123,7 +123,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
         .subscribe((subscriptionId: string) => {
           this.store.dispatch(ReservationActions.setSubscriptionId({ subscriptionId }));
           this.store.dispatch(ReservationActions.setDeadline({ deadline }));
-          this.router.navigate(['/subscriptions', subscriptionId, weeklyReservation.weeknr, weeklyReservation.numberOfReservations, deadlineMs]);
+          this.router.navigate(['/subscriptions/edit']);
         });
     }
   }

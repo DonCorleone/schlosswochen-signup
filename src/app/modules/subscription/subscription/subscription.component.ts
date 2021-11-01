@@ -1,34 +1,43 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms'
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  AbstractControl,
+  FormArray,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
 
-import {FormlyFieldConfig, FormlyFormOptions} from '@ngx-formly/core';
+import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 
 import { debounceTime, map } from 'rxjs/operators';
 
-import * as ReservationReducer from '../../reservations/state/reservation.reducer'
 import { SubscriptionService } from '../../../service/subscription.service';
-import * as SubscriptionReducer from '../state/subscription.reducer'
-import * as SubscriptionActions from '../state/subscription.actions'
+import * as UserReducer from '../../user/state/user.reducer';
+import * as ReservationReducer from '../../reservations/state/reservation.reducer';
+import * as SubscriptionReducer from '../state/subscription.reducer';
+import * as SubscriptionActions from '../state/subscription.actions';
 import { insertOneSubscription } from 'src/app/models/Subscriptor';
 import { Observable, Subscription } from 'rxjs';
-import * as graphqlx from "../../../models/Graphqlx";
+import * as graphqlx from '../../../models/Graphqlx';
+import { getCurrentUser, userReducer } from '../../user/state/user.reducer';
+import { User } from 'oidc-client';
+import {Maybe, Participant, Scalars} from "../../../models/Graphqlx";
 
 // since an object key can be any of those types, our key can too
-// in TS 3.0+, putting just "string" raises an error
+// in TS 3.0+, putting just :  raises an error
 function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
-  return key in obj
+  return key in obj;
 }
 
 @Component({
   selector: 'app-subscription',
   templateUrl: './subscription.component.html',
-  styleUrls: ['./subscription.component.scss']
+  styleUrls: ['./subscription.component.scss'],
 })
 export class SubscriptionComponent implements OnInit, OnDestroy {
-
   title = 'Contact';
   id: string;
   addresses: string | undefined;
@@ -36,9 +45,10 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
   emailMessage: string = '';
   confirmEmailMessage: string = '';
   idSubscription: Subscription;
+  isEditMode = false;
 
   private validationMessages = {
-    email: 'Please enter a valid email address.'
+    email: 'Please enter a valid email address.',
   };
 
   // model = { email: 'email@gmail.com' };
@@ -55,13 +65,16 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
   //     }
   //   }
   // ];
+  private externalUser: User;
+  subscription$: Observable<graphqlx.Subscription>;
 
   constructor(
     private fb: FormBuilder,
     private subscriptionService: SubscriptionService,
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store<SubscriptionReducer.State>) { }
+    private store: Store<SubscriptionReducer.State>
+  ) {}
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
@@ -74,47 +87,67 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
       street2: '',
       city: ['', [Validators.required]],
       state: 'temporary',
-      zip: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(5)]],
+      zip: [
+        '',
+        [Validators.required, Validators.minLength(4), Validators.maxLength(5)],
+      ],
       country: ['Switzerland', [Validators.required]],
-      participants:[],
-      externalUserId: ''
+      participants: [],
+      externalUserId: '',
     });
 
-
     const emailControl = this.signupForm.get('email');
-    emailControl?.valueChanges.pipe(
-      debounceTime(1000)
-    ).subscribe(
-      value => this.emailMessage = this.setMessage(emailControl)
-    );
+    emailControl?.valueChanges
+      .pipe(debounceTime(1000))
+      .subscribe(
+        (value) => (this.emailMessage = this.setMessage(emailControl))
+      );
 
-    this.idSubscription = this.store.select(ReservationReducer.getSubscriptionId).subscribe(id => this.id = id);
-   // this.id = this.route.snapshot.paramMap.get('id');
+    this.route.url.subscribe((params) => {
+      this.isEditMode = params[params.length-1].toString() == 'edit';
+    });
+
+    this.store.select(UserReducer.getCurrentUser).subscribe((externalUser) => {
+      this.externalUser = externalUser;
+      if (this.isEditMode && this.externalUser?.profile?.sub) {
+
+        this.subscription$ = this.subscriptionService.getSubscription(this.externalUser.profile.sub)
+          .pipe(
+            map(subscription => {return subscription})
+          );
+      }
+    });
+
+    this.idSubscription = this.store
+      .select(ReservationReducer.getSubscriptionId)
+      .subscribe((id) => (this.id = id));
   }
- // goToNextStep() {
-    // if (this.addressForm.invalid) {
-    //   this.submitted = true;
-    //   return;
-    // }
+  // goToNextStep() {
+  // if (this.addressForm.invalid) {
+  //   this.submitted = true;
+  //   return;
+  // }
 
-   // this.router.navigate(['experience']);
- // }
+  // this.router.navigate(['experience']);
+  // }
 
   goToPreviousStep() {
-  //  this.router.navigate(['personal']);
+    //  this.router.navigate(['personal']);
   }
   goToNextStep(): void {
-
     if (this.signupForm.invalid) {
-     // this.submitted = true;
+      // this.submitted = true;
       return;
     }
 
     if (this.id) {
       const subscription = { subscription: this.signupForm.value };
-        this.subscriptionService.updateSubscription(this.id, subscription.subscription)
+      this.subscriptionService
+        .updateSubscription(this.id, subscription.subscription)
         .subscribe((res: string) => {
-          this.store.dispatch(SubscriptionActions.setSubscription(subscription));
+          this.store.dispatch(
+            SubscriptionActions.setSubscription(subscription)
+          );
           this.router.navigate(['/participant', 1]);
         });
     }
@@ -123,13 +156,18 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
   setMessage(c: AbstractControl): string {
     var messageString = '';
     if ((c.touched || c.dirty) && c.errors) {
-      messageString = Object.keys(c.errors).map(
-        key => hasKey(this.validationMessages, key)
-          ? this.validationMessages[key]
-          : 'unknown error').join(' ');
+      messageString = Object.keys(c.errors)
+        .map((key) =>
+          hasKey(this.validationMessages, key)
+            ? this.validationMessages[key]
+            : 'unknown error'
+        )
+        .join(' ');
     }
     return messageString;
   }
+
+
   ngOnDestroy(): void {
     this.idSubscription.unsubscribe();
   }

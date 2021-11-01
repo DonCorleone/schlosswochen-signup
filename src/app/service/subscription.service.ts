@@ -7,6 +7,10 @@ import {
 } from '../models/Subscriptor';
 import * as graphqlx from '../models/Graphqlx';
 
+interface SubscriptionData {
+  subscription:graphqlx.Subscription;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -17,6 +21,49 @@ export class SubscriptionService {
     this.apollo = this.apolloProvider.use('writeClient');
   }
 
+  getSubscription(externalUserId: string): Observable<graphqlx.Subscription>{
+    return this.apollo
+      .watchQuery<SubscriptionData>({
+        query: gql`
+          query ($externalUserId: String!) {
+            subscription(
+                query:{externalUserId: $externalUserId}
+              ){
+              _id
+              externalUserId
+              reservationDate
+              week
+              numOfChildren
+              email
+              salutation
+              firstName
+              lastName
+              street1
+              street2
+              zip
+              city
+              country
+              participants{
+                participant_id
+                externalUserId
+                salutation
+                firstNameParticipant
+                lastNameParticipant
+                birthday
+                comment
+                fotoAllowed
+              }
+            }
+          }
+        `,
+        variables: { externalUserId }
+      })
+      .valueChanges.pipe(
+        tap(result => console.log(JSON.stringify(result))),
+        map(result => (<SubscriptionData>result?.data)?.subscription),
+        catchError(this.handleError)
+      );
+  }
 
   updateSubscription(id: string, variable: graphqlx.SubscriptionUpdateInput): Observable<string> {
     return this.apollo.mutate<updateOneSubscriptionData>({
@@ -35,7 +82,7 @@ export class SubscriptionService {
       }
     }).pipe(
      // tap(result => console.log('SubscriptionService.updateSubscription: updateOneSubscriptionData', JSON.stringify(result))),
-      map(result => { return (<updateOneSubscriptionData>result?.data)?.updateOneSubscription?._id?.toString()}),
+      map(result => { return (<updateOneSubscriptionData>result?.data)?.updateOneSubscription?._id?.toString();}),
       catchError(this.handleError)
     )
   }
