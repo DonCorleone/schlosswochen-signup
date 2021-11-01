@@ -36,7 +36,7 @@ export class ReservationService {
     this.apollo = this.apolloProvider.use('writeClient');
   }
 
-  GetReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
+  getReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
     console.log(`Get Reservations Per Week`);
     return this.apollo
       .watchQuery<ChildsPerStateData>({

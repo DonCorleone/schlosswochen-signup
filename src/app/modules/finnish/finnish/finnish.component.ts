@@ -8,6 +8,7 @@ import * as graphqlx from '../../../models/Graphqlx';
 
 import * as ParticipantReducer from '../../participant/state/participant.reducer';
 import * as SubscriptionReducer from '../../subscription/state/subscription.reducer'
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-finnish',
@@ -21,6 +22,7 @@ export class FinnishComponent implements OnInit {
   public subscription: Observable<graphqlx.Subscription>;
 
   constructor(
+    private router: Router,
     private subscriptionStore: Store<SubscriptionReducer.State>,
     private participantStore: Store<ParticipantReducer.State>) { }
 
@@ -37,5 +39,6 @@ export class FinnishComponent implements OnInit {
   }
 
   goToNextStep(): void {
+    this.router.navigate(['/subscriptions']);
   }
 }
