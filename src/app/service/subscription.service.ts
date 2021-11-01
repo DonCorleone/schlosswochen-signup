@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
-import { Observable, throwError } from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import { tap, map, catchError } from 'rxjs/operators';
 import {
   updateOneSubscriptionData
 } from '../models/Subscriptor';
-import * as graphqlx from '../models/Graphqlx';
+import * as graphqlModels from '../models/Graphqlx';
 
 interface SubscriptionData {
-  subscription:graphqlx.Subscription;
+  subscription:graphqlModels.Subscription;
 }
 
 @Injectable({
@@ -21,7 +21,10 @@ export class SubscriptionService {
     this.apollo = this.apolloProvider.use('writeClient');
   }
 
-  getSubscription(externalUserId: string): Observable<graphqlx.Subscription>{
+  getSubscription(externalUserId: string, id: string): Observable<graphqlModels.Subscription>{
+    if (externalUserId == ''){
+      return of(this.initializeInscription(id))
+    }
     return this.apollo
       .watchQuery<SubscriptionData>({
         query: gql`
@@ -35,6 +38,7 @@ export class SubscriptionService {
               week
               numOfChildren
               email
+              phone
               salutation
               firstName
               lastName
@@ -65,7 +69,7 @@ export class SubscriptionService {
       );
   }
 
-  updateSubscription(id: string, variable: graphqlx.SubscriptionUpdateInput): Observable<string> {
+  updateSubscription(id: string, variable: graphqlModels.SubscriptionUpdateInput): Observable<string> {
     return this.apollo.mutate<updateOneSubscriptionData>({
       mutation: gql`
         mutation ($id: ObjectId, $subscriptionUpdateInput: SubscriptionUpdateInput!) {
@@ -121,5 +125,29 @@ export class SubscriptionService {
     }
     console.error(err);
     return throwError(errorMessage);
+  }
+
+  private initializeInscription(id: string): graphqlModels.Subscription{
+    // Return an initialized inscription
+    return {
+      _id: id,
+      city: '',
+      country: '',
+      deadline: new Date(),
+      email: '',
+      externalUserId: '',
+      firstName: '',
+      lastName: '',
+      numOfChildren: 0,
+      participants: [],
+      phone: '',
+      reservationDate: new Date(),
+      salutation: '',
+      state: '',
+      street1: '',
+      street2: '',
+      week: 0,
+      zip: '',
+    }
   }
 }

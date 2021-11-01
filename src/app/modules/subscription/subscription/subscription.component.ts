@@ -10,21 +10,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
 
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
-
 import { debounceTime, map } from 'rxjs/operators';
 
 import { SubscriptionService } from '../../../service/subscription.service';
 import * as UserReducer from '../../user/state/user.reducer';
-import * as ReservationReducer from '../../reservations/state/reservation.reducer';
 import * as SubscriptionReducer from '../state/subscription.reducer';
 import * as SubscriptionActions from '../state/subscription.actions';
-import { insertOneSubscription } from 'src/app/models/Subscriptor';
-import { Observable, Subscription } from 'rxjs';
-import * as graphqlx from '../../../models/Graphqlx';
-import { getCurrentUser, userReducer } from '../../user/state/user.reducer';
-import { User } from 'oidc-client';
-import {Maybe, Participant, Scalars} from "../../../models/Graphqlx";
+import * as graphqlModels from '../../../models/Graphqlx';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -39,34 +31,19 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class SubscriptionComponent implements OnInit, OnDestroy {
   title = 'Contact';
+
+  inscription: graphqlModels.Subscription;
   id: string;
   addresses: string | undefined;
   signupForm!: FormGroup;
   emailMessage: string = '';
   confirmEmailMessage: string = '';
-  idSubscription: Subscription;
   isEditMode = false;
+  errorMessage = '';
 
   private validationMessages = {
     email: 'Please enter a valid email address.',
   };
-
-  // model = { email: 'email@gmail.com' };
-  // options: FormlyFormOptions = {};
-  // fields: FormlyFieldConfig[] = [
-  //   {
-  //     key: 'email',
-  //     type: 'input',
-  //     wrappers: ['row'],
-  //     templateOptions: {
-  //       label: 'Email address',
-  //       placeholder: 'Enter email',
-  //       required: true,
-  //     }
-  //   }
-  // ];
-  private externalUser: User;
-  subscription$: Observable<graphqlx.Subscription>;
 
   constructor(
     private fb: FormBuilder,
@@ -78,6 +55,7 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
+      _id: '',
       salutation: ['', [Validators.required]],
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
@@ -103,37 +81,35 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
         (value) => (this.emailMessage = this.setMessage(emailControl))
       );
 
-    this.route.url.subscribe((params) => {
-      this.isEditMode = params[params.length-1].toString() == 'edit';
-    });
+    this.route.url.subscribe((urlSegment) => {
 
-    this.store.select(UserReducer.getCurrentUser).subscribe((externalUser) => {
-      this.externalUser = externalUser;
-      if (this.isEditMode && this.externalUser?.profile?.sub) {
+      this.isEditMode = urlSegment.length == 0;
+    }).add(
+      this.route.params.subscribe((params) => {
+        this.id = params['id'];
+      }).add(
+        this.store.select(UserReducer.getCurrentUser).subscribe((externalUser) => {
+          let externalUserId = '';
+          if (this.isEditMode) {
+            externalUserId = externalUser?.profile?.sub;
+          }
 
-        this.subscription$ = this.subscriptionService.getSubscription(this.externalUser.profile.sub)
-          .pipe(
-            map(subscription => {return subscription})
-          );
-      }
-    });
-
-    this.idSubscription = this.store
-      .select(ReservationReducer.getSubscriptionId)
-      .subscribe((id) => (this.id = id));
+          this.subscriptionService
+            .getSubscription(externalUserId, this.id)
+            .subscribe({
+              next: (subscription: graphqlModels.Subscription) =>
+                this.displaySubscription(subscription),
+              error: (err) => (this.errorMessage = err),
+            });
+        })
+      )
+    )
   }
-  // goToNextStep() {
-  // if (this.addressForm.invalid) {
-  //   this.submitted = true;
-  //   return;
-  // }
-
-  // this.router.navigate(['experience']);
-  // }
 
   goToPreviousStep() {
     //  this.router.navigate(['personal']);
   }
+
   goToNextStep(): void {
     if (this.signupForm.invalid) {
       // this.submitted = true;
@@ -167,8 +143,29 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
     return messageString;
   }
 
+  ngOnDestroy(): void {}
 
-  ngOnDestroy(): void {
-    this.idSubscription.unsubscribe();
+  private displaySubscription(inscription: graphqlModels.Subscription) {
+    if (this.signupForm) {
+      this.signupForm.reset();
+    }
+
+    this.inscription = inscription;
+
+    this.signupForm.patchValue({
+      _id: inscription._id,
+      salutation: inscription.salutation,
+      firstName: inscription.firstName,
+      lastName: inscription.lastName,
+      email: inscription.email,
+      phone: inscription.phone,
+      street1: inscription.street1,
+      street2: inscription.street2,
+      city: inscription.city,
+      state: inscription.state,
+      zip: inscription.zip,
+      country: inscription.country,
+      externalUserId: inscription.externalUserId,
+    });
   }
 }

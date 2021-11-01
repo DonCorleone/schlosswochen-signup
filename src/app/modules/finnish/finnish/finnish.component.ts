@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Participant } from 'src/app/models/Participant';
-import { Subscriptor } from 'src/app/models/Subscriptor';
+import * as graphqlx from '../../../models/Graphqlx';
 
 import * as ParticipantReducer from '../../participant/state/participant.reducer';
 import * as SubscriptionReducer from '../../subscription/state/subscription.reducer'
@@ -18,7 +18,7 @@ export class FinnishComponent implements OnInit {
 
   public title = 'Finnished';
   public participants: Observable<Dictionary<Participant>>;
-  public subscription: Observable<Subscriptor>;
+  public subscription: Observable<graphqlx.Subscription>;
 
   constructor(
     private subscriptionStore: Store<SubscriptionReducer.State>,

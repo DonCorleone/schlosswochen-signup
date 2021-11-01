@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { SubscriptionComponent } from './subscription/subscription.component';
 
 const routes: Routes = [
-  { path: '', component: SubscriptionComponent },
-  { path: ':edit', component: SubscriptionComponent }
+  { path: ':id', component: SubscriptionComponent },
+  { path: '', component: SubscriptionComponent }
 ];
 
 @NgModule({

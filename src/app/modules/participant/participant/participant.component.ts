@@ -13,8 +13,12 @@ import {
   FormArray,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { Store } from '@ngrx/store';
+
 import { Participant } from 'src/app/models/Participant';
+import * as graphqlx from '../../../models/Graphqlx';
+
 import * as ParticipantActions from '../state/participant.actions';
 
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
@@ -61,9 +65,10 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 export class ParticipantComponent implements OnInit, OnDestroy {
   title = 'Participant';
 
-  subscription_id: string = '';
+ // subscription_id: string = '';
   week: number = 0;
   numOfChilds: number = 0;
+  inscription: graphqlx.Subscription;
 
   timer$: Observable<number> | undefined;
 
@@ -87,7 +92,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   currentParticipantNumber: number = 0;
   deadlineSubscription: Subscription;
   weeklySubscription: Subscription;
-  subscriptionIdSubscription: Subscription;
   routeParamSubscription: Subscription;
   currentParticipantSubscription: Subscription;
   currentParticipantNumberSubscription: Subscription;
@@ -97,6 +101,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   private subStoreSubscription: Subscription;
   private userSubscription: Subscription;
   private currentUser: User;
+  private inscriptionSubscripton: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -134,14 +139,14 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       .subscribe(
         (weeklyReservation) => {
           this.numOfChilds = weeklyReservation.numberOfReservations;
-          this.week = weeklyReservation.weeknr;
+          this.week = weeklyReservation.weekNr;
         }
       );
-    this.subscriptionIdSubscription = this.store
-      .select(ReservationReducer.getSubscriptionId)
+    this.inscriptionSubscripton = this.store
+      .select(SubscritionReducer.getSubscription)
       .subscribe(
-        (subscriptionId) => {
-          this.subscription_id = subscriptionId;
+        (inscription) => {
+          this.inscription = inscription;
         }
       );
 
@@ -170,7 +175,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       );
 
     const participant_id =
-      this.subscription_id + '-' + this.currentParticipantNumber;
+      this.inscription._id + '-' + this.currentParticipantNumber;
 
     this.signupForm = this.fb.group({
       salutation: '',
@@ -262,7 +267,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       .subscribe((subscriptionStore) => {
         const link: string[] = [];
         for (let index = 1; index <= this.numOfChilds; index++) {
-          link.push(this.subscription_id + '-' + index);
+          link.push(this.inscription._id + '-' + index);
         }
         const subscriptionParticipantsRelationInput: SubscriptionParticipantsRelationInput =
           {
@@ -284,7 +289,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         };
         subscription.participants = subscriptionParticipantsRelationInput;
         this.subSubscription = this.subscriptionService
-          .updateSubscription(this.subscription_id, subscription)
+          .updateSubscription(this.inscription._id, subscription)
           .subscribe((subscriptionId) => {
             if (!this.currentUser?.profile?.sub){
               this.router.navigate(['/finnish']);
@@ -321,7 +326,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.deadlineSubscription?.unsubscribe();
     this.weeklySubscription?.unsubscribe();
-    this.subscriptionIdSubscription?.unsubscribe();
+    this.inscriptionSubscripton?.unsubscribe();
     this.routeParamSubscription?.unsubscribe();
     this.currentParticipantSubscription?.unsubscribe();
     this.currentParticipantNumberSubscription?.unsubscribe();
