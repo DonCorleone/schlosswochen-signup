@@ -15,10 +15,11 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Participant } from 'src/app/models/Participant';
-import * as ParticipantReducer from '../state/participant.reducer';
 import * as ParticipantActions from '../state/participant.actions';
+
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
 import * as SubscritionReducer from '../../subscription/state/subscription.reducer';
+import * as ParticipantReducer from '../state/participant.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
 import {
   ParticipantInsertInput,
@@ -28,6 +29,8 @@ import {
 import { SubscriptionService } from 'src/app/service/subscription.service';
 import { Observable, Subscription, timer } from 'rxjs';
 import { scan, takeWhile, map } from 'rxjs/operators';
+import * as UserReducer from "../../user/state/user.reducer";
+import {User} from "oidc-client";
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -92,6 +95,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   private subExIdSubscription: Subscription;
   private partExIdSubscription: Subscription;
   private subStoreSubscription: Subscription;
+  private userSubscription: Subscription;
+  private currentUser: User;
 
   constructor(
     private fb: FormBuilder,
@@ -104,8 +109,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const nowInS = new Date().getTime();
 
+    this.userSubscription = this.store.select(UserReducer.getCurrentUser).subscribe(user => {
+      this.currentUser = user;
+    });
+
+    const nowInS = new Date().getTime();
     this.deadlineSubscription = this.store
       .select(ReservationReducer.getDeadline)
       .subscribe(
@@ -277,32 +286,24 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         this.subSubscription = this.subscriptionService
           .updateSubscription(this.subscription_id, subscription)
           .subscribe((subscriptionId) => {
-            //     // const participant = { ...this.signupForm.value, id: this.currentParticipantNumber };
-            //     // this.store.dispatch(ParticipantActions.addParticipant({ participant }));
-            //     //   this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
-            //     //   this.store.dispatch(ParticipantActions.upsertParticipant().setParticipantId({ participant_id }));
-
-            // const sub = localStorage.getItem("sub");
-            //
-            // if (!sub){
-            //   this.router.navigate(['/welcome']);
-            // }else{
+            if (!this.currentUser?.profile?.sub){
+              this.router.navigate(['/finnish']);
+            }else{
             this.subExIdSubscription = this.subscriptionService
-              .updateExternalUserId(this.subscription_id, 'sub')
+              .updateExternalUserId(subscriptionId, this.currentUser.profile.sub)
               .subscribe((subscriptionResult) => {
                 this.partExIdSubscription = this.participantService
-                  .updateExternalUserId(link, 'sub')
+                  .updateExternalUserId(link, this.currentUser.profile.sub)
                   .subscribe((participantResult) => {
                     if (participantResult == link.length) {
                       this.router.navigate(['/finnish']);
                     }
                   });
               });
-            // }
+            }
           });
       });
   }
-
   setMessage(c: AbstractControl): string {
     var messageString = '';
     if ((c.touched || c.dirty) && c.errors) {
