@@ -1,37 +1,35 @@
 import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
-import {Observable, of, throwError} from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { tap, map, catchError } from 'rxjs/operators';
-import {
-  updateOneSubscriptionData
-} from '../models/Subscriptor';
-import * as graphqlModels from '../models/Graphqlx';
+import { updateOneSubscriptionData } from '../models/Subscriptor';
+import {Subscription, SubscriptionUpdateInput} from '../models/Graphqlx';
 
 interface SubscriptionData {
-  subscription:graphqlModels.Subscription;
+  subscription: Subscription;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SubscriptionService {
-
   private apollo: ApolloBase;
   constructor(private apolloProvider: Apollo) {
     this.apollo = this.apolloProvider.use('writeClient');
   }
 
-  getInscription(externalUserId: string, id: string): Observable<graphqlModels.Subscription>{
-    if (externalUserId == '' && id != ''){
-      return of(this.initializeInscription(id))
+  getInscription(
+    externalUserId: string,
+    id: string
+  ): Observable<Subscription> {
+    if (externalUserId == '' && id != '') {
+      return of(this.initializeInscription(id));
     }
     return this.apollo
       .watchQuery<SubscriptionData>({
         query: gql`
           query ($externalUserId: String!) {
-            subscription(
-                query:{externalUserId: $externalUserId}
-              ){
+            subscription(query: { externalUserId: $externalUserId }) {
               _id
               externalUserId
               reservationDate
@@ -47,7 +45,7 @@ export class SubscriptionService {
               zip
               city
               country
-              participants{
+              participants {
                 participant_id
                 externalUserId
                 salutation
@@ -60,55 +58,76 @@ export class SubscriptionService {
             }
           }
         `,
-        variables: { externalUserId }
+        variables: { externalUserId },
       })
       .valueChanges.pipe(
-        tap(result => console.log(JSON.stringify(result))),
-        map(result => (<SubscriptionData>result?.data)?.subscription),
+        tap((result) => console.log(JSON.stringify(result))),
+        map((result) => (<SubscriptionData>result?.data)?.subscription),
         catchError(this.handleError)
       );
   }
 
-  updateSubscription(id: string, variable: graphqlModels.SubscriptionUpdateInput): Observable<string> {
-    return this.apollo.mutate<updateOneSubscriptionData>({
-      mutation: gql`
-        mutation ($id: ObjectId, $subscriptionUpdateInput: SubscriptionUpdateInput!) {
-          updateOneSubscription(
-            query: { _id: $id }
-            set: $subscriptionUpdateInput
+  updateSubscription(
+    id: string,
+    variable: SubscriptionUpdateInput
+  ): Observable<string> {
+    return this.apollo
+      .mutate<updateOneSubscriptionData>({
+        mutation: gql`
+          mutation (
+            $id: ObjectId
+            $subscriptionUpdateInput: SubscriptionUpdateInput!
           ) {
-            _id
-          }
-        }
-      `,
-      variables: {
-        id, subscriptionUpdateInput: variable
-      }
-    }).pipe(
-     // tap(result => console.log('SubscriptionService.updateSubscription: updateOneSubscriptionData', JSON.stringify(result))),
-      map(result => { return (<updateOneSubscriptionData>result?.data)?.updateOneSubscription?._id?.toString();}),
-      catchError(this.handleError)
-    )
-  }
-  updateExternalUserId(id: string, variable: string): Observable<string> {
-    return this.apollo.mutate<updateOneSubscriptionData>({
-      mutation: gql
-        `mutation ($id: ObjectId, $externalUserId: String!) {
             updateOneSubscription(
               query: { _id: $id }
-            set: {externalUserId: $externalUserId}
-          ) {
+              set: $subscriptionUpdateInput
+            ) {
               _id
             }
-          }`,
-      variables: {
-        id, externalUserId: variable
-      }
-    }).pipe(
-   //   tap(result => console.log('SubscriptionService.updateExternalUserId: updateOneSubscriptionData', JSON.stringify(result))),
-      map(result => { return (<updateOneSubscriptionData>result.data).updateOneSubscription?._id?.toString()}),
-      catchError(this.handleError)
-    )
+          }
+        `,
+        variables: {
+          id,
+          subscriptionUpdateInput: variable,
+        },
+      })
+      .pipe(
+        // tap(result => console.log('SubscriptionService.updateSubscription: updateOneSubscriptionData', JSON.stringify(result))),
+        map((result) => {
+          return (<updateOneSubscriptionData>(
+            result?.data
+          ))?.updateOneSubscription?._id?.toString();
+        }),
+        catchError(this.handleError)
+      );
+  }
+  updateExternalUserId(id: string, variable: string): Observable<string> {
+    return this.apollo
+      .mutate<updateOneSubscriptionData>({
+        mutation: gql`
+          mutation ($id: ObjectId, $externalUserId: String!) {
+            updateOneSubscription(
+              query: { _id: $id }
+              set: { externalUserId: $externalUserId }
+            ) {
+              _id
+            }
+          }
+        `,
+        variables: {
+          id,
+          externalUserId: variable,
+        },
+      })
+      .pipe(
+        //   tap(result => console.log('SubscriptionService.updateExternalUserId: updateOneSubscriptionData', JSON.stringify(result))),
+        map((result) => {
+          return (<updateOneSubscriptionData>(
+            result.data
+          )).updateOneSubscription?._id?.toString();
+        }),
+        catchError(this.handleError)
+      );
   }
 
   private handleError(err: any): Observable<never> {
@@ -127,7 +146,7 @@ export class SubscriptionService {
     return throwError(errorMessage);
   }
 
-  private initializeInscription(id: string): graphqlModels.Subscription{
+  private initializeInscription(id: string): Subscription {
     // Return an initialized inscription
     return {
       _id: id,
@@ -148,6 +167,6 @@ export class SubscriptionService {
       street2: '',
       week: 0,
       zip: '',
-    }
+    };
   }
 }

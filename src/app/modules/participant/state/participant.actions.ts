@@ -1,7 +1,7 @@
 /* NgRx */
 import { Update } from '@ngrx/entity';
 import { createAction, props } from '@ngrx/store';
-import { Participant } from 'src/app/models/Participant';
+import { Participant } from '../../../models/Graphqlx';
 
 export const increaseCurrentParticipantNumber = createAction(
   '[Participant] Increase Current ParticipantNumber'
@@ -25,7 +25,6 @@ export const setParticipantId = createAction(
   '[Participant/API] Set Participant_Id',
   props<{ participant_id: string }>()
 );
-
 
 export const upsertParticipant = createAction(
   '[Participant/API] Upsert Participant',
@@ -75,4 +74,3 @@ export const loadParticipantsFailure = createAction(
   '[Participant] Load Fail',
   props<{ error: string }>()
 );
-

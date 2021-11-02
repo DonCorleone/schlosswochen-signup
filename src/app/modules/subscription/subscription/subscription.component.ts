@@ -16,11 +16,11 @@ import { SubscriptionService } from '../../../service/subscription.service';
 import * as UserReducer from '../../user/state/user.reducer';
 import * as SubscriptionReducer from '../state/subscription.reducer';
 import * as SubscriptionActions from '../state/subscription.actions';
-import * as graphqlModels from '../../../models/Graphqlx';
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
 import * as ReservationActions from '../../reservations/state/reservation.action';
 import {WeeklyReservation} from "../../../models/Week";
 import {setWeeklyReservation} from "../../reservations/state/reservation.action";
+import { Subscription as Inscription } from 'src/app/models/Graphqlx';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -36,7 +36,7 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 export class SubscriptionComponent implements OnInit, OnDestroy {
   title = 'Contact';
 
-  inscription: graphqlModels.Subscription;
+  inscription: Inscription;
   addresses: string | undefined;
   signupForm!: FormGroup;
   emailMessage: string = '';
@@ -103,18 +103,18 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
             this.subscriptionService
               .getInscription(externalUserId, id)
               .subscribe({
-                next: (subscription: graphqlModels.Subscription) => {
+                next: (inscription: Inscription) => {
                   if (this.isEditMode){
                     const weeklyReservation: WeeklyReservation = {
-                      weekNr: subscription.week!,
-                      numberOfReservations: subscription.numOfChildren!
+                      weekNr: inscription.week!,
+                      numberOfReservations: inscription.numOfChildren!
                     };
 
                     this.store.dispatch(ReservationActions.setWeeklyReservation({weeklyReservation}))
                   }
 
-                  this.store.dispatch(ReservationActions.setInscriptionId({inscriptionId: subscription._id}))
-                  this.displaySubscription(subscription)
+                  this.store.dispatch(ReservationActions.setInscriptionId({inscriptionId: inscription._id}))
+                  this.displaySubscription(inscription)
                 },
                 error: (err) => (this.errorMessage = err),
               });
@@ -162,7 +162,7 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {}
 
-  private displaySubscription(inscription: graphqlModels.Subscription) {
+  private displaySubscription(inscription: Inscription) {
     if (this.signupForm) {
       this.signupForm.reset();
     }

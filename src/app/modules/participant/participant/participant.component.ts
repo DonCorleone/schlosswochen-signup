@@ -16,20 +16,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
 
-import { Participant } from 'src/app/models/Participant';
-import * as graphqlx from '../../../models/Graphqlx';
-
 import * as ParticipantActions from '../state/participant.actions';
 
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
-import * as SubscritionReducer from '../../subscription/state/subscription.reducer';
+import * as SubscriptionReducer from '../../subscription/state/subscription.reducer';
 import * as ParticipantReducer from '../state/participant.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
 import {
+  Participant,
   ParticipantInsertInput,
   SubscriptionParticipantsRelationInput,
   SubscriptionUpdateInput,
 } from 'src/app/models/Graphqlx';
+import { Subscription as Inscription } from 'src/app/models/Graphqlx';
 import { SubscriptionService } from 'src/app/service/subscription.service';
 import { Observable, Subscription, timer } from 'rxjs';
 import { scan, takeWhile, map } from 'rxjs/operators';
@@ -68,7 +67,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
  // subscription_id: string = '';
   week: number = 0;
   numOfChilds: number = 0;
-  inscription: graphqlx.Subscription;
+  inscription: Inscription;
 
   timer$: Observable<number> | undefined;
 
@@ -143,7 +142,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         }
       );
     this.inscriptionSubscripton = this.store
-      .select(SubscritionReducer.getSubscription)
+      .select(SubscriptionReducer.getSubscription)
       .subscribe(
         (inscription) => {
           this.inscription = inscription;
@@ -263,7 +262,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
   saveSubscription() {
     this.subStoreSubscription = this.store
-      .select(SubscritionReducer.getSubscription)
+      .select(SubscriptionReducer.getSubscription)
       .subscribe((subscriptionStore) => {
         const link: string[] = [];
         for (let index = 1; index <= this.numOfChilds; index++) {
