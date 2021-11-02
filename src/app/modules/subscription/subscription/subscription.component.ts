@@ -99,23 +99,27 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
         this.route.params.subscribe((params) => {
           id = params['id'];
 
-          if (externalUserId?.length > 0 || id?.length > 0)
-          this.subscriptionService
-            .getInscription(externalUserId, id)
-            .subscribe({
-              next: (subscription: graphqlModels.Subscription) => {
+          if (externalUserId?.length > 0 || id?.length > 0) {
+            this.subscriptionService
+              .getInscription(externalUserId, id)
+              .subscribe({
+                next: (subscription: graphqlModels.Subscription) => {
+                  if (this.isEditMode){
+                    const weeklyReservation: WeeklyReservation = {
+                      weekNr: subscription.week!,
+                      numberOfReservations: subscription.numOfChildren!
+                    };
 
-                const weeklyReservation: WeeklyReservation = {
-                  weekNr: subscription.week!,
-                  numberOfReservations: subscription.numOfChildren!
-                };
+                    this.store.dispatch(ReservationActions.setWeeklyReservation({weeklyReservation}))
+                  }
 
-                this.store.dispatch(ReservationActions.setInscriptionId({inscriptionId: subscription._id}))
-                this.store.dispatch(ReservationActions.setWeeklyReservation({weeklyReservation}))
-                this.displaySubscription(subscription)
-              },
-              error: (err) => (this.errorMessage = err),
-            });
+                  this.store.dispatch(ReservationActions.setInscriptionId({inscriptionId: subscription._id}))
+                  this.displaySubscription(subscription)
+                },
+                error: (err) => (this.errorMessage = err),
+              });
+          }
+
         });
       });
     });
