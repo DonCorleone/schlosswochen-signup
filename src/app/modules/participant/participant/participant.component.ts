@@ -290,12 +290,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         subscription.participants = subscriptionParticipantsRelationInput;
         this.subSubscription = this.subscriptionService
           .updateSubscription(this.inscription._id, subscription)
-          .subscribe((subscriptionId) => {
+          .subscribe((inscriptionId) => {
             if (!this.currentUser?.profile?.sub){
               this.router.navigate(['/finnish']);
             }else{
             this.subExIdSubscription = this.subscriptionService
-              .updateExternalUserId(subscriptionId, this.currentUser.profile.sub)
+              .updateExternalUserId(inscriptionId, this.currentUser.profile.sub)
               .subscribe((subscriptionResult) => {
                 this.partExIdSubscription = this.participantService
                   .updateExternalUserId(link, this.currentUser.profile.sub)

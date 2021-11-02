@@ -3,7 +3,8 @@ import { WeeklyReservation } from "src/app/models/Week";
 import * as ReservationAction from "./reservation.action";
 
 export interface State {
-  weeklyReservation: WeeklyReservation
+  weeklyReservation: WeeklyReservation,
+  inscriptionId: string,
   deadline: Date
 };
 
@@ -12,6 +13,7 @@ const initialState: State = {
     weekNr: 0,
     numberOfReservations: 0
   },
+  inscriptionId: '',
   deadline: new Date()
 };
 
@@ -22,11 +24,17 @@ const getReservationFeatureSector = createFeatureSelector<State>(reservationFeat
 export const getWeeklyReservation = createSelector(
   getReservationFeatureSector,
   state => state.weeklyReservation
-)
+);
+
+export const getInscriptionId = createSelector(
+  getReservationFeatureSector,
+  state => state.inscriptionId
+);
+
 export const getDeadline = createSelector(
   getReservationFeatureSector,
   state => state.deadline
-)
+);
 
 export const reservationReducer = createReducer<State>(
   initialState,
@@ -34,6 +42,12 @@ export const reservationReducer = createReducer<State>(
     return {
       ...state,
       weeklyReservation: action.weeklyReservation
+    };
+  }),
+  on(ReservationAction.setInscriptionId, (state, action) => {
+    return {
+      ...state,
+      inscriptionId: action.inscriptionId
     };
   }),
   on(ReservationAction.setDeadline, (state, action) => {

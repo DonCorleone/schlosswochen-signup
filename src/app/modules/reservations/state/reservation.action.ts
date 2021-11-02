@@ -6,6 +6,11 @@ export const setWeeklyReservation= createAction(
   props<{weeklyReservation: WeeklyReservation}>()
 );
 
+export const setInscriptionId= createAction(
+  '[Reservation] Set Inscription ID',
+  props<{inscriptionId: string}>()
+);
+
 export const setDeadline= createAction(
   '[Reservation] Set Deadline',
   props<{deadline: Date}>()

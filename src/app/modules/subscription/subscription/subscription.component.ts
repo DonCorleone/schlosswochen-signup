@@ -17,6 +17,10 @@ import * as UserReducer from '../../user/state/user.reducer';
 import * as SubscriptionReducer from '../state/subscription.reducer';
 import * as SubscriptionActions from '../state/subscription.actions';
 import * as graphqlModels from '../../../models/Graphqlx';
+import * as ReservationReducer from '../../reservations/state/reservation.reducer';
+import * as ReservationActions from '../../reservations/state/reservation.action';
+import {WeeklyReservation} from "../../../models/Week";
+import {setWeeklyReservation} from "../../reservations/state/reservation.action";
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -99,8 +103,17 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
           this.subscriptionService
             .getInscription(externalUserId, id)
             .subscribe({
-              next: (subscription: graphqlModels.Subscription) =>
-                this.displaySubscription(subscription),
+              next: (subscription: graphqlModels.Subscription) => {
+
+                const weeklyReservation: WeeklyReservation = {
+                  weekNr: subscription.week!,
+                  numberOfReservations: subscription.numOfChildren!
+                };
+
+                this.store.dispatch(ReservationActions.setInscriptionId({inscriptionId: subscription._id}))
+                this.store.dispatch(ReservationActions.setWeeklyReservation({weeklyReservation}))
+                this.displaySubscription(subscription)
+              },
               error: (err) => (this.errorMessage = err),
             });
         });
