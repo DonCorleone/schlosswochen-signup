@@ -5,6 +5,6 @@ export interface Week {
 }
 
 export interface WeeklyReservation {
-  weeknr: number,
+  weekNr: number,
   numberOfReservations: number
 }

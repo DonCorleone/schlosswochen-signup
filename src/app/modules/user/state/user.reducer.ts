@@ -1,40 +1,42 @@
 // Homework
-import { User } from '../user';
 
 /* NgRx */
-import { createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
+import {
+  createReducer,
+  on,
+  createFeatureSelector,
+  createSelector,
+} from '@ngrx/store';
 import * as UserActions from './user.actions';
+import { User } from 'oidc-client';
 
 // State for this feature (User)
-export interface UserState {
-  maskUserName: boolean;
+export interface State {
+  user: UserState;
+}
+
+interface UserState {
   currentUser: User;
 }
 
 const initialState: UserState = {
-  maskUserName: true,
-  currentUser: null!
+  currentUser: null!,
 };
 
 // Selector functions
-const getUserFeatureState = createFeatureSelector<UserState>('users');
-
-export const getMaskUserName = createSelector(
-  getUserFeatureState,
-  state => state.maskUserName
-);
+const getUserFeatureState = createFeatureSelector<UserState>('user');
 
 export const getCurrentUser = createSelector(
   getUserFeatureState,
-  state => state.currentUser
+  (state) => state.currentUser
 );
 
 export const userReducer = createReducer<UserState>(
   initialState,
-  on(UserActions.maskUserName, (state): UserState => {
+  on(UserActions.setUser, (state, action): UserState => {
     return {
       ...state,
-      maskUserName: !state.maskUserName
+      currentUser: action.currentUser,
     };
   })
 );

@@ -1,0 +1,25 @@
+<app-wizard-step
+  [title]="title"
+  (previousStepClicked)="goToPreviousStep()"
+  (nextStepClicked)="goToNextStep()"
+>
+  <div class="container-fluid">
+    <!-- <div class="card">
+    <div class="card-body"> -->
+
+    <div class="form-group row mb-2">
+      <h2>Subscription</h2>
+      <pre><p>{{subscription | async | json}}</p></pre>
+      <!-- </div>
+    </div> -->
+    </div>
+    <!-- <div class="card">
+    <div class="card-body"> -->
+    <div class="form-group row mb-2">
+      <h2>Participants</h2>
+      <pre><p>{{participants | async | json}}</p></pre>
+      <!-- </div>
+    </div> -->
+    </div>
+  </div>
+</app-wizard-step>

@@ -1,22 +1,27 @@
 import * as AppState from '../../../state/app.state';
+import * as SubscriptionAction from './subscription.actions';
+import {
+  createFeatureSelector,
+  createReducer,
+  createSelector,
+  on,
+} from '@ngrx/store';
 
-import { Subscriptor } from "src/app/models/Subscriptor";
-import * as SubscriptionAction from "./subscription.actions"
-import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
+import * as graphqlx from '../../../models/Graphqlx';
 
 export const subscriptionFeatureKey = 'subscription';
 
 export interface State extends AppState.State {
-  subscription: Subscriptor;
+  subscription: graphqlx.Subscription;
 }
 
 export interface SubscriptionState {
-  subscription: Subscriptor
-};
+  subscription: graphqlx.Subscription;
+}
 
 const initialState: SubscriptionState = {
   subscription: {
-    _id:'',
+    _id: '',
     salutation: '',
     firstName: '',
     lastName: '',
@@ -27,17 +32,19 @@ const initialState: SubscriptionState = {
     city: '',
     state: 'temporary',
     zip: '',
-    participants:[],
-    externalUserId:''
-  }
-}
+    participants: [],
+    externalUserId: '',
+  },
+};
 
 // Selector functions
-const getSubscriptionFeatureState = createFeatureSelector<SubscriptionState>(subscriptionFeatureKey);
+const getSubscriptionFeatureState = createFeatureSelector<SubscriptionState>(
+  subscriptionFeatureKey
+);
 
 export const getSubscription = createSelector(
   getSubscriptionFeatureState,
-  state => state.subscription
+  (state) => state.subscription
 );
 
 export const subscriptionReducer = createReducer<SubscriptionState>(
@@ -45,7 +52,7 @@ export const subscriptionReducer = createReducer<SubscriptionState>(
   on(SubscriptionAction.setSubscription, (state, action) => {
     return {
       ...state,
-      subscription: action.subscription
+      subscription: action.subscription,
     };
   })
 );

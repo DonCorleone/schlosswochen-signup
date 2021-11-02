@@ -5,6 +5,12 @@
     "config": {
         "schedule": "*/1 * * * *"
     },
-    "function_name": "deleteTempRecords",
-    "disabled": false
+    "disabled": false,
+    "event_processors": {
+        "FUNCTION": {
+            "config": {
+                "function_name": "deleteTempRecords"
+            }
+        }
+    }
 }

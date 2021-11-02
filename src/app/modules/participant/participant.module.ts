@@ -6,6 +6,8 @@ import { ParticipantComponent } from './participant/participant.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import * as fromState from './state/participant.reducer';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
+import { SubscriptionsModule } from '../subscription/subscription.module';
+import { ReservationsModule } from '../reservations/reservations.module';
 
 @NgModule({
   declarations: [ParticipantComponent],
@@ -13,6 +15,7 @@ import { SharedModule } from 'src/app/modules/shared/shared.module';
     CommonModule,
     ParticipantRoutingModule,
     ReactiveFormsModule,
+    ReservationsModule,
     SharedModule,
     StoreModule.forFeature(fromState.participantsFeatureKey, fromState.participantReducer)
   ]

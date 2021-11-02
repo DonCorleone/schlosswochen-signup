@@ -1,0 +1,30 @@
+query ($email: String!) {
+  subscription(
+  	query:{email: $email}
+	){
+    _id
+    externalUserId
+    reservationDate
+    week
+    numOfChildren
+    email
+    salutation
+    firstName
+    lastName
+    street1
+    street2
+    zip
+    city
+    country
+    participants{
+      participant_id
+      externalUserId
+      salutation
+      firstNameParticipant
+      lastNameParticipant
+      birthday
+      comment
+      fotoAllowed
+    }
+  }
+}

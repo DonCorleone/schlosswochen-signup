@@ -4,8 +4,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
-import { Participant } from '../models/Participant';
-import { MutationInsertOneParticipantArgs, ParticipantInsertInput } from '../models/Graphqlx';
+import {Participant, updateManyParticipantsData} from '../models/Participant';
+import {
+  MutationInsertOneParticipantArgs,
+  MutationUpdateManyParticipantsArgs,
+  ParticipantInsertInput
+} from '../models/Graphqlx';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
 
 @Injectable({
@@ -33,11 +37,28 @@ export class ParticipantService {
       );
   }
 
+  updateExternalUserId(ids: string[], variable: string): Observable<number> {
+    return this.apollo.mutate<updateManyParticipantsData>({
+      mutation: gql`
+        mutation ($ids: [String], $externalUserId: String!) {
+          updateManyParticipants(
+            query: {participant_id_in: $ids}
+            set: {externalUserId: $externalUserId}
+          ){
+            matchedCount
+          }
+        }
+      `,
+      variables: {
+        ids: ids, externalUserId: variable
+      }
+    }).pipe(
+      tap(result => console.log('ParticipantService.updateExternalUserId: updateManySubscriptionsData', JSON.stringify(result))),
+      map(result => { return (<updateManyParticipantsData>result.data)?.updateManyParticipants?.matchedCount}),
+      catchError(this.handleError)
+    )
+  }
   createParticipant(variable: ParticipantInsertInput): Observable<ParticipantInsertInput> {
-  //  insertOneParticipant(data: ParticipantInsertInput!): Participant
-
-  //  ParticipantInsertInput
-
     return this.apollo.mutate<MutationInsertOneParticipantArgs>({
       mutation: gql`
         mutation ($participantInsertInput: ParticipantInsertInput!) {
@@ -53,7 +74,7 @@ export class ParticipantService {
         participantInsertInput: variable
       }
     }).pipe(
-      tap(data => console.log('Products', JSON.stringify(data))),
+      tap(data => console.log('ParticipantService.createParticipant.insertOneParticipant', JSON.stringify(data))),
       map(result => { return <ParticipantInsertInput>result.data?.data}),
       catchError(this.handleError)
     )

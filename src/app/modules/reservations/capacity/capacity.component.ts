@@ -20,7 +20,7 @@ export class CapacityComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.week) {
-      this.childsPerStates$ = this.reservationService.GetReservationsPerWeek(this.week)
+      this.childsPerStates$ = this.reservationService.getReservationsPerWeek(this.week)
         .pipe(
           map(returnz => {
             return returnz;

@@ -1,3 +1,5 @@
+import {UpdateManyPayload} from "./Graphqlx";
+
 export interface Participant {
   id: number;
   _id: string | null;
@@ -9,4 +11,8 @@ export interface Participant {
   externalUserId: string;
   firstNameParticipant: string;
   lastNameParticipant: string;
+}
+
+export interface updateManyParticipantsData {
+  updateManyParticipants: UpdateManyPayload;
 }

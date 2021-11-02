@@ -25,7 +25,7 @@ export class ReservationService {
       `,
       variables: variable
     }).pipe(
-      tap(data => console.log('Products', JSON.stringify(data))),
+      tap(data => console.log('ReservationService.createWeeklyReservation.insertOneSubscription', JSON.stringify(data))),
       map(result => { return (<insertOneSubscriptionData>result.data).insertOneSubscription._id }),
       catchError(this.handleError)
     )
@@ -36,7 +36,7 @@ export class ReservationService {
     this.apollo = this.apolloProvider.use('writeClient');
   }
 
-  GetReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
+  getReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
     console.log(`Get Reservations Per Week`);
     return this.apollo
       .watchQuery<ChildsPerStateData>({
@@ -52,7 +52,7 @@ export class ReservationService {
         fetchPolicy: 'no-cache'
       })
       .valueChanges.pipe(
-        tap(result => console.log(JSON.stringify(result.data.sumChildsPerState))),
+        tap(result => console.log(JSON.stringify(result))),
         map((result) => result.data.sumChildsPerState));
   }
 

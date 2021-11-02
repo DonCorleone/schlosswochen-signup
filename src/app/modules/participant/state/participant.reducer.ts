@@ -37,6 +37,10 @@ export const getCurrentParticipant = createSelector(
   state => state.entities[state.currentParticipantNumber]
 );
 
+export const getAllParticipants = createSelector(
+  getParticipantFeatureState,
+  state => state.entities
+);
 
 export const participantReducer = createReducer(
   initialState,

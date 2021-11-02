@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, timer } from 'rxjs';
 import { scan, takeWhile } from 'rxjs/operators';
@@ -12,6 +12,8 @@ import * as ReservationReducer from '../../reservations/state/reservation.reduce
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+
+  @Input() externalInput: string | null;
 
   timer$: Observable<number> | undefined;
   reservation$ : Observable<WeeklyReservation>;

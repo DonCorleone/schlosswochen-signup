@@ -3,3 +3,12 @@
 * {
   border-radius: 0 !important;
 }
+
+.card {
+  width: 100%;
+  min-height: 80vh;
+  font-size: 1.2rem;
+}
+.form-control {
+  font-size: unset !important;
+}
