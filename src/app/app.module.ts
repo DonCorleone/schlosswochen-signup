@@ -46,7 +46,7 @@ import { UserModule } from './modules/user/user.module';
     SharedModule,
     StoreModule.forRoot({}, {}),
     StoreDevtoolsModule.instrument({
-      name: 'Schlosswochen Subscription',
+      name: 'Schlosswochen Inscription',
       maxAge: 25,
       logOnly: environment.production,
     }),

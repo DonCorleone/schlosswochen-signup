@@ -1,4 +1,4 @@
-import {Subscription} from "./Graphqlx";
+import { Subscription } from './Graphqlx';
 
 export interface insertOneSubscription {
   _id: string;

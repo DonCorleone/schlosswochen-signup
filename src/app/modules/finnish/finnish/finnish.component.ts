@@ -5,7 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import * as ParticipantReducer from '../../participant/state/participant.reducer';
-import * as SubscriptionReducer from '../../subscription/state/subscription.reducer';
+import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import { Router } from '@angular/router';
 import { Participant } from '../../../models/Graphqlx';
 import { Subscription as Inscription } from 'src/app/models/Graphqlx';
@@ -18,17 +18,17 @@ import { Subscription as Inscription } from 'src/app/models/Graphqlx';
 export class FinnishComponent implements OnInit {
   public title = 'Finnished';
   public participants: Observable<Dictionary<Participant>>;
-  public subscription: Observable<Inscription>;
+  public inscription: Observable<Inscription>;
 
   constructor(
     private router: Router,
-    private subscriptionStore: Store<SubscriptionReducer.State>,
+    private inscriptionStore: Store<InscriptionReducer.State>,
     private participantStore: Store<ParticipantReducer.State>
   ) {}
 
   ngOnInit(): void {
-    this.subscription = this.subscriptionStore
-      .select(SubscriptionReducer.getSubscription)
+    this.inscription = this.inscriptionStore
+      .select(InscriptionReducer.getInscription)
       .pipe(
         map((x) => {
           return x;
@@ -46,6 +46,6 @@ export class FinnishComponent implements OnInit {
   goToPreviousStep() {}
 
   goToNextStep(): void {
-    this.router.navigate(['/subscriptions']);
+    this.router.navigate(['/inscriptions']).then();
   }
 }
