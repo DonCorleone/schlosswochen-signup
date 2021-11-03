@@ -33,19 +33,19 @@ export class AuthService implements OnInit{
     const stsSettings = {
       authority: Constants.stsAuthority,
       client_id: Constants.clientId,
-      redirect_uri: `${Constants.clientRoot}signin-callback`,
+      redirect_uri: `${process.env.CLIENT_ROOT}signin-callback`,
       scope: 'openid profile schlosswochen-api',
       response_type: 'code',
-      post_logout_redirect_uri: `${Constants.clientRoot}signout-callback`,
+      post_logout_redirect_uri: `${process.env.CLIENT_ROOT}signout-callback`,
       automaticSilentRenew: true,
-      silent_redirect_uri: `${Constants.clientRoot}assets/silent-callback.html`,
+      silent_redirect_uri: `${process.env.CLIENT_ROOT}assets/silent-callback.html`,
       metadata: {
         issuer: `${Constants.stsAuthority}`,
         authorization_endpoint: `${Constants.stsAuthority}authorize?audience=schlosswochen-api`,
         jwks_uri: `${Constants.stsAuthority}.well-known/jwks.json`,
         token_endpoint: `${Constants.stsAuthority}oauth/token`,
         userinfo_endpoint: `${Constants.stsAuthority}userinfo`,
-        end_session_endpoint: `${Constants.stsAuthority}v2/logout?client_id=${Constants.clientId}&returnTo=${encodeURI(Constants.clientRoot)}signout-callback`
+        end_session_endpoint: `${Constants.stsAuthority}v2/logout?client_id=${Constants.clientId}&returnTo=${encodeURI(process.env.CLIENT_ROOT!)}signout-callback`
       }
     };
     this._userManager = new UserManager(stsSettings);

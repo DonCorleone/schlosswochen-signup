@@ -4,19 +4,18 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
-import {Participant, updateManyParticipantsData} from '../models/Participant';
+import { updateManyParticipantsData } from '../models/Participant';
+import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import {
   MutationInsertOneParticipantArgs,
-  MutationUpdateManyParticipantsArgs,
-  ParticipantInsertInput
+  Participant,
+  ParticipantInsertInput,
 } from '../models/Graphqlx';
-import { Apollo, ApolloBase, gql } from 'apollo-angular';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ParticipantService {
-
   private participantsUrl = 'api/participants';
   private participants: Participant[] = [];
 
@@ -29,92 +28,113 @@ export class ParticipantService {
     if (this.participants) {
       return of(this.participants);
     }
-    return this.http.get<Participant[]>(this.participantsUrl)
-      .pipe(
-        tap(data => console.log(JSON.stringify(data))),
-        tap(data => this.participants = data),
-        catchError(this.handleError)
-      );
+    return this.http.get<Participant[]>(this.participantsUrl).pipe(
+      tap((data) => console.log(JSON.stringify(data))),
+      tap((data) => (this.participants = data)),
+      catchError(this.handleError)
+    );
   }
 
   updateExternalUserId(ids: string[], variable: string): Observable<number> {
-    return this.apollo.mutate<updateManyParticipantsData>({
-      mutation: gql`
-        mutation ($ids: [String], $externalUserId: String!) {
-          updateManyParticipants(
-            query: {participant_id_in: $ids}
-            set: {externalUserId: $externalUserId}
-          ){
-            matchedCount
+    return this.apollo
+      .mutate<updateManyParticipantsData>({
+        mutation: gql`
+          mutation ($ids: [String], $externalUserId: String!) {
+            updateManyParticipants(
+              query: { participant_id_in: $ids }
+              set: { externalUserId: $externalUserId }
+            ) {
+              matchedCount
+            }
           }
-        }
-      `,
-      variables: {
-        ids: ids, externalUserId: variable
-      }
-    }).pipe(
-      tap(result => console.log('ParticipantService.updateExternalUserId: updateManySubscriptionsData', JSON.stringify(result))),
-      map(result => { return (<updateManyParticipantsData>result.data)?.updateManyParticipants?.matchedCount}),
-      catchError(this.handleError)
-    )
+        `,
+        variables: {
+          ids: ids,
+          externalUserId: variable,
+        },
+      })
+      .pipe(
+        tap((result) =>
+          console.log(
+            'ParticipantService.updateExternalUserId: updateManySubscriptionsData',
+            JSON.stringify(result)
+          )
+        ),
+        map((result) => {
+          return (<updateManyParticipantsData>result.data)
+            ?.updateManyParticipants?.matchedCount;
+        }),
+        catchError(this.handleError)
+      );
   }
-  createParticipant(variable: ParticipantInsertInput): Observable<ParticipantInsertInput> {
-    return this.apollo.mutate<MutationInsertOneParticipantArgs>({
-      mutation: gql`
-        mutation ($participantInsertInput: ParticipantInsertInput!) {
-          insertOneParticipant(
-          data: $participantInsertInput
-        ) {
-          _id
-          participant_id
+  createParticipant(
+    variable: ParticipantInsertInput
+  ): Observable<ParticipantInsertInput> {
+    return this.apollo
+      .mutate<MutationInsertOneParticipantArgs>({
+        mutation: gql`
+          mutation ($participantInsertInput: ParticipantInsertInput!) {
+            insertOneParticipant(data: $participantInsertInput) {
+              _id
+              participant_id
+            }
           }
-        }
-      `,
-      variables: {
-        participantInsertInput: variable
-      }
-    }).pipe(
-      tap(data => console.log('ParticipantService.createParticipant.insertOneParticipant', JSON.stringify(data))),
-      map(result => { return <ParticipantInsertInput>result.data?.data}),
-      catchError(this.handleError)
-    )
+        `,
+        variables: {
+          participantInsertInput: variable,
+        },
+      })
+      .pipe(
+        tap((data) =>
+          console.log(
+            'ParticipantService.createParticipant.insertOneParticipant',
+            JSON.stringify(data)
+          )
+        ),
+        map((result) => {
+          return <ParticipantInsertInput>result.data?.data;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   deleteParticipant(id: string): Observable<{}> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.participantsUrl}/${id}`;
-    return this.http.delete<Participant>(url, { headers })
-      .pipe(
-        tap(data => console.log('deleteParticipant: ' + id)),
-        tap(data => {
-          const foundIndex = this.participants.findIndex(item => item._id === id);
-          if (foundIndex > -1) {
-            this.participants.splice(foundIndex, 1);
-          }
-        }),
-        catchError(this.handleError)
-      );
+    return this.http.delete<Participant>(url, { headers }).pipe(
+      tap((data) => console.log('deleteParticipant: ' + id)),
+      tap((data) => {
+        const foundIndex = this.participants.findIndex(
+          (item) => item._id === id
+        );
+        if (foundIndex > -1) {
+          this.participants.splice(foundIndex, 1);
+        }
+      }),
+      catchError(this.handleError)
+    );
   }
 
   updateParticipant(participant: Participant): Observable<Participant> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.participantsUrl}/${participant._id}`;
-    return this.http.put<Participant>(url, participant, { headers })
-      .pipe(
-        tap(() => console.log('updateParticipant: ' + participant._id)),
-        // Update the item in the list
-        // This is required because the selected participant that was edited
-        // was a copy of the item from the array.
-        tap(() => {
-          const foundIndex = this.participants.findIndex(item => item._id === participant._id);
-          if (foundIndex > -1) {
-            this.participants[foundIndex] = participant;
-          }
-        }),
-        // Return the participant on an update
-        map(() => participant),
-        catchError(this.handleError)
-      );
+    return this.http.put<Participant>(url, participant, { headers }).pipe(
+      tap(() => console.log('updateParticipant: ' + participant._id)),
+      // Update the item in the list
+      // This is required because the selected participant that was edited
+      // was a copy of the item from the array.
+      tap(() => {
+        const foundIndex = this.participants.findIndex(
+          (item) => item._id === participant._id
+        );
+        if (foundIndex > -1) {
+          this.participants[foundIndex] = participant;
+        }
+      }),
+      // Return the participant on an update
+      map(() => participant),
+      catchError(this.handleError)
+    );
   }
 
   private handleError(err: any) {
@@ -132,5 +152,4 @@ export class ParticipantService {
     console.error(err);
     return throwError(errorMessage);
   }
-
 }

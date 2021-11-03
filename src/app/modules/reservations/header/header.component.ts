@@ -14,8 +14,10 @@ import * as ReservationReducer from '../../reservations/state/reservation.reduce
 export class HeaderComponent implements OnInit, OnDestroy {
 
   @Input() externalInput: string | null;
+  @Input() isEditMode: boolean = false;
 
   timer$: Observable<number> | undefined;
+  inscriptionId$: Observable<string>;
   reservation$ : Observable<WeeklyReservation>;
   deadlineSubscription: Subscription;
 
@@ -33,8 +35,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.reservation$ = this.store.select(ReservationReducer.getWeeklyReservation).pipe (
+    this.store.select(ReservationReducer.getWeeklyReservation).pipe (
       weeklyReservation => this.reservation$ = weeklyReservation
+    );
+
+    this.store.select(ReservationReducer.getInscriptionId).pipe (
+      weeklyReservation => this.inscriptionId$ = weeklyReservation
     );
   }
 

@@ -7,16 +7,15 @@ import {
   on,
 } from '@ngrx/store';
 
-import * as graphqlx from '../../../models/Graphqlx';
-
+import { Subscription as Inscription } from 'src/app/models/Graphqlx';
 export const subscriptionFeatureKey = 'subscription';
 
 export interface State extends AppState.State {
-  subscription: graphqlx.Subscription;
+  subscription: Inscription;
 }
 
 export interface SubscriptionState {
-  subscription: graphqlx.Subscription;
+  subscription: Inscription;
 }
 
 const initialState: SubscriptionState = {

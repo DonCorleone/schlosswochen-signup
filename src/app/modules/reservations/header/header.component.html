@@ -8,7 +8,10 @@
   <div *ngIf="externalInput" class="alert alert-warning show" role="alert">
     <span>{{ externalInput }}</span>
   </div>
-  <div class="alert alert-success show" role="alert">
+  <div *ngIf="!isEditMode" class="alert alert-success show" role="alert">
     {{ timer$ | async }} Minutes left!
+  </div>
+  <div *ngIf="isEditMode && (inscriptionId$ | async) as inscriptionId" class="alert alert-success show" role="alert">
+    Order Id: {{ inscriptionId }}
   </div>
 </div>

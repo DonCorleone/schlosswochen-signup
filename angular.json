@@ -32,10 +32,15 @@
             "assets": [
               "src/favicon.ico",
               {
-                  "glob": "**/*",
-                  "input": "src/assets/",
-                  "ignore": ["**/*.scss"],
-                  "output": "/assets/"
+                "glob": "_redirects",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/",
+                "ignore": ["**/*.scss"],
+                "output": "/assets/"
               },
               {
                 "glob": "**/*",
@@ -47,8 +52,7 @@
               "src/styles.scss",
               "./node_modules/bootstrap-dark-5/dist/css/bootstrap-blackbox.css"
             ],
-            "scripts": [
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -72,7 +76,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -128,9 +132,7 @@
                 "output": "/assets/"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "scripts": []
           }
         },
@@ -142,9 +144,7 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
