@@ -3,7 +3,7 @@ import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import { Observable, of, throwError } from 'rxjs';
 import { tap, map, catchError } from 'rxjs/operators';
 import { updateOneSubscriptionData } from '../models/Subscriptor';
-import {Subscription, SubscriptionUpdateInput} from '../models/Graphqlx';
+import { Subscription, SubscriptionUpdateInput } from '../models/Graphqlx';
 
 interface SubscriptionData {
   subscription: Subscription;
@@ -12,16 +12,13 @@ interface SubscriptionData {
 @Injectable({
   providedIn: 'root',
 })
-export class SubscriptionService {
+export class InscriptionsService {
   private apollo: ApolloBase;
   constructor(private apolloProvider: Apollo) {
     this.apollo = this.apolloProvider.use('writeClient');
   }
 
-  getInscription(
-    externalUserId: string,
-    id: string
-  ): Observable<Subscription> {
+  getInscription(externalUserId: string, id: string): Observable<Subscription> {
     if (externalUserId == '' && id != '') {
       return of(this.initializeInscription(id));
     }
@@ -67,7 +64,7 @@ export class SubscriptionService {
       );
   }
 
-  updateSubscription(
+  updateInscription(
     id: string,
     variable: SubscriptionUpdateInput
   ): Observable<string> {

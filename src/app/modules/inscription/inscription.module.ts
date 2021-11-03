@@ -7,26 +7,26 @@ import { StoreModule } from '@ngrx/store';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 
-import * as fromState from './state/subscription.reducer';
+import * as fromState from './state/inscription.reducer';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
 import { ReservationsModule } from '../reservations/reservations.module';
-import { SubscriptionComponent } from './subscription/subscription.component';
-import { SubscriptionsRoutingModule } from './subscription-routing.module';
+import { InscriptionRoutingModule } from './inscription-routing.module';
+import { InscriptionComponent } from './inscription/inscription.component';
 
 @NgModule({
-  declarations: [SubscriptionComponent],
+  declarations: [InscriptionComponent],
   imports: [
     CommonModule,
-    SubscriptionsRoutingModule,
+    InscriptionRoutingModule,
     ReactiveFormsModule,
     FormlyModule.forRoot(),
     FormlyBootstrapModule,
     ReservationsModule,
     SharedModule,
     StoreModule.forFeature(
-      fromState.subscriptionFeatureKey,
-      fromState.subscriptionReducer
+      fromState.inscriptionFeatureKey,
+      fromState.inscriptionReducer
     ),
   ],
 })
-export class SubscriptionsModule {}
+export class InscriptionModule {}

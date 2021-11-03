@@ -10,16 +10,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
 
-import {debounceTime, map, tap} from 'rxjs/operators';
+import { debounceTime, map, tap } from 'rxjs/operators';
 
-import { SubscriptionService } from '../../../service/subscription.service';
+import { InscriptionsService } from '../../../service/inscriptions.service';
 import * as UserReducer from '../../user/state/user.reducer';
-import * as SubscriptionReducer from '../state/subscription.reducer';
-import * as SubscriptionActions from '../state/subscription.actions';
-import * as ReservationReducer from '../../reservations/state/reservation.reducer';
+import * as InscriptionReducer from '../state/inscription.reducer';
+import * as InscriptionActions from '../state/inscription.actions';
 import * as ReservationActions from '../../reservations/state/reservation.action';
-import {WeeklyReservation} from "../../../models/Week";
-import {setWeeklyReservation} from "../../reservations/state/reservation.action";
+import { WeeklyReservation } from '../../../models/Week';
 import { Subscription as Inscription } from 'src/app/models/Graphqlx';
 
 // since an object key can be any of those types, our key can too
@@ -29,11 +27,11 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 }
 
 @Component({
-  selector: 'app-subscription',
-  templateUrl: './subscription.component.html',
-  styleUrls: ['./subscription.component.scss'],
+  selector: 'app-inscription',
+  templateUrl: './inscription.component.html',
+  styleUrls: ['./inscription.component.scss'],
 })
-export class SubscriptionComponent implements OnInit, OnDestroy {
+export class InscriptionComponent implements OnInit, OnDestroy {
   title = 'Contact';
 
   inscription: Inscription;
@@ -50,10 +48,10 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private subscriptionService: SubscriptionService,
+    private inscriptionService: InscriptionsService,
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store<SubscriptionReducer.State>
+    private store: Store<InscriptionReducer.State>
   ) {}
 
   ngOnInit(): void {
@@ -89,7 +87,6 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
       let id = '';
 
       this.route.url.subscribe((urlSegment) => {
-
         this.isEditMode = urlSegment.length == 0;
 
         if (this.isEditMode) {
@@ -100,26 +97,33 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
           id = params['id'];
 
           if (externalUserId?.length > 0 || id?.length > 0) {
-            this.subscriptionService
+            this.inscriptionService
               .getInscription(externalUserId, id)
               .subscribe({
                 next: (inscription: Inscription) => {
-                  if (this.isEditMode){
+                  if (this.isEditMode) {
                     const weeklyReservation: WeeklyReservation = {
                       weekNr: inscription.week!,
-                      numberOfReservations: inscription.numOfChildren!
+                      numberOfReservations: inscription.numOfChildren!,
                     };
 
-                    this.store.dispatch(ReservationActions.setWeeklyReservation({weeklyReservation}))
+                    this.store.dispatch(
+                      ReservationActions.setWeeklyReservation({
+                        weeklyReservation,
+                      })
+                    );
                   }
 
-                  this.store.dispatch(ReservationActions.setInscriptionId({inscriptionId: inscription._id}))
-                  this.displaySubscription(inscription)
+                  this.store.dispatch(
+                    ReservationActions.setInscriptionId({
+                      inscriptionId: inscription._id,
+                    })
+                  );
+                  this.displayInscription(inscription);
                 },
                 error: (err) => (this.errorMessage = err),
               });
           }
-
         });
       });
     });
@@ -135,13 +139,14 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const subscription = { subscription: this.signupForm.value };
-    this.subscriptionService
-      .updateSubscription(subscription.subscription._id, subscription.subscription)
+    const inscription = { inscription: this.signupForm.value };
+    this.inscriptionService
+      .updateInscription(
+        inscription.inscription._id,
+        inscription.inscription
+      )
       .subscribe((res: string) => {
-        this.store.dispatch(
-          SubscriptionActions.setSubscription(subscription)
-        );
+        this.store.dispatch(InscriptionActions.setInscription(inscription));
         this.router.navigate(['/participant', 1]);
       });
   }
@@ -162,7 +167,7 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {}
 
-  private displaySubscription(inscription: Inscription) {
+  private displayInscription(inscription: Inscription) {
     if (this.signupForm) {
       this.signupForm.reset();
     }

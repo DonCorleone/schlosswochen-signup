@@ -19,7 +19,7 @@ import { Store } from '@ngrx/store';
 import * as ParticipantActions from '../state/participant.actions';
 
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
-import * as SubscriptionReducer from '../../subscription/state/subscription.reducer';
+import * as InscriptionsReducer from '../../inscription/state/inscription.reducer';
 import * as ParticipantReducer from '../state/participant.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
 import {
@@ -29,7 +29,7 @@ import {
   SubscriptionUpdateInput,
 } from 'src/app/models/Graphqlx';
 import { Subscription as Inscription } from 'src/app/models/Graphqlx';
-import { SubscriptionService } from 'src/app/service/subscription.service';
+import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import { Observable, Subscription, timer } from 'rxjs';
 import { scan, takeWhile, map } from 'rxjs/operators';
 import * as UserReducer from "../../user/state/user.reducer";
@@ -107,7 +107,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private activeRoute: ActivatedRoute,
     private router: Router,
     private participantService: ParticipantService,
-    private subscriptionService: SubscriptionService,
+    private inscriptionsService: InscriptionsService,
     private store: Store<ParticipantReducer.State>,
     private ref: ChangeDetectorRef
   ) {}
@@ -142,7 +142,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         }
       );
     this.inscriptionSubscripton = this.store
-      .select(SubscriptionReducer.getSubscription)
+      .select(InscriptionsReducer.getInscription)
       .subscribe(
         (inscription) => {
           this.inscription = inscription;
@@ -262,8 +262,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
   saveSubscription() {
     this.subStoreSubscription = this.store
-      .select(SubscriptionReducer.getSubscription)
-      .subscribe((subscriptionStore) => {
+      .select(InscriptionsReducer.getInscription)
+      .subscribe((InscriptionStore) => {
         const link: string[] = [];
         for (let index = 1; index <= this.numOfChilds; index++) {
           link.push(this.inscription._id + '-' + index);
@@ -273,27 +273,27 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             link: link,
           };
         const subscription: SubscriptionUpdateInput = {
-          firstName: subscriptionStore.firstName,
-          lastName: subscriptionStore.lastName,
-          _id: subscriptionStore._id,
-          email: subscriptionStore.email,
-          phone: subscriptionStore.phone,
-          street1: subscriptionStore.street1,
-          street2: subscriptionStore.street2,
-          city: subscriptionStore.city,
+          firstName: InscriptionStore.firstName,
+          lastName: InscriptionStore.lastName,
+          _id: InscriptionStore._id,
+          email: InscriptionStore.email,
+          phone: InscriptionStore.phone,
+          street1: InscriptionStore.street1,
+          street2: InscriptionStore.street2,
+          city: InscriptionStore.city,
           state: 'definitive',
-          zip: subscriptionStore.zip,
+          zip: InscriptionStore.zip,
           participants: subscriptionParticipantsRelationInput,
           externalUserId: '',
         };
         subscription.participants = subscriptionParticipantsRelationInput;
-        this.subSubscription = this.subscriptionService
-          .updateSubscription(this.inscription._id, subscription)
+        this.subSubscription = this.inscriptionsService
+          .updateInscription(this.inscription._id, subscription)
           .subscribe((inscriptionId) => {
             if (!this.currentUser?.profile?.sub){
               this.router.navigate(['/finnish']);
             }else{
-            this.subExIdSubscription = this.subscriptionService
+            this.subExIdSubscription = this.inscriptionsService
               .updateExternalUserId(inscriptionId, this.currentUser.profile.sub)
               .subscribe((subscriptionResult) => {
                 this.partExIdSubscription = this.participantService
