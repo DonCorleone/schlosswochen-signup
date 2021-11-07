@@ -33,7 +33,7 @@ import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import { Observable, Subscription, timer } from 'rxjs';
 import { scan, takeWhile, map } from 'rxjs/operators';
 import * as UserReducer from "../../user/state/user.reducer";
-import {User} from "oidc-client";
+import {User} from "../../../models/user";
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');

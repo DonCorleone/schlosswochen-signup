@@ -37,17 +37,17 @@ export class WizardStepComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._authService.isLoggedIn().then (loggedIn => {
-      this.isLoggedIn = loggedIn
-    });
+    // this._authService.isLoggedIn().then (loggedIn => {
+    //   this.isLoggedIn = loggedIn
+    // });
   }
 
   login(){
-    this._authService.login();
+    // this._authService.login();
   }
 
   logOut(): void {
-    this._authService.logout();
+    // this._authService.logout();
   // ToDo ACME  this.router.navigate(['/welcome']);
   }
 

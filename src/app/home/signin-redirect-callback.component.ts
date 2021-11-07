@@ -14,8 +14,8 @@ export class SigninRedirectCallbackComponent implements OnInit {
     private _router: Router) { }
 
   ngOnInit() {
-    this._authService.completeLogin().then(user => {
-      this._router.navigate(['/inscriptions'], { replaceUrl: true });
-    })
+    // this._authService.completeLogin().then(user => {
+    //   this._router.navigate(['/inscriptions'], { replaceUrl: true });
+    // })
   }
 }

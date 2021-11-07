@@ -12,6 +12,6 @@ export class UnauthorizedComponent implements OnInit {
   ngOnInit() { }
 
   logout() {
-    this._authService.logout();
+    // this._authService.logout();
   }
 }

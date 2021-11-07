@@ -2,8 +2,6 @@ import {Injectable, OnInit} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable, Subject} from 'rxjs';
 
-import { UserManager, User, SignoutResponse } from 'oidc-client';
-
 import { Constants } from '../../constants';
 import { CoreModule } from './core.module';
 import { AuthContext } from '../../models/auth-context';
@@ -15,10 +13,10 @@ import {Store} from "@ngrx/store";
 import * as ParticipantReducer from "../participant/state/participant.reducer";
 import {userReducer} from "../user/state/user.reducer";
 import * as ReservationReducer from "../reservations/state/reservation.reducer";
+import {User} from "../../models/user";
 
 @Injectable()
 export class AuthService implements OnInit{
-  private _userManager: UserManager;
   private _user: User | null;
   private _loginChangedSubject = new Subject<boolean>();
 
@@ -48,69 +46,69 @@ export class AuthService implements OnInit{
         end_session_endpoint: `${Constants.stsAuthority}v2/logout?client_id=${Constants.clientId}&returnTo=${encodeURI(process.env.CLIENT_ROOT!)}signout-callback`
       }
     };
-    this._userManager = new UserManager(stsSettings);
-    this._userManager.events.addAccessTokenExpired(_ => {
-      this._loginChangedSubject.next(false);
-    });
-    this._userManager.events.addUserLoaded(user => {
-      if (this._user !== user) {
-        this._user = user;
-       // this.loadSecurityContext();
-        this._loginChangedSubject.next(!!user && !user.expired);
-      }
-    });
+    // this._userManager = new UserManager(stsSettings);
+    // this._userManager.events.addAccessTokenExpired(_ => {
+    //   this._loginChangedSubject.next(false);
+    // });
+    // this._userManager.events.addUserLoaded(user => {
+    //   if (this._user !== user) {
+    //     this._user = user;
+    //    // this.loadSecurityContext();
+    //     this._loginChangedSubject.next(!!user && !user.expired);
+    //   }
+    // });
 
   }
 
-  login(): Promise<void> {
-    return this._userManager.signinRedirect();
-  }
+  // login(): Promise<void> {
+  //   return this._userManager.signinRedirect();
+  // }
+  //
+  // isLoggedIn(): Promise<boolean> {
+  //   return this._userManager.getUser().then(user => {
+  //     const userCurrent = !!user && !user.expired;
+  //     if (this._user !== user) {
+  //       this._loginChangedSubject.next(userCurrent);
+  //     }
+  //     // if (userCurrent && !this.authContext) {
+  //     //   this.loadSecurityContext();
+  //     // }
+  //     this._user = user;
+  //     if (user){
+  //       this.store.dispatch(UserActions.setUser({currentUser: user}));
+  //     }
+  //     return userCurrent;
+  //   });
+  // }
 
-  isLoggedIn(): Promise<boolean> {
-    return this._userManager.getUser().then(user => {
-      const userCurrent = !!user && !user.expired;
-      if (this._user !== user) {
-        this._loginChangedSubject.next(userCurrent);
-      }
-      // if (userCurrent && !this.authContext) {
-      //   this.loadSecurityContext();
-      // }
-      this._user = user;
-      if (user){
-        this.store.dispatch(UserActions.setUser({currentUser: user}));
-      }
-      return userCurrent;
-    });
-  }
-
-  completeLogin(): Promise<User> {
-    return this._userManager.signinRedirectCallback().then(user => {
-      this._user = user;
-      this._loginChangedSubject.next(!!user && !user.expired);
-      return user;
-    });
-  }
-
-  logout():void {
-    this._userManager.signoutRedirect();
-  }
-
-  completeLogout(): Promise<SignoutResponse> {
-    this._user = null;
-    this._loginChangedSubject.next(false);
-    return this._userManager.signoutRedirectCallback();
-  }
-
-  getAccessToken(): Promise<String | null> {
-    return this._userManager.getUser().then(user => {
-      if (!!user && !user.expired) {
-        return user.access_token;
-      }
-      else {
-        return null;
-      }
-    });
-  }
+  // completeLogin(): Promise<User> {
+  //   return this._userManager.signinRedirectCallback().then(user => {
+  //     this._user = user;
+  //     this._loginChangedSubject.next(!!user && !user.expired);
+  //     return user;
+  //   });
+  // }
+  //
+  // logout():void {
+  //   this._userManager.signoutRedirect();
+  // }
+  //
+  // completeLogout(): Promise<SignoutResponse> {
+  //   this._user = null;
+  //   this._loginChangedSubject.next(false);
+  //   return this._userManager.signoutRedirectCallback();
+  // }
+  //
+  // getAccessToken(): Promise<String | null> {
+  //   return this._userManager.getUser().then(user => {
+  //     if (!!user && !user.expired) {
+  //       return user.access_token;
+  //     }
+  //     else {
+  //       return null;
+  //     }
+  //   });
+  // }
 
   ngOnInit(): void {
 

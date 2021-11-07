@@ -8,7 +8,7 @@ import {
   createSelector,
 } from '@ngrx/store';
 import * as UserActions from './user.actions';
-import { User } from 'oidc-client';
+import {User} from "../../../models/user";
 
 // State for this feature (User)
 export interface State {

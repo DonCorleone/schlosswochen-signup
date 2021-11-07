@@ -41,17 +41,17 @@ export class WelcomeComponent {
   }
 
   ngOnInit(): void {
-    this._authService.isLoggedIn().then (loggedIn => {
-      this.isLoggedIn = loggedIn
-    });
+    // this._authService.isLoggedIn().then (loggedIn => {
+    //   this.isLoggedIn = loggedIn
+    // });
   }
 
   login(){
-    this._authService.login().then();
+    // this._authService.login().then();
   }
 
   logout(): void {
-    this._authService.logout();
+    // this._authService.logout();
     this.router.navigate(['/welcome']).then();
   }
 }
