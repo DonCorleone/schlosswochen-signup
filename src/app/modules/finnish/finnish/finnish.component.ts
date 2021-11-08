@@ -46,6 +46,6 @@ export class FinnishComponent implements OnInit {
   goToPreviousStep() {}
 
   goToNextStep(): void {
-    this.router.navigate(['/inscriptions']).then();
+    this.router.navigate(['/welcome']).then();
   }
 }

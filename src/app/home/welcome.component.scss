@@ -7,7 +7,11 @@
 }
 .card {
   display: flex;
-  align-items: center;
   flex-direction: row;
+}
+.card-body {
+
+  align-items: center;
   justify-content: center;
+  max-width: 100%;
 }

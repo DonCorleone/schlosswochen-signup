@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../modules/core/auth-service.component';
+import {AuthenticationService} from "../service/auth.service";
 
 @Component({
   selector: 'app-signin-callback',
@@ -10,7 +10,7 @@ import { AuthService } from '../modules/core/auth-service.component';
 export class SigninRedirectCallbackComponent implements OnInit {
 
   constructor(
-    private _authService: AuthService,
+    private _authService: AuthenticationService,
     private _router: Router) { }
 
   ngOnInit() {

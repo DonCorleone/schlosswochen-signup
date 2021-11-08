@@ -1,57 +1,46 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../modules/core/auth-service.component';
+import { Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { checkAuth, login, logout } from '../modules/user/state/auth.actions';
+import {
+  selectCurrentUserProfile,
+  selectIsLoggedIn,
+} from '../modules/user/state/auth.selectors';
 
 @Component({
-    templateUrl: './welcome.component.html',
-    styleUrls: ['./welcome.component.scss']
+  templateUrl: './welcome.component.html',
+  styleUrls: ['./welcome.component.scss'],
 })
 export class WelcomeComponent {
-
   public title = 'Anmeldung';
 
-  constructor(
-    private router: Router,
-    private _authService: AuthService) {
-      this._authService.loginChanged.subscribe(loggedIn => {
-        this.isLoggedIn = loggedIn;
-      });
-    }
+  constructor(private router: Router, private store: Store<any>) {}
+
+  loggedIn$: Observable<boolean>;
+  profile$: Observable<any>;
+
+  ngOnInit() {
+    this.loggedIn$ = this.store.pipe(select(selectIsLoggedIn));
+    this.profile$ = this.store.pipe(select(selectCurrentUserProfile));
+
+    this.store.dispatch(checkAuth());
+  }
+
+  login() {
+    this.store.dispatch(login());
+  }
+
+  logout(): void {
+    this.store.dispatch(logout());
+    this.router.navigate(['/welcome']).then();
+  }
 
   goToPreviousStep() {
-  //  this.router.navigate(['personal']);
+    //  this.router.navigate(['personal']);
   }
 
   goToNextStep(): void {
     this.router.navigate(['reservation']).then();
-  }
-
-  isLoggedIn: boolean;
-
- // ToDo securingget isLoggedIn(): boolean {
- //   return this.authService.isLoggedIn();
- // }
-
-  get userName(): string {
-
-    // ToDo securing if (this.authService.currentUser) {
-    //   return this.authService.currentUser.userName;
-    // }
-    return '';
-  }
-
-  ngOnInit(): void {
-    // this._authService.isLoggedIn().then (loggedIn => {
-    //   this.isLoggedIn = loggedIn
-    // });
-  }
-
-  login(){
-    // this._authService.login().then();
-  }
-
-  logout(): void {
-    // this._authService.logout();
-    this.router.navigate(['/welcome']).then();
   }
 }

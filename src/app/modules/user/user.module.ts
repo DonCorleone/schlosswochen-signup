@@ -5,6 +5,9 @@ import { userReducer } from './state/user.reducer';
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule, StoreModule.forFeature('user', userReducer)],
+  imports: [
+    CommonModule,
+    StoreModule.forFeature('user', userReducer)
+  ],
 })
 export class UserModule {}
