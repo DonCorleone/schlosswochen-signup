@@ -21,9 +21,10 @@ export class AuthenticationService {
   }
 
   login(): void {
-    this.authService.loginWithRedirect();
+    this.authService.loginWithRedirect({
+      appState: { target: '/signin-callback' },
+    });
   }
-
   logout(): void {
     this.authService.logout({ returnTo: document.location.origin });
   }

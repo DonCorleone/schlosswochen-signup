@@ -266,8 +266,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       .subscribe((InscriptionStore) => {
         const link: string[] = [];
         for (let index = 1; index <= this.numOfChilds; index++) {
-          link.push(this.inscription._id + '-' + index);
+          let participantId = this.inscription._id + '-' + index;
+
+          link.push(participantId);
         }
+        sessionStorage.setItem('inscription', this.inscription._id);
+        let json = JSON.stringify(link);
+        sessionStorage.setItem('participants', json);
+
+        console.log(JSON.parse(json));
+
         const subscriptionParticipantsRelationInput: SubscriptionParticipantsRelationInput =
           {
             link: link,
@@ -291,16 +299,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           .updateInscription(this.inscription._id, subscription)
           .subscribe((inscriptionId) => {
             if (!this.currentUser?.profile?.sub){
-              this.router.navigate(['/finnish']);
+              this.router.navigate(['/finnish']).then();
             }else{
             this.subExIdSubscription = this.inscriptionsService
               .updateExternalUserId(inscriptionId, this.currentUser.profile.sub)
               .subscribe((subscriptionResult) => {
                 this.partExIdSubscription = this.participantService
-                  .updateExternalUserId(link, this.currentUser.profile.sub)
+                  .updateExternalUserId(JSON.parse(json), this.currentUser.profile.sub)
                   .subscribe((participantResult) => {
                     if (participantResult == link.length) {
-                      this.router.navigate(['/finnish']);
+                      this.router.navigate(['/finnish']).then();
                     }
                   });
               });

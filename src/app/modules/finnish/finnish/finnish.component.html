@@ -4,22 +4,34 @@
   (nextStepClicked)="goToNextStep()"
 >
   <div class="container-fluid">
-    <!-- <div class="card">
-    <div class="card-body"> -->
-
     <div class="form-group row mb-2">
       <h2>Inscription</h2>
       <pre><p>{{inscription | async | json}}</p></pre>
-      <!-- </div>
-    </div> -->
     </div>
-    <!-- <div class="card">
-    <div class="card-body"> -->
     <div class="form-group row mb-2">
       <h2>Participants</h2>
       <pre><p>{{participants | async | json}}</p></pre>
-      <!-- </div>
-    </div> -->
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div *ngIf="loggedIn$ | async as loggedIn; else loginContent">
+          <p>
+            <button class="btn btn-secondary" (click)="logout()">Logout</button>
+            is logged in {{ loggedIn }}
+          </p>
+          <div *ngIf="profile$ | async as profile">
+            <img [src]="profile.picture" />
+            <pre>{{ profile | json }}</pre>
+          </div>
+        </div>
+
+        <ng-template #loginContent
+          ><button class="btn btn-primary" (click)="login()">
+            Login
+          </button></ng-template
+        >
+      </div>
     </div>
   </div>
 </app-wizard-step>
