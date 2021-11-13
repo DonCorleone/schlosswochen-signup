@@ -24,7 +24,10 @@ import { UnauthorizedComponent } from './home/unauthorized.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
-import { UserModule } from './modules/user/user.module';
+import {AuthModule} from "@auth0/auth0-angular";
+import {authReducer} from "./modules/user/state/auth.reducer";
+import {EffectsModule} from "@ngrx/effects";
+import {AuthEffects} from "./modules/user/state/auth.effects";
 
 @NgModule({
   declarations: [
@@ -42,13 +45,19 @@ import { UserModule } from './modules/user/user.module';
     HttpClientModule,
     ReactiveFormsModule,
     CoreModule,
-    UserModule,
     SharedModule,
-    StoreModule.forRoot({}, {}),
+    StoreModule.forRoot({ auth: authReducer }), // State object here like described
+    EffectsModule.forRoot([AuthEffects]),
+
     StoreDevtoolsModule.instrument({
       name: 'Schlosswochen Inscription',
       maxAge: 25,
       logOnly: environment.production,
+    }),
+    AuthModule.forRoot({
+      domain: 'dev-zgesjpx3.us.auth0.com',
+      clientId: 'oLf1CMEnJpsEEpvuLh91c2ilU7HuGmrD',
+      redirectUri: window.location.origin,
     }),
     FormlyModule.forRoot({ extras: { lazyRender: true } }),
     FormlyBootstrapModule,

@@ -32,8 +32,6 @@ import { Subscription as Inscription } from 'src/app/models/Graphqlx';
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import { Observable, Subscription, timer } from 'rxjs';
 import { scan, takeWhile, map } from 'rxjs/operators';
-import * as UserReducer from "../../user/state/user.reducer";
-import {User} from "oidc-client";
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -98,8 +96,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   private subExIdSubscription: Subscription;
   private partExIdSubscription: Subscription;
   private subStoreSubscription: Subscription;
-  private userSubscription: Subscription;
-  private currentUser: User;
   private inscriptionSubscripton: Subscription;
 
   constructor(
@@ -113,10 +109,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-
-    this.userSubscription = this.store.select(UserReducer.getCurrentUser).subscribe(user => {
-      this.currentUser = user;
-    });
 
     const nowInS = new Date().getTime();
     this.deadlineSubscription = this.store
@@ -266,8 +258,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       .subscribe((InscriptionStore) => {
         const link: string[] = [];
         for (let index = 1; index <= this.numOfChilds; index++) {
-          link.push(this.inscription._id + '-' + index);
+          let participantId = this.inscription._id + '-' + index;
+
+          link.push(participantId);
         }
+        sessionStorage.setItem('inscription', this.inscription._id);
+        let json = JSON.stringify(link);
+        sessionStorage.setItem('participants', json);
+
+        console.log(JSON.parse(json));
+
         const subscriptionParticipantsRelationInput: SubscriptionParticipantsRelationInput =
           {
             link: link,
@@ -290,21 +290,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         this.subSubscription = this.inscriptionsService
           .updateInscription(this.inscription._id, subscription)
           .subscribe((inscriptionId) => {
-            if (!this.currentUser?.profile?.sub){
-              this.router.navigate(['/finnish']);
-            }else{
-            this.subExIdSubscription = this.inscriptionsService
-              .updateExternalUserId(inscriptionId, this.currentUser.profile.sub)
-              .subscribe((subscriptionResult) => {
-                this.partExIdSubscription = this.participantService
-                  .updateExternalUserId(link, this.currentUser.profile.sub)
-                  .subscribe((participantResult) => {
-                    if (participantResult == link.length) {
-                      this.router.navigate(['/finnish']);
-                    }
-                  });
-              });
-            }
+            this.router.navigate(['/welcome']).then();
           });
       });
   }

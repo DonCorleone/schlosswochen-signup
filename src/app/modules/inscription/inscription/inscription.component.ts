@@ -13,12 +13,12 @@ import { Store } from '@ngrx/store';
 import { debounceTime, map, tap } from 'rxjs/operators';
 
 import { InscriptionsService } from '../../../service/inscriptions.service';
-import * as UserReducer from '../../user/state/user.reducer';
 import * as InscriptionReducer from '../state/inscription.reducer';
 import * as InscriptionActions from '../state/inscription.actions';
 import * as ReservationActions from '../../reservations/state/reservation.action';
 import { WeeklyReservation } from '../../../models/Week';
 import { Subscription as Inscription } from 'src/app/models/Graphqlx';
+import * as AuthSelector from "../../user/state/auth.selectors";
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -82,7 +82,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
         (value) => (this.emailMessage = this.setMessage(emailControl))
       );
 
-    this.store.select(UserReducer.getCurrentUser).subscribe((externalUser) => {
+    this.store.select(AuthSelector.selectCurrentUserProfile).subscribe((externalUser) => {
       let externalUserId = '';
       let id = '';
 
@@ -90,7 +90,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
         this.isEditMode = urlSegment.length == 0;
 
         if (this.isEditMode) {
-          externalUserId = externalUser?.profile?.sub;
+          externalUserId = externalUser?.sub;
         }
 
         this.route.params.subscribe((params) => {
