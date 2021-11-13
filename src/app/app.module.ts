@@ -24,7 +24,6 @@ import { UnauthorizedComponent } from './home/unauthorized.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
-import { UserModule } from './modules/user/user.module';
 import {AuthModule} from "@auth0/auth0-angular";
 import {authReducer} from "./modules/user/state/auth.reducer";
 import {EffectsModule} from "@ngrx/effects";
@@ -46,7 +45,6 @@ import {AuthEffects} from "./modules/user/state/auth.effects";
     HttpClientModule,
     ReactiveFormsModule,
     CoreModule,
-    UserModule,
     SharedModule,
     StoreModule.forRoot({ auth: authReducer }), // State object here like described
     EffectsModule.forRoot([AuthEffects]),

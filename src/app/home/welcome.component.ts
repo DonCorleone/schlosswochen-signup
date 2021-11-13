@@ -1,21 +1,27 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { checkAuth, login, logout } from '../modules/user/state/auth.actions';
 import {
   selectCurrentUserProfile,
   selectIsLoggedIn,
 } from '../modules/user/state/auth.selectors';
+import { map } from 'rxjs/operators';
 
 @Component({
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.scss'],
 })
-export class WelcomeComponent {
+export class WelcomeComponent implements OnDestroy{
   public title = 'Anmeldung';
+  private loggedInSubscription: Subscription;
 
   constructor(private router: Router, private store: Store<any>) {}
+
+  ngOnDestroy(): void {
+    this.loggedInSubscription?.unsubscribe();
+  }
 
   loggedIn$: Observable<boolean>;
   profile$: Observable<any>;
@@ -41,6 +47,14 @@ export class WelcomeComponent {
   }
 
   goToNextStep(): void {
-    this.router.navigate(['reservation']).then();
+    this.loggedInSubscription = this.loggedIn$.subscribe(
+      (isLoggedIn) => {
+        if (isLoggedIn) {
+          this.router.navigate(['inscriptions']).then();
+        } else {
+          this.router.navigate(['reservation']).then();
+        }
+      }
+    );
   }
 }

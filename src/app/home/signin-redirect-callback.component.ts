@@ -26,6 +26,7 @@ export class SigninRedirectCallbackComponent implements OnInit {
     const inscriptionId = sessionStorage.getItem('inscription');
     const participantJson = sessionStorage.getItem('participants');
     if (!participantJson){
+      this.router.navigate(['/welcome']).then();
       return;
     }
 
@@ -46,11 +47,12 @@ export class SigninRedirectCallbackComponent implements OnInit {
               )
               .subscribe((participantResult) => {
                 if (participantResult == participantArray.length) {
-                  this.router.navigate(['/finnish']).then();
+                  this.router.navigate(['/welcome']).then();
                 }
               });
           });
       });
     }
+    this.router.navigate(['/welcome']).then();
   }
 }
