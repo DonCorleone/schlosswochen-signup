@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -10,15 +10,22 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
 
-import { debounceTime, map, tap } from 'rxjs/operators';
+import {debounceTime, filter, map, tap} from 'rxjs/operators';
 
 import { InscriptionsService } from '../../../service/inscriptions.service';
 import * as InscriptionReducer from '../state/inscription.reducer';
 import * as InscriptionActions from '../state/inscription.actions';
+import * as ReservationReducer from "../../reservations/state/reservation.reducer";
 import * as ReservationActions from '../../reservations/state/reservation.action';
 import { WeeklyReservation } from '../../../models/Week';
-import { Subscription as Inscription } from 'src/app/models/Graphqlx';
+import {
+  Subscription as Inscription,
+  Participant,
+  SubscriptionParticipantsRelationInput,
+  SubscriptionUpdateInput
+} from 'src/app/models/Graphqlx';
 import * as AuthSelector from "../../user/state/auth.selectors";
+import {combineLatest} from "rxjs";
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -31,11 +38,9 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
   templateUrl: './inscription.component.html',
   styleUrls: ['./inscription.component.scss'],
 })
-export class InscriptionComponent implements OnInit, OnDestroy {
+export class InscriptionComponent implements OnInit {
   title = 'Contact';
 
-  inscription: Inscription;
-  addresses: string | undefined;
   signupForm!: FormGroup;
   emailMessage: string = '';
   confirmEmailMessage: string = '';
@@ -57,6 +62,9 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.signupForm = this.fb.group({
       _id: '',
+      deadline: Date.now,
+      week: 0,
+      numOfChildren: 0,
       salutation: ['', [Validators.required]],
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
@@ -112,6 +120,8 @@ export class InscriptionComponent implements OnInit, OnDestroy {
                         weeklyReservation,
                       })
                     );
+
+                    this.store.dispatch(InscriptionActions.setInscription({inscription}));
                   }
 
                   this.store.dispatch(
@@ -127,6 +137,19 @@ export class InscriptionComponent implements OnInit, OnDestroy {
         });
       });
     });
+
+    this.manageReservationData();
+  }
+
+  manageReservationData() {
+    combineLatest([this.store.select(ReservationReducer.getWeeklyReservation),
+      this.store.select(ReservationReducer.getDeadline),
+      this.store.select(ReservationReducer.getInscriptionId)]
+    ).pipe(
+        tap(([weeklyReservation, deadline, inscriptionId]) =>
+          this.setInscriptionMetadata(
+            inscriptionId, deadline, weeklyReservation.weekNr, weeklyReservation.numberOfReservations)))
+    .subscribe()
   }
 
   goToPreviousStep() {
@@ -135,20 +158,41 @@ export class InscriptionComponent implements OnInit, OnDestroy {
 
   goToNextStep(): void {
     if (this.signupForm.invalid) {
-      // this.submitted = true;
+      Object.keys(this.signupForm.controls).forEach(field => { // {1}
+        const control = this.signupForm.get(field);            // {2}
+        control?.markAsTouched({ onlySelf: true });       // {3}
+      });
       return;
     }
 
-    const inscription = { inscription: this.signupForm.value };
-    this.inscriptionService
-      .updateInscription(
-        inscription.inscription._id,
-        inscription.inscription
-      )
-      .subscribe((res: string) => {
-        this.store.dispatch(InscriptionActions.setInscription(inscription));
-        this.router.navigate(['/participant', 1]);
-      });
+    if (this.signupForm.dirty){
+      const inscription = { inscription: this.signupForm.value };
+      let inscriptionUpdateObj: SubscriptionUpdateInput = inscription.inscription;
+
+      let participants: Participant[] = inscription.inscription.participants;
+      let links: string[] = [];
+
+      if (participants?.length > 0){
+        participants.forEach(x=>{
+          links.push(x._id);
+        });
+      }
+      let particpantsUpdateObj: SubscriptionParticipantsRelationInput = {
+        link: links
+      };
+      inscriptionUpdateObj.participants = particpantsUpdateObj;
+
+      this.inscriptionService
+        .updateInscription(
+          inscription.inscription._id,
+          inscriptionUpdateObj
+        )
+        .subscribe((res: string) => {
+
+        });
+    }
+    this.store.dispatch(InscriptionActions.setInscription({inscription: this.signupForm.value}));
+    this.router.navigate(['/participant', 1]);
   }
 
   setMessage(c: AbstractControl): string {
@@ -165,17 +209,16 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     return messageString;
   }
 
-  ngOnDestroy(): void {}
-
   private displayInscription(inscription: Inscription) {
     if (this.signupForm) {
       this.signupForm.reset();
     }
 
-    this.inscription = inscription;
-
     this.signupForm.patchValue({
       _id: inscription._id,
+      deadline: inscription.deadline,
+      week: inscription.week,
+      numOfChildren: inscription.numOfChildren,
       salutation: inscription.salutation,
       firstName: inscription.firstName,
       lastName: inscription.lastName,
@@ -188,6 +231,17 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       zip: inscription.zip,
       country: inscription.country,
       externalUserId: inscription.externalUserId,
+      participants: inscription.participants
+    });
+  }
+
+  private setInscriptionMetadata(inscriptionId: string, deadline: Date, week: number, numOfChildren: number) {
+
+    this.signupForm.patchValue({
+      _id: inscriptionId,
+      deadline: deadline,
+      week: week,
+      numOfChildren: numOfChildren
     });
   }
 }

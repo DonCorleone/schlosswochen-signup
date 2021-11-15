@@ -32,6 +32,7 @@ import { Subscription as Inscription } from 'src/app/models/Graphqlx';
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import { Observable, Subscription, timer } from 'rxjs';
 import { scan, takeWhile, map } from 'rxjs/operators';
+import {formatDate} from "@angular/common";
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -105,7 +106,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private participantService: ParticipantService,
     private inscriptionsService: InscriptionsService,
     private store: Store<ParticipantReducer.State>,
-    private ref: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -144,7 +145,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this.routeParamSubscription = this.activeRoute.params.subscribe(
       (routeParams) => {
         this.loadParticipantDetail(routeParams.id);
-        this.ref.markForCheck();
+        this.changeDetectorRef.markForCheck();
       }
     );
   }
@@ -178,6 +179,15 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       fotoAllowed: true,
       comment: '',
     });
+
+    this.store.select(InscriptionsReducer.getInscription).subscribe(
+      inscription => {
+        const participant = inscription?.participants?.find(p => p?.participant_id === participant_id);
+        if (participant){
+          this.displayParticipant(participant);
+        }
+      }
+    )
   }
   goToPreviousStep() {
     //  this.router.navigate(['personal']);
@@ -294,6 +304,24 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           });
       });
   }
+
+  private displayParticipant(participant: Participant) {
+    if (this.signupForm) {
+      this.signupForm.reset();
+    }
+
+    this.signupForm.patchValue({
+      salutation: participant.salutation,
+      firstNameParticipant: participant.firstNameParticipant,
+      lastNameParticipant: participant.lastNameParticipant,
+      participant_id: participant.participant_id,
+      externalUserId: participant.externalUserId,
+      fotoAllowed: participant.fotoAllowed,
+      comment: participant.comment
+    });
+    this.signupForm.controls["birthday"].setValue(formatDate(participant.birthday,'yyyy-MM-dd','en'));
+  }
+
   setMessage(c: AbstractControl): string {
     var messageString = '';
     if ((c.touched || c.dirty) && c.errors) {
