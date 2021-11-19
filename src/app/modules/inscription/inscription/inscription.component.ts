@@ -174,13 +174,13 @@ export class InscriptionComponent implements OnInit {
 
       if (participants?.length > 0){
         participants.forEach(x=>{
-          links.push(x._id);
+          links.push(x.participant_id!);
         });
       }
-      let particpantsUpdateObj: SubscriptionParticipantsRelationInput = {
+      let participantsUpdateObj: SubscriptionParticipantsRelationInput = {
         link: links
       };
-      inscriptionUpdateObj.participants = particpantsUpdateObj;
+      inscriptionUpdateObj.participants = participantsUpdateObj;
 
       this.inscriptionService
         .updateInscription(
@@ -188,10 +188,9 @@ export class InscriptionComponent implements OnInit {
           inscriptionUpdateObj
         )
         .subscribe((res: string) => {
-
+          this.store.dispatch(InscriptionActions.setInscription({inscription: inscription.inscription}));
         });
     }
-    this.store.dispatch(InscriptionActions.setInscription({inscription: this.signupForm.value}));
     this.router.navigate(['/participant', 1]);
   }
 
