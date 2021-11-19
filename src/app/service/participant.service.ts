@@ -9,7 +9,7 @@ import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import {
   MutationInsertOneParticipantArgs,
   Participant,
-  ParticipantInsertInput,
+  ParticipantInsertInput, ParticipantQueryInput,
 } from '../models/Graphqlx';
 
 @Injectable({
@@ -67,21 +67,23 @@ export class ParticipantService {
         catchError(this.handleError)
       );
   }
-  createParticipant(
-    variable: ParticipantInsertInput
-  ): Observable<ParticipantInsertInput> {
+  upsertParticipant(
+    data: ParticipantInsertInput, participantId: string): Observable<ParticipantInsertInput> {
     return this.apollo
       .mutate<MutationInsertOneParticipantArgs>({
         mutation: gql`
-          mutation ($participantInsertInput: ParticipantInsertInput!) {
-            insertOneParticipant(data: $participantInsertInput) {
+          mutation ($participant_id: String!, $participantInsertInput: ParticipantInsertInput!) {
+            upsertOneParticipant(
+            query: {participant_id: $participant_id}
+            data: $participantInsertInput) {
               _id
               participant_id
             }
           }
         `,
         variables: {
-          participantInsertInput: variable,
+          participant_id: participantId,
+          participantInsertInput: data,
         },
       })
       .pipe(
@@ -98,7 +100,7 @@ export class ParticipantService {
       );
   }
 
-  deleteParticipant(id: string): Observable<{}> {
+/*  deleteParticipant(id: string): Observable<{}> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.participantsUrl}/${id}`;
     return this.http.delete<Participant>(url, { headers }).pipe(
@@ -113,9 +115,9 @@ export class ParticipantService {
       }),
       catchError(this.handleError)
     );
-  }
+  }*/
 
-  updateParticipant(participant: Participant): Observable<Participant> {
+/*  updateParticipant(participant: Participant): Observable<Participant> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.participantsUrl}/${participant._id}`;
     return this.http.put<Participant>(url, participant, { headers }).pipe(
@@ -135,7 +137,7 @@ export class ParticipantService {
       map(() => participant),
       catchError(this.handleError)
     );
-  }
+  }*/
 
   private handleError(err: any) {
     // in a real world app, we may send the server to some remote logging infrastructure

@@ -183,6 +183,12 @@
                 <span *ngIf="signupForm.get('zip')?.errors?.required">
                   Please enter a zip.
                 </span>
+                <span *ngIf="signupForm.get('zip')?.errors?.minlength">
+                  The last name must be more than 4 digits.
+                </span>
+                <span *ngIf="signupForm.get('zip')?.errors?.maxlength">
+                  The last name must be less than 6 digits.
+                </span>
               </span>
             </div>
             <div class="col-md-5">
@@ -229,10 +235,7 @@
     </div>
   </div>
 </app-wizard-step>
-<br>ID: {{ inscription?._id }}
 <br>Dirty: {{ signupForm.dirty }}
 <br>Touched: {{ signupForm?.touched }}
 <br>Valid: {{ signupForm.valid }}
 <br>Value: {{ signupForm.value | json }}
-<br>Address: {{ addresses }};
-<br>Inscription: {{ inscription | json}}
