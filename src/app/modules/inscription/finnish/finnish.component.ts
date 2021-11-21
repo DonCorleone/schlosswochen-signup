@@ -4,7 +4,6 @@ import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import * as ParticipantReducer from '../../inscription/state/participant.reducer';
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import { Router } from '@angular/router';
 import { Participant } from '../../../models/Graphqlx';
@@ -29,8 +28,7 @@ export class FinnishComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private inscriptionStore: Store<InscriptionReducer.State>,
-    private participantStore: Store<ParticipantReducer.State>,
+    private inscriptionStore: Store<InscriptionReducer.InscriptionState>,
     private store: Store<any>
   ) {}
 

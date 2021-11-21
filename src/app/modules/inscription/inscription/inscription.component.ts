@@ -56,7 +56,7 @@ export class InscriptionComponent implements OnInit {
     private inscriptionService: InscriptionsService,
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store<InscriptionReducer.State>
+    private store: Store<InscriptionReducer.InscriptionState>
   ) {}
 
   ngOnInit(): void {
@@ -122,11 +122,6 @@ export class InscriptionComponent implements OnInit {
                       );
                     }
 
-                    this.store.dispatch(
-                      ReservationActions.setInscriptionId({
-                        inscriptionId: inscription._id,
-                      })
-                    );
                     this.displayInscription(inscription);
 
                     this.manageReservationData();
@@ -145,12 +140,10 @@ export class InscriptionComponent implements OnInit {
     combineLatest([
       this.store.select(ReservationReducer.getWeeklyReservation),
       this.store.select(ReservationReducer.getDeadline),
-      this.store.select(ReservationReducer.getInscriptionId),
     ])
       .pipe(
-        tap(([weeklyReservation, deadline, inscriptionId]) =>
+        tap(([weeklyReservation, deadline]) =>
           this.setInscriptionMetadata(
-            inscriptionId,
             deadline,
             weeklyReservation.weekNr,
             weeklyReservation.numberOfReservations
@@ -249,13 +242,11 @@ export class InscriptionComponent implements OnInit {
   }
 
   private setInscriptionMetadata(
-    inscriptionId: string,
     deadline: Date,
     week: number,
     numOfChildren: number
   ) {
     this.signupForm.patchValue({
-      _id: inscriptionId,
       deadline: deadline,
       week: week,
       numOfChildren: numOfChildren,

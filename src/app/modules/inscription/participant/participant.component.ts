@@ -16,13 +16,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
 
-import * as ParticipantActions from '../state/participant.actions';
 import * as InscriptionActions from '../state/inscription.actions';
 
 import * as AuthSelector from '../../user/state/auth.selectors';
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
 import * as InscriptionsReducer from '../../inscription/state/inscription.reducer';
-import * as ParticipantReducer from '../state/participant.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
 import {
   Participant,
@@ -115,7 +113,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private router: Router,
     private participantService: ParticipantService,
     private inscriptionsService: InscriptionsService,
-    private store: Store<ParticipantReducer.State>,
+    private store: Store<InscriptionsReducer.InscriptionState>,
     private changeDetectorRef: ChangeDetectorRef
   ) {}
 
@@ -151,18 +149,20 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   loadParticipantDetail(id: number, inscriptionId: string) {
-    const participantId: string  = `${inscriptionId}-${+id}`;
+    const participantId: string = `${inscriptionId}-${+id}`;
     // @ts-ignore
-    this.store.select(InscriptionsReducer.selectParticipantById(participantId)).subscribe(x=>{
-      if (x){
-        this.currentParticipant = x;
-      }
-    });
+    this.store
+      .select(InscriptionsReducer.selectParticipantById(participantId))
+      .subscribe((x) => {
+        if (x) {
+          this.currentParticipant = x;
+        }
+      });
 
-    this.store.dispatch(ParticipantActions.increaseCurrentParticipantNumber());
+    this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
 
     this.currentParticipantNumberSubscription = this.store
-      .select(ParticipantReducer.getCurrentParticipantNumber)
+      .select(InscriptionsReducer.getCurrentParticipantNumber)
       .subscribe(
         (currentParticipantNumber) =>
           (this.currentParticipantNumber = currentParticipantNumber)
@@ -333,7 +333,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           .updateInscription(this.inscription._id, subscription)
           .subscribe((inscriptionId) => {
             this.store.dispatch(
-              ParticipantActions.resetCurrentParticipantNumber()
+              InscriptionActions.resetCurrentParticipantNumber()
             );
             this.router.navigate(['/welcome']).then();
           });

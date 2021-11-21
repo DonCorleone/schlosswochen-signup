@@ -17,7 +17,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Input() isEditMode: boolean = false;
 
   timer$: Observable<number> | undefined;
-  inscriptionId$: Observable<string>;
   reservation$ : Observable<WeeklyReservation>;
   deadlineSubscription: Subscription;
 
@@ -37,10 +36,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.store.select(ReservationReducer.getWeeklyReservation).pipe (
       weeklyReservation => this.reservation$ = weeklyReservation
-    );
-
-    this.store.select(ReservationReducer.getInscriptionId).pipe (
-      weeklyReservation => this.inscriptionId$ = weeklyReservation
     );
   }
 
