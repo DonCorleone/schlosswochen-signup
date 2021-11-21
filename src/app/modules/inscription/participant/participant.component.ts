@@ -26,15 +26,20 @@ import * as ParticipantReducer from '../state/participant.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
 import {
   Participant,
-  ParticipantInsertInput, ParticipantQueryInput,
+  ParticipantInsertInput,
+  ParticipantQueryInput,
   SubscriptionParticipantsRelationInput,
   SubscriptionUpdateInput,
 } from 'src/app/models/Graphqlx';
 import { Subscription as Inscription } from 'src/app/models/Graphqlx';
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
-import { Observable, Subscription, timer } from 'rxjs';
-import { scan, takeWhile, map, take, first } from 'rxjs/operators';
+import { combineLatest, Observable, Subscription, timer } from 'rxjs';
+import { scan, takeWhile, map, take, first, tap } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
+import {
+  selectParticipantById,
+  selectParticipantId,
+} from '../../inscription/state/inscription.reducer';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -116,44 +121,43 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const nowInS = new Date().getTime();
-    this.deadlineSubscription = this.store
-      .select(ReservationReducer.getDeadline)
-      .subscribe((deadline) => {
-        // this.deadlineM = (deadline.getMinutes()- new Date().getMinutes());
-        this.timer$ = timer(0, 60000).pipe(
-          scan(
-            (acc) => --acc,
-            Math.trunc((deadline.getTime() - nowInS) / 1000 / 60)
-          ),
-          takeWhile((x) => x >= 0)
-        );
-      });
-    this.weeklySubscription = this.store
-      .select(ReservationReducer.getWeeklyReservation)
-      .subscribe((weeklyReservation) => {
-        this.numOfChilds = weeklyReservation.numberOfReservations;
-        this.week = weeklyReservation.weekNr;
-      });
-    this.inscriptionSubscripton = this.store
-      .select(InscriptionsReducer.getInscription)
-      .subscribe((inscription) => {
-        this.inscription = inscription;
-      });
 
-    this.routeParamSubscription = this.activeRoute.params.subscribe(
-      (routeParams) => {
-        this.loadParticipantDetail(routeParams.id);
-        this.changeDetectorRef.markForCheck();
-      }
-    );
+    combineLatest([
+      this.store.select(ReservationReducer.getDeadline),
+      this.store.select(ReservationReducer.getWeeklyReservation),
+      this.store.select(InscriptionsReducer.getInscription),
+      this.activeRoute.params,
+    ])
+      .pipe(
+        tap(([deadline, weeklyReservation, inscription, routeParams]) => {
+          // this.deadlineM = (deadline.getMinutes()- new Date().getMinutes());
+          this.timer$ = timer(0, 60000).pipe(
+            scan(
+              (acc) => --acc,
+              Math.trunc((deadline.getTime() - nowInS) / 1000 / 60)
+            ),
+            takeWhile((x) => x >= 0)
+          );
+
+          this.numOfChilds = weeklyReservation.numberOfReservations;
+          this.week = weeklyReservation.weekNr;
+          this.inscription = inscription;
+
+          this.loadParticipantDetail(routeParams.id, inscription._id);
+          this.changeDetectorRef.markForCheck();
+        })
+      )
+      .subscribe();
   }
 
-  loadParticipantDetail(id: number) {
-    this.currentParticipantSubscription = this.store
-      .select(ParticipantReducer.getCurrentParticipant)
-      .subscribe(
-        (currentParticipant) => (this.currentParticipant = currentParticipant)
-      );
+  loadParticipantDetail(id: number, inscriptionId: string) {
+    const participantId: string  = `${inscriptionId}-${+id}`;
+    // @ts-ignore
+    this.store.select(InscriptionsReducer.selectParticipantById(participantId)).subscribe(x=>{
+      if (x){
+        this.currentParticipant = x;
+      }
+    });
 
     this.store.dispatch(ParticipantActions.increaseCurrentParticipantNumber());
 
@@ -164,15 +168,15 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           (this.currentParticipantNumber = currentParticipantNumber)
       );
 
-    const participant_id =
-      this.inscription._id + '-' + this.currentParticipantNumber;
+    // const participant_id =
+    //   this.inscription._id + '-' + this.currentParticipantNumber;
 
     this.signupForm = this.fb.group({
       salutation: '',
       firstNameParticipant: '',
       lastNameParticipant: '',
       birthday: new Date(),
-      participant_id: participant_id,
+      participant_id: participantId,
       externalUserId: '',
       fotoAllowed: true,
       comment: '',
@@ -187,7 +191,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           inscription.participants.length > 0
         ) {
           const participant = inscription?.participants?.find(
-            (p) => p?.participant_id === participant_id
+            (p) => p?.participant_id === participantId
           );
           if (participant) {
             this.displayParticipant(participant);
@@ -207,36 +211,33 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     }
 
     if (!this.signupForm.dirty) {
-      this.router.navigate(['/inscriptions/participant', this.currentParticipantNumber + 1]);
+      this.router.navigate([
+        '/inscriptions/participant',
+        this.currentParticipantNumber + 1,
+      ]);
       return;
     }
 
+    let participant = {
+      ...this.signupForm.value,
+      birthday: new Date(this.signupForm.value.birthday),
+    };
 
-      let participant = {
-        ...this.signupForm.value,
-        birthday: new Date(this.signupForm.value.birthday)
-      }
-
-      this.saveParticipant(participant);
-      // if (participant.id === 0) {
-      //   this.participantService.createParticipant(participant).subscribe({
-      //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
-      //     error: err => this.errorMessage = err
-      //   });
-      // } else {
-      //   this.participantService.updateParticipant(participant).subscribe({
-      //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
-      //     error: err => this.errorMessage = err
-      //   });
-      // }
-
-
-
+    this.saveParticipant(participant);
+    // if (participant.id === 0) {
+    //   this.participantService.createParticipant(participant).subscribe({
+    //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
+    //     error: err => this.errorMessage = err
+    //   });
+    // } else {
+    //   this.participantService.updateParticipant(participant).subscribe({
+    //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
+    //     error: err => this.errorMessage = err
+    //   });
+    // }
   }
 
   saveParticipant(participant: Participant): void {
-
-
     // if (participant.id === 0) {
     //   this.participantService.createParticipant(participant).subscribe({
     //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
@@ -249,26 +250,31 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     //   });
     // }
     const participantInsertInput: ParticipantInsertInput = {
-      ...participant
-    }
+      ...participant,
+    };
     this.participantService
-      .upsertParticipant(participantInsertInput, participantInsertInput.participant_id!)
+      .upsertParticipant(
+        participantInsertInput,
+        participantInsertInput.participant_id!
+      )
       .subscribe((res) => {
-
         this.subscriptions.push(
           this.store
             .select(AuthSelector.selectIsLoggedIn)
             .subscribe((isLoggedIn) => {
               if (isLoggedIn) {
                 this.store.dispatch(
-                  ParticipantActions.upsertParticipant({ participant })
+                  InscriptionActions.upsertParticipant({ participant })
                 );
               } else {
                 this.store.dispatch(
                   InscriptionActions.addParticipant({ participant })
                 );
               }
-              this.router.navigate(['/inscriptions/participant', this.currentParticipantNumber + 1]);
+              this.router.navigate([
+                '/inscriptions/participant',
+                this.currentParticipantNumber + 1,
+              ]);
             })
         );
       });
@@ -279,8 +285,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       if (this.signupForm.dirty) {
         let participant = {
           ...this.signupForm.value,
-          birthday: new Date(this.signupForm.value.birthday)
-        }
+          birthday: new Date(this.signupForm.value.birthday),
+        };
         this.saveParticipant(participant);
       }
     }
@@ -326,7 +332,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         this.subSubscription = this.inscriptionsService
           .updateInscription(this.inscription._id, subscription)
           .subscribe((inscriptionId) => {
-            this.store.dispatch(ParticipantActions.resetCurrentParticipantNumber());
+            this.store.dispatch(
+              ParticipantActions.resetCurrentParticipantNumber()
+            );
             this.router.navigate(['/welcome']).then();
           });
       });

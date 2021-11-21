@@ -22,7 +22,6 @@ import { checkAuth, login, logout } from '../../user/state/auth.actions';
 })
 export class FinnishComponent implements OnInit {
   title = 'Finnished';
-  participants: Observable<Dictionary<Participant>>;
   inscription: Observable<Inscription>;
 
   loggedIn$: Observable<boolean>;
@@ -43,13 +42,6 @@ export class FinnishComponent implements OnInit {
 
     this.inscription = this.inscriptionStore
       .select(InscriptionReducer.getInscription)
-      .pipe(
-        map((x) => {
-          return x;
-        })
-      );
-    this.participants = this.participantStore
-      .select(ParticipantReducer.getAllParticipants)
       .pipe(
         map((x) => {
           return x;

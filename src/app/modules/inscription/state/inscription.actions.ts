@@ -9,3 +9,7 @@ export const addParticipant = createAction(
   '[Inscription] Add Participant',
   props<{ participant: Participant }>()
 );
+export const upsertParticipant = createAction(
+  '[Inscription] Upsert Participant',
+  props<{ participant: Participant }>()
+);
