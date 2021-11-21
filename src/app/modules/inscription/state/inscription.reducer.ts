@@ -53,5 +53,15 @@ export const inscriptionReducer = createReducer<InscriptionState>(
       ...state,
       inscription: action.inscription,
     };
+  }),
+  on(InscriptionAction.addParticipant, (state, action) => {
+
+    return {
+      ...state,
+      inscription: {
+        ...state.inscription,
+        participants: [...state.inscription.participants!, action.participant]
+      }
+    };
   })
 );

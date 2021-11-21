@@ -4,7 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import * as ParticipantReducer from '../../participant/state/participant.reducer';
+import * as ParticipantReducer from '../../inscription/state/participant.reducer';
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import { Router } from '@angular/router';
 import { Participant } from '../../../models/Graphqlx';

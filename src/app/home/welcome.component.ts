@@ -50,7 +50,7 @@ export class WelcomeComponent implements OnDestroy{
     this.loggedInSubscription = this.loggedIn$.subscribe(
       (isLoggedIn) => {
         if (isLoggedIn) {
-          this.router.navigate(['inscriptions']).then();
+          this.router.navigate(['inscriptions/inscription']).then();
         } else {
           this.router.navigate(['reservation']).then();
         }

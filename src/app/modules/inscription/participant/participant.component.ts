@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import * as ParticipantActions from '../state/participant.actions';
+import * as InscriptionActions from '../state/inscription.actions';
 
 import * as AuthSelector from '../../user/state/auth.selectors';
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
@@ -205,8 +206,18 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.signupForm.dirty) {
-      this.saveParticipant();
+    if (!this.signupForm.dirty) {
+      this.router.navigate(['/inscriptions/participant', this.currentParticipantNumber + 1]);
+      return;
+    }
+
+
+      let participant = {
+        ...this.signupForm.value,
+        birthday: new Date(this.signupForm.value.birthday)
+      }
+
+      this.saveParticipant(participant);
       // if (participant.id === 0) {
       //   this.participantService.createParticipant(participant).subscribe({
       //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
@@ -218,15 +229,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       //     error: err => this.errorMessage = err
       //   });
       // }
-    }
 
-    this.router.navigate(['/participant', this.currentParticipantNumber + 1]);
+
+
   }
 
-  saveParticipant(): void {
-    const participantInsertInput: ParticipantInsertInput =
-      this.signupForm.value;
-    participantInsertInput.birthday = new Date(participantInsertInput.birthday);
+  saveParticipant(participant: Participant): void {
+
 
     // if (participant.id === 0) {
     //   this.participantService.createParticipant(participant).subscribe({
@@ -239,14 +248,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     //     error: err => this.errorMessage = err
     //   });
     // }
-
+    const participantInsertInput: ParticipantInsertInput = {
+      ...participant
+    }
     this.participantService
       .upsertParticipant(participantInsertInput, participantInsertInput.participant_id!)
       .subscribe((res) => {
-        const participant = {
-          ...this.signupForm.value,
-          id: this.currentParticipantNumber,
-        };
 
         this.subscriptions.push(
           this.store
@@ -258,9 +265,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
                 );
               } else {
                 this.store.dispatch(
-                  ParticipantActions.addParticipant({ participant })
+                  InscriptionActions.addParticipant({ participant })
                 );
               }
+              this.router.navigate(['/inscriptions/participant', this.currentParticipantNumber + 1]);
             })
         );
       });
@@ -269,7 +277,11 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   goToSaveStep(): void {
     if (this.signupForm.valid) {
       if (this.signupForm.dirty) {
-        this.saveParticipant();
+        let participant = {
+          ...this.signupForm.value,
+          birthday: new Date(this.signupForm.value.birthday)
+        }
+        this.saveParticipant(participant);
       }
     }
 
@@ -308,12 +320,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           state: 'definitive',
           zip: InscriptionStore.zip,
           participants: subscriptionParticipantsRelationInput,
-          externalUserId: '',
+          externalUserId: InscriptionStore.externalUserId,
         };
         subscription.participants = subscriptionParticipantsRelationInput;
         this.subSubscription = this.inscriptionsService
           .updateInscription(this.inscription._id, subscription)
           .subscribe((inscriptionId) => {
+            this.store.dispatch(ParticipantActions.resetCurrentParticipantNumber());
             this.router.navigate(['/welcome']).then();
           });
       });

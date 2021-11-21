@@ -19,7 +19,7 @@ export class InscriptionsService {
   }
 
   getInscription(externalUserId: string, id: string): Observable<Subscription> {
-    if (externalUserId == '' && id != '') {
+    if ((externalUserId == null || externalUserId == '') && id != '') {
       return of(this.initializeInscription(id));
     }
     return this.apollo
