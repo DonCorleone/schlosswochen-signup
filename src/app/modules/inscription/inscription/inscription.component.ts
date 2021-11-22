@@ -60,6 +60,9 @@ export class InscriptionComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
+    this.store.dispatch(InscriptionActions.resetCurrentParticipantNumber());
+
     this.signupForm = this.fb.group({
       _id: '',
       deadline: Date.now,
@@ -168,7 +171,8 @@ export class InscriptionComponent implements OnInit {
     }
 
     if (!this.signupForm.dirty) {
-      this.router.navigate(['/inscriptions/participant', 1]);
+      this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
+      this.router.navigate(['/inscriptions/participant']).then();
       return;
     }
     const inscription = { inscription: this.signupForm.value };
@@ -197,7 +201,8 @@ export class InscriptionComponent implements OnInit {
             inscription: inscription.inscription,
           })
         );
-        this.router.navigate(['/inscriptions/participant', 1]);
+        this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
+        this.router.navigate(['/inscriptions/participant']).then();
       });
   }
 

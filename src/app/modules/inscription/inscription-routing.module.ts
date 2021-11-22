@@ -6,7 +6,7 @@ import { FinnishComponent } from './finnish/finnish.component';
 
 const routes: Routes = [
   { path: 'inscription/:id', component: InscriptionComponent },
-  { path: 'participant/:id', component: ParticipantComponent },
+  { path: 'participant', component: ParticipantComponent },
   { path: 'inscription', component: InscriptionComponent },
   { path: 'finnish', component: FinnishComponent },
 ];
