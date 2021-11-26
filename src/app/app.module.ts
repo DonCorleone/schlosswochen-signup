@@ -74,7 +74,7 @@ import {AuthEffects} from "./modules/user/state/auth.effects";
               uri: realm.graphqlUrlReadWrite,
               headers: new HttpHeaders().set(
                 'Authorization',
-                `Bearer ${localStorage.getItem('tokenReadWrite')}`
+                `Bearer ${sessionStorage.getItem('tokenReadWrite')}`
               ),
             }),
           },
@@ -85,7 +85,7 @@ import {AuthEffects} from "./modules/user/state/auth.effects";
               uri: realm.graphqlUrl,
               headers: new HttpHeaders().set(
                 'Authorization',
-                `Bearer ${localStorage.getItem('token')}`
+                `Bearer ${sessionStorage.getItem('token')}`
               ),
             }),
           },
