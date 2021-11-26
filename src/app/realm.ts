@@ -13,7 +13,7 @@ async function getValidAccessToken(): Promise<string> {
 		// If no user is logged in, log in an anonymous user
 	{
 		await app.logIn(Realm.Credentials.anonymous()).then(x => {
-        sessionStorage.setItem('token', x.accessToken!);
+        sessionStorage.setItem('token', app.currentUser?.accessToken!);
         return x.accessToken;
       }
     );
@@ -22,7 +22,7 @@ async function getValidAccessToken(): Promise<string> {
 		// Refreshing custom data also refreshes the access token
 	{
 		await app.currentUser.refreshCustomData().then(x => {
-        sessionStorage.setItem('token', x.accessToken!);
+        sessionStorage.setItem('token', app.currentUser?.accessToken!);
         return x.accessToken;
       }
     );
@@ -36,7 +36,7 @@ async function getValidAccessTokenReadWrite(): Promise<string> {
 		// If no user is logged in, log in an anonymous user
 	{
 		await appReadWrite.logIn(Realm.Credentials.anonymous()).then(x => {
-        sessionStorage.setItem('tokenReadWrite', x.accessToken!);
+        sessionStorage.setItem('tokenReadWrite', app.currentUser?.accessToken!);
         return x.accessToken;
       }
     );
@@ -45,7 +45,7 @@ async function getValidAccessTokenReadWrite(): Promise<string> {
 		// Refreshing custom data also refreshes the access token
 	{
 		await appReadWrite.currentUser.refreshCustomData().then(x => {
-      sessionStorage.setItem('tokenReadWrite', x.accessToken!);
+      sessionStorage.setItem('tokenReadWrite', app.currentUser?.accessToken!);
       return x.accessToken;
     });
 	}

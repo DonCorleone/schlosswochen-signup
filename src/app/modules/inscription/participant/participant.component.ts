@@ -173,7 +173,20 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     );
   }
   goToPreviousStep() {
-    //  this.router.navigate(['personal']);
+    this.store.dispatch(InscriptionActions.decreaseCurrentParticipantNumber());
+    this.subscriptions.push(
+      this.store
+        .select(InscriptionsReducer.getCurrentParticipantNumber)
+        .subscribe((p) => {
+          this.currentParticipantNumber = p;
+          if (this.currentParticipantNumber === 0) {
+            this.router.navigate(['/inscriptions/inscription']).then();
+          } else {
+            this.router.navigate(['/inscriptions/participant']).then();
+          }
+          return;
+        })
+    );
   }
   goToNextStep(): void {
     if (this.signupForm.invalid) {
@@ -184,7 +197,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     }
 
     if (!this.signupForm.dirty) {
-      this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
+      this.store.dispatch(
+        InscriptionActions.increaseCurrentParticipantNumber()
+      );
       this.router.navigate(['/inscriptions/participant']).then();
       return;
     }
@@ -243,7 +258,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
                     InscriptionActions.addParticipant({ participant })
                   );
                 }
-                this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
+                this.store.dispatch(
+                  InscriptionActions.increaseCurrentParticipantNumber()
+                );
                 this.router.navigate(['/inscriptions/participant']).then();
               })
           );
