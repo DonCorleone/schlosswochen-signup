@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { WizardStepComponent } from './wizard-step/wizard-step.component';
 import { RowWrapperComponent } from './formly-wrappers/row-wrapper.component';
 import { FormlyModule } from '@ngx-formly/core';
+import { CountDownComponent } from './count-down/count-down.component';
 
 
 
 @NgModule({
-  declarations: [WizardStepComponent],
+  declarations: [WizardStepComponent, CountDownComponent],
   imports: [
     CommonModule,
     FormlyModule.forRoot({
@@ -16,8 +17,9 @@ import { FormlyModule } from '@ngx-formly/core';
       ],
     }),
   ],
-  exports: [
-    WizardStepComponent
-  ]
+    exports: [
+        WizardStepComponent,
+        CountDownComponent
+    ]
 })
 export class SharedModule { }

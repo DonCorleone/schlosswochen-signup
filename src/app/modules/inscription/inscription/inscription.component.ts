@@ -65,9 +65,6 @@ export class InscriptionComponent implements OnInit {
 
     this.signupForm = this.fb.group({
       _id: '',
-      deadline: Date.now,
-      week: 0,
-      numOfChildren: 0,
       salutation: ['', [Validators.required]],
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
@@ -105,7 +102,7 @@ export class InscriptionComponent implements OnInit {
 
             if (externalUser?.sub?.length > 0 || id?.length > 0) {
               this.inscriptionService
-                .getInscription(externalUser?.sub, id)
+                .getInscription$(externalUser?.sub, id)
                 .subscribe({
                   next: (inscription: Inscription) => {
                     if (externalUser) {
@@ -126,31 +123,12 @@ export class InscriptionComponent implements OnInit {
                     }
 
                     this.displayInscription(inscription);
-
-                    this.manageReservationData();
                   },
                   error: (err) => (this.errorMessage = err),
                 });
             }
 
           }
-        )
-      )
-      .subscribe();
-  }
-
-  manageReservationData() {
-    combineLatest([
-      this.store.select(ReservationReducer.getWeeklyReservation),
-      this.store.select(ReservationReducer.getDeadline),
-    ])
-      .pipe(
-        tap(([weeklyReservation, deadline]) =>
-          this.setInscriptionMetadata(
-            deadline,
-            weeklyReservation.weekNr,
-            weeklyReservation.numberOfReservations
-          )
         )
       )
       .subscribe();
@@ -227,9 +205,6 @@ export class InscriptionComponent implements OnInit {
 
     this.signupForm.patchValue({
       _id: inscription._id,
-      deadline: inscription.deadline,
-      week: inscription.week,
-      numOfChildren: inscription.numOfChildren,
       salutation: inscription.salutation,
       firstName: inscription.firstName,
       lastName: inscription.lastName,
@@ -243,18 +218,6 @@ export class InscriptionComponent implements OnInit {
       country: inscription.country,
       externalUserId: inscription.externalUserId,
       participants: inscription.participants,
-    });
-  }
-
-  private setInscriptionMetadata(
-    deadline: Date,
-    week: number,
-    numOfChildren: number
-  ) {
-    this.signupForm.patchValue({
-      deadline: deadline,
-      week: week,
-      numOfChildren: numOfChildren,
     });
   }
 }

@@ -16,9 +16,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Input() externalInput: string | null;
   @Input() isEditMode: boolean = false;
 
-  timer$: Observable<number> | undefined;
   reservation$ : Observable<WeeklyReservation>;
   deadlineSubscription: Subscription;
+  deadline: Date;
 
   constructor(private store: Store<ReservationReducer.State>) { }
 
@@ -26,11 +26,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const nowInS = new Date().getTime();
     this.deadlineSubscription = this.store.select(ReservationReducer.getDeadline).subscribe(
       deadline => {
-       // this.deadlineM = (deadline.getMinutes()- new Date().getMinutes());
-        this.timer$ = timer(0, 60000).pipe(
-          scan(acc => --acc, Math.trunc((deadline.getTime() - nowInS) / 1000 / 60)),
-          takeWhile(x => x >= 0)
-        );
+        console.log(JSON.stringify(deadline));
+        this.deadline = deadline;
       }
     );
 

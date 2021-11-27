@@ -9,6 +9,6 @@
     <span>{{ externalInput }}</span>
   </div>
   <div *ngIf="!isEditMode" class="alert alert-success show" role="alert">
-    {{ timer$ | async }} Minutes left!
-  </div>
+    <app-count-down [dDay]="deadline"></app-count-down>
+</div>
 </div>
