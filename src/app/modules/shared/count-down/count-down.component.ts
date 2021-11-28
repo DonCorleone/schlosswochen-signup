@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 
 @Component({
@@ -10,6 +10,7 @@ export class CountDownComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   @Input() dDay = new Date('Jan 01 2022 00:00:00');
+  @Input() title = "countdown";
 
   private milliSecondsInASecond = 1000;
   private hoursInADay = 24;
@@ -23,13 +24,12 @@ export class CountDownComponent implements OnInit, OnDestroy {
   daysToDday: number;
 
   private getTimeDifference() {
-    console.log(this.dDay.toString())
+    console.log(this.dDay.toString());
     this.timeDifference = this.dDay.getTime() - new Date().getTime();
     this.allocateTimeUnits(this.timeDifference);
   }
 
   private allocateTimeUnits(timeDifference: number) {
-
     this.secondsToDday = Math.floor(
       (timeDifference / this.milliSecondsInASecond) % this.SecondsInAMinute
     );

@@ -1,7 +1,9 @@
-<div class="timer">
-  <span id="days"> {{daysToDday}} </span>Day(s)
-  <span id="hours"> {{hoursToDday}} </span>Hrs
-  <span id="minutes"> {{minutesToDday}} </span>Min
-  <span id="seconds"> {{secondsToDday}} </span>S
-</div>
-
+<span> {{ title }} </span>Min
+<ng-container *ngIf="daysToDday > 0">
+  <span> {{ daysToDday }} </span>Day(s)
+</ng-container>
+<ng-container *ngIf="hoursToDday > 0">
+  <span> {{ hoursToDday }} </span> :
+</ng-container>
+<span> {{ minutesToDday }} </span> :
+<span> {{ secondsToDday }} </span>
