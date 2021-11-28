@@ -1,65 +1,53 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { interval, Subscription } from 'rxjs';
+import { interval, Observable, of, Subscription, timer } from 'rxjs';
+import { map, shareReplay, take, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-count-down',
   templateUrl: './count-down.component.html',
   styleUrls: ['./count-down.component.scss'],
 })
-export class CountDownComponent implements OnInit, OnDestroy {
+export class CountDownComponent implements OnInit {
   private subscription: Subscription;
 
   @Input() dDay = new Date('Jan 01 2022 00:00:00');
-  @Input() title = "countdown";
+  @Input() title = 'countdown';
 
-  private milliSecondsInASecond = 1000;
-  private hoursInADay = 24;
-  private minutesInAnHour = 60;
-  private SecondsInAMinute = 60;
-
-  private timeDifference: number;
-  secondsToDday: number;
-  minutesToDday: number;
-  hoursToDday: number;
-  daysToDday: number;
-
-  private getTimeDifference() {
-    console.log(this.dDay.toString());
-    this.timeDifference = this.dDay.getTime() - new Date().getTime();
-    this.allocateTimeUnits(this.timeDifference);
-  }
-
-  private allocateTimeUnits(timeDifference: number) {
-    this.secondsToDday = Math.floor(
-      (timeDifference / this.milliSecondsInASecond) % this.SecondsInAMinute
-    );
-    this.minutesToDday = Math.floor(
-      (timeDifference / (this.milliSecondsInASecond * this.minutesInAnHour)) %
-        this.SecondsInAMinute
-    );
-    this.hoursToDday = Math.floor(
-      (timeDifference /
-        (this.milliSecondsInASecond *
-          this.minutesInAnHour *
-          this.SecondsInAMinute)) %
-        this.hoursInADay
-    );
-    this.daysToDday = Math.floor(
-      timeDifference /
-        (this.milliSecondsInASecond *
-          this.minutesInAnHour *
-          this.SecondsInAMinute *
-          this.hoursInADay)
-    );
-  }
+  secondsToDday$: Observable<number>;
+  minutesToDday$: Observable<number>;
+  hoursToDday$: Observable<number>;
+  daysToDday$: Observable<number>;
+  private secondsToDdayTotal$: Observable<number>;
 
   ngOnInit() {
-    this.subscription = interval(1000).subscribe((x) => {
-      this.getTimeDifference();
-    });
-  }
+    const timeDifference = this.dDay.getTime() - new Date().getTime();
+    const milliSecondsInASecond = 1000;
+    const hoursInADay = 24;
+    const minutesInAnHour = 60;
+    const SecondsInAMinute = 60;
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+    const time = Math.floor(timeDifference / milliSecondsInASecond);
+    this.secondsToDdayTotal$ = interval(1000).pipe(
+      take(time),
+      map((x) => time - x)
+    );
+    this.secondsToDday$ = this.secondsToDdayTotal$.pipe(
+      map((x) => Math.floor(x % SecondsInAMinute))
+    );
+    this.minutesToDday$ = this.secondsToDdayTotal$.pipe(
+      map((x) => Math.floor(
+        (x / SecondsInAMinute))
+      )
+    );
+    this.hoursToDday$ = this.secondsToDdayTotal$.pipe(
+      map((x) => Math.floor(
+        (x / (SecondsInAMinute * minutesInAnHour)))
+      )
+    );
+    this.daysToDday$ = this.secondsToDdayTotal$.pipe(
+      map((x) => Math.floor(
+        (x / (SecondsInAMinute * minutesInAnHour * hoursInADay)))
+      )
+    );
   }
 }

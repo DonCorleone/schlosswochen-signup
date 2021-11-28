@@ -1,9 +1,14 @@
-<span> {{ title }} </span>Min
-<ng-container *ngIf="daysToDday > 0">
-  <span> {{ daysToDday }} </span>Day(s)
+<span> {{ title }} </span>
+<ng-container *ngIf="daysToDday$ | async as daysToDday">
+  <ng-container *ngIf="daysToDday && daysToDday > 0">
+    <span> {{ daysToDday }} </span>Day(s)
+  </ng-container>
 </ng-container>
-<ng-container *ngIf="hoursToDday > 0">
-  <span> {{ hoursToDday }} </span> :
+<ng-container *ngIf="hoursToDday$ | async as hoursToDday">
+  <ng-container *ngIf="hoursToDday && hoursToDday > 0">
+    <span> {{ hoursToDday$ | async }} </span> :
+  </ng-container>
 </ng-container>
-<span> {{ minutesToDday }} </span> :
-<span> {{ secondsToDday }} </span>
+
+<span> {{ minutesToDday$ | async }} </span> :
+<span> {{ secondsToDday$ | async }} </span>
