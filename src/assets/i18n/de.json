@@ -1,0 +1,5 @@
+{
+  "HELLO": "hello {{value}}",
+  "LOGOUT": "Logout00",
+  "COUNTDOWNTITLE": "Days till GoLive:"
+}

@@ -1,0 +1,5 @@
+{
+  "HELLO": "hallo {{value}}",
+  "LOGOUT": "Ausloggen",
+  "COUNTDOWNTITLE": "Tage bis zum Start:"
+}
