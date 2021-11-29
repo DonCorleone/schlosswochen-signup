@@ -12,16 +12,22 @@ async function getValidAccessToken(): Promise<string> {
 	if (!app.currentUser)
 		// If no user is logged in, log in an anonymous user
 	{
-		await app.logIn(Realm.Credentials.anonymous());
+		await app.logIn(Realm.Credentials.anonymous()).then(x => {
+        sessionStorage.setItem('token', app.currentUser?.accessToken!);
+        return x.accessToken;
+      }
+    );
 	} else
 		// The logged in user's access token might be stale,
 		// Refreshing custom data also refreshes the access token
 	{
-		await app.currentUser.refreshCustomData();
+		await app.currentUser.refreshCustomData().then(x => {
+        sessionStorage.setItem('token', app.currentUser?.accessToken!);
+        return x.accessToken;
+      }
+    );
 	}
 
-	// Get a valid access token for the current user
-	localStorage.setItem('token', app.currentUser?.accessToken!);
 	return app.currentUser?.accessToken!;
 }
 
@@ -29,16 +35,21 @@ async function getValidAccessTokenReadWrite(): Promise<string> {
 	if (!appReadWrite.currentUser)
 		// If no user is logged in, log in an anonymous user
 	{
-		await appReadWrite.logIn(Realm.Credentials.anonymous());
+		await appReadWrite.logIn(Realm.Credentials.anonymous()).then(x => {
+        sessionStorage.setItem('tokenReadWrite', app.currentUser?.accessToken!);
+        return x.accessToken;
+      }
+    );
 	} else
 		// The logged in user's access token might be stale,
 		// Refreshing custom data also refreshes the access token
 	{
-		await appReadWrite.currentUser.refreshCustomData();
+		await appReadWrite.currentUser.refreshCustomData().then(x => {
+      sessionStorage.setItem('tokenReadWrite', app.currentUser?.accessToken!);
+      return x.accessToken;
+    });
 	}
 
-	// Get a valid access token for the current user
-	localStorage.setItem('tokenReadWrite', appReadWrite.currentUser?.accessToken!);
 	return appReadWrite.currentUser?.accessToken!;
 }
 

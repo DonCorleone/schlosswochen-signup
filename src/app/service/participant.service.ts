@@ -75,7 +75,8 @@ export class ParticipantService {
           mutation ($participant_id: String!, $participantInsertInput: ParticipantInsertInput!) {
             upsertOneParticipant(
             query: {participant_id: $participant_id}
-            data: $participantInsertInput) {
+            data: $participantInsertInput)
+            {
               _id
               participant_id
             }

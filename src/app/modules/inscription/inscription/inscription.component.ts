@@ -10,22 +10,22 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
 
-import {debounceTime, filter, map, tap} from 'rxjs/operators';
+import { debounceTime, filter, map, tap } from 'rxjs/operators';
 
 import { InscriptionsService } from '../../../service/inscriptions.service';
 import * as InscriptionReducer from '../state/inscription.reducer';
 import * as InscriptionActions from '../state/inscription.actions';
-import * as ReservationReducer from "../../reservations/state/reservation.reducer";
+import * as ReservationReducer from '../../reservations/state/reservation.reducer';
 import * as ReservationActions from '../../reservations/state/reservation.action';
 import { WeeklyReservation } from '../../../models/Week';
 import {
   Subscription as Inscription,
   Participant,
   SubscriptionParticipantsRelationInput,
-  SubscriptionUpdateInput
+  SubscriptionUpdateInput,
 } from 'src/app/models/Graphqlx';
-import * as AuthSelector from "../../user/state/auth.selectors";
-import {combineLatest} from "rxjs";
+import * as AuthSelector from '../../user/state/auth.selectors';
+import { combineLatest } from 'rxjs';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -56,15 +56,15 @@ export class InscriptionComponent implements OnInit {
     private inscriptionService: InscriptionsService,
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store<InscriptionReducer.State>
+    private store: Store<InscriptionReducer.InscriptionState>
   ) {}
 
   ngOnInit(): void {
+
+    this.store.dispatch(InscriptionActions.resetCurrentParticipantNumber());
+
     this.signupForm = this.fb.group({
       _id: '',
-      deadline: Date.now,
-      week: 0,
-      numOfChildren: 0,
       salutation: ['', [Validators.required]],
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
@@ -90,66 +90,48 @@ export class InscriptionComponent implements OnInit {
         (value) => (this.emailMessage = this.setMessage(emailControl))
       );
 
-    this.store.select(AuthSelector.selectCurrentUserProfile).subscribe((externalUser) => {
-      let externalUserId = '';
-      let id = '';
 
-      this.route.url.subscribe((urlSegment) => {
-        this.isEditMode = urlSegment.length == 0;
+    combineLatest([
+      this.store.select(AuthSelector.selectCurrentUserProfile),
+      this.route.params,
+    ])
+      .pipe(
+        tap(([externalUser, params]) =>
+          {
+            let id = params['id'];
 
-        if (this.isEditMode) {
-          externalUserId = externalUser?.sub;
-        }
+            if (externalUser?.sub?.length > 0 || id?.length > 0) {
+              this.inscriptionService
+                .getInscription$(externalUser?.sub, id)
+                .subscribe({
+                  next: (inscription: Inscription) => {
+                    if (externalUser) {
+                      const weeklyReservation: WeeklyReservation = {
+                        weekNr: inscription.week!,
+                        numberOfReservations: inscription.numOfChildren!,
+                      };
 
-        this.route.params.subscribe((params) => {
-          id = params['id'];
+                      this.store.dispatch(
+                        ReservationActions.setWeeklyReservation({
+                          weeklyReservation,
+                        })
+                      );
 
-          if (externalUserId?.length > 0 || id?.length > 0) {
-            this.inscriptionService
-              .getInscription(externalUserId, id)
-              .subscribe({
-                next: (inscription: Inscription) => {
-                  if (this.isEditMode) {
-                    const weeklyReservation: WeeklyReservation = {
-                      weekNr: inscription.week!,
-                      numberOfReservations: inscription.numOfChildren!,
-                    };
+                      this.store.dispatch(
+                        InscriptionActions.setInscription({ inscription })
+                      );
+                    }
 
-                    this.store.dispatch(
-                      ReservationActions.setWeeklyReservation({
-                        weeklyReservation,
-                      })
-                    );
+                    this.displayInscription(inscription);
+                  },
+                  error: (err) => (this.errorMessage = err),
+                });
+            }
 
-                    this.store.dispatch(InscriptionActions.setInscription({inscription}));
-                  }
-
-                  this.store.dispatch(
-                    ReservationActions.setInscriptionId({
-                      inscriptionId: inscription._id,
-                    })
-                  );
-                  this.displayInscription(inscription);
-                },
-                error: (err) => (this.errorMessage = err),
-              });
           }
-        });
-      });
-    });
-
-    this.manageReservationData();
-  }
-
-  manageReservationData() {
-    combineLatest([this.store.select(ReservationReducer.getWeeklyReservation),
-      this.store.select(ReservationReducer.getDeadline),
-      this.store.select(ReservationReducer.getInscriptionId)]
-    ).pipe(
-        tap(([weeklyReservation, deadline, inscriptionId]) =>
-          this.setInscriptionMetadata(
-            inscriptionId, deadline, weeklyReservation.weekNr, weeklyReservation.numberOfReservations)))
-    .subscribe()
+        )
+      )
+      .subscribe();
   }
 
   goToPreviousStep() {
@@ -158,40 +140,48 @@ export class InscriptionComponent implements OnInit {
 
   goToNextStep(): void {
     if (this.signupForm.invalid) {
-      Object.keys(this.signupForm.controls).forEach(field => { // {1}
-        const control = this.signupForm.get(field);            // {2}
-        control?.markAsTouched({ onlySelf: true });       // {3}
+      Object.keys(this.signupForm.controls).forEach((field) => {
+        // {1}
+        const control = this.signupForm.get(field); // {2}
+        control?.markAsTouched({ onlySelf: true }); // {3}
       });
       return;
     }
 
-    if (this.signupForm.dirty){
-      const inscription = { inscription: this.signupForm.value };
-      let inscriptionUpdateObj: SubscriptionUpdateInput = inscription.inscription;
-
-      let participants: Participant[] = inscription.inscription.participants;
-      let links: string[] = [];
-
-      if (participants?.length > 0){
-        participants.forEach(x=>{
-          links.push(x.participant_id!);
-        });
-      }
-      let participantsUpdateObj: SubscriptionParticipantsRelationInput = {
-        link: links
-      };
-      inscriptionUpdateObj.participants = participantsUpdateObj;
-
-      this.inscriptionService
-        .updateInscription(
-          inscription.inscription._id,
-          inscriptionUpdateObj
-        )
-        .subscribe((res: string) => {
-          this.store.dispatch(InscriptionActions.setInscription({inscription: inscription.inscription}));
-        });
+    if (!this.signupForm.dirty) {
+      this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
+      this.router.navigate(['/inscriptions/participant']).then();
+      return;
     }
-    this.router.navigate(['/participant', 1]);
+    const inscription = { inscription: this.signupForm.value };
+    let inscriptionUpdateObj: SubscriptionUpdateInput = {
+      ...inscription.inscription,
+    };
+
+    let participants: Participant[] = inscription.inscription.participants;
+    let links: string[] = [];
+
+    if (participants?.length > 0) {
+      participants.forEach((x) => {
+        links.push(x.participant_id!);
+      });
+    }
+    let participantsUpdateObj: SubscriptionParticipantsRelationInput = {
+      link: links,
+    };
+    inscriptionUpdateObj.participants = participantsUpdateObj;
+
+    this.inscriptionService
+      .updateInscription(inscription.inscription._id, inscriptionUpdateObj)
+      .subscribe((res: string) => {
+        this.store.dispatch(
+          InscriptionActions.setInscription({
+            inscription: inscription.inscription,
+          })
+        );
+        this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
+        this.router.navigate(['/inscriptions/participant']).then();
+      });
   }
 
   setMessage(c: AbstractControl): string {
@@ -215,9 +205,6 @@ export class InscriptionComponent implements OnInit {
 
     this.signupForm.patchValue({
       _id: inscription._id,
-      deadline: inscription.deadline,
-      week: inscription.week,
-      numOfChildren: inscription.numOfChildren,
       salutation: inscription.salutation,
       firstName: inscription.firstName,
       lastName: inscription.lastName,
@@ -230,17 +217,7 @@ export class InscriptionComponent implements OnInit {
       zip: inscription.zip,
       country: inscription.country,
       externalUserId: inscription.externalUserId,
-      participants: inscription.participants
-    });
-  }
-
-  private setInscriptionMetadata(inscriptionId: string, deadline: Date, week: number, numOfChildren: number) {
-
-    this.signupForm.patchValue({
-      _id: inscriptionId,
-      deadline: deadline,
-      week: week,
-      numOfChildren: numOfChildren
+      participants: inscription.participants,
     });
   }
 }

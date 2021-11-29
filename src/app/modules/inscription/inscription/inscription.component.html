@@ -1,5 +1,6 @@
 <app-wizard-step
   [title]="title"
+  [previousEnabled] = false
   (previousStepClicked)="goToPreviousStep()"
   (nextStepClicked)="goToNextStep()"
 >
@@ -7,7 +8,7 @@
     <div class="card-body">
       <form novalidate [formGroup]="signupForm">
         <div class="form-group row mb-2">
-          <app-header [isEditMode]="isEditMode"></app-header>
+          <app-header></app-header>
         </div>
         <!-- <formly-form
           [form]="signupForm"

@@ -16,7 +16,7 @@ export class WizardStepComponent {
   @Input() title: string;
   @Input() saveStep: boolean = false;
   @Input() nextEnabled: boolean = true;
-  @Input() previousEnabled: boolean = false;
+  @Input() previousEnabled: boolean = true;
   @Output() previousStepClicked = new EventEmitter();
   @Output() saveStepClicked = new EventEmitter();
   @Output() nextStepClicked = new EventEmitter();

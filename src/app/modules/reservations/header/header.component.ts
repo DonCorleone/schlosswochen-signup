@@ -1,10 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import {select, Store} from '@ngrx/store';
 import { Observable, Subscription, timer } from 'rxjs';
 import { scan, takeWhile } from 'rxjs/operators';
 import { WeeklyReservation } from 'src/app/models/Week';
 
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
+import {selectIsLoggedIn} from "../../user/state/auth.selectors";
 
 @Component({
   selector: 'app-header',
@@ -14,33 +15,27 @@ import * as ReservationReducer from '../../reservations/state/reservation.reduce
 export class HeaderComponent implements OnInit, OnDestroy {
 
   @Input() externalInput: string | null;
-  @Input() isEditMode: boolean = false;
 
-  timer$: Observable<number> | undefined;
-  inscriptionId$: Observable<string>;
   reservation$ : Observable<WeeklyReservation>;
+  loggedIn$ : Observable<boolean>;
+
   deadlineSubscription: Subscription;
+  deadline: Date;
 
   constructor(private store: Store<ReservationReducer.State>) { }
 
   ngOnInit(): void {
-    const nowInS = new Date().getTime();
+
+    this.loggedIn$ = this.store.pipe(select(selectIsLoggedIn));
+
     this.deadlineSubscription = this.store.select(ReservationReducer.getDeadline).subscribe(
       deadline => {
-       // this.deadlineM = (deadline.getMinutes()- new Date().getMinutes());
-        this.timer$ = timer(0, 60000).pipe(
-          scan(acc => --acc, Math.trunc((deadline.getTime() - nowInS) / 1000 / 60)),
-          takeWhile(x => x >= 0)
-        );
+        this.deadline = deadline;
       }
     );
 
     this.store.select(ReservationReducer.getWeeklyReservation).pipe (
       weeklyReservation => this.reservation$ = weeklyReservation
-    );
-
-    this.store.select(ReservationReducer.getInscriptionId).pipe (
-      weeklyReservation => this.inscriptionId$ = weeklyReservation
     );
   }
 

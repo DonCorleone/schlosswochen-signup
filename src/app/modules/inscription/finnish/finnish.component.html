@@ -1,16 +1,13 @@
 <app-wizard-step
   [title]="title"
+  [previousEnabled]=false
   (previousStepClicked)="goToPreviousStep()"
   (nextStepClicked)="goToNextStep()"
 >
   <div class="container-fluid">
     <div class="form-group row mb-2">
       <h2>Inscription</h2>
-      <pre><p>{{inscription | async | json}}</p></pre>
-    </div>
-    <div class="form-group row mb-2">
-      <h2>Participants</h2>
-      <pre><p>{{participants | async | json}}</p></pre>
+      <pre><p>{{inscription$ | async | json}}</p></pre>
     </div>
 
     <div class="card">
