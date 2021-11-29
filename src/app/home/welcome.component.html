@@ -6,9 +6,14 @@
 >
   <div class="card">
     <div class="card-body">
+      <div>
+        <app-count-down [title]="'Time till goLive: '"></app-count-down>
+      </div>
       <div *ngIf="loggedIn$ | async as loggedIn; else loginContent">
         <p>
-          <button class="btn btn-outline-danger" (click)="logout()">Logout</button>
+          <button class="btn btn-outline-danger" (click)="logout()">
+            Logout
+          </button>
           is logged in {{ loggedIn }}
         </p>
         <div *ngIf="profile$ | async as profile">
@@ -17,10 +22,9 @@
         </div>
       </div>
 
-      <ng-template #loginContent
-      ><button class="btn btn-outline-success" (click)="login()">
-        Login
-      </button></ng-template >
+      <ng-template #loginContent>
+        <button class="btn btn-outline-success" (click)="login()">Login</button>
+      </ng-template>
     </div>
   </div>
 </app-wizard-step>

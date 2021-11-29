@@ -36,12 +36,14 @@ export class CountDownComponent implements OnInit {
     );
     this.minutesToDday$ = this.secondsToDdayTotal$.pipe(
       map((x) => Math.floor(
-        (x / SecondsInAMinute))
+        (x / SecondsInAMinute) % SecondsInAMinute
+        )
       )
     );
     this.hoursToDday$ = this.secondsToDdayTotal$.pipe(
       map((x) => Math.floor(
-        (x / (SecondsInAMinute * minutesInAnHour)))
+        (x / (SecondsInAMinute * minutesInAnHour)) % hoursInADay
+        )
       )
     );
     this.daysToDday$ = this.secondsToDdayTotal$.pipe(
