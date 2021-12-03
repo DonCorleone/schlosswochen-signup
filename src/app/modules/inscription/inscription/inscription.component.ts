@@ -39,7 +39,7 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
   styleUrls: ['./inscription.component.scss'],
 })
 export class InscriptionComponent implements OnInit {
-  title = 'Contact';
+  title = 'CONTACT';
 
   signupForm!: FormGroup;
   emailMessage: string = '';

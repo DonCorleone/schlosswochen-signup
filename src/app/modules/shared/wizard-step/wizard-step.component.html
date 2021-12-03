@@ -1,23 +1,23 @@
 <section>
   <header>
-    <h1>{{title}}</h1>
+    <h1>{{title | translate}}</h1>
   </header>
 
   <div>
     <button id="previous-button" class="btn btn-primary mr-3" [class.disabled]="!previousEnabled" (click)="goToPreviousStep()">
-      <i class="bi-chevron-left"></i> <span>Previous</span>
+      <i class="bi-chevron-left"></i> <span>{{'WIZADRD.PREVIOUS' | translate}}</span>
     </button>
 
     <ng-content></ng-content>
 
     <ng-container *ngIf="saveStep else nextCase">
       <button id="save-button" class="btn btn-primary mr-3" (click)="goToSaveStep()">
-        <span>Save</span> <i class="bi-save"></i>
+        <span>{{'WIZADRD.SAVE' | translate}}</span> <i class="bi-save"></i>
       </button>
     </ng-container>
     <ng-template #nextCase>
       <button id="next-button" class="btn btn-primary mr-3" [class.disabled]="!nextEnabled" (click)="goToNextStep()">
-        <span>Next</span> <i class="bi-chevron-right"></i>
+        <span>{{'WIZADRD.NEXT' | translate}}</span> <i class="bi-chevron-right"></i>
       </button>
     </ng-template>
   </div>

@@ -1,11 +1,12 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import { Observable, Subscription, timer } from 'rxjs';
-import { scan, takeWhile } from 'rxjs/operators';
+import {scan, takeUntil, takeWhile} from 'rxjs/operators';
 import { WeeklyReservation } from 'src/app/models/Week';
 
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
 import {selectIsLoggedIn} from "../../user/state/auth.selectors";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-header',
@@ -22,7 +23,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   deadlineSubscription: Subscription;
   deadline: Date;
 
-  constructor(private store: Store<ReservationReducer.State>) { }
+  constructor(
+    private store: Store<ReservationReducer.State>,
+    public translate: TranslateService) { }
 
   ngOnInit(): void {
 

@@ -1,14 +1,31 @@
 <div *ngIf="reservation$ | async as reservation">
-  <div class="alert alert-primary show" role="alert">
-    <span>Week no: {{ reservation.weekNr }}</span>
+  <div class="alert alert-warning show language-chooser">
+    {{ 'LANGUAGE' | translate}}:
+    <select #langSelect (change)="translate.use(langSelect.value)">
+      <option
+        class="alert-warning"
+        *ngFor="let lang of translate.getLangs()"
+        [value]="lang"
+        [selected]="lang === translate.currentLang"
+      >
+        {{ lang }}
+      </option>
+    </select>
   </div>
   <div class="alert alert-primary show" role="alert">
-    <span>Reserved Places: {{ reservation.numberOfReservations }}</span>
+    <span>{{ 'WEEKNR' | translate}} {{ reservation.weekNr }}</span>
+  </div>
+  <div class="alert alert-primary show" role="alert">
+    <span>{{ 'RESERVEDPLACES' | translate}}: {{ reservation.numberOfReservations }}</span>
   </div>
   <div *ngIf="externalInput" class="alert alert-warning show" role="alert">
     <span>{{ externalInput }}</span>
   </div>
-  <div *ngIf="!(loggedIn$ | async)" class="alert alert-success show" role="alert">
-    <app-count-down [title]="'Time left: '" [dDay]="deadline"></app-count-down>
+  <div
+    *ngIf="!(loggedIn$ | async)"
+    class="alert alert-success show"
+    role="alert"
+  >
+    <app-count-down [title]="'TIMELEFT'" [dDay]="deadline"></app-count-down>
   </div>
 </div>

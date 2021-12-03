@@ -66,7 +66,7 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ParticipantComponent implements OnInit, OnDestroy {
-  title = 'Participant';
+  title = 'PARTICIPANT';
 
   // subscription_id: string = '';
   week: number = 0;

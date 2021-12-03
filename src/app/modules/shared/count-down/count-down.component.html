@@ -1,4 +1,4 @@
-<span> {{ title }} </span>
+<span> {{ countDownTitle }}: </span>
 <ng-container *ngIf="daysToDday$ | async as daysToDday">
   <ng-container *ngIf="daysToDday && daysToDday > 0">
     <span>{{ daysToDday }}</span><span> Day</span><span *ngIf="daysToDday && daysToDday > 1">s</span><span>, </span>

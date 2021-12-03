@@ -9,6 +9,24 @@
   min-height: 80vh;
   font-size: 1.2rem;
 }
+
+
+@media all and (max-width: 767px) {
+  .card-body {
+    padding: 0.2rem !important;
+  }
+
+  label {
+    padding-left: 2rem !important;
+  }
+
+  select, input {
+    padding-left: 0.3rem !important;
+  }
+}
+
+
+
 .form-control {
   font-size: unset !important;
 }

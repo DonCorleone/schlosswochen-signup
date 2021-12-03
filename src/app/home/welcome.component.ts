@@ -1,21 +1,20 @@
-import { Component, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { select, Store } from '@ngrx/store';
-import { checkAuth, login, logout } from '../modules/user/state/auth.actions';
-import {
-  selectCurrentUserProfile,
-  selectIsLoggedIn,
-} from '../modules/user/state/auth.selectors';
-import { map, take, tap } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
+import {ChangeDetectionStrategy, Component, OnDestroy} from '@angular/core';
+import {Router} from '@angular/router';
+import {Observable, Subject, Subscription} from 'rxjs';
+import {select, Store} from '@ngrx/store';
+import {checkAuth, login, logout} from '../modules/user/state/auth.actions';
+import {selectCurrentUserProfile, selectIsLoggedIn,} from '../modules/user/state/auth.selectors';
+import {take, takeUntil} from 'rxjs/operators';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
+  selector: 'app-welcome',
   templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.scss'],
+  styleUrls: ['./welcome.component.scss']
+
 })
 export class WelcomeComponent implements OnDestroy {
-  public title = 'Anmeldung';
+  public title = 'INSCRIPTION';
   private loggedInSubscription: Subscription;
 
   constructor(
@@ -23,22 +22,19 @@ export class WelcomeComponent implements OnDestroy {
     private store: Store<any>,
     public translate: TranslateService
   ) {
-    // this language will be used as a fallback when a translation isn't found in the current language
-    translate.setDefaultLang('en');
 
-    // the lang to use, if the lang isn't available, it will use the current loader to get them
-    translate.use('en');
   }
 
   loggedIn$: Observable<boolean>;
   profile$: Observable<any>;
   param = { value: 'world' };
   countDownTitle: string;
+  private _ngDestroy$ = new Subject();
 
   ngOnInit() {
     this.translate
-      .get('COUNTDOWNTITLE')
-      .pipe(take(1))
+      .stream('COUNTDOWNTITLE')
+      .pipe(takeUntil(this._ngDestroy$))
       .subscribe((res: string) => {
         this.countDownTitle = res;
       });
@@ -73,5 +69,7 @@ export class WelcomeComponent implements OnDestroy {
   }
   ngOnDestroy(): void {
     this.loggedInSubscription?.unsubscribe();
+    this._ngDestroy$.complete();
+    this._ngDestroy$.next();
   }
 }
