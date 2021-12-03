@@ -13,21 +13,23 @@ import { InscriptionRoutingModule } from './inscription-routing.module';
 import { InscriptionComponent } from './inscription/inscription.component';
 import {ParticipantComponent} from "./participant/participant.component";
 import {FinnishComponent} from "./finnish/finnish.component";
+import {TranslateModule} from "@ngx-translate/core";
 
 @NgModule({
   declarations: [InscriptionComponent, ParticipantComponent, FinnishComponent],
-  imports: [
-    CommonModule,
-    InscriptionRoutingModule,
-    ReactiveFormsModule,
-    FormlyModule.forRoot(),
-    FormlyBootstrapModule,
-    ReservationsModule,
-    SharedModule,
-    StoreModule.forFeature(
-      inscriptionState.inscriptionFeatureKey,
-      inscriptionState.inscriptionReducer
-    ),
-  ],
+    imports: [
+        CommonModule,
+        InscriptionRoutingModule,
+        ReactiveFormsModule,
+        FormlyModule.forRoot(),
+        FormlyBootstrapModule,
+        ReservationsModule,
+        SharedModule,
+        StoreModule.forFeature(
+            inscriptionState.inscriptionFeatureKey,
+            inscriptionState.inscriptionReducer
+        ),
+        TranslateModule,
+    ],
 })
 export class InscriptionModule {}

@@ -5,21 +5,22 @@
   (nextStepClicked)="goToNextStep()"
 >
   <div class="welcome">
-    <div class="alert alert-warning show language-chooser">
-      {{ 'LANGUAGE' | translate}}:
-      <select #langSelect (change)="translate.use(langSelect.value)">
-        <option
-          class="alert-warning"
-          *ngFor="let lang of translate.getLangs()"
-          [value]="lang"
-          [selected]="lang === translate.currentLang"
-        >
-          {{ lang }}
-        </option>
-      </select>
-    </div>
+
     <div class="card">
       <div class="card-body">
+        <div class="alert alert-warning show language-chooser">
+          {{ 'LANGUAGE' | translate}}:
+          <select #langSelect (change)="translate.use(langSelect.value)">
+            <option
+              class="alert-warning"
+              *ngFor="let lang of translate.getLangs()"
+              [value]="lang"
+              [selected]="lang === translate.currentLang"
+            >
+              {{ lang }}
+            </option>
+          </select>
+        </div>
         <div>
           <div>
             {{ 'HELLO' | translate:param }}

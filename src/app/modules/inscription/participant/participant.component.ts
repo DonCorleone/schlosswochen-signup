@@ -35,9 +35,11 @@ import { combineLatest, Observable, Subscription, timer } from 'rxjs';
 import { scan, takeWhile, map, take, first, tap } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
 import {
+  getCurrentParticipantNumber,
   selectParticipantById,
   selectParticipantId,
 } from '../../inscription/state/inscription.reducer';
+import {TranslateService} from "@ngx-translate/core";
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -67,7 +69,6 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class ParticipantComponent implements OnInit, OnDestroy {
   title = 'PARTICIPANT';
-
   // subscription_id: string = '';
   week: number = 0;
   numOfChilds: number = 0;
@@ -77,6 +78,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   signupForm!: FormGroup;
   currentParticipantNumber = 0;
+  currentParticipantNumber$: Observable<number>;
 
   emailMessage: string = '';
   confirmEmailMessage: string = '';
@@ -95,10 +97,11 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private activeRoute: ActivatedRoute,
     private router: Router,
-    private participantService: ParticipantService,
-    private inscriptionsService: InscriptionsService,
+    private translate: TranslateService,
     private store: Store<InscriptionsReducer.InscriptionState>,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private participantService: ParticipantService,
+    private inscriptionsService: InscriptionsService
   ) {}
 
   ngOnInit(): void {
@@ -135,11 +138,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   loadParticipantDetail(inscriptionId: string) {
+    this.currentParticipantNumber$ = this.store.select(InscriptionsReducer.getCurrentParticipantNumber);
     this.subscriptions.push(
       this.store
         .select(InscriptionsReducer.getCurrentParticipantNumber)
         .subscribe((currentParticipantNr) => {
           this.currentParticipantNumber = currentParticipantNr;
+
           const participantId: string = `${inscriptionId}-${+currentParticipantNr}`;
 
           this.signupForm = this.fb.group({

@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 })
 export class WizardStepComponent {
   @Input() title: string;
+  @Input() titlePostfix = '';
   @Input() saveStep: boolean = false;
   @Input() nextEnabled: boolean = true;
   @Input() previousEnabled: boolean = true;
