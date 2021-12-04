@@ -1,7 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { InMemoryCache } from '@apollo/client/core';
-import { HttpClientModule, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HttpHeaders,
+} from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { StoreModule } from '@ngrx/store';
@@ -24,10 +28,18 @@ import { UnauthorizedComponent } from './home/unauthorized.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
-import {AuthModule} from "@auth0/auth0-angular";
-import {authReducer} from "./modules/user/state/auth.reducer";
-import {EffectsModule} from "@ngrx/effects";
-import {AuthEffects} from "./modules/user/state/auth.effects";
+import { AuthModule } from '@auth0/auth0-angular';
+import { authReducer } from './modules/user/state/auth.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './modules/user/state/auth.effects';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import loader from '@angular-devkit/build-angular/src/webpack/plugins/single-test-transform';
+
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -46,6 +58,14 @@ import {AuthEffects} from "./modules/user/state/auth.effects";
     ReactiveFormsModule,
     CoreModule,
     SharedModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'de',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
     StoreModule.forRoot({ auth: authReducer }), // State object here like described
     EffectsModule.forRoot([AuthEffects]),
 

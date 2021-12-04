@@ -22,7 +22,7 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
   styleUrls: ['./reservation.component.scss'],
 })
 export class ReservationComponent implements OnInit, OnDestroy {
-  title = 'Reservation';
+  title = 'RESERVATION';
 
   maxWeeks: number = 1;
   maxReservations: number = 1;

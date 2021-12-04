@@ -1,5 +1,6 @@
 <app-wizard-step
-  [title]="title"
+  [title]= "title"
+  [titlePostfix]="currentParticipantNumber.toString()"
   [saveStep]="currentParticipantNumber >= numOfChilds"
   (previousStepClicked)="goToPreviousStep()"
   (nextStepClicked)="goToNextStep()"
@@ -10,12 +11,12 @@
     <div class="card-body">
       <form novalidate [formGroup]="signupForm">
         <div class="form-group row mb-2">
-          <app-header externalInput="Participant No. {{ currentParticipantNumber }}"></app-header>
+          <app-header></app-header>
         </div>
 
         <div class="form-group row mb-2">
           <label class="col-md-2 col-form-label"
-            for="salutationId'">
+            for="salutationId">
             Salutation
           </label>
           <div class="col-lg-8 col-md-6">

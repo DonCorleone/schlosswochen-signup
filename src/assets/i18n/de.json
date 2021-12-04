@@ -1,0 +1,18 @@
+{
+  "HELLO": "hallo {{value}}",
+  "LOGOUT": "Ausloggen",
+  "COUNTDOWNTITLE": "Tage bis zum Start",
+  "LANGUAGE": "Language",
+  "WEEKNR": "Schlosswoche Nr.",
+  "RESERVEDPLACES": "Bereits reserviert",
+  "TIMELEFT": "Verbleibende Zeit",
+  "INSCRIPTION": "Anmeldung",
+  "RESERVATION": "Reservation",
+  "CONTACT": "Kontakt",
+  "PARTICIPANT": "Teilnehmer:in",
+  "WIZADRD": {
+    "PREVIOUS": "Zurück",
+    "SAVE": "Speichern",
+    "NEXT": "Weiter"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "HELLO": "hello {{value}}",
+  "LOGOUT": "Logout00",
+  "COUNTDOWNTITLE": "Days till GoLive",
+  "LANGUAGE": "Language",
+  "WEEKNR": "Week Nr.",
+  "RESERVEDPLACES": "Already reserved",
+  "TIMELEFT": "Time left",
+  "INSCRIPTION": "Inscription",
+  "CONTACT": "Contact",
+  "RESERVATION": "Reservation",
+  "PARTICIPANT": "Participant",
+  "WIZADRD": {
+    "PREVIOUS": "Previous",
+    "SAVE": "Save",
+    "NEXT": "Next"
+  }
+}
