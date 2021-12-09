@@ -33,18 +33,12 @@ export class FinnishComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loggedIn$ = this.store.pipe(select(selectIsLoggedIn));
-    this.profile$ = this.store.pipe(select(selectCurrentUserProfile));
+    this.loggedIn$ = this.store.select(selectIsLoggedIn);
+    this.profile$ = this.store.select(selectCurrentUserProfile);
 
     this.store.dispatch(checkAuth());
 
-    this.inscription$ = this.inscriptionStore
-      .select(InscriptionReducer.getInscription)
-      .pipe(
-        map((x) => {
-          return x;
-        })
-      );
+    this.inscription$ = this.inscriptionStore.select(InscriptionReducer.getInscription);
   }
 
   login() {

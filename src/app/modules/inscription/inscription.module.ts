@@ -11,25 +11,25 @@ import { SharedModule } from 'src/app/modules/shared/shared.module';
 import { ReservationsModule } from '../reservations/reservations.module';
 import { InscriptionRoutingModule } from './inscription-routing.module';
 import { InscriptionComponent } from './inscription/inscription.component';
-import {ParticipantComponent} from "./participant/participant.component";
-import {FinnishComponent} from "./finnish/finnish.component";
-import {TranslateModule} from "@ngx-translate/core";
+import { ParticipantComponent } from './participant/participant.component';
+import { FinnishComponent } from './finnish/finnish.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [InscriptionComponent, ParticipantComponent, FinnishComponent],
-    imports: [
-        CommonModule,
-        InscriptionRoutingModule,
-        ReactiveFormsModule,
-        FormlyModule.forRoot(),
-        FormlyBootstrapModule,
-        ReservationsModule,
-        SharedModule,
-        StoreModule.forFeature(
-            inscriptionState.inscriptionFeatureKey,
-            inscriptionState.inscriptionReducer
-        ),
-        TranslateModule,
-    ],
+  imports: [
+    CommonModule,
+    InscriptionRoutingModule,
+    ReactiveFormsModule,
+    FormlyModule.forRoot(),
+    FormlyBootstrapModule,
+    ReservationsModule,
+    SharedModule,
+    StoreModule.forFeature(
+      inscriptionState.inscriptionFeatureKey,
+      inscriptionState.inscriptionReducer
+    ),
+    TranslateModule,
+  ],
 })
 export class InscriptionModule {}
