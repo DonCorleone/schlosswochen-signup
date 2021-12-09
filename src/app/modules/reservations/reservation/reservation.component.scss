@@ -20,7 +20,7 @@
 
 .weekReservation {
   font-size: 1.2rem;
-  display:flex;
+  display: flex;
   flex-wrap: wrap;
   padding: 10px 0 5px 0;
 }
@@ -40,6 +40,6 @@ label {
 
   &:hover,
   &:focus-within {
-   // outline: 1px white solid;
+    // outline: 1px white solid;
   }
 }

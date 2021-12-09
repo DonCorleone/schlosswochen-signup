@@ -7,10 +7,10 @@
   "RESERVEDPLACES": "Already reserved",
   "TIMELEFT": "Time left",
   "INSCRIPTION": "Inscription",
-  "CONTACT": "Contact",
   "RESERVATION": "Reservation",
+  "CONTACT": "Contact",
   "PARTICIPANT": "Participant",
-  "WIZADRD": {
+  "WIZARD": {
     "PREVIOUS": "Previous",
     "SAVE": "Save",
     "NEXT": "Next"

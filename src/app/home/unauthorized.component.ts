@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {AuthenticationService} from "../service/auth.service";
 
 @Component({
@@ -6,10 +6,8 @@ import {AuthenticationService} from "../service/auth.service";
   templateUrl: 'unauthorized.component.html'
 })
 
-export class UnauthorizedComponent implements OnInit {
+export class UnauthorizedComponent {
   constructor(private _authService: AuthenticationService) { }
-
-  ngOnInit() { }
 
   logout() {
     // this._authService.logout();
