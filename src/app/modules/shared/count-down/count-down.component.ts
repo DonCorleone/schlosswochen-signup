@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CountDownComponent implements OnInit, OnDestroy {
+
   @Input() dDay = new Date('Jan 01 2022 00:00:00');
   @Input() title = 'HELLO';
 
