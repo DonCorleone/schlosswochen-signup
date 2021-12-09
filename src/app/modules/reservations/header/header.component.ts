@@ -1,48 +1,32 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import {select, Store} from '@ngrx/store';
-import { Observable, Subscription, timer } from 'rxjs';
-import {scan, takeUntil, takeWhile} from 'rxjs/operators';
+import { Component, Input, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable} from 'rxjs';
 import { WeeklyReservation } from 'src/app/models/Week';
 
 import * as ReservationReducer from '../../reservations/state/reservation.reducer';
-import {selectIsLoggedIn} from "../../user/state/auth.selectors";
-import {TranslateService} from "@ngx-translate/core";
+import { selectIsLoggedIn } from '../../user/state/auth.selectors';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-
+export class HeaderComponent implements OnInit {
   @Input() externalInput: string | null;
 
-  reservation$ : Observable<WeeklyReservation>;
-  loggedIn$ : Observable<boolean>;
-
-  deadlineSubscription: Subscription;
-  deadline: Date;
+  reservation$: Observable<WeeklyReservation>;
+  loggedIn$: Observable<boolean>;
+  deadline$: Observable<Date>;
 
   constructor(
     private store: Store<ReservationReducer.State>,
-    public translate: TranslateService) { }
+    public translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
-
-    this.loggedIn$ = this.store.pipe(select(selectIsLoggedIn));
-
-    this.deadlineSubscription = this.store.select(ReservationReducer.getDeadline).subscribe(
-      deadline => {
-        this.deadline = deadline;
-      }
-    );
-
-    this.store.select(ReservationReducer.getWeeklyReservation).pipe (
-      weeklyReservation => this.reservation$ = weeklyReservation
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.deadlineSubscription.unsubscribe();
+    this.loggedIn$ = this.store.select(selectIsLoggedIn);
+    this.deadline$ = this.store.select(ReservationReducer.getDeadline);
+    this.reservation$ = this.store.select(ReservationReducer.getWeeklyReservation);
   }
 }

@@ -22,7 +22,7 @@
     <span>{{ externalInput }}</span>
   </div>
   <div
-    *ngIf="!(loggedIn$ | async)"
+    *ngIf="!(loggedIn$ | async) && (deadline$ | async) as deadline"
     class="alert alert-success show"
     role="alert"
   >
