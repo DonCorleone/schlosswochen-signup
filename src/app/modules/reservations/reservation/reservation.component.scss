@@ -32,6 +32,10 @@ label {
   padding-right: 1rem;
   text-align: center;
 
+  .form-check-label{
+    padding-left: unset !important;
+  }
+
   span {
     color: white;
     font-size: 1.2rem;

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Dictionary } from '@ngrx/entity';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {map, take, takeUntil} from 'rxjs/operators';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import { Router } from '@angular/router';
@@ -13,6 +13,7 @@ import {
   selectIsLoggedIn,
 } from '../../user/state/auth.selectors';
 import { checkAuth, login, logout } from '../../user/state/auth.actions';
+import {subscribe} from "graphql";
 
 @Component({
   selector: 'app-finnish',
@@ -25,6 +26,8 @@ export class FinnishComponent implements OnInit {
 
   loggedIn$: Observable<boolean>;
   profile$: Observable<any>;
+  inscription: string;
+  participants: string[] = [];
 
   constructor(
     private router: Router,
@@ -39,6 +42,24 @@ export class FinnishComponent implements OnInit {
     this.store.dispatch(checkAuth());
 
     this.inscription$ = this.inscriptionStore.select(InscriptionReducer.getInscription);
+
+    this.inscriptionStore.select(InscriptionReducer.getInscription)
+      .pipe(take(1))
+      .subscribe((inscription: Inscription) => {
+        let contact=[];
+        contact.push(inscription.salutation + ' ' + inscription.firstName + ' ' + inscription.lastName);
+        contact.push(inscription.zip + ' ' + inscription.city);
+        contact.push(inscription.email);
+        this.inscription = contact.join(', ');
+
+        inscription.participants?.forEach(participant => {
+          let participantParts=[];
+          participantParts.push(participant?.salutation + ' ' + participant?.firstNameParticipant + ' ' + participant?.lastNameParticipant);
+          participantParts.push(new Date(participant?.birthday)?.toLocaleDateString());
+          this.participants.push(participantParts.join(', '));
+        })
+      }
+    );
   }
 
   login() {

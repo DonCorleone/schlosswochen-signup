@@ -39,7 +39,7 @@ import {
   selectParticipantById,
   selectParticipantId,
 } from '../../inscription/state/inscription.reducer';
-import {TranslateService} from "@ngx-translate/core";
+import { TranslateService } from '@ngx-translate/core';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -138,7 +138,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   loadParticipantDetail(inscriptionId: string) {
-    this.currentParticipantNumber$ = this.store.select(InscriptionsReducer.getCurrentParticipantNumber);
+    this.currentParticipantNumber$ = this.store.select(
+      InscriptionsReducer.getCurrentParticipantNumber
+    );
     this.subscriptions.push(
       this.store
         .select(InscriptionsReducer.getCurrentParticipantNumber)
@@ -214,7 +216,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       birthday: new Date(this.signupForm.value.birthday),
     };
 
-    this.saveParticipant(participant);
+    this.saveParticipant(participant, false);
     // if (participant.id === 0) {
     //   this.participantService.createParticipant(participant).subscribe({
     //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
@@ -228,7 +230,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     // }
   }
 
-  saveParticipant(participant: Participant): void {
+  saveParticipant(participant: Participant, isSaveStep: boolean): void {
     // if (participant.id === 0) {
     //   this.participantService.createParticipant(participant).subscribe({
     //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
@@ -263,10 +265,15 @@ export class ParticipantComponent implements OnInit, OnDestroy {
                     InscriptionActions.addParticipant({ participant })
                   );
                 }
-                this.store.dispatch(
-                  InscriptionActions.increaseCurrentParticipantNumber()
-                );
-                this.router.navigate(['/inscriptions/participant']).then();
+
+                if (isSaveStep) {
+                  this.saveInscription();
+                } else {
+                  this.store.dispatch(
+                    InscriptionActions.increaseCurrentParticipantNumber()
+                  );
+                  this.router.navigate(['/inscriptions/participant']).then();
+                }
               })
           );
         })
@@ -274,17 +281,15 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   goToSaveStep(): void {
-    if (this.signupForm.valid) {
-      if (this.signupForm.dirty) {
-        let participant = {
-          ...this.signupForm.value,
-          birthday: new Date(this.signupForm.value.birthday),
-        };
-        this.saveParticipant(participant);
-      }
+    if (this.signupForm.valid && this.signupForm.dirty) {
+      let participant = {
+        ...this.signupForm.value,
+        birthday: new Date(this.signupForm.value.birthday),
+      };
+      this.saveParticipant(participant, true);
+    } else {
+      this.saveInscription();
     }
-
-    this.saveInscription();
   }
 
   saveInscription() {
@@ -330,7 +335,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
                 this.store.dispatch(
                   InscriptionActions.resetCurrentParticipantNumber()
                 );
-                this.router.navigate(['/welcome']).then();
+                this.router.navigate(['/inscriptions/finnish']).then();
               })
           );
         })
