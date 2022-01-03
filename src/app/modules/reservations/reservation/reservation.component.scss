@@ -4,7 +4,13 @@
   flex-wrap: wrap;
 }
 .radio-header {
-  margin-right: 15px;
+  // margin-right: 15px;
+}
+
+.alert {
+  padding: 0.1rem 0rem;
+  margin: 0.2rem 0rem;
+  text-align: center;
 }
 
 .weekBlock {
@@ -12,6 +18,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
+  margin-left: 0.8rem;
 }
 
 .weekSituation {

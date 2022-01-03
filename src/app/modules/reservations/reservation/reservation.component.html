@@ -9,7 +9,7 @@
         <div class="form-group row mb-2">
           <div
             *ngIf="submitted && reservationsPerWeekCtlr?.errors?.min"
-            class="alert alert-danger alert-dismissible fade show"
+            class="alert alert-danger fade show"
             role="alert"
           >
             A selection is required
@@ -17,11 +17,13 @@
           <div *ngFor="let week of [].constructor(maxWeeks); let i = index">
             <div class="weekBlock">
               <div class="weekSituation">
-                <h2>Week {{ i + 1 }}</h2>
+                <h2>{{ "WEEKNR" | translate }} {{ i + 1 }}</h2>
                 <app-capacity [week]="i"></app-capacity>
               </div>
               <div class="weekReservation">
-                <div class="radio-header">Numer of Reservations:</div>
+                <div class="radio-header text-warning">
+                  {{ "NUMBEROFRESERVATIONS" | translate }}:
+                </div>
                 <div class="radio-container">
                   <div
                     *ngFor="
@@ -49,8 +51,8 @@
                 </div>
               </div>
             </div>
+            <hr />
           </div>
-          <hr />
         </div>
       </form>
     </div>
