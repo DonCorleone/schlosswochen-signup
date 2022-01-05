@@ -35,7 +35,7 @@
     "bootstrap-icons": "^1.7.2",
     "graphql": "^15.0.0",
     "realm-web": "^1.5.1",
-    "rxjs": "7.1",
+    "rxjs": "7.4",
     "tslib": "^2.3.1",
     "zone.js": "~0.11.4"
   },

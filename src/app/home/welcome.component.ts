@@ -29,7 +29,7 @@ export class WelcomeComponent implements OnDestroy {
   profile$: Observable<any>;
   param = { value: 'world' };
   countDownTitle: string;
-  private _ngDestroy$ = new Subject();
+  private _ngDestroy$ = new Subject<void>();
 
   ngOnInit() {
     this.translate
