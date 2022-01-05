@@ -28,7 +28,7 @@
     "@ngx-formly/bootstrap": "^5.10.27",
     "@ngx-formly/core": "^5.10.27",
     "@ngx-translate/core": "^14.0.0",
-    "@ngx-translate/http-loader": "^6.0.0",
+    "@ngx-translate/http-loader": "^7.0.0",
     "acorn": "^8.5.0",
     "apollo-angular": "^2.6.0",
     "bootstrap-dark-5": "^1.1.3",
