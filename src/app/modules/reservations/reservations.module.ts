@@ -7,24 +7,24 @@ import * as fromState from './state/reservation.reducer';
 import { CapacityComponent } from './capacity/capacity.component';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
-import { HeaderComponent } from './header/header.component';
-
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
     ReservationComponent,
-    CapacityComponent,
-    HeaderComponent
+    CapacityComponent
   ],
   imports: [
     CommonModule,
     ReservationsRoutingModule,
     ReactiveFormsModule,
     SharedModule,
-    StoreModule.forFeature(fromState.reservationFeatureKey, fromState.reservationReducer)
+    StoreModule.forFeature(
+      fromState.reservationFeatureKey,
+      fromState.reservationReducer
+    ),
+    TranslateModule,
   ],
-  exports: [
-    HeaderComponent
-  ]
+  exports: [],
 })
-export class ReservationsModule { }
+export class ReservationsModule {}

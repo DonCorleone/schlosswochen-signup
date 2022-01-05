@@ -8,10 +8,8 @@ import { ShellComponent } from './home/shell.component';
 import { SigninRedirectCallbackComponent } from './home/signin-redirect-callback.component';
 import { SignoutRedirectCallbackComponent } from './home/signout-redirect-callback.component';
 import { UnauthorizedComponent } from './home/unauthorized.component';
-import { RealmAuthGuardReadWrite } from './realm-auth-readwrite.guard';
 
-const routes: Routes =
-[
+const routes: Routes = [
   {
     path: '',
     component: ShellComponent,
@@ -19,33 +17,34 @@ const routes: Routes =
       { path: 'welcome', component: WelcomeComponent },
       {
         path: 'reservation',
-        loadChildren: () => import('./modules/reservations/reservations.module').then(m => m.ReservationsModule),
-        canActivate: [RealmAuthGuard]
+        loadChildren: () =>
+          import('./modules/reservations/reservations.module').then(
+            (m) => m.ReservationsModule
+          ),
+        canActivate: [RealmAuthGuard],
       },
       {
-        path: 'subscriptions', // ToDo subscription
-        loadChildren: () => import('./modules/subscription/subscription.module').then(m => m.SubscriptionsModule),
-        canActivate: [RealmAuthGuard]
-      },
-      {
-        path: 'participant', // ToDo subscription
-        loadChildren: () => import('./modules/participant/participant.module').then(m => m.ParticipantModule),
-        canActivate: [RealmAuthGuard]
+        path: 'inscriptions',
+        loadChildren: () =>
+          import('./modules/inscription/inscription.module').then(
+            (m) => m.InscriptionModule
+          ),
+        canActivate: [RealmAuthGuard],
       },
       { path: '', redirectTo: 'welcome', pathMatch: 'full' },
-    ]
+    ],
   },
   { path: 'signin-callback', component: SigninRedirectCallbackComponent },
   { path: 'signout-callback', component: SignoutRedirectCallbackComponent },
   { path: 'unauthorized', component: UnauthorizedComponent },
-  { path: '**', component: PageNotFoundComponent }
+  { path: '**', component: PageNotFoundComponent },
 ];
 
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })
+    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

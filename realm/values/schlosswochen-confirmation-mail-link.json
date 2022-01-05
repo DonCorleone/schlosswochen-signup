@@ -1,0 +1,5 @@
+{
+    "name": "schlosswochen-confirmation-mail-link",
+    "value": "schlosswochen-confirmation-mail",
+    "from_secret": true
+}

@@ -1,6 +1,6 @@
 
 export class Constants {
-	public static clientRoot = 'http://localhost:4200/';
+	public static clientRoot = 'https://schlosswochen-inscription.netlify.app/'; // 'http://localhost:4200/';
 
 	//public static apiRoot = 'https://securingangularappscoursev2-api.azurewebsites.net/api/';
 	// public static stsAuthority = 'https://securingangularappscoursev2-sts.azurewebsites.net/';

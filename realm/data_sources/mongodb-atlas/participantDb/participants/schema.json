@@ -3,20 +3,29 @@
         "_id": {
             "bsonType": "objectId"
         },
-        "deadline": {
+        "birthday": {
             "bsonType": "date"
         },
-        "numOfChildren": {
-            "bsonType": "int"
-        },
-        "reservationDate": {
-            "bsonType": "date"
-        },
-        "state": {
+        "comment": {
             "bsonType": "string"
         },
-        "week": {
-            "bsonType": "int"
+        "externalUserId": {
+            "bsonType": "string"
+        },
+        "firstNameParticipant": {
+            "bsonType": "string"
+        },
+        "fotoAllowed": {
+            "bsonType": "bool"
+        },
+        "lastNameParticipant": {
+            "bsonType": "string"
+        },
+        "participant_id": {
+            "bsonType": "string"
+        },
+        "salutation": {
+            "bsonType": "string"
         }
     },
     "title": "participant"

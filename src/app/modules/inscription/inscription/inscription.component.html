@@ -1,0 +1,242 @@
+<app-wizard-step
+  [title]="title"
+  [previousEnabled] = false
+  (previousStepClicked)="goToPreviousStep()"
+  (nextStepClicked)="goToNextStep()"
+>
+  <div class="wizard-content">
+    <div class="wizard-content-body">
+      <form novalidate [formGroup]="signupForm">
+        <div class="form-group row mb-2">
+          <app-header></app-header>
+        </div>
+        <!-- <formly-form
+          [form]="signupForm"
+          [fields]="fields"
+          [model]="model"
+          [options]="options">
+        </formly-form> -->
+          <div class="form-group row mb-2">
+            <label class="col-lg-2 col-sm-3 col-form-label"
+              for="salutationId">
+                Salutation
+            </label>
+            <div class="col-lg-8 col-md-6">
+              <select id="salutationId"
+                class="form-control"
+                formControlName="salutation"
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('salutation')?.touched
+                  || signupForm.get('salutation')?.dirty)
+                  && !signupForm.get('salutation')?.valid }">
+                  <option value = "" disabled selected hidden>Select a Salutation...</option>
+                  <option value = "F">Madame</option>
+                  <option value = "M">Sir</option>
+              </select>
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('salutation')?.errors?.required">
+                  Please enter a salutation.
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="form-group row mb-2">
+            <label class="col-lg-2 col-sm-3 col-form-label"
+              for="firstNameId">
+                First Name
+            </label>
+            <div class="col-lg-8 col-md-6">
+              <input id="firstNameId"
+                class="form-control"
+                type="text"
+                placeholder="First Name (required)"
+                formControlName="firstName"
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('firstName')?.touched
+                  || signupForm.get('firstName')?.dirty)
+                  && !signupForm.get('firstName')?.valid }">
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('firstName')?.errors?.required">
+                  Please enter your first name.
+                </span>
+                <span *ngIf="signupForm.get('firstName')?.errors?.minlength">
+                  The first name must be longer than 3 characters.
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="form-group row mb-2">
+            <label class="col-lg-2 col-sm-3 col-form-label"
+              for="lastNameId">
+                Last Name
+            </label>
+            <div class="col-lg-8 col-md-6">
+              <input id="lastNameId"
+                class="form-control"
+                type="text"
+                placeholder="Last Name (required)"
+                formControlName="lastName"
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('lastName')?.touched
+                  || signupForm.get('lastName')?.dirty)
+                  && !signupForm.get('lastName')?.valid }">
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('lastName')?.errors?.required">
+                  Please enter your last name.
+                </span>
+                <span *ngIf="signupForm.get('lastName')?.errors?.maxlength">
+                  The last name must be less than 50 characters.
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="form-group row mb-2">
+            <label class="col-lg-2 col-sm-3 col-form-label"
+              for="phoneId">
+                Phone
+            </label>
+            <div class="col-lg-8 col-md-6">
+              <input id="phoneId"
+                class="form-control"
+                type="tel"
+                placeholder="Phone (required)"
+                formControlName="phone"
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('phone')?.touched
+                  || signupForm.get('phone')?.dirty)
+                  &&  !signupForm.get('phone')?.valid }">
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('phone')?.errors?.required">
+                  Please enter your phone number.
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="form-group row mb-2">
+            <label class="col-lg-2 col-sm-3 col-form-label"
+              for="emailId">
+                Email
+            </label>
+            <div class="col-lg-8 col-md-6">
+              <input id="emailId"
+                class="form-control"
+                type="email"
+                placeholder="Email (required)"
+                formControlName="email"
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('email')?.touched
+                  || signupForm.get('email')?.dirty)
+                  && !signupForm.get('email')?.valid }">
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('email')?.errors?.required">
+                  Please enter your email address.
+                </span>
+                <span *ngIf="emailMessage">
+                  {{emailMessage}}
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="form-group row mb-2">
+            <label class="col-lg-2 col-sm-3 col-form-label"
+              for="street1Id">
+                Address 1
+            </label>
+            <div class="col-lg-8 col-md-6">
+              <input id="street1Id"
+                class="form-control"
+                type="text"
+                placeholder="Street address"
+                formControlName="street1"
+              >
+            </div>
+          </div>
+          <div class="form-group row mb-2">
+            <label class="col-lg-2 col-sm-3 col-form-label"
+              for="street2Id">
+                Address 2
+              </label>
+            <div class="col-lg-8 col-md-6">
+              <input id="street2Id"
+                class="form-control"
+                type="text"
+                placeholder="Street address (second line)"
+                formControlName="street2"
+              >
+            </div>
+          </div>
+          <div class="form-group row mb-2">
+            <label class="col-lg-2 col-sm-3 col-form-label"
+              for="cityId">
+                Zip | City
+            </label>
+            <div class="col-md-3">
+              <input id="zipId"
+                class="form-control"
+                type="number"
+                placeholder="Zip Code"
+                formControlName="zip"
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('zip')?.touched
+                  || signupForm.get('zip')?.dirty)
+                  && !signupForm.get('zip')?.valid }">
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('zip')?.errors?.required">
+                  Please enter a zip.
+                </span>
+                <span *ngIf="signupForm.get('zip')?.errors?.minlength">
+                  The last name must be more than 4 digits.
+                </span>
+                <span *ngIf="signupForm.get('zip')?.errors?.maxlength">
+                  The last name must be less than 6 digits.
+                </span>
+              </span>
+            </div>
+            <div class="col-md-5">
+              <input id="cityId"
+                class="form-control"
+                type="text"
+                placeholder="City (required)"
+                formControlName="city"
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('city')?.touched
+                  || signupForm.get('city')?.dirty)
+                  && !signupForm.get('city')?.valid }">
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('city')?.errors?.required">
+                  Please enter a city.
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group row mb-2">
+            <label class="col-lg-2 col-sm-3 col-form-label"
+              for="countryId">
+                Country
+              </label>
+            <div class="col-lg-8 col-md-6">
+              <input id="countryId"
+                class="form-control"
+                type="text"
+                placeholder="Country (required)"
+                formControlName="country"
+                [ngClass]="{'is-invalid': (
+                  signupForm.get('country')?.touched
+                  || signupForm.get('country')?.dirty)
+                  && !signupForm.get('country')?.valid }">
+              <span class="invalid-feedback">
+                <span *ngIf="signupForm.get('country')?.errors?.required">
+                  Please enter a country.
+                </span>
+              </span>
+            </div>
+          </div>
+      </form>
+    </div>
+  </div>
+</app-wizard-step>
+<br>Dirty: {{ signupForm.dirty }}
+<br>Touched: {{ signupForm?.touched }}
+<br>Valid: {{ signupForm.valid }}
+<br>Value: {{ signupForm.value | json }}

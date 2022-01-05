@@ -1,20 +1,15 @@
 import { NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptorService } from './auth-interceptor.service';
-// import { AuthService } from './auth-service.component';
-import { AccountService } from './account.service';
-import { AuthService } from './auth-service.component';
-//import { AdminRouteGuard } from './admin-route-guard';
-
+import { AuthHttpInterceptor } from '@auth0/auth0-angular';
+import { AuthenticationService } from '../../service/auth.service';
 @NgModule({
-    imports: [],
-    exports: [],
-    declarations: [],
-    providers: [
-        AuthService,
-        AccountService,
-       // AdminRouteGuard,
-   { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }
-    ],
+  imports: [],
+  exports: [],
+  declarations: [],
+  providers: [
+    AuthenticationService,
+    // AdminRouteGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
+  ],
 })
-export class CoreModule { }
+export class CoreModule {}

@@ -7,8 +7,8 @@
             "apply_when": {},
             "write": true,
             "insert": true,
-            "delete": true,
-            "search": true,
+            "delete": false,
+            "search": false,
             "additional_fields": {}
         }
     ]

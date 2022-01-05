@@ -1,0 +1,50 @@
+<app-wizard-step
+  [title]="title"
+  [previousEnabled]="false"
+  (previousStepClicked)="goToPreviousStep()"
+  (nextStepClicked)="goToNextStep()"
+>
+  <div class="wizard-content">
+    <div class="wizard-content-body">
+      <div class="question text-warning" *ngIf="inscription">
+        Would you like to register to view and edit this inscription in Future?
+      </div>
+      <div class="card" *ngIf="inscription">
+        <div class="card-body">
+          <h5 class="card-title">Contact</h5>
+          <p class="card-text">{{ inscription }}</p>
+        </div>
+      </div>
+
+      <div class="card" *ngFor="let participant of participants; index as i">
+        <div class="card-body">
+          <h5 class="card-title">participant no. {{ i }}</h5>
+          <p class="card-text">{{ participant }}</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div *ngIf="loggedIn$ | async as loggedIn; else loginContent">
+            <p>
+              <button class="btn btn-outline-danger" (click)="logout()">
+                Logout
+              </button>
+              is logged in {{ loggedIn }}
+            </p>
+            <div *ngIf="profile$ | async as profile">
+              <img [src]="profile.picture" />
+              <pre>{{ profile | json }}</pre>
+            </div>
+          </div>
+
+          <ng-template #loginContent
+            ><button class="btn btn-outline-success" (click)="login()">
+              Login / Register
+            </button></ng-template
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</app-wizard-step>

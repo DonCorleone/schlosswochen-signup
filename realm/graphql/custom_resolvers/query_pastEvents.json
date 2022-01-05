@@ -1,0 +1,484 @@
+{
+    "field_name": "pastEvents",
+    "function_name": "maxEventDatesPerFacebookPixelId",
+    "input_type_format": "",
+    "on_type": "Query",
+    "payload_type": {
+        "items": [
+            {
+                "properties": {
+                    "eventDetail": {
+                        "bsonType": "object",
+                        "properties": {
+                            "_id": {
+                                "bsonType": "int"
+                            },
+                            "countryId": {
+                                "bsonType": "int"
+                            },
+                            "dateCreated": {
+                                "bsonType": "date"
+                            },
+                            "dateModified": {
+                                "bsonType": "date"
+                            },
+                            "defaultLanguageId": {
+                                "bsonType": "int"
+                            },
+                            "emailTemplate": {
+                                "bsonType": "string"
+                            },
+                            "end": {
+                                "bsonType": "date"
+                            },
+                            "eventGenreValue": {
+                                "bsonType": "int"
+                            },
+                            "eventInfos": {
+                                "bsonType": "array",
+                                "items": {
+                                    "bsonType": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "bsonType": "int"
+                                        },
+                                        "address": {
+                                            "bsonType": "string"
+                                        },
+                                        "artists": {
+                                            "bsonType": "string"
+                                        },
+                                        "bannerImage": {
+                                            "bsonType": "string"
+                                        },
+                                        "bannerImagePath": {
+                                            "bsonType": "string"
+                                        },
+                                        "city": {
+                                            "bsonType": "string"
+                                        },
+                                        "flyerImage": {
+                                            "bsonType": "string"
+                                        },
+                                        "flyerImagePath": {
+                                            "bsonType": "string"
+                                        },
+                                        "googleMapLink": {
+                                            "bsonType": "string"
+                                        },
+                                        "importantNotes": {
+                                            "bsonType": "string"
+                                        },
+                                        "languageId": {
+                                            "bsonType": "int"
+                                        },
+                                        "location": {
+                                            "bsonType": "string"
+                                        },
+                                        "longDescription": {
+                                            "bsonType": "string"
+                                        },
+                                        "name": {
+                                            "bsonType": "string"
+                                        },
+                                        "organizerRemark": {
+                                            "bsonType": "string"
+                                        },
+                                        "posRemark": {
+                                            "bsonType": "string"
+                                        },
+                                        "shortDescription": {
+                                            "bsonType": "string"
+                                        },
+                                        "url": {
+                                            "bsonType": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "externalEventCode": {
+                                "bsonType": "string"
+                            },
+                            "facebookPixelId": {
+                                "bsonType": "string"
+                            },
+                            "forceEmptySeats": {
+                                "bsonType": "int"
+                            },
+                            "googleAnalyticsTracker": {
+                                "bsonType": "string"
+                            },
+                            "googleCoordinates": {
+                                "bsonType": "string"
+                            },
+                            "hideEventInfoOnSoldOut": {
+                                "bsonType": "bool"
+                            },
+                            "hideOnEventList": {
+                                "bsonType": "bool"
+                            },
+                            "isActiveForSale": {
+                                "bsonType": "bool"
+                            },
+                            "isBankInternalEvent": {
+                                "bsonType": "bool"
+                            },
+                            "isCompanyNameMandatory": {
+                                "bsonType": "bool"
+                            },
+                            "isPhoneMandatory": {
+                                "bsonType": "bool"
+                            },
+                            "latitude": {
+                                "bsonType": "double"
+                            },
+                            "locationId": {
+                                "bsonType": "int"
+                            },
+                            "longitude": {
+                                "bsonType": "double"
+                            },
+                            "masterEventId": {
+                                "bsonType": "int"
+                            },
+                            "maxTickets": {
+                                "bsonType": "int"
+                            },
+                            "maxTicketsProOrder": {
+                                "bsonType": "int"
+                            },
+                            "noVatOnCommission": {
+                                "bsonType": "bool"
+                            },
+                            "notificationEmail": {
+                                "bsonType": "string"
+                            },
+                            "openDoor": {
+                                "bsonType": "date"
+                            },
+                            "organizerGoogleAnalyticsDomain": {
+                                "bsonType": "string"
+                            },
+                            "organizerId": {
+                                "bsonType": "int"
+                            },
+                            "postSaleCloseStatus": {
+                                "bsonType": "int"
+                            },
+                            "salesRegionId": {
+                                "bsonType": "int"
+                            },
+                            "salesWarningLevel": {
+                                "bsonType": "int"
+                            },
+                            "sendNotificationByEmail": {
+                                "bsonType": "bool"
+                            },
+                            "sendWarning": {
+                                "bsonType": "bool"
+                            },
+                            "shippingFee": {
+                                "bsonType": "double"
+                            },
+                            "showLinkToGoogleMap": {
+                                "bsonType": "bool"
+                            },
+                            "start": {
+                                "bsonType": "date"
+                            },
+                            "status": {
+                                "bsonType": "int"
+                            },
+                            "stay22Active": {
+                                "bsonType": "bool"
+                            },
+                            "tenantId": {
+                                "bsonType": "int"
+                            },
+                            "ticketTypes": {
+                                "bsonType": "array",
+                                "items": {
+                                    "bsonType": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "bsonType": "int"
+                                        },
+                                        "addressMandatory": {
+                                            "bsonType": "bool"
+                                        },
+                                        "addressRequired": {
+                                            "bsonType": "bool"
+                                        },
+                                        "birthDateMandatory": {
+                                            "bsonType": "bool"
+                                        },
+                                        "birthDateRequired": {
+                                            "bsonType": "bool"
+                                        },
+                                        "blockAutoMailer": {
+                                            "bsonType": "bool"
+                                        },
+                                        "bookWithTicketTypeId": {
+                                            "bsonType": "int"
+                                        },
+                                        "callcenterEnd": {
+                                            "bsonType": "date"
+                                        },
+                                        "colorCode": {
+                                            "bsonType": "string"
+                                        },
+                                        "companyMandatory": {
+                                            "bsonType": "bool"
+                                        },
+                                        "companyRequired": {
+                                            "bsonType": "bool"
+                                        },
+                                        "currency": {
+                                            "bsonType": "string"
+                                        },
+                                        "dateCreated": {
+                                            "bsonType": "date"
+                                        },
+                                        "dontShowInsurance": {
+                                            "bsonType": "bool"
+                                        },
+                                        "emailMandatory": {
+                                            "bsonType": "bool"
+                                        },
+                                        "emailRequired": {
+                                            "bsonType": "bool"
+                                        },
+                                        "emailTemplate": {
+                                            "bsonType": "string"
+                                        },
+                                        "end": {
+                                            "bsonType": "date"
+                                        },
+                                        "eventId": {
+                                            "bsonType": "int"
+                                        },
+                                        "externalTicketCode": {
+                                            "bsonType": "string"
+                                        },
+                                        "festivalEventIds": {
+                                            "bsonType": "string"
+                                        },
+                                        "firstNameMandatory": {
+                                            "bsonType": "bool"
+                                        },
+                                        "firstNameRequired": {
+                                            "bsonType": "bool"
+                                        },
+                                        "generateNoTicket": {
+                                            "bsonType": "bool"
+                                        },
+                                        "hideDateTime": {
+                                            "bsonType": "bool"
+                                        },
+                                        "hideOnPcClient": {
+                                            "bsonType": "bool"
+                                        },
+                                        "hidePassbook": {
+                                            "bsonType": "bool"
+                                        },
+                                        "hidePriceOnTicket": {
+                                            "bsonType": "bool"
+                                        },
+                                        "hideReceipt": {
+                                            "bsonType": "bool"
+                                        },
+                                        "invoiceEnd": {
+                                            "bsonType": "date"
+                                        },
+                                        "isActive": {
+                                            "bsonType": "bool"
+                                        },
+                                        "isOverheadCalculateActive": {
+                                            "bsonType": "bool"
+                                        },
+                                        "isSoldOut": {
+                                            "bsonType": "bool"
+                                        },
+                                        "maxMemberTickets": {
+                                            "bsonType": "int"
+                                        },
+                                        "maxNumberOfTicketsPerOrder": {
+                                            "bsonType": "int"
+                                        },
+                                        "modifiedDate": {
+                                            "bsonType": "date"
+                                        },
+                                        "nameMandatory": {
+                                            "bsonType": "bool"
+                                        },
+                                        "nameRequired": {
+                                            "bsonType": "bool"
+                                        },
+                                        "noConfirmationEmail": {
+                                            "bsonType": "bool"
+                                        },
+                                        "numberOfTicketsSold": {
+                                            "bsonType": "int"
+                                        },
+                                        "numberOfTicketsToBasket": {
+                                            "bsonType": "int"
+                                        },
+                                        "openDoor": {
+                                            "bsonType": "date"
+                                        },
+                                        "phoneMandatory": {
+                                            "bsonType": "bool"
+                                        },
+                                        "phoneRequired": {
+                                            "bsonType": "bool"
+                                        },
+                                        "postalCodeAndCityMandatory": {
+                                            "bsonType": "bool"
+                                        },
+                                        "postalCodeAndCityRequired": {
+                                            "bsonType": "bool"
+                                        },
+                                        "preSaleEnd": {
+                                            "bsonType": "date"
+                                        },
+                                        "preSaleStart": {
+                                            "bsonType": "date"
+                                        },
+                                        "price": {
+                                            "bsonType": "double"
+                                        },
+                                        "promoCodeIdToPrint": {
+                                            "bsonType": "int"
+                                        },
+                                        "replyTo": {
+                                            "bsonType": "string"
+                                        },
+                                        "sendSMSOrder": {
+                                            "bsonType": "bool"
+                                        },
+                                        "senderEmail": {
+                                            "bsonType": "string"
+                                        },
+                                        "showImageOnTop": {
+                                            "bsonType": "bool"
+                                        },
+                                        "sofortEnd": {
+                                            "bsonType": "date"
+                                        },
+                                        "sortOrder": {
+                                            "bsonType": "int"
+                                        },
+                                        "start": {
+                                            "bsonType": "date"
+                                        },
+                                        "ticketByEmail": {
+                                            "bsonType": "bool"
+                                        },
+                                        "ticketTemplate": {
+                                            "bsonType": "string"
+                                        },
+                                        "ticketTypeInfos": {
+                                            "bsonType": "array",
+                                            "items": {
+                                                "bsonType": "object",
+                                                "properties": {
+                                                    "_id": {
+                                                        "bsonType": "int"
+                                                    },
+                                                    "additionalFile": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "additionalFileUrl": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "alternateImageUrl": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "croppedImageData": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "customtext1Mandatory": {
+                                                        "bsonType": "bool"
+                                                    },
+                                                    "customtext2Mandatory": {
+                                                        "bsonType": "bool"
+                                                    },
+                                                    "deleted": {
+                                                        "bsonType": "bool"
+                                                    },
+                                                    "description": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "emailSubject": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "image": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "imageUrl": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "languageId": {
+                                                        "bsonType": "int"
+                                                    },
+                                                    "modifiedDate": {
+                                                        "bsonType": "date"
+                                                    },
+                                                    "name": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "originalFileData": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "originalImageData": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "presentation": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "senderName": {
+                                                        "bsonType": "string"
+                                                    },
+                                                    "ticketTypeId": {
+                                                        "bsonType": "int"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "ticketsTotal": {
+                                            "bsonType": "int"
+                                        },
+                                        "useWorkflow": {
+                                            "bsonType": "bool"
+                                        },
+                                        "vatInGivenAmount": {
+                                            "bsonType": "string"
+                                        },
+                                        "vatPercentage": {
+                                            "bsonType": "double"
+                                        },
+                                        "vatTypeId": {
+                                            "bsonType": "int"
+                                        }
+                                    }
+                                }
+                            },
+                            "vatNumber": {
+                                "bsonType": "string"
+                            },
+                            "warningSendDate": {
+                                "bsonType": "string"
+                            },
+                            "zoneMapId": {
+                                "bsonType": "int"
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "title": "pastEventDetails",
+        "type": "array"
+    },
+    "payload_type_format": "custom"
+}

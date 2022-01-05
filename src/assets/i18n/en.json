@@ -1,0 +1,22 @@
+{
+  "HELLO": "hello {{value}}",
+  "LOGOUT": "Logout00",
+  "COUNTDOWNTITLE": "Days till GoLive",
+  "LANGUAGE": "Language",
+  "WEEKNR": "Week Nr.",
+  "RESERVEDPLACES": "Already reserved",
+  "NUMBEROFRESERVATIONS": "Number of Reservations:",
+  "TIMELEFT": "Time left",
+  "INSCRIPTION": "Inscription",
+  "RESERVATION": "Reservation",
+  "CONTACT": "Contact",
+  "PARTICIPANT": "Participant",
+  "WIZARD": {
+    "PREVIOUS": "Previous",
+    "SAVE": "Save",
+    "NEXT": "Next"
+  },
+  "STATE.definitive": "Definitive",
+  "STATE.temporary ": "Temporary",
+  "PLACES": "Reservations"
+}
