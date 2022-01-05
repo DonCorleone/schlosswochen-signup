@@ -5,14 +5,18 @@
   "LANGUAGE": "Language",
   "WEEKNR": "Week Nr.",
   "RESERVEDPLACES": "Already reserved",
+  "NUMBEROFRESERVATIONS": "Number of Reservations:",
   "TIMELEFT": "Time left",
   "INSCRIPTION": "Inscription",
-  "CONTACT": "Contact",
   "RESERVATION": "Reservation",
+  "CONTACT": "Contact",
   "PARTICIPANT": "Participant",
-  "WIZADRD": {
+  "WIZARD": {
     "PREVIOUS": "Previous",
     "SAVE": "Save",
     "NEXT": "Next"
-  }
+  },
+  "STATE.definitive": "Definitive",
+  "STATE.temporary ": "Temporary",
+  "PLACES": "Reservations"
 }

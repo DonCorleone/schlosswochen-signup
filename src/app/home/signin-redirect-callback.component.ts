@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ParticipantService } from '../service/participant.service';
 import { InscriptionsService } from '../service/inscriptions.service';
@@ -10,10 +10,10 @@ import { selectCurrentUserProfile } from '../modules/user/state/auth.selectors';
   selector: 'app-signin-callback',
   template: `<div></div>`,
 })
-export class SigninRedirectCallbackComponent implements OnInit {
+export class SigninRedirectCallbackComponent implements OnInit, OnDestroy {
   private subExIdSubscription: Subscription;
-  private profile$: Observable<any>;
   private partExIdSubscription: Subscription;
+  private profileSubscription: Subscription;
 
   constructor(
     private participantService: ParticipantService,
@@ -25,34 +25,36 @@ export class SigninRedirectCallbackComponent implements OnInit {
   ngOnInit() {
     const inscriptionId = sessionStorage.getItem('inscription');
     const participantJson = sessionStorage.getItem('participants');
-    if (!participantJson){
+    if (!participantJson) {
       this.router.navigate(['/welcome']).then();
       return;
     }
 
     const participantArray: string[] = JSON.parse(participantJson);
 
-    this.profile$ = this.store.pipe(select(selectCurrentUserProfile));
-
     if (inscriptionId) {
-
-      this.profile$.subscribe(x=>{
-        this.subExIdSubscription = this.inscriptionsService
-          .updateExternalUserId(inscriptionId, x.sub)
-          .subscribe((subscriptionResult) => {
-            this.partExIdSubscription = this.participantService
-              .updateExternalUserId(
-                participantArray,
-                x.sub
-              )
-              .subscribe((participantResult) => {
-                if (participantResult == participantArray.length) {
-                  this.router.navigate(['/welcome']).then();
-                }
-              });
-          });
-      });
+      this.profileSubscription = this.store
+        .pipe(select(selectCurrentUserProfile))
+        .subscribe((x) => {
+          this.subExIdSubscription = this.inscriptionsService
+            .updateExternalUserId(inscriptionId, x.sub)
+            .subscribe((subscriptionResult) => {
+              this.partExIdSubscription = this.participantService
+                .updateExternalUserId(participantArray, x.sub)
+                .subscribe((participantResult) => {
+                  if (participantResult == participantArray.length) {
+                    this.router.navigate(['/welcome']).then();
+                  }
+                });
+            });
+        });
     }
     this.router.navigate(['/welcome']).then();
+  }
+
+  ngOnDestroy(): void {
+    this.profileSubscription?.unsubscribe();
+    this.partExIdSubscription?.unsubscribe();
+    this.subExIdSubscription?.unsubscribe();
   }
 }

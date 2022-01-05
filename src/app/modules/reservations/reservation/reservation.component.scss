@@ -4,7 +4,13 @@
   flex-wrap: wrap;
 }
 .radio-header {
-  margin-right: 15px;
+  // margin-right: 15px;
+}
+
+.alert {
+  padding: 0.1rem 0rem;
+  margin: 0.2rem 0rem;
+  text-align: center;
 }
 
 .weekBlock {
@@ -12,6 +18,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
+  margin-left: 0.8rem;
 }
 
 .weekSituation {
@@ -20,7 +27,7 @@
 
 .weekReservation {
   font-size: 1.2rem;
-  display:flex;
+  display: flex;
   flex-wrap: wrap;
   padding: 10px 0 5px 0;
 }
@@ -32,6 +39,10 @@ label {
   padding-right: 1rem;
   text-align: center;
 
+  .form-check-label{
+    padding-left: unset !important;
+  }
+
   span {
     color: white;
     font-size: 1.2rem;
@@ -40,6 +51,6 @@ label {
 
   &:hover,
   &:focus-within {
-   // outline: 1px white solid;
+    // outline: 1px white solid;
   }
 }

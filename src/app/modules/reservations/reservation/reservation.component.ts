@@ -1,36 +1,27 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import * as ReservationActions from '../state/reservation.action';
 import * as ReservationReducer from '../state/reservation.reducer';
 import { WeeklyReservation } from 'src/app/models/Week';
 import { ReservationService } from 'src/app/service/reservation.service';
 
-// since an object key can be any of those types, our key can too
-// in TS 3.0+, putting just "string" raises an error
-function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
-  return key in obj;
-}
-
 @Component({
   selector: 'app-reservation',
   templateUrl: './reservation.component.html',
   styleUrls: ['./reservation.component.scss'],
 })
-export class ReservationComponent implements OnInit, OnDestroy {
+export class ReservationComponent implements OnDestroy {
   title = 'RESERVATION';
 
   maxWeeks: number = 1;
   maxReservations: number = 1;
 
-  reservations$?: Observable<number[]>;
-  weeks$?: Observable<number[]>;
-  weeklyReservation$?: Observable<WeeklyReservation>;
-  reservationSubscription: Subscription = new Subscription();
+  reservationSubscription: Subscription;
   submitted = false;
 
   constructor(
@@ -48,26 +39,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
   });
 
   reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
-
-  ngOnInit(): void {
-    var reservations: number[] = [];
-    for (var r = 1; r <= this.maxReservations; r++) {
-      reservations.push(r);
-    }
-    this.reservations$ = of(reservations);
-
-    var weeks: number[] = [];
-    for (var r = 1; r <= this.maxWeeks; r++) {
-      weeks.push(r);
-    }
-    this.weeks$ = of(weeks);
-
-    this.weeklyReservation$ = this.store
-      .select(ReservationReducer.getWeeklyReservation)
-      .pipe((weeklyReservation) => {
-        return weeklyReservation;
-      });
-  }
 
   createWeeklyReservation(
     week: number,
@@ -121,15 +92,19 @@ export class ReservationComponent implements OnInit, OnDestroy {
         .createWeeklyReservation(param)
         .subscribe((inscriptionId: string) => {
           this.store.dispatch(ReservationActions.setDeadline({ deadline }));
-          this.router.navigate(['/inscriptions/inscription', inscriptionId]).then((x) => {
-            this.reservationSubscription.unsubscribe();
-          });
+          this.router
+            .navigate(['/inscriptions/inscription', inscriptionId])
+            .then((x) => {
+              this.reservationSubscription.unsubscribe();
+            });
         });
     }
   }
 
   goToPreviousStep() {
-    this.router.navigate(['welcome']).then(x=>{this.reservationSubscription.unsubscribe()});
+    this.router.navigate(['welcome']).then((x) => {
+      this.reservationSubscription.unsubscribe();
+    });
   }
 
   ngOnDestroy(): void {

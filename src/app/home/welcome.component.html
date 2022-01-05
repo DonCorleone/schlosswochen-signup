@@ -4,47 +4,43 @@
   (previousStepClicked)="goToPreviousStep()"
   (nextStepClicked)="goToNextStep()"
 >
-  <div class="welcome">
-
-    <div class="card">
-      <div class="card-body">
-        <div class="alert alert-warning show language-chooser">
-          {{ 'LANGUAGE' | translate}}:
-          <select #langSelect (change)="translate.use(langSelect.value)">
-            <option
-              class="alert-warning"
-              *ngFor="let lang of translate.getLangs()"
-              [value]="lang"
-              [selected]="lang === translate.currentLang"
-            >
-              {{ lang }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <div>
-            {{ 'HELLO' | translate:param }}
-          </div>
-          <app-count-down [title]="'COUNTDOWNTITLE'"></app-count-down>
-        </div>
-        <div *ngIf="loggedIn$ | async as loggedIn; else loginContent">
-          <p>
-            <button class="btn btn-outline-danger" (click)="logout()">
-              {{ 'Logout' | uppercase | translate}}
-            </button>
-            is logged in {{ loggedIn }}
-          </p>
-          <div *ngIf="profile$ | async as profile">
-            <img [src]="profile.picture" />
-            <pre>{{ profile | json }}</pre>
-          </div>
-        </div>
-
-        <ng-template #loginContent>
-          <button class="btn btn-outline-success" (click)="login()">Login</button>
-        </ng-template>
+  <div class="wizard-content">
+    <div class="wizard-content-body">
+      <div class="alert alert-warning show language-chooser">
+        {{ "LANGUAGE" | translate }}:
+        <select #langSelect (change)="translate.use(langSelect.value)">
+          <option
+            class="alert-warning"
+            *ngFor="let lang of translate.getLangs()"
+            [value]="lang"
+            [selected]="lang === translate.currentLang"
+          >
+            {{ lang }}
+          </option>
+        </select>
       </div>
+      <div>
+        <div>
+          {{ "HELLO" | translate: param }}
+        </div>
+        <app-count-down [title]="'COUNTDOWNTITLE'"></app-count-down>
+      </div>
+      <div *ngIf="loggedIn$ | async as loggedIn; else loginContent">
+        <p>
+          <button class="btn btn-outline-danger" (click)="logout()">
+            {{ "Logout" | uppercase | translate }}
+          </button>
+          is logged in {{ loggedIn }}
+        </p>
+        <div *ngIf="profile$ | async as profile">
+          <img [src]="profile.picture" />
+          <pre>{{ profile | json }}</pre>
+        </div>
+      </div>
+
+      <ng-template #loginContent>
+        <button class="btn btn-outline-success" (click)="login()">Login</button>
+      </ng-template>
     </div>
   </div>
-
 </app-wizard-step>

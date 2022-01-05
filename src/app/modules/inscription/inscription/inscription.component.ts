@@ -105,10 +105,16 @@ export class InscriptionComponent implements OnInit {
                 .getInscription$(externalUser?.sub, id)
                 .subscribe({
                   next: (inscription: Inscription) => {
+
+                    if (!inscription){
+                      this.inscriptionService
+                        .getInscription$('', id).subscribe(x => inscription = x);
+                    }
+
                     if (externalUser) {
                       const weeklyReservation: WeeklyReservation = {
-                        weekNr: inscription.week!,
-                        numberOfReservations: inscription.numOfChildren!,
+                        weekNr: inscription?.week!,
+                        numberOfReservations: inscription?.numOfChildren!,
                       };
 
                       this.store.dispatch(

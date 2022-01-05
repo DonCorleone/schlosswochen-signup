@@ -1,40 +1,32 @@
-﻿.content {
-  width: 100%;
-}
-.btn {
+﻿.btn {
   width: 100px;
   margin: 6px;
 }
-.welcome {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
 
-  .alert {
-    padding: 0.1rem 0rem;
-    margin: 0.2rem 0rem;
-    text-align: center;
+.alert {
+  padding: 0.1rem 0rem;
+  margin: 0.2rem 0rem;
+  text-align: center;
 
-    span {
-      padding-right: 1rem;
-      flex-wrap: nowrap;
-    }
-  }
-
-  .language-chooser {
-    width: 100%;
-    select {
-      background-color: transparent;
-      height: 2rem;
-    }
+  span {
+    padding-right: 1rem;
+    flex-wrap: nowrap;
   }
 }
-.card {
+
+.language-chooser {
+  width: 100%;
+  select {
+    background-color: transparent;
+    height: 2rem;
+  }
+}
+
+.wizard-content {
   display: flex;
   flex-direction: row;
 }
-.card-body {
-
+.wizard-content-body {
   align-items: center;
   justify-content: center;
   max-width: 100%;
