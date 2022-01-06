@@ -1,6 +1,0 @@
-{
-    "enabled": true,
-    "app_default_domain": "application-0-cgymr.mongodbstitch.com",
-    "default_error_path": "/index.html",
-    "default_error_code": "200"
-}
