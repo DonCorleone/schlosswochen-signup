@@ -1,1 +1,0 @@
-{"ast":null,"code":"import { createAction, props } from \"@ngrx/store\";\nexport const setWeeklyReservation = createAction('[Reservation] Set Weekly Reservation', props());\nexport const setDeadline = createAction('[Reservation] Set Deadline', props());","map":null,"metadata":{},"sourceType":"module"}
