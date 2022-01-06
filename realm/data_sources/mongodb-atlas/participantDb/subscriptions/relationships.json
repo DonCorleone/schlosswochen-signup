@@ -1,0 +1,8 @@
+{
+    "participants": {
+        "ref": "#/relationship/mongodb-atlas/participantDb/participants",
+        "source_key": "participants",
+        "foreign_key": "participant_id",
+        "is_list": true
+    }
+}

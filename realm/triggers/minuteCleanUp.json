@@ -1,0 +1,16 @@
+{
+    "id": "60b265ccdae42bdeb094e231",
+    "name": "minuteCleanUp",
+    "type": "SCHEDULED",
+    "config": {
+        "schedule": "*/1 * * * *"
+    },
+    "disabled": false,
+    "event_processors": {
+        "FUNCTION": {
+            "config": {
+                "function_name": "deleteTempRecords"
+            }
+        }
+    }
+}

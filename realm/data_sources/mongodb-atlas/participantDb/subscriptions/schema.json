@@ -1,0 +1,62 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "city": {
+            "bsonType": "string"
+        },
+        "country": {
+            "bsonType": "string"
+        },
+        "deadline": {
+            "bsonType": "date"
+        },
+        "email": {
+            "bsonType": "string"
+        },
+        "externalUserId": {
+            "bsonType": "string"
+        },
+        "firstName": {
+            "bsonType": "string"
+        },
+        "lastName": {
+            "bsonType": "string"
+        },
+        "numOfChildren": {
+            "bsonType": "int"
+        },
+        "participants": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "phone": {
+            "bsonType": "string"
+        },
+        "reservationDate": {
+            "bsonType": "date"
+        },
+        "salutation": {
+            "bsonType": "string"
+        },
+        "state": {
+            "bsonType": "string"
+        },
+        "street1": {
+            "bsonType": "string"
+        },
+        "street2": {
+            "bsonType": "string"
+        },
+        "week": {
+            "bsonType": "int"
+        },
+        "zip": {
+            "bsonType": "string"
+        }
+    },
+    "title": "subscription"
+}

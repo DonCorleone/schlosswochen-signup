@@ -1,0 +1,26 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "city": {
+            "bsonType": "string"
+        },
+        "directions": {
+            "bsonType": "string"
+        },
+        "info": {
+            "bsonType": "string"
+        },
+        "name": {
+            "bsonType": "string"
+        },
+        "postalCode": {
+            "bsonType": "string"
+        },
+        "street": {
+            "bsonType": "string"
+        }
+    },
+    "title": "location"
+}

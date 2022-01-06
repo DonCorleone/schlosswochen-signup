@@ -1,0 +1,32 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "birthday": {
+            "bsonType": "date"
+        },
+        "comment": {
+            "bsonType": "string"
+        },
+        "externalUserId": {
+            "bsonType": "string"
+        },
+        "firstNameParticipant": {
+            "bsonType": "string"
+        },
+        "fotoAllowed": {
+            "bsonType": "bool"
+        },
+        "lastNameParticipant": {
+            "bsonType": "string"
+        },
+        "participant_id": {
+            "bsonType": "string"
+        },
+        "salutation": {
+            "bsonType": "string"
+        }
+    },
+    "title": "participant"
+}

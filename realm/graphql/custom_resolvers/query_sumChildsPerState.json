@@ -1,0 +1,24 @@
+{
+    "field_name": "sumChildsPerState",
+    "function_name": "sumChildsPerState",
+    "input_type": "int",
+    "input_type_format": "scalar",
+    "on_type": "Query",
+    "payload_type": {
+        "items": [
+            {
+                "properties": {
+                    "state": {
+                        "bsonType": "string"
+                    },
+                    "sumPerStateAndWeek": {
+                        "bsonType": "number"
+                    }
+                }
+            }
+        ],
+        "title": "childrenPerState",
+        "type": "array"
+    },
+    "payload_type_format": "custom"
+}

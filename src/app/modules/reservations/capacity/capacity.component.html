@@ -1,0 +1,3 @@
+<div *ngFor="let childsPerState of childsPerStates$ | async" class="text-info super-small">
+  <em>{{ 'STATE.' + childsPerState?.state | translate }} {{"PLACES" | translate}}: {{childsPerState?.sumPerStateAndWeek}}</em>
+</div>
