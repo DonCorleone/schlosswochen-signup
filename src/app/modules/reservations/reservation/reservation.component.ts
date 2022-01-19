@@ -9,6 +9,7 @@ import * as ReservationActions from '../state/reservation.action';
 import * as ReservationReducer from '../state/reservation.reducer';
 import { WeeklyReservation } from 'src/app/models/Week';
 import { ReservationService } from 'src/app/service/reservation.service';
+import { environment } from '../../../../environments/environment.custom';
 
 @Component({
   selector: 'app-reservation',
@@ -30,8 +31,8 @@ export class ReservationComponent implements OnDestroy {
     private router: Router,
     private store: Store<ReservationReducer.State>
   ) {
-    this.maxWeeks = +process.env.MAX_NUMBER_OF_WEEKS!;
-    this.maxReservations = +process.env.MAX_NUMBER_OF_RESERVATIONS!;
+    this.maxWeeks = +environment.MAX_NUMBER_OF_WEEKS!;
+    this.maxReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
 
   signupForm = this.fb.group({
