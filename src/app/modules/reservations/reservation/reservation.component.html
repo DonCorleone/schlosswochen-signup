@@ -12,7 +12,7 @@
             class="alert alert-danger fade show"
             role="alert"
           >
-            A selection is required
+            {{ "SELECTIONREQUIRED" | translate }}:
           </div>
           <div *ngFor="let week of [].constructor(maxWeeks); let i = index">
             <div class="weekBlock">
