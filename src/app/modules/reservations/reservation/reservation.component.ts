@@ -10,6 +10,12 @@ import * as ReservationReducer from '../state/reservation.reducer';
 import { WeeklyReservation } from 'src/app/models/Week';
 import { ReservationService } from 'src/app/service/reservation.service';
 import { environment } from '../../../../environments/environment.custom';
+import {
+  SubscriptionInsertInput,
+  SubscriptionQueryInput,
+  Subscription as GraphQlSubscription,
+  Maybe, Scalars
+} from "../../../models/Graphqlx";
 
 @Component({
   selector: 'app-reservation',
@@ -79,22 +85,25 @@ export class ReservationComponent implements OnDestroy {
         (5 + weeklyReservation.numberOfReservations * 3) * 60 * 1000;
       let deadline = new Date(new Date().getTime() + deadlineMs);
 
-      let param: Record<string, any> = {
-        subscriptionInsertInput: {
-          deadline,
-          numOfChildren: weeklyReservation.numberOfReservations,
-          reservationDate: new Date(),
-          state: 'temporary',
-          week: weeklyReservation.weekNr,
-        },
-      };
+      let subscriptionInsertInput: Partial<SubscriptionInsertInput> = {
+        numOfChildren: weeklyReservation.numberOfReservations,
+        week: weeklyReservation.weekNr,
+        deadline: deadline,
+        reservationDate: new Date(),
+        state: 'temporary'
+      }
+
+      let subscriptionQueryInput:Partial<SubscriptionQueryInput> = {
+
+      }
 
       this.reservationSubscription = this.reservationService
-        .createWeeklyReservation(param)
-        .subscribe((inscriptionId: string) => {
+        .createWeeklyReservation(subscriptionInsertInput, subscriptionQueryInput)
+        .subscribe((subscription: GraphQlSubscription) => {
           this.store.dispatch(ReservationActions.setDeadline({ deadline }));
+
           this.router
-            .navigate(['/inscriptions/inscription', inscriptionId])
+            .navigate(['/inscriptions/inscription',subscription._id])
             .then((x) => {
               this.reservationSubscription.unsubscribe();
             });

@@ -2,33 +2,80 @@ import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { ChildsPerState, ChildsPerStateData, subscriptionInsertReturnValue, insertOneSubscriptionReturnValueData } from '../models/Subscriptor';
+import {
+  ChildsPerState,
+  ChildsPerStateData, upsertOneSubscriptionData,
+} from '../models/Subscriptor';
+import {
+  Subscription,
+  SubscriptionInsertInput,
+  SubscriptionQueryInput,
+} from '../models/Graphqlx';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ReservationService {
-
-  createWeeklyReservation(subscriptionInsertInput: Record<string, any>): Observable<string> {
-    return this.apollo.mutate<insertOneSubscriptionReturnValueData>({
-      mutation: gql`
-        mutation insertSubscription($subscriptionInsertInput: SubscriptionInsertInput!) {
-          insertOneSubscription(
-            data: $subscriptionInsertInput
-          ){
-            _id
-            deadline
-            week
-            numOfChildren
+  createWeeklyReservation(
+    subscriptionInsertInput: SubscriptionInsertInput,
+    subscriptionQueryInput: SubscriptionQueryInput
+  ): Observable<Subscription> {
+    return this.apollo
+      .mutate<upsertOneSubscriptionData>({
+        mutation: gql`
+          mutation upsertOneSubscription(
+            $data: SubscriptionInsertInput!
+            $query: SubscriptionQueryInput
+          ) {
+            upsertOneSubscription(data: $data, query: $query) {
+              _id
+              city
+              country
+              deadline
+              email
+              externalUserId
+              firstName
+              lastName
+              numOfChildren
+              participants {
+                _id
+                birthday
+                comment
+                externalUserId
+                firstNameParticipant
+                fotoAllowed
+                lastNameParticipant
+                participant_id
+                salutation
+              }
+              phone
+              reservationDate
+              salutation
+              state
+              street1
+              street2
+              week
+              zip
+            }
           }
-        }
-      `,
-      variables: subscriptionInsertInput
-    }).pipe(
-      tap(data => console.log('ReservationService.createWeeklyReservation.insertOneSubscription', JSON.stringify(data))),
-      map(result => { return (<insertOneSubscriptionReturnValueData>result.data).insertOneSubscription._id }),
-      catchError(this.handleError)
-    )
+        `,
+        variables: {
+          data: subscriptionInsertInput,
+          query: subscriptionQueryInput,
+        },
+      })
+      .pipe(
+        tap((data) =>
+          console.log(
+            'ReservationService.createWeeklyReservation.insertOneSubscription',
+            JSON.stringify(data)
+          )
+        ),
+        map((result) => {
+          return (<upsertOneSubscriptionData>result.data).upsertOneSubscription;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   private apollo: ApolloBase;
@@ -41,7 +88,7 @@ export class ReservationService {
     return this.apollo
       .watchQuery<ChildsPerStateData>({
         query: gql`
-          query GetReservationsPerWeek($week:Int!) {
+          query GetReservationsPerWeek($week: Int!) {
             sumChildsPerState(input: $week) {
               state
               sumPerStateAndWeek
@@ -49,11 +96,12 @@ export class ReservationService {
           }
         `,
         variables: { week: week },
-        fetchPolicy: 'no-cache'
+        fetchPolicy: 'no-cache',
       })
       .valueChanges.pipe(
-        tap(result => console.log(JSON.stringify(result))),
-        map((result) => result.data.sumChildsPerState));
+        tap((result) => console.log(JSON.stringify(result))),
+        map((result) => result.data.sumChildsPerState)
+      );
   }
 
   private handleError(err: any): Observable<never> {

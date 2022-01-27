@@ -6,6 +6,11 @@ export interface subscriptionInsertReturnValue {
   week: number;
   numOfChildren: number;
 }
+
+export interface upsertOneSubscriptionData {
+  upsertOneSubscription: Subscription;
+}
+
 export interface updateOneSubscriptionData {
   updateOneSubscription: Subscription;
 }
