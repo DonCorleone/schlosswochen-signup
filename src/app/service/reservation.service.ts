@@ -2,15 +2,15 @@ import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { ChildsPerState, ChildsPerStateData, insertOneSubscription, insertOneSubscriptionData } from '../models/Subscriptor';
+import { ChildsPerState, ChildsPerStateData, subscriptionInsertReturnValue, insertOneSubscriptionReturnValueData } from '../models/Subscriptor';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
 
-  createWeeklyReservation(variable: Record<string, any>): Observable<string> {
-    return this.apollo.mutate<insertOneSubscriptionData>({
+  createWeeklyReservation(subscriptionInsertInput: Record<string, any>): Observable<string> {
+    return this.apollo.mutate<insertOneSubscriptionReturnValueData>({
       mutation: gql`
         mutation insertSubscription($subscriptionInsertInput: SubscriptionInsertInput!) {
           insertOneSubscription(
@@ -23,10 +23,10 @@ export class ReservationService {
           }
         }
       `,
-      variables: variable
+      variables: subscriptionInsertInput
     }).pipe(
       tap(data => console.log('ReservationService.createWeeklyReservation.insertOneSubscription', JSON.stringify(data))),
-      map(result => { return (<insertOneSubscriptionData>result.data).insertOneSubscription._id }),
+      map(result => { return (<insertOneSubscriptionReturnValueData>result.data).insertOneSubscription._id }),
       catchError(this.handleError)
     )
   }

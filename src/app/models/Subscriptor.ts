@@ -1,6 +1,6 @@
 import { Subscription } from './Graphqlx';
 
-export interface insertOneSubscription {
+export interface subscriptionInsertReturnValue {
   _id: string;
   deadline: Date;
   week: number;
@@ -9,8 +9,8 @@ export interface insertOneSubscription {
 export interface updateOneSubscriptionData {
   updateOneSubscription: Subscription;
 }
-export interface insertOneSubscriptionData {
-  insertOneSubscription: insertOneSubscription;
+export interface insertOneSubscriptionReturnValueData {
+  insertOneSubscription: subscriptionInsertReturnValue;
 }
 // export interface graphqlx.Subscripription {
 //   _id: string
