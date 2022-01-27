@@ -24,7 +24,17 @@
     "PHONE": "Phone",
     "PHONEMISSING": "Please enter your phone number.",
     "EMAIL": "email",
-    "EMAILMISSING": "Please enter your email address.."
+    "EMAILMISSING": "Please enter your email address..",
+    "ADDRESS1": "Address 1",
+    "ADDRESS2": "Address 2",
+    "ZIP": "ZIP",
+    "ZIPMISSING": "Please enter a zip.",
+    "ZIPMINLENGTH": "The last name must be at least 4 digits.",
+    "ZIPMAXLENGTH": "The last name must be less than 5 digits.",
+    "CITY": "City",
+    "CITYMISSING": "Please enter a city.",
+    "COUNTRY": "Country",
+    "COUNTRYMISSING": "Please select a country."
   },
   "PARTICIPANT": "Participant",
   "WIZARD": {

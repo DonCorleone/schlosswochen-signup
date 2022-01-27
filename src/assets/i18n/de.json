@@ -24,7 +24,17 @@
     "PHONE": "Telefonnummer",
     "PHONEMISSING": "Bitte eine Telefonnummer eingeben.",
     "EMAIL": "eMail",
-    "EMAILMISSING": "Bitte eine eMail-Adresse eingeben."
+    "EMAILMISSING": "Bitte eine eMail-Adresse eingeben.",
+    "ADDRESS1": "Addresszeile 1",
+    "ADDRESS2": "Addresszeile 2",
+    "ZIP": "PLZ",
+    "ZIPMISSING": "Bitte eine PLZ erfassen.",
+    "ZIPMINLENGTH": "Die PLZ muss mindestens 4 Zeichen lang sein.",
+    "ZIPMAXLENGTH": "Die PLZ darf höchstens 5 Zeichen lang sein.",
+    "CITY": "Ort",
+    "CITYMISSING": "Bitte einen Ort erfassen.",
+    "COUNTRY": "Land",
+    "COUNTRYMISSING": "Bitte ein Land erfassen."
   },
   "PARTICIPANT": "Teilnehmer:in",
   "WIZARD": {

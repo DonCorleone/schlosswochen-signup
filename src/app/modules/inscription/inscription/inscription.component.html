@@ -39,21 +39,22 @@
               <option value="M">Sir</option>
             </select>
             <span class="invalid-feedback">
-              <span *ngIf="signupForm.get('salutation')?.errors?.required">
-                {{ "CONTACT.SALUTATIONMISSING" | translate }}
-              </span>
-            </span>
+              <span *ngIf="signupForm.get('salutation')?.errors?.required">{{
+                "CONTACT.SALUTATIONMISSING" | translate
+              }}</span></span
+            >
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-lg-2 col-sm-3 col-form-label" for="firstNameId">
-            {{ "CONTACT.FIRSTNAME" | translate }}
-          </label>
+          <label class="col-lg-2 col-sm-3 col-form-label" for="firstNameId">{{
+            "CONTACT.FIRSTNAME" | translate
+          }}</label>
           <div class="col-lg-8 col-md-6">
             <input
               id="firstNameId"
               class="form-control"
               type="text"
+              formControlName="firstName"
               [ngClass]="{
                 'is-invalid':
                   (signupForm.get('firstName')?.touched ||
@@ -62,19 +63,19 @@
               }"
             />
             <span class="invalid-feedback">
-              <span *ngIf="signupForm.get('firstName')?.errors?.required">
-                {{ "CONTACT.FIRSTNAMEMISSING" | translate }}
-              </span>
-              <span *ngIf="signupForm.get('firstName')?.errors?.minlength">
-                {{ "CONTACT.FIRSTNAMEMINIMUMLENGTH" | translate }}
-              </span>
+              <span *ngIf="signupForm.get('firstName')?.errors?.required">{{
+                "CONTACT.FIRSTNAMEMISSING" | translate
+              }}</span>
+              <span *ngIf="signupForm.get('firstName')?.errors?.minlength">{{
+                "CONTACT.FIRSTNAMEMINIMUMLENGTH" | translate
+              }}</span>
             </span>
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-lg-2 col-sm-3 col-form-label" for="lastNameId">
-            {{ "CONTACT.LASTNAME" | translate }}
-          </label>
+          <label class="col-lg-2 col-sm-3 col-form-label" for="lastNameId">{{
+            "CONTACT.LASTNAME" | translate
+          }}</label>
           <div class="col-lg-8 col-md-6">
             <input
               id="lastNameId"
@@ -89,19 +90,19 @@
               }"
             />
             <span class="invalid-feedback">
-              <span *ngIf="signupForm.get('lastName')?.errors?.required">
-                {{ "CONTACT.LASTNAMEMISSING" | translate }}
-              </span>
-              <span *ngIf="signupForm.get('lastName')?.errors?.maxlength">
-                {{ "CONTACT.LASTNAMEMAXLEMNGTH" | translate }}
-              </span>
+              <span *ngIf="signupForm.get('lastName')?.errors?.required">{{
+                "CONTACT.LASTNAMEMISSING" | translate
+              }}</span>
+              <span *ngIf="signupForm.get('lastName')?.errors?.maxlength">{{
+                "CONTACT.LASTNAMEMAXLEMNGTH" | translate
+              }}</span>
             </span>
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-lg-2 col-sm-3 col-form-label" for="phoneId">
-            {{ "CONTACT.PHONE" | translate }}
-          </label>
+          <label class="col-lg-2 col-sm-3 col-form-label" for="phoneId">{{
+            "CONTACT.PHONE" | translate
+          }}</label>
           <div class="col-lg-8 col-md-6">
             <input
               id="phoneId"
@@ -116,16 +117,16 @@
               }"
             />
             <span class="invalid-feedback">
-              <span *ngIf="signupForm.get('phone')?.errors?.required">
-                {{ "CONTACT.PHONEMISSING" | translate }}
-              </span>
-            </span>
+              <span *ngIf="signupForm.get('phone')?.errors?.required">{{
+                "CONTACT.PHONEMISSING" | translate
+              }}</span></span
+            >
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-lg-2 col-sm-3 col-form-label" for="emailId">
-            {{ "CONTACT.EMAIL" | translate }}
-          </label>
+          <label class="col-lg-2 col-sm-3 col-form-label" for="emailId">{{
+            "CONTACT.EMAIL" | translate
+          }}</label>
           <div class="col-lg-8 col-md-6">
             <input
               id="emailId"
@@ -140,9 +141,9 @@
               }"
             />
             <span class="invalid-feedback">
-              <span *ngIf="signupForm.get('email')?.errors?.required">
-                {{ "CONTACT.EMAILMISSING" | translate }}
-              </span>
+              <span *ngIf="signupForm.get('email')?.errors?.required">{{
+                "CONTACT.EMAILMISSING" | translate
+              }}</span>
               <span *ngIf="emailMessage">
                 {{ emailMessage }}
               </span>
@@ -150,43 +151,41 @@
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-lg-2 col-sm-3 col-form-label" for="street1Id">
-            Address 1
-          </label>
+          <label class="col-lg-2 col-sm-3 col-form-label" for="street1Id">{{
+            "CONTACT.ADDRESS1" | translate
+          }}</label>
           <div class="col-lg-8 col-md-6">
             <input
               id="street1Id"
               class="form-control"
               type="text"
-              placeholder="Street address"
               formControlName="street1"
             />
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-lg-2 col-sm-3 col-form-label" for="street2Id">
-            Address 2
-          </label>
+          <label class="col-lg-2 col-sm-3 col-form-label" for="street2Id">{{
+            "CONTACT.ADDRESS2" | translate
+          }}</label>
           <div class="col-lg-8 col-md-6">
             <input
               id="street2Id"
               class="form-control"
               type="text"
-              placeholder="Street address (second line)"
               formControlName="street2"
             />
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-lg-2 col-sm-3 col-form-label" for="cityId">
-            Zip | City
-          </label>
+          <label class="col-lg-2 col-sm-3 col-form-label" for="cityId"
+            >{{ "CONTACT.ZIP" | translate }} |
+            {{ "CONTACT.CITY" | translate }}</label
+          >
           <div class="col-md-3">
             <input
               id="zipId"
               class="form-control"
               type="number"
-              placeholder="Zip Code"
               formControlName="zip"
               [ngClass]="{
                 'is-invalid':
@@ -196,15 +195,15 @@
               }"
             />
             <span class="invalid-feedback">
-              <span *ngIf="signupForm.get('zip')?.errors?.required">
-                Please enter a zip.
-              </span>
-              <span *ngIf="signupForm.get('zip')?.errors?.minlength">
-                The last name must be more than 4 digits.
-              </span>
-              <span *ngIf="signupForm.get('zip')?.errors?.maxlength">
-                The last name must be less than 6 digits.
-              </span>
+              <span *ngIf="signupForm.get('zip')?.errors?.required">{{
+                "CONTACT.ZIPMISSING" | translate
+              }}</span>
+              <span *ngIf="signupForm.get('zip')?.errors?.minlength">{{
+                "CONTACT.ZIPMINLENGTH" | translate
+                }}</span>
+              <span *ngIf="signupForm.get('zip')?.errors?.maxlength">{{
+                "CONTACT.ZIPMAXLENGTH" | translate
+                }}</span>
             </span>
           </div>
           <div class="col-md-5">
@@ -212,7 +211,6 @@
               id="cityId"
               class="form-control"
               type="text"
-              placeholder="City (required)"
               formControlName="city"
               [ngClass]="{
                 'is-invalid':
@@ -222,23 +220,22 @@
               }"
             />
             <span class="invalid-feedback">
-              <span *ngIf="signupForm.get('city')?.errors?.required">
-                Please enter a city.
-              </span>
+              <span *ngIf="signupForm.get('city')?.errors?.required">{{
+                "CONTACT.CITYMISSING" | translate
+              }}</span>
             </span>
           </div>
         </div>
 
         <div class="form-group row mb-2">
-          <label class="col-lg-2 col-sm-3 col-form-label" for="countryId">
-            Country
-          </label>
+          <label class="col-lg-2 col-sm-3 col-form-label" for="countryId">{{
+            "CONTACT.COUNTRY" | translate
+          }}</label>
           <div class="col-lg-8 col-md-6">
             <input
               id="countryId"
               class="form-control"
               type="text"
-              placeholder="Country (required)"
               formControlName="country"
               [ngClass]="{
                 'is-invalid':
@@ -248,9 +245,9 @@
               }"
             />
             <span class="invalid-feedback">
-              <span *ngIf="signupForm.get('country')?.errors?.required">
-                Please enter a country.
-              </span>
+              <span *ngIf="signupForm.get('country')?.errors?.required">{{
+                "CONTACT.COUNTRYMISSING" | translate
+              }}</span>
             </span>
           </div>
         </div>
