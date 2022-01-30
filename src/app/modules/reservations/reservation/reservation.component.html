@@ -18,7 +18,7 @@
             <div class="weekBlock">
               <div class="weekSituation">
                 <h2>{{ "WEEKNR" | translate }} {{ i + 1 }}</h2>
-                <app-capacity [week]="i"></app-capacity>
+                <app-capacity [week]="i + 1"></app-capacity>
               </div>
               <div class="weekReservation">
                 <div class="radio-header text-warning">
@@ -44,7 +44,6 @@
                         type="radio"
                         [value]="createWeeklyReservation(i + 1, j + 1)"
                         formControlName="numOfChilds"
-                        (change)="changeReservation(i + 1, j + 1)"
                       />
                     </label>
                   </div>

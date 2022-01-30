@@ -4,30 +4,31 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import {
   ChildsPerState,
-  ChildsPerStateData, upsertOneSubscriptionData,
+  ChildsPerStateData,
 } from '../models/Subscriptor';
 import {
   Subscription,
-  SubscriptionInsertInput,
-  SubscriptionQueryInput,
+  SubscriptionInsertInput
 } from '../models/Graphqlx';
+
+export interface insertOneSubscriptionData {
+  insertOneSubscription: Subscription;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReservationService {
-  createWeeklyReservation(
-    subscriptionInsertInput: SubscriptionInsertInput,
-    subscriptionQueryInput: SubscriptionQueryInput
+  insertOneSubscription(
+    subscriptionInsertInput: SubscriptionInsertInput
   ): Observable<Subscription> {
     return this.apollo
-      .mutate<upsertOneSubscriptionData>({
+      .mutate<insertOneSubscriptionData>({
         mutation: gql`
-          mutation upsertOneSubscription(
+          mutation insertOneSubscription(
             $data: SubscriptionInsertInput!
-            $query: SubscriptionQueryInput
           ) {
-            upsertOneSubscription(data: $data, query: $query) {
+            insertOneSubscription(data: $data) {
               _id
               city
               country
@@ -60,8 +61,7 @@ export class ReservationService {
           }
         `,
         variables: {
-          data: subscriptionInsertInput,
-          query: subscriptionQueryInput,
+          data: subscriptionInsertInput
         },
       })
       .pipe(
@@ -72,7 +72,7 @@ export class ReservationService {
           )
         ),
         map((result) => {
-          return (<upsertOneSubscriptionData>result.data).upsertOneSubscription;
+          return (<insertOneSubscriptionData>result.data).insertOneSubscription;
         }),
         catchError(this.handleError)
       );

@@ -5,16 +5,14 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
-import * as ReservationActions from '../state/reservation.action';
-import * as ReservationReducer from '../state/reservation.reducer';
+import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
+import * as InscriptionActions from '../../inscription/state/inscription.actions';
 import { WeeklyReservation } from 'src/app/models/Week';
 import { ReservationService } from 'src/app/service/reservation.service';
 import { environment } from '../../../../environments/environment.custom';
 import {
   SubscriptionInsertInput,
-  SubscriptionQueryInput,
-  Subscription as GraphQlSubscription,
-  Maybe, Scalars
+  Subscription as Inscription,
 } from "../../../models/Graphqlx";
 
 @Component({
@@ -35,7 +33,7 @@ export class ReservationComponent implements OnDestroy {
     private fb: FormBuilder,
     private reservationService: ReservationService,
     private router: Router,
-    private store: Store<ReservationReducer.State>
+    private store: Store<InscriptionReducer.InscriptionState>
   ) {
     this.maxWeeks = +environment.MAX_NUMBER_OF_WEEKS!;
     this.maxReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
@@ -55,16 +53,6 @@ export class ReservationComponent implements OnDestroy {
       weekNr: week,
       numberOfReservations: reservations,
     };
-  }
-
-  changeReservation(weekNumber: number, numberOfChildren: number): void {
-    const weeklyReservation: WeeklyReservation = {
-      weekNr: weekNumber,
-      numberOfReservations: numberOfChildren,
-    };
-    this.store.dispatch(
-      ReservationActions.setWeeklyReservation({ weeklyReservation })
-    );
   }
 
   goToNextStep(): void {
@@ -93,17 +81,15 @@ export class ReservationComponent implements OnDestroy {
         state: 'temporary'
       }
 
-      let subscriptionQueryInput:Partial<SubscriptionQueryInput> = {
-
-      }
 
       this.reservationSubscription = this.reservationService
-        .createWeeklyReservation(subscriptionInsertInput, subscriptionQueryInput)
-        .subscribe((subscription: GraphQlSubscription) => {
-          this.store.dispatch(ReservationActions.setDeadline({ deadline }));
+        .insertOneSubscription(subscriptionInsertInput)
+        .subscribe((inscription: Inscription) => {
+
+          this.store.dispatch(InscriptionActions.setInscription({ inscription }));
 
           this.router
-            .navigate(['/inscriptions/inscription',subscription._id])
+            .navigate(['/inscriptions/inscription',inscription._id])
             .then((x) => {
               this.reservationSubscription.unsubscribe();
             });

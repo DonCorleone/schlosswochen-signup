@@ -1,4 +1,4 @@
-<div *ngIf="reservation$ | async as reservation">
+<div *ngIf="inscription$ | async as inscription">
   <div class="alert alert-warning show language-chooser">
     {{ 'LANGUAGE' | translate}}:
     <select #langSelect (change)="translate.use(langSelect.value)">
@@ -13,10 +13,10 @@
     </select>
   </div>
   <div class="alert alert-primary show" role="alert">
-    <span>{{ 'WEEKNR' | translate}} {{ reservation.weekNr }}</span>
+    <span>{{ 'WEEKNR' | translate}} {{ inscription.week }}</span>
   </div>
   <div class="alert alert-primary show" role="alert">
-    <span>{{ 'RESERVEDPLACES' | translate}}: {{ reservation.numberOfReservations }}</span>
+    <span>{{ 'RESERVEDPLACES' | translate}}: {{ inscription.numOfChildren }}</span>
   </div>
   <div *ngIf="externalInput" class="alert alert-warning show" role="alert">
     <span>{{ externalInput }}</span>

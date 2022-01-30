@@ -7,16 +7,6 @@ export interface subscriptionInsertReturnValue {
   numOfChildren: number;
 }
 
-export interface upsertOneSubscriptionData {
-  upsertOneSubscription: Subscription;
-}
-
-export interface updateOneSubscriptionData {
-  updateOneSubscription: Subscription;
-}
-export interface insertOneSubscriptionReturnValueData {
-  insertOneSubscription: subscriptionInsertReturnValue;
-}
 // export interface graphqlx.Subscripription {
 //   _id: string
 //   salutation: string;
