@@ -32,6 +32,9 @@ export class InscriptionsService {
 
   getInscription$(externalUserId: string, inscription: Inscription): Observable<Inscription> {
     if ((externalUserId == null || externalUserId == '') && inscription) {
+      if (inscription.lastName){
+        return of(inscription);
+      }
       return of(this.initializeInscription(inscription));
     }
     return this.apollo
@@ -228,7 +231,7 @@ export class InscriptionsService {
       phone: '',
       reservationDate: inscription.reservationDate,
       salutation: '',
-      state: '',
+      state: 'temporary',
       street1: '',
       street2: '',
       week: inscription.week,
