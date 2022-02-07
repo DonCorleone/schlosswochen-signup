@@ -46,6 +46,7 @@ export class InscriptionsService {
               externalUserId
               reservationDate
               week
+              year
               numOfChildren
               email
               phone
@@ -235,6 +236,7 @@ export class InscriptionsService {
       street1: '',
       street2: '',
       week: inscription.week,
+      year: inscription.year,
       zip: '',
     };
   }

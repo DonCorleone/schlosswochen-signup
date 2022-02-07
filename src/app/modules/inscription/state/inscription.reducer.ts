@@ -25,6 +25,7 @@ const initialState: InscriptionState = {
   inscription: {
     _id: '',
     week: 0,
+    year: 0,
     numOfChildren: 0,
     deadline: new Date(),
     salutation: '',

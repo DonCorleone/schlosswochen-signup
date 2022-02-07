@@ -2,17 +2,21 @@ import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
+import { ChildsPerState, ChildsPerStateData } from '../models/Subscriptor';
 import {
-  ChildsPerState,
-  ChildsPerStateData,
-} from '../models/Subscriptor';
-import {
+  Subscription as Inscription,
   Subscription,
-  SubscriptionInsertInput
+  SubscriptionInsertInput,
+  Week,
 } from '../models/Graphqlx';
+import { WeekDay } from '@angular/common';
 
 export interface insertOneSubscriptionData {
   insertOneSubscription: Subscription;
+}
+
+interface weeksData {
+  weeks: Week[];
 }
 
 @Injectable({
@@ -25,9 +29,7 @@ export class ReservationService {
     return this.apollo
       .mutate<insertOneSubscriptionData>({
         mutation: gql`
-          mutation insertOneSubscription(
-            $data: SubscriptionInsertInput!
-          ) {
+          mutation insertOneSubscription($data: SubscriptionInsertInput!) {
             insertOneSubscription(data: $data) {
               _id
               city
@@ -56,12 +58,13 @@ export class ReservationService {
               street1
               street2
               week
+              year
               zip
             }
           }
         `,
         variables: {
-          data: subscriptionInsertInput
+          data: subscriptionInsertInput,
         },
       })
       .pipe(
@@ -81,6 +84,26 @@ export class ReservationService {
   private apollo: ApolloBase;
   constructor(private apolloProvider: Apollo) {
     this.apollo = this.apolloProvider.use('writeClient');
+  }
+
+  getWeeks(year: number): Observable<Week[]> {
+    return this.apollo
+      .watchQuery<weeksData>({
+        query: gql`
+          query ($year: Int) {
+            weeks(query: {year: $year}, sortBy: WEEK_ASC) {
+              dateFrom
+              dateTo
+              week
+            }
+          }
+        `,
+        variables: { year },
+      })
+      .valueChanges.pipe(
+        tap((result) => console.log(JSON.stringify(result))),
+        map((result) => (<weeksData>result?.data)?.weeks),
+        catchError(this.handleError));
   }
 
   getReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
