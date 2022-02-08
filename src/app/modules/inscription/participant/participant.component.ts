@@ -67,7 +67,12 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ParticipantComponent implements OnInit, OnDestroy {
-  title = 'PARTICIPANT';
+  title = 'PARTICIPANT.TITLE';
+  firstNameRequired = 'PARTICIPANT.FIRSTNAMEREQUIRED';
+  lastNameRequired = 'PARTICIPANT.LASTNAMEREQUIRED';
+  birthdayRequired = 'PARTICIPANT.BIRTHDAYREQUIRED';
+  commentPh = 'PARTICIPANT.COMMENTPH';
+
   numOfChilds: number = 0;
   inscription!: Inscription;
 
@@ -89,6 +94,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   };
 
   subscriptions: Subscription[] = [];
+  FIRSTNAMEREQUIRED = 'PARTICIPANT.FIRSTNAMEREQUIRED';
 
   constructor(
     private fb: FormBuilder,

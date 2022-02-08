@@ -36,7 +36,20 @@
     "COUNTRY": "Land",
     "COUNTRYMISSING": "Bitte ein Land erfassen."
   },
-  "PARTICIPANT": "Teilnehmer:in",
+  "PARTICIPANT": {
+    "TITLE": "Teilnehmer:in",
+    "SALUTATION": "Anrede",
+    "SALUTATIONPH": "Anrede wählen ..",
+    "FIRSTNAME": "Vorname",
+    "FIRSTNAMEREQUIRED": "Vorname (Pflichtfeld)",
+    "LASTNAME": "Nachname",
+    "LASTNAMEREQUIRED": "Nachname (Pflichtfeld)",
+    "BIRTHDAY": "Geburtstag",
+    "BIRTHDAYREQUIRED": "Geburtstag (Pflichtfeld)",
+    "FOTOALLOWED": "Fotos erlaubt",
+    "COMMENT": "Bemerkungen",
+    "COMMENTPH": "Bemerkungen (Allergien etc...)"
+  },
   "WIZARD": {
     "PREVIOUS": "Zurück",
     "SAVE": "Speichern",

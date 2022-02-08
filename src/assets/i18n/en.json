@@ -36,7 +36,20 @@
     "COUNTRY": "Country",
     "COUNTRYMISSING": "Please select a country."
   },
-  "PARTICIPANT": "Participant",
+  "PARTICIPANT": {
+    "TITLE": "Participant",
+    "SALUTATION": "Salutation",
+    "SALUTATIONPH": "Select a Salutation ..",
+    "FIRSTNAME": "First Name",
+    "FIRSTNAMEREQUIRED": "First Name (required)",
+    "LASTNAME": "Last Name",
+    "LASTNAMEREQUIRED": "Last Name (required)",
+    "BIRTHDAY": "Birthday",
+    "BIRTHDAYREQUIRED": "Birthday (required)",
+    "FOTOALLOWED": "Foto allowed",
+    "COMMENT": "Comment",
+    "COMMENTPH": "Comment (Allergies ...)"
+  },
   "WIZARD": {
     "PREVIOUS": "Previous",
     "SAVE": "Save",
