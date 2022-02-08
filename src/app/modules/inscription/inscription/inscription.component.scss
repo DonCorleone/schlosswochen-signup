@@ -9,3 +9,23 @@
 .invalid-feedback {
   white-space: break-spaces;
 }
+
+@media all and (min-width: 768px) {
+  .col-zip {
+    padding-right: 5px;
+  }
+
+  .col-city {
+    padding-left: 5px;
+  }
+}
+@media all and (max-width: 768px) {
+  .col-zip {
+    padding-bottom: 5px;
+  }
+
+  .col-city {
+    padding-top: 5px;
+  }
+}
+
