@@ -1,5 +1,8 @@
 import { createAction, props } from '@ngrx/store';
-import {Participant, Subscription as Inscription} from '../../../models/Graphqlx';
+import {
+  Participant,
+  Subscription as Inscription,
+} from '../../../models/Graphqlx';
 
 export const setInscription = createAction(
   '[Inscription] Set Inscription',

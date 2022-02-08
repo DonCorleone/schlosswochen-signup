@@ -1,12 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-
-import { StoreModule } from '@ngrx/store';
-
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
-import * as inscriptionState from './state/inscription.reducer';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
 import { ReservationsModule } from '../reservations/reservations.module';
 import { InscriptionRoutingModule } from './inscription-routing.module';
@@ -25,10 +21,6 @@ import { TranslateModule } from '@ngx-translate/core';
     FormlyBootstrapModule,
     ReservationsModule,
     SharedModule,
-    StoreModule.forFeature(
-      inscriptionState.inscriptionFeatureKey,
-      inscriptionState.inscriptionReducer
-    ),
     TranslateModule,
   ],
 })

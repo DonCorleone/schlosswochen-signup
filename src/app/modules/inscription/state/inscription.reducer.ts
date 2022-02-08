@@ -11,6 +11,8 @@ import {
   Participant,
   Subscription as Inscription,
 } from 'src/app/models/Graphqlx';
+import {stat} from "fs";
+import {WeeklyReservation} from "../../../models/Week";
 
 export const inscriptionFeatureKey = 'inscription';
 
@@ -22,6 +24,10 @@ export interface InscriptionState {
 const initialState: InscriptionState = {
   inscription: {
     _id: '',
+    week: 0,
+    year: 0,
+    numOfChildren: 0,
+    deadline: new Date(),
     salutation: '',
     firstName: '',
     lastName: '',
@@ -48,11 +54,15 @@ export const getInscription = createSelector(
   (state) => state.inscription
 );
 
+export const getDeadline = createSelector(
+  getInscriptionFeatureState,
+  (state) => new Date(state.inscription.deadline)
+);
+
 export const getCurrentParticipantNumber = createSelector(
   getInscriptionFeatureState,
   state => state.currentParticipantNumber
 );
-
 
 export const selectParticipantId = (state: InscriptionState) => state.inscription;
 
@@ -67,7 +77,7 @@ export const inscriptionReducer = createReducer<InscriptionState>(
   on(InscriptionAction.setInscription, (state, action) => {
     return {
       ...state,
-      inscription: action.inscription,
+      inscription: action.inscription
     };
   }),
   on(InscriptionAction.addParticipant, (state, action) => {

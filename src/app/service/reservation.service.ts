@@ -2,33 +2,83 @@ import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { ChildsPerState, ChildsPerStateData, subscriptionInsertReturnValue, insertOneSubscriptionReturnValueData } from '../models/Subscriptor';
+import { ChildsPerState, ChildsPerStateData } from '../models/Subscriptor';
+import {
+  Subscription as Inscription,
+  Subscription,
+  SubscriptionInsertInput,
+  Week,
+} from '../models/Graphqlx';
+import { WeekDay } from '@angular/common';
+
+export interface insertOneSubscriptionData {
+  insertOneSubscription: Subscription;
+}
+
+interface weeksData {
+  weeks: Week[];
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ReservationService {
-
-  createWeeklyReservation(subscriptionInsertInput: Record<string, any>): Observable<string> {
-    return this.apollo.mutate<insertOneSubscriptionReturnValueData>({
-      mutation: gql`
-        mutation insertSubscription($subscriptionInsertInput: SubscriptionInsertInput!) {
-          insertOneSubscription(
-            data: $subscriptionInsertInput
-          ){
-            _id
-            deadline
-            week
-            numOfChildren
+  insertOneSubscription(
+    subscriptionInsertInput: SubscriptionInsertInput
+  ): Observable<Subscription> {
+    return this.apollo
+      .mutate<insertOneSubscriptionData>({
+        mutation: gql`
+          mutation insertOneSubscription($data: SubscriptionInsertInput!) {
+            insertOneSubscription(data: $data) {
+              _id
+              city
+              country
+              deadline
+              email
+              externalUserId
+              firstName
+              lastName
+              numOfChildren
+              participants {
+                _id
+                birthday
+                comment
+                externalUserId
+                firstNameParticipant
+                fotoAllowed
+                lastNameParticipant
+                participant_id
+                salutation
+              }
+              phone
+              reservationDate
+              salutation
+              state
+              street1
+              street2
+              week
+              year
+              zip
+            }
           }
-        }
-      `,
-      variables: subscriptionInsertInput
-    }).pipe(
-      tap(data => console.log('ReservationService.createWeeklyReservation.insertOneSubscription', JSON.stringify(data))),
-      map(result => { return (<insertOneSubscriptionReturnValueData>result.data).insertOneSubscription._id }),
-      catchError(this.handleError)
-    )
+        `,
+        variables: {
+          data: subscriptionInsertInput,
+        },
+      })
+      .pipe(
+        tap((data) =>
+          console.log(
+            'ReservationService.createWeeklyReservation.insertOneSubscription',
+            JSON.stringify(data)
+          )
+        ),
+        map((result) => {
+          return (<insertOneSubscriptionData>result.data).insertOneSubscription;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   private apollo: ApolloBase;
@@ -36,12 +86,32 @@ export class ReservationService {
     this.apollo = this.apolloProvider.use('writeClient');
   }
 
+  getWeeks(year: number): Observable<Week[]> {
+    return this.apollo
+      .watchQuery<weeksData>({
+        query: gql`
+          query ($year: Int) {
+            weeks(query: {year: $year}, sortBy: WEEK_ASC) {
+              dateFrom
+              dateTo
+              week
+            }
+          }
+        `,
+        variables: { year },
+      })
+      .valueChanges.pipe(
+        tap((result) => console.log(JSON.stringify(result))),
+        map((result) => (<weeksData>result?.data)?.weeks),
+        catchError(this.handleError));
+  }
+
   getReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
     console.log(`Get Reservations Per Week`);
     return this.apollo
       .watchQuery<ChildsPerStateData>({
         query: gql`
-          query GetReservationsPerWeek($week:Int!) {
+          query GetReservationsPerWeek($week: Int!) {
             sumChildsPerState(input: $week) {
               state
               sumPerStateAndWeek
@@ -49,11 +119,12 @@ export class ReservationService {
           }
         `,
         variables: { week: week },
-        fetchPolicy: 'no-cache'
+        fetchPolicy: 'no-cache',
       })
       .valueChanges.pipe(
-        tap(result => console.log(JSON.stringify(result))),
-        map((result) => result.data.sumChildsPerState));
+        tap((result) => console.log(JSON.stringify(result))),
+        map((result) => result.data.sumChildsPerState)
+      );
   }
 
   private handleError(err: any): Observable<never> {

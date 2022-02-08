@@ -6,7 +6,7 @@
   <div class="wizard-content">
     <div class="wizard-content-body">
       <form [formGroup]="signupForm">
-        <div class="form-group row mb-2">
+        <div *ngIf="weeks$ | async as weeks" class="form-group row mb-2">
           <div
             *ngIf="submitted && reservationsPerWeekCtlr?.errors?.min"
             class="alert alert-danger fade show"
@@ -14,11 +14,15 @@
           >
             {{ "SELECTIONREQUIRED" | translate }}:
           </div>
-          <div *ngFor="let week of [].constructor(maxWeeks); let i = index">
-            <div class="weekBlock">
+          <div *ngFor="let week of weeks">
+            <div *ngIf="week && week.week" class="weekBlock">
               <div class="weekSituation">
-                <h2>{{ "WEEKNR" | translate }} {{ i + 1 }}</h2>
-                <app-capacity [week]="i"></app-capacity>
+                <h2>{{ "WEEKNR" | translate }} {{ week.week + 1 }}</h2>
+                <p>
+                  {{ week.dateFrom | date: "dd.MM.YYYY":"de-CH" }} -
+                  {{ week.dateTo | date: "dd.MM.YYYY":"de-CH" }}
+                </p>
+                <app-capacity [week]="week.week + 1"></app-capacity>
               </div>
               <div class="weekReservation">
                 <div class="radio-header text-warning">
@@ -39,12 +43,11 @@
                           'numOfChilds_' +
                           (j + 1).toString() +
                           '_week_' +
-                          (i + 1).toString()
+                          (week.week + 1).toString()
                         "
                         type="radio"
-                        [value]="createWeeklyReservation(i + 1, j + 1)"
+                        [value]="createWeeklyReservation(week.week + 1, j + 1)"
                         formControlName="numOfChilds"
-                        (change)="changeReservation(i + 1, j + 1)"
                       />
                     </label>
                   </div>

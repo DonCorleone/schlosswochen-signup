@@ -3,7 +3,7 @@ import { combineLatest, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import * as fromAuthActions from './auth.actions';
 import { AuthenticationService } from '../../../service/auth.service';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 
 // function createEffect(param: () => any, param2: { dispatch: boolean }) {}
 
