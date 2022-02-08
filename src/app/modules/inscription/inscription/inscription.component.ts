@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -15,17 +15,18 @@ import { debounceTime, filter, map, tap } from 'rxjs/operators';
 import { InscriptionsService } from '../../../service/inscriptions.service';
 import * as InscriptionReducer from '../state/inscription.reducer';
 import * as InscriptionActions from '../state/inscription.actions';
-import * as ReservationReducer from '../../reservations/state/reservation.reducer';
-import * as ReservationActions from '../../reservations/state/reservation.action';
 import { WeeklyReservation } from '../../../models/Week';
 import {
   Subscription as Inscription,
   Participant,
   SubscriptionParticipantsRelationInput,
   SubscriptionUpdateInput,
+  SubscriptionInsertInput,
+  SubscriptionQueryInput,
 } from 'src/app/models/Graphqlx';
 import * as AuthSelector from '../../user/state/auth.selectors';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
+import { ReservationService } from '../../../service/reservation.service';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -38,8 +39,8 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
   templateUrl: './inscription.component.html',
   styleUrls: ['./inscription.component.scss'],
 })
-export class InscriptionComponent implements OnInit {
-  title = 'CONTACT';
+export class InscriptionComponent implements OnInit, OnDestroy {
+  title = 'CONTACT.TITLE';
 
   signupForm!: FormGroup;
   emailMessage: string = '';
@@ -50,21 +51,24 @@ export class InscriptionComponent implements OnInit {
   private validationMessages = {
     email: 'Please enter a valid email address.',
   };
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
     private inscriptionService: InscriptionsService,
+    private reservationService: ReservationService,
     private route: ActivatedRoute,
     private router: Router,
     private store: Store<InscriptionReducer.InscriptionState>
   ) {}
 
   ngOnInit(): void {
-
-    this.store.dispatch(InscriptionActions.resetCurrentParticipantNumber());
-
     this.signupForm = this.fb.group({
       _id: '',
+      numOfChildren: 0,
+      reservationDate: new Date(),
+      deadline: new Date(),
+      week: 0,
       salutation: ['', [Validators.required]],
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
@@ -90,52 +94,42 @@ export class InscriptionComponent implements OnInit {
         (value) => (this.emailMessage = this.setMessage(emailControl))
       );
 
-
+    this.store.dispatch(InscriptionActions.resetCurrentParticipantNumber());
     combineLatest([
       this.store.select(AuthSelector.selectCurrentUserProfile),
+      this.store.select(InscriptionReducer.getInscription),
       this.route.params,
     ])
       .pipe(
-        tap(([externalUser, params]) =>
-          {
-            let id = params['id'];
+        tap(([externalUser, inscription, params]) => {
+          if (externalUser?.sub?.length > 0 || inscription) {
+            this.inscriptionService
+              .getInscription$(externalUser?.sub, inscription)
+              .subscribe({
+                next: (inscription: Inscription) => {
+                  if (!inscription) {
+                    this.inscriptionService
+                      .getInscription$('', inscription)
+                      .subscribe((x) => (inscription = x));
+                  }
 
-            if (externalUser?.sub?.length > 0 || id?.length > 0) {
-              this.inscriptionService
-                .getInscription$(externalUser?.sub, id)
-                .subscribe({
-                  next: (inscription: Inscription) => {
+                  if (externalUser) {
+                    const weeklyReservation: WeeklyReservation = {
+                      weekNr: inscription?.week!,
+                      numberOfReservations: inscription?.numOfChildren!,
+                    };
 
-                    if (!inscription){
-                      this.inscriptionService
-                        .getInscription$('', id).subscribe(x => inscription = x);
-                    }
+                    this.store.dispatch(
+                      InscriptionActions.setInscription({ inscription })
+                    );
+                  }
 
-                    if (externalUser) {
-                      const weeklyReservation: WeeklyReservation = {
-                        weekNr: inscription?.week!,
-                        numberOfReservations: inscription?.numOfChildren!,
-                      };
-
-                      this.store.dispatch(
-                        ReservationActions.setWeeklyReservation({
-                          weeklyReservation,
-                        })
-                      );
-
-                      this.store.dispatch(
-                        InscriptionActions.setInscription({ inscription })
-                      );
-                    }
-
-                    this.displayInscription(inscription);
-                  },
-                  error: (err) => (this.errorMessage = err),
-                });
-            }
-
+                  this.displayInscription(inscription);
+                },
+                error: (err) => (this.errorMessage = err),
+              });
           }
-        )
+        })
       )
       .subscribe();
   }
@@ -155,15 +149,21 @@ export class InscriptionComponent implements OnInit {
     }
 
     if (!this.signupForm.dirty) {
-      this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
+      this.store.dispatch(
+        InscriptionActions.increaseCurrentParticipantNumber()
+      );
       this.router.navigate(['/inscriptions/participant']).then();
       return;
     }
-    const inscription = { inscription: this.signupForm.value };
-    let inscriptionUpdateObj: SubscriptionUpdateInput = {
-      ...inscription.inscription,
+
+    let subscriptioUpdateInput: Partial<SubscriptionUpdateInput> = {
+      ...this.signupForm.value,
     };
 
+    let subscriptionQueryInput: Partial<SubscriptionQueryInput> = {
+      _id: subscriptioUpdateInput._id,
+    };
+    const inscription = { inscription: this.signupForm.value };
     let participants: Participant[] = inscription.inscription.participants;
     let links: string[] = [];
 
@@ -175,17 +175,19 @@ export class InscriptionComponent implements OnInit {
     let participantsUpdateObj: SubscriptionParticipantsRelationInput = {
       link: links,
     };
-    inscriptionUpdateObj.participants = participantsUpdateObj;
+    subscriptioUpdateInput.participants = participantsUpdateObj;
 
     this.inscriptionService
-      .updateInscription(inscription.inscription._id, inscriptionUpdateObj)
-      .subscribe((res: string) => {
+      .updateOneSubscription(subscriptionQueryInput, subscriptioUpdateInput)
+      .subscribe((inscription: Inscription) => {
         this.store.dispatch(
           InscriptionActions.setInscription({
-            inscription: inscription.inscription,
+            inscription: inscription,
           })
         );
-        this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
+        this.store.dispatch(
+          InscriptionActions.increaseCurrentParticipantNumber()
+        );
         this.router.navigate(['/inscriptions/participant']).then();
       });
   }
@@ -211,6 +213,10 @@ export class InscriptionComponent implements OnInit {
 
     this.signupForm.patchValue({
       _id: inscription._id,
+      week: inscription.week,
+      numOfChildren: inscription.numOfChildren,
+      deadline: inscription.deadline,
+      reservationDate: inscription.reservationDate,
       salutation: inscription.salutation,
       firstName: inscription.firstName,
       lastName: inscription.lastName,
@@ -225,5 +231,9 @@ export class InscriptionComponent implements OnInit {
       externalUserId: inscription.externalUserId,
       participants: inscription.participants,
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

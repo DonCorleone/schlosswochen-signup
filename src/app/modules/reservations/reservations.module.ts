@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { ReservationsRoutingModule } from './reservations-routing.module';
 import { ReservationComponent } from './reservation/reservation.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { StoreModule } from '@ngrx/store';
-import * as fromState from './state/reservation.reducer';
 import { CapacityComponent } from './capacity/capacity.component';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
+import {StoreModule} from "@ngrx/store";
+import * as inscriptionState from "../inscription/state/inscription.reducer";
 
 @NgModule({
   declarations: [
@@ -20,8 +20,8 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     SharedModule,
     StoreModule.forFeature(
-      fromState.reservationFeatureKey,
-      fromState.reservationReducer
+      inscriptionState.inscriptionFeatureKey,
+      inscriptionState.inscriptionReducer
     ),
     TranslateModule,
   ],

@@ -18,12 +18,10 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "customWebpackConfig": {
-              "path": "./webpack-dev.config.js"
-            },
             "outputPath": "dist/Schlosswochen-Inscription",
+            "allowedCommonJsDependencies": ["crypto", "stream"],
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -56,9 +54,6 @@
           },
           "configurations": {
             "production": {
-              "customWebpackConfig": {
-                "path": "webpack-prod.config.js"
-              },
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -83,7 +78,15 @@
                   "maximumWarning": "2kb",
                   "maximumError": "4kb"
                 }
-              ]
+              ],
+              "custom": {
+                "fileReplacements": [
+                  {
+                    "replace": "src/environments/environment.ts",
+                    "with": "src/environments/environment.custom.ts"
+                  }
+                ]
+              }
             },
             "development": {
               "buildOptimizer": false,
@@ -96,7 +99,7 @@
           }
         },
         "serve": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "Schlosswochen-Inscription:build"
           },
@@ -156,6 +159,9 @@
           "configurations": {
             "production": {
               "devServerTarget": "Schlosswochen-Inscription:serve:production"
+            },
+            "custom": {
+              "devServerTarget": "Schlosswochen-Inscription:serve:custom"
             }
           }
         }

@@ -1,24 +1,30 @@
-import { Component, OnDestroy } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 
-import * as ReservationActions from '../state/reservation.action';
-import * as ReservationReducer from '../state/reservation.reducer';
+import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
+import * as InscriptionActions from '../../inscription/state/inscription.actions';
 import { WeeklyReservation } from 'src/app/models/Week';
 import { ReservationService } from 'src/app/service/reservation.service';
+import { environment } from '../../../../environments/environment.custom';
+import {
+  SubscriptionInsertInput,
+  Subscription as Inscription, Week,
+} from "../../../models/Graphqlx";
 
 @Component({
   selector: 'app-reservation',
   templateUrl: './reservation.component.html',
   styleUrls: ['./reservation.component.scss'],
 })
-export class ReservationComponent implements OnDestroy {
+export class ReservationComponent implements OnInit, OnDestroy {
   title = 'RESERVATION';
 
-  maxWeeks: number = 1;
+ // maxWeeks: number = 1;
+  weeks$: Observable<Week[]>;
   maxReservations: number = 1;
 
   reservationSubscription: Subscription;
@@ -28,10 +34,10 @@ export class ReservationComponent implements OnDestroy {
     private fb: FormBuilder,
     private reservationService: ReservationService,
     private router: Router,
-    private store: Store<ReservationReducer.State>
+    private store: Store<InscriptionReducer.InscriptionState>
   ) {
-    this.maxWeeks = +process.env.MAX_NUMBER_OF_WEEKS!;
-    this.maxReservations = +process.env.MAX_NUMBER_OF_RESERVATIONS!;
+  //  this.maxWeeks = +environment.MAX_NUMBER_OF_WEEKS!;
+    this.maxReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
 
   signupForm = this.fb.group({
@@ -48,16 +54,6 @@ export class ReservationComponent implements OnDestroy {
       weekNr: week,
       numberOfReservations: reservations,
     };
-  }
-
-  changeReservation(weekNumber: number, numberOfChildren: number): void {
-    const weeklyReservation: WeeklyReservation = {
-      weekNr: weekNumber,
-      numberOfReservations: numberOfChildren,
-    };
-    this.store.dispatch(
-      ReservationActions.setWeeklyReservation({ weeklyReservation })
-    );
   }
 
   goToNextStep(): void {
@@ -78,22 +74,24 @@ export class ReservationComponent implements OnDestroy {
         (5 + weeklyReservation.numberOfReservations * 3) * 60 * 1000;
       let deadline = new Date(new Date().getTime() + deadlineMs);
 
-      let param: Record<string, any> = {
-        subscriptionInsertInput: {
-          deadline,
-          numOfChildren: weeklyReservation.numberOfReservations,
-          reservationDate: new Date(),
-          state: 'temporary',
-          week: weeklyReservation.weekNr,
-        },
-      };
+      let subscriptionInsertInput: Partial<SubscriptionInsertInput> = {
+        numOfChildren: weeklyReservation.numberOfReservations,
+        week: weeklyReservation.weekNr,
+        year: new Date().getFullYear(),
+        deadline: deadline,
+        reservationDate: new Date(),
+        state: 'temporary'
+      }
+
 
       this.reservationSubscription = this.reservationService
-        .createWeeklyReservation(param)
-        .subscribe((inscriptionId: string) => {
-          this.store.dispatch(ReservationActions.setDeadline({ deadline }));
+        .insertOneSubscription(subscriptionInsertInput)
+        .subscribe((inscription: Inscription) => {
+
+          this.store.dispatch(InscriptionActions.setInscription({ inscription }));
+
           this.router
-            .navigate(['/inscriptions/inscription', inscriptionId])
+            .navigate(['/inscriptions/inscription',inscription._id])
             .then((x) => {
               this.reservationSubscription.unsubscribe();
             });
@@ -109,5 +107,9 @@ export class ReservationComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.reservationSubscription.unsubscribe();
+  }
+
+  ngOnInit(): void {
+    this.weeks$ = this.reservationService.getWeeks(2022);
   }
 }

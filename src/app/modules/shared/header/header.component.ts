@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable} from 'rxjs';
-import { WeeklyReservation } from 'src/app/models/Week';
+import { Observable } from 'rxjs';
+import {Maybe, Scalars, Subscription as Inscription} from 'src/app/models/Graphqlx';
 
-import * as ReservationReducer from '../../reservations/state/reservation.reducer';
+import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import { selectIsLoggedIn } from '../../user/state/auth.selectors';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -15,18 +15,18 @@ import { TranslateService } from '@ngx-translate/core';
 export class HeaderComponent implements OnInit {
   @Input() externalInput: string | null;
 
-  reservation$: Observable<WeeklyReservation>;
+  inscription$: Observable<Inscription>;
   loggedIn$: Observable<boolean>;
   deadline$: Observable<Date>;
 
   constructor(
-    private store: Store<ReservationReducer.State>,
+    private store: Store<InscriptionReducer.InscriptionState>,
     public translate: TranslateService
   ) {}
 
   ngOnInit(): void {
     this.loggedIn$ = this.store.select(selectIsLoggedIn);
-    this.deadline$ = this.store.select(ReservationReducer.getDeadline);
-    this.reservation$ = this.store.select(ReservationReducer.getWeeklyReservation);
+    this.deadline$ = this.store.select(InscriptionReducer.getDeadline);
+    this.inscription$ = this.store.select(InscriptionReducer.getInscription);
   }
 }

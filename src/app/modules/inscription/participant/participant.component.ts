@@ -19,7 +19,6 @@ import { Store } from '@ngrx/store';
 import * as InscriptionActions from '../state/inscription.actions';
 
 import * as AuthSelector from '../../user/state/auth.selectors';
-import * as ReservationReducer from '../../reservations/state/reservation.reducer';
 import * as InscriptionsReducer from '../../inscription/state/inscription.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
 import {
@@ -68,11 +67,14 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ParticipantComponent implements OnInit, OnDestroy {
-  title = 'PARTICIPANT';
-  // subscription_id: string = '';
-  week: number = 0;
+  title = 'PARTICIPANT.TITLE';
+  firstNameRequired = 'PARTICIPANT.FIRSTNAMEREQUIRED';
+  lastNameRequired = 'PARTICIPANT.LASTNAMEREQUIRED';
+  birthdayRequired = 'PARTICIPANT.BIRTHDAYREQUIRED';
+  commentPh = 'PARTICIPANT.COMMENTPH';
+
   numOfChilds: number = 0;
-  inscription: Inscription;
+  inscription!: Inscription;
 
   timer$: Observable<number> | undefined;
 
@@ -92,6 +94,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   };
 
   subscriptions: Subscription[] = [];
+  FIRSTNAMEREQUIRED = 'PARTICIPANT.FIRSTNAMEREQUIRED';
 
   constructor(
     private fb: FormBuilder,
@@ -109,14 +112,15 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       combineLatest([
-        this.store.select(ReservationReducer.getDeadline),
-        this.store.select(ReservationReducer.getWeeklyReservation),
         this.store.select(InscriptionsReducer.getInscription),
         this.activeRoute.params,
       ])
         .pipe(
-          tap(([deadline, weeklyReservation, inscription, routeParams]) => {
-            // this.deadlineM = (deadline.getMinutes()- new Date().getMinutes());
+          tap(([inscription, routeParams]) => {
+            if (inscription?.numOfChildren){
+              this.numOfChilds = inscription.numOfChildren;
+            }
+            const deadline = new Date(inscription.deadline);
             this.timer$ = timer(0, 60000).pipe(
               scan(
                 (acc) => --acc,
@@ -125,8 +129,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               takeWhile((x) => x >= 0)
             );
 
-            this.numOfChilds = weeklyReservation.numberOfReservations;
-            this.week = weeklyReservation.weekNr;
             this.inscription = inscription;
 
             this.loadParticipantDetail(inscription._id);
@@ -296,9 +298,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.store
         .select(InscriptionsReducer.getInscription)
-        .subscribe((InscriptionStore) => {
+        .subscribe((inscriptionStore) => {
           const link: string[] = [];
-          for (let index = 1; index <= this.numOfChilds; index++) {
+          let numOfChildren = inscriptionStore?.numOfChildren ? inscriptionStore?.numOfChildren : 0;
+          for (let index = 1; index <= numOfChildren; index++) {
             let participantId = this.inscription._id + '-' + index;
 
             link.push(participantId);
@@ -314,18 +317,18 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               link: link,
             };
           const subscription: SubscriptionUpdateInput = {
-            firstName: InscriptionStore.firstName,
-            lastName: InscriptionStore.lastName,
-            _id: InscriptionStore._id,
-            email: InscriptionStore.email,
-            phone: InscriptionStore.phone,
-            street1: InscriptionStore.street1,
-            street2: InscriptionStore.street2,
-            city: InscriptionStore.city,
+            firstName: inscriptionStore.firstName,
+            lastName: inscriptionStore.lastName,
+            _id: inscriptionStore._id,
+            email: inscriptionStore.email,
+            phone: inscriptionStore.phone,
+            street1: inscriptionStore.street1,
+            street2: inscriptionStore.street2,
+            city: inscriptionStore.city,
             state: 'definitive',
-            zip: InscriptionStore.zip,
+            zip: inscriptionStore.zip,
             participants: subscriptionParticipantsRelationInput,
-            externalUserId: InscriptionStore.externalUserId,
+            externalUserId: inscriptionStore.externalUserId,
           };
           subscription.participants = subscriptionParticipantsRelationInput;
           this.subscriptions.push(
