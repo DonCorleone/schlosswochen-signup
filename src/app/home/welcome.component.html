@@ -20,9 +20,6 @@
         </select>
       </div>
       <div>
-        <div>
-          {{ "HELLO" | translate: param }}
-        </div>
         <app-count-down [title]="'COUNTDOWNTITLE'"></app-count-down>
       </div>
       <div *ngIf="loggedIn$ | async as loggedIn; else loginContent">

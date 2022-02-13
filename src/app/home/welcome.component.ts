@@ -27,7 +27,6 @@ export class WelcomeComponent implements OnDestroy {
 
   loggedIn$: Observable<boolean>;
   profile$: Observable<any>;
-  param = { value: 'world' };
   countDownTitle: string;
   private _ngDestroy$ = new Subject<void>();
 
