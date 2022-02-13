@@ -18,7 +18,7 @@
         </formly-form> -->
         <div class="form-group row mb-2">
           <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label" for="salutationId">
-            {{ "CONTACT.SALUTATION" | translate }}:
+            {{ "CONTACT.SALUTATION.TITLE" | translate }}:
           </label>
           <div class="col-lg-8 col-md-8">
             <select
@@ -35,8 +35,9 @@
               <option value="" disabled selected hidden>
                 {{ "CONTACT.SALUTATIONMISSING" | translate }}
               </option>
-              <option value="F">Madame</option>
-              <option value="M">Sir</option>
+              <option value="F">{{ "CONTACT.SALUTATION.F" | translate }}</option>
+              <option value="M">{{ "CONTACT.SALUTATION.M" | translate }}</option>
+              <option value="D">{{ "CONTACT.SALUTATION.D" | translate }}</option>
             </select>
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('salutation')?.errors?.required">{{

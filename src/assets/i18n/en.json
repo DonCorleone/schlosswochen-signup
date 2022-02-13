@@ -12,7 +12,12 @@
   "RESERVATION": "Reservation",
   "CONTACT": {
     "TITLE": "Contact",
-    "SALUTATION": "Salutation",
+    "SALUTATION": {
+      "TITLE": "Salutation",
+      "F": "Madame",
+      "M": "Sir",
+      "D": "Divers"
+    },
     "SALUTATIONMISSING": "Please select a Salutation.",
     "FIRSTNAME": "First Name",
     "FIRSTNAMEMISSING": "Please enter your first name.",
@@ -45,7 +50,12 @@
   },
   "PARTICIPANT": {
     "TITLE": "Participant",
-    "SALUTATION": "Salutation",
+    "SALUTATION": {
+      "TITLE": "Salutation",
+      "F": "Princess",
+      "M": "Knight",
+      "D": "Divers"
+    },
     "SALUTATIONPH": "Select a Salutation ..",
     "FIRSTNAME": "First Name",
     "FIRSTNAMEREQUIRED": "First Name (required)",

@@ -13,7 +13,12 @@
   "CONTACT": {
     "HELLO": "Hello",
     "TITLE": "Kontakt",
-    "SALUTATION": "Anrede",
+    "SALUTATION": {
+      "TITLE": "Anrede",
+      "F": "Frau",
+      "M": "Herr",
+      "D": "Andere"
+    },
     "SALUTATIONMISSING": "Bitte eine Anrede auswählen.",
     "FIRSTNAME": "Vorname",
     "FIRSTNAMEMISSING": "Bitte einen Vornamen eingeben.",
@@ -47,7 +52,12 @@
   },
   "PARTICIPANT": {
     "TITLE": "Teilnehmer:in",
-    "SALUTATION": "Anrede",
+    "SALUTATION": {
+      "TITLE": "Anrede",
+      "F": "Prinzessin",
+      "M": "Ritter",
+      "D": "Andere"
+    },
     "SALUTATIONPH": "Anrede wählen ..",
     "FIRSTNAME": "Vorname",
     "FIRSTNAMEREQUIRED": "Vorname (Pflichtfeld)",

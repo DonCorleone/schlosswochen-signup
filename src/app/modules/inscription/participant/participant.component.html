@@ -15,7 +15,7 @@
 
         <div class="form-group row mb-2">
           <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label" for="salutationId">
-            {{ "PARTICIPANT.SALUTATION" | translate }}
+            {{ "PARTICIPANT.SALUTATION.TITLE" | translate }}
           </label>
           <div class="col-lg-8 col-md-8">
             <select
@@ -32,8 +32,9 @@
               <option value="" disabled selected hidden>
                 {{ "PARTICIPANT.SALUTATIONPH" | translate }}
               </option>
-              <option value="M">Ritter</option>
-              <option value="F">Prinzessin</option>
+              <option value="F">{{ "PARTICIPANT.SALUTATION.F" | translate }}</option>
+              <option value="M">{{ "PARTICIPANT.SALUTATION.M" | translate }}</option>
+              <option value="D">{{ "PARTICIPANT.SALUTATION.D" | translate }}</option>
             </select>
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('salutation')?.errors?.required">
@@ -146,14 +147,14 @@
           </div>
         </div>
 
-        <div class="form-group row mb-2">
+        <div class="form-group row mb-2 flex-sm-nowrap">
           <label
-            class="col-md-2 col-form-label form-check-label"
+            class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label"
             for="fotoAllowedId"
           >
             {{ "PARTICIPANT.FOTOALLOWED" | translate }}
           </label>
-          <div class="col-lg-8 col-md-8">
+          <div class="col-lg-8 col-md-8 nowrap">
             <input
               id="fotoAllowedId"
               class="form-check-input"
