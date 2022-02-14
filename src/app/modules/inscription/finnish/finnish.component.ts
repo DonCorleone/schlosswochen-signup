@@ -21,7 +21,7 @@ import {subscribe} from "graphql";
   styleUrls: ['./finnish.component.scss'],
 })
 export class FinnishComponent implements OnInit {
-  title = 'Finnished';
+  title = 'FINNISH.TITLE';
   inscription$: Observable<Inscription>;
 
   loggedIn$: Observable<boolean>;
@@ -47,15 +47,15 @@ export class FinnishComponent implements OnInit {
       .pipe(take(1))
       .subscribe((inscription: Inscription) => {
         let contact=[];
-        contact.push(inscription.salutation + ' ' + inscription.firstName + ' ' + inscription.lastName);
+        contact.push(inscription.firstName + ' ' + inscription.lastName +'('+ inscription.salutation +')');
         contact.push(inscription.zip + ' ' + inscription.city);
         contact.push(inscription.email);
         this.inscription = contact.join(', ');
 
         inscription.participants?.forEach(participant => {
           let participantParts=[];
-          participantParts.push(participant?.salutation + ' ' + participant?.firstNameParticipant + ' ' + participant?.lastNameParticipant);
-          participantParts.push(new Date(participant?.birthday)?.toLocaleDateString());
+          participantParts.push(participant?.firstNameParticipant + ' ' + participant?.lastNameParticipant +'('+ participant?.salutation +')');
+          participantParts.push('*' + new Date(participant?.birthday)?.toLocaleDateString('de-CH'));
           this.participants.push(participantParts.join(', '));
         })
       }

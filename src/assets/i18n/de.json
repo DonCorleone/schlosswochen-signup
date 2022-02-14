@@ -1,6 +1,8 @@
 {
   "HELLO": "hallo {{value}}",
   "LOGOUT": "Ausloggen",
+  "ISLOGGEDIN": "Ist eingeloggt",
+  "LOGINREGISTER": "Login / Register",
   "COUNTDOWNTITLE": "Tage bis zum Start",
   "LANGUAGE": "Language",
   "SELECTIONREQUIRED": "Bitte Woche und anzahl Teilnehmer wählen",
@@ -76,5 +78,11 @@
   },
   "STATE.definitive": "Definitive",
   "STATE.temporary": "Provisorische",
-  "PLACES": "Reservationen"
+  "PLACES": "Reservationen",
+  "FINNISH": {
+    "TITLE": "Abschluss",
+    "LOGINQUESTION": "Möchten Sie sich registrieren und künftig die Anmeldung editieren",
+    "CONTACT": "Kontakt",
+    "PARTICIPANT": "Teilnehmer:in"
+  }
 }

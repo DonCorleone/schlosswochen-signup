@@ -1,6 +1,8 @@
 {
   "HELLO": "hello {{value}}",
-  "LOGOUT": "Logout00",
+  "LOGOUT": "Logout",
+  "ISLOGGEDIN": "Is logged in",
+  "LOGINREGISTER": "Login / Register",
   "COUNTDOWNTITLE": "Days till GoLive",
   "LANGUAGE": "Language",
   "SELECTIONREQUIRED": "Please select a week and a number of participants",
@@ -74,5 +76,11 @@
   },
   "STATE.definitive": "Definitive",
   "STATE.temporary ": "Temporary",
-  "PLACES": "Reservations"
+  "PLACES": "Reservations",
+  "FINNISH": {
+    "TITLE": "Finnish",
+    "LOGINQUESTION": "Would you like to register to view and edit this inscription in Future?",
+    "CONTACT": "Contact",
+    "PARTICIPANT": "Participant no.",
+  }
 }

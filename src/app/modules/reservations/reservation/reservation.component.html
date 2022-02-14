@@ -17,12 +17,12 @@
           <div *ngFor="let week of weeks">
             <div *ngIf="week && week.week" class="weekBlock">
               <div class="weekSituation">
-                <h2>{{ "WEEKNR" | translate }} {{ week.week + 1 }}</h2>
+                <h2>{{ "WEEKNR" | translate }} {{ week.week }}</h2>
                 <p>
                   {{ week.dateFrom | date: "dd.MM.YYYY":"de-CH" }} -
                   {{ week.dateTo | date: "dd.MM.YYYY":"de-CH" }}
                 </p>
-                <app-capacity [week]="week.week + 1"></app-capacity>
+                <app-capacity [week]="week.week"></app-capacity>
               </div>
               <div class="weekReservation">
                 <div class="radio-header text-warning">
@@ -43,10 +43,10 @@
                           'numOfChilds_' +
                           (j + 1).toString() +
                           '_week_' +
-                          (week.week + 1).toString()
+                          (week.week).toString()
                         "
                         type="radio"
-                        [value]="createWeeklyReservation(week.week + 1, j + 1)"
+                        [value]="createWeeklyReservation(week.week, j + 1)"
                         formControlName="numOfChilds"
                       />
                     </label>
