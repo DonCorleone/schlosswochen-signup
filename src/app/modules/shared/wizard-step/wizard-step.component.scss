@@ -1,5 +1,8 @@
 @import '~src/assets/styles/variables.scss';
 
+.content {
+  min-height: 85vh;
+}
 nav {
   width: 100%;
 }
@@ -61,6 +64,11 @@ section {
       }
     }
   }
+}
+
+.footer {
+  min-height: 15vh;
+  background-color: #090909;
 }
 
 @media all and (min-width: 768px) {

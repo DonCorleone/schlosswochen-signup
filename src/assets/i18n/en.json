@@ -1,6 +1,8 @@
 {
   "HELLO": "hello {{value}}",
-  "LOGOUT": "Logout00",
+  "LOGOUT": "Logout",
+  "ISLOGGEDIN": "Is logged in",
+  "LOGINREGISTER": "Login / Register",
   "COUNTDOWNTITLE": "Days till GoLive",
   "LANGUAGE": "Language",
   "SELECTIONREQUIRED": "Please select a week and a number of participants",
@@ -12,7 +14,12 @@
   "RESERVATION": "Reservation",
   "CONTACT": {
     "TITLE": "Contact",
-    "SALUTATION": "Salutation",
+    "SALUTATION": {
+      "TITLE": "Salutation",
+      "F": "Madame",
+      "M": "Sir",
+      "D": "Divers"
+    },
     "SALUTATIONMISSING": "Please select a Salutation.",
     "FIRSTNAME": "First Name",
     "FIRSTNAMEMISSING": "Please enter your first name.",
@@ -20,25 +27,37 @@
     "FIRSTNAMEMINIMUMLENGTH": "The first name must be longer than 3 characters.",
     "LASTNAME": "Last Name",
     "LASTNAMEMISSING": "Please enter your last name.",
+    "LASTNAMEREQUIRED": "Last Name (required)",
     "LASTNAMEMAXLEMNGTH": "The last name must be less than 50 characters.",
     "PHONE": "Phone",
     "PHONEMISSING": "Please enter your phone number.",
-    "EMAIL": "email",
-    "EMAILMISSING": "Please enter your email address..",
+    "PHONEREQUIRED": "Phone (required)",
+    "EMAIL": "Email",
+    "EMAILMISSING": "Please enter your email address.",
+    "EMAILREQUIRED": "Email (required)",
     "ADDRESS1": "Address 1",
     "ADDRESS2": "Address 2",
+    "STREETTWO": "Address 2",
     "ZIP": "ZIP",
     "ZIPMISSING": "Please enter a zip.",
+    "ZIPREQUIRED": "ZIP (required)",
     "ZIPMINLENGTH": "The last name must be at least 4 digits.",
     "ZIPMAXLENGTH": "The last name must be less than 5 digits.",
     "CITY": "City",
     "CITYMISSING": "Please enter a city.",
+    "CITYREQUIRED": "City (required)",
     "COUNTRY": "Country",
-    "COUNTRYMISSING": "Please select a country."
+    "COUNTRYMISSING": "Please select a country.",
+    "COUNTRYREQUIRED": "Country (required)"
   },
   "PARTICIPANT": {
     "TITLE": "Participant",
-    "SALUTATION": "Salutation",
+    "SALUTATION": {
+      "TITLE": "Salutation",
+      "F": "Princess",
+      "M": "Knight",
+      "D": "Divers"
+    },
     "SALUTATIONPH": "Select a Salutation ..",
     "FIRSTNAME": "First Name",
     "FIRSTNAMEREQUIRED": "First Name (required)",
@@ -57,5 +76,11 @@
   },
   "STATE.definitive": "Definitive",
   "STATE.temporary ": "Temporary",
-  "PLACES": "Reservations"
+  "PLACES": "Reservations",
+  "FINNISH": {
+    "TITLE": "Finnish",
+    "LOGINQUESTION": "Would you like to register to view and edit this inscription in Future?",
+    "CONTACT": "Contact",
+    "PARTICIPANT": "Participant no.",
+  }
 }

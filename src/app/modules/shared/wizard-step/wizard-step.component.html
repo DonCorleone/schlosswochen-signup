@@ -3,7 +3,7 @@
     <h1>{{title | translate}} {{titlePostfix}}</h1>
   </header>
 
-  <div>
+  <div class="content">
     <button id="previous-button" class="btn btn-primary mr-3" [class.disabled]="!previousEnabled" (click)="goToPreviousStep()">
       <i class="bi-chevron-left"></i> <span>{{'WIZARD.PREVIOUS' | translate}}</span>
     </button>
@@ -20,5 +20,8 @@
         <span>{{'WIZARD.NEXT' | translate}}</span> <i class="bi-chevron-right"></i>
       </button>
     </ng-template>
+  </div>
+  <div class="footer">
+
   </div>
 </section>

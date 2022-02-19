@@ -7,9 +7,9 @@
   </ng-container>
   <ng-container *ngIf="hoursToDday$ | async as hoursToDday">
     <ng-container *ngIf="hoursToDday && hoursToDday > 0">
-      <span> {{ hoursToDday$ | async | number: "2.0" }}</span><span>:</span>
+      <span> {{ hoursToDday$ | async | number: "2.0" }}</span><span *ngIf="minutesToDday$ | async">:</span>
     </ng-container>
   </ng-container>
-  <span>{{ minutesToDday$ | async | number: "2.0" }}</span><span>:</span>
+  <span>{{ minutesToDday$ | async | number: "2.0" }}</span><span *ngIf="minutesToDday$ | async">:</span>
   <span>{{ secondsToDday$ | async | number: "2.0" }}</span>
 </span>

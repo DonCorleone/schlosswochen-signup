@@ -7,18 +7,20 @@
   <div class="wizard-content">
     <div class="wizard-content-body">
       <div class="question text-warning" *ngIf="inscription">
-        Would you like to register to view and edit this inscription in Future?
+        {{ "FINNISH.LOGINQUESTION" | translate }}
       </div>
       <div class="card" *ngIf="inscription">
         <div class="card-body">
-          <h5 class="card-title">Contact</h5>
+          <h5 class="card-title">{{ "FINNISH.CONTACT" | translate }}</h5>
           <p class="card-text">{{ inscription }}</p>
         </div>
       </div>
 
       <div class="card" *ngFor="let participant of participants; index as i">
         <div class="card-body">
-          <h5 class="card-title">participant no. {{ i }}</h5>
+          <h5 class="card-title">
+            {{ "FINNISH.PARTICIPANT" | translate }} {{ i }}
+          </h5>
           <p class="card-text">{{ participant }}</p>
         </div>
       </div>
@@ -28,9 +30,9 @@
           <div *ngIf="loggedIn$ | async as loggedIn; else loginContent">
             <p>
               <button class="btn btn-outline-danger" (click)="logout()">
-                Logout
+                {{ "LOGOUT" | translate }}
               </button>
-              is logged in {{ loggedIn }}
+              {{ "ISLOGGEDIN" | translate }} {{ loggedIn }}
             </p>
             <div *ngIf="profile$ | async as profile">
               <img [src]="profile.picture" />
@@ -40,7 +42,7 @@
 
           <ng-template #loginContent
             ><button class="btn btn-outline-success" (click)="login()">
-              Login / Register
+              {{ "LOGINREGISTER" | translate }}
             </button></ng-template
           >
         </div>

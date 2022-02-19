@@ -1,6 +1,8 @@
 {
   "HELLO": "hallo {{value}}",
   "LOGOUT": "Ausloggen",
+  "ISLOGGEDIN": "Ist eingeloggt",
+  "LOGINREGISTER": "Login / Register",
   "COUNTDOWNTITLE": "Tage bis zum Start",
   "LANGUAGE": "Language",
   "SELECTIONREQUIRED": "Bitte Woche und anzahl Teilnehmer wählen",
@@ -11,8 +13,14 @@
   "INSCRIPTION": "Anmeldung",
   "RESERVATION": "Reservation",
   "CONTACT": {
+    "HELLO": "Hello",
     "TITLE": "Kontakt",
-    "SALUTATION": "Anrede",
+    "SALUTATION": {
+      "TITLE": "Anrede",
+      "F": "Frau",
+      "M": "Herr",
+      "D": "Andere"
+    },
     "SALUTATIONMISSING": "Bitte eine Anrede auswählen.",
     "FIRSTNAME": "Vorname",
     "FIRSTNAMEMISSING": "Bitte einen Vornamen eingeben.",
@@ -20,25 +28,38 @@
     "FIRSTNAMEMINIMUMLENGTH": "Der Vorname muss mindestens 3 Zeichen lang sein",
     "LASTNAME": "Nachname",
     "LASTNAMEMISSING": "Bitte einen Nachnamen eingeben.",
+    "LASTNAMEREQUIRED": "Nachname (Pflichtfeld)",
     "LASTNAMEMAXLEMNGTH": "Der Nachname darf maximal 50 Zeichen lang sein.",
     "PHONE": "Telefonnummer",
     "PHONEMISSING": "Bitte eine Telefonnummer eingeben.",
+    "PHONEREQUIRED": "Telefonnummer (Pflichtfeld)",
     "EMAIL": "eMail",
     "EMAILMISSING": "Bitte eine eMail-Adresse eingeben.",
+    "EMAILREQUIRED": "eMail (Pflichtfeld)",
     "ADDRESS1": "Addresszeile 1",
+    "STREETREQUIRED": "Strasse (Pflichtfeld)",
     "ADDRESS2": "Addresszeile 2",
+    "STREETTWO": "Addresszeile 2",
     "ZIP": "PLZ",
     "ZIPMISSING": "Bitte eine PLZ erfassen.",
+    "ZIPREQUIRED": "PLZ (Pflichtfeld)",
     "ZIPMINLENGTH": "Die PLZ muss mindestens 4 Zeichen lang sein.",
     "ZIPMAXLENGTH": "Die PLZ darf höchstens 5 Zeichen lang sein.",
     "CITY": "Ort",
     "CITYMISSING": "Bitte einen Ort erfassen.",
+    "CITYREQUIRED": "Ort (Pflichtfeld)",
     "COUNTRY": "Land",
-    "COUNTRYMISSING": "Bitte ein Land erfassen."
+    "COUNTRYMISSING": "Bitte ein Land erfassen.",
+    "COUNTRYREQUIRED": "Land (Pflichtfeld)"
   },
   "PARTICIPANT": {
     "TITLE": "Teilnehmer:in",
-    "SALUTATION": "Anrede",
+    "SALUTATION": {
+      "TITLE": "Anrede",
+      "F": "Prinzessin",
+      "M": "Ritter",
+      "D": "Andere"
+    },
     "SALUTATIONPH": "Anrede wählen ..",
     "FIRSTNAME": "Vorname",
     "FIRSTNAMEREQUIRED": "Vorname (Pflichtfeld)",
@@ -57,5 +78,11 @@
   },
   "STATE.definitive": "Definitive",
   "STATE.temporary": "Provisorische",
-  "PLACES": "Reservationen"
+  "PLACES": "Reservationen",
+  "FINNISH": {
+    "TITLE": "Abschluss",
+    "LOGINQUESTION": "Möchten Sie sich registrieren und künftig die Anmeldung editieren",
+    "CONTACT": "Kontakt",
+    "PARTICIPANT": "Teilnehmer:in"
+  }
 }

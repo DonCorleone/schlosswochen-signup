@@ -5,3 +5,11 @@
 .form-check-input {
   vertical-align: -webkit-baseline-middle;
 }
+
+@media all and (max-width: 768px) {
+  .nowrap {
+    margin-top: -15px;
+  }
+}
+
+

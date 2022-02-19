@@ -18,7 +18,7 @@
         </formly-form> -->
         <div class="form-group row mb-2">
           <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label" for="salutationId">
-            {{ "CONTACT.SALUTATION" | translate }}:
+            {{ "CONTACT.SALUTATION.TITLE" | translate }}:
           </label>
           <div class="col-lg-8 col-md-8">
             <select
@@ -35,8 +35,9 @@
               <option value="" disabled selected hidden>
                 {{ "CONTACT.SALUTATIONMISSING" | translate }}
               </option>
-              <option value="F">Madame</option>
-              <option value="M">Sir</option>
+              <option value="F">{{ "CONTACT.SALUTATION.F" | translate }}</option>
+              <option value="M">{{ "CONTACT.SALUTATION.M" | translate }}</option>
+              <option value="D">{{ "CONTACT.SALUTATION.D" | translate }}</option>
             </select>
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('salutation')?.errors?.required">{{
@@ -54,6 +55,8 @@
               id="firstNameId"
               class="form-control"
               type="text"
+              placeholder="{{ firstNameRequired | translate }}"
+              i18n-placeholder
               formControlName="firstName"
               [ngClass]="{
                 'is-invalid':
@@ -81,6 +84,8 @@
               id="lastNameId"
               class="form-control"
               type="text"
+              placeholder="{{ lastNameRequired | translate }}"
+              i18n-placeholder
               formControlName="lastName"
               [ngClass]="{
                 'is-invalid':
@@ -108,6 +113,8 @@
               id="phoneId"
               class="form-control"
               type="tel"
+              placeholder="{{ phoneRequired | translate }}"
+              i18n-placeholder
               formControlName="phone"
               [ngClass]="{
                 'is-invalid':
@@ -132,6 +139,8 @@
               id="emailId"
               class="form-control"
               type="email"
+              placeholder="{{ emailRequired | translate }}"
+              i18n-placeholder
               formControlName="email"
               [ngClass]="{
                 'is-invalid':
@@ -159,6 +168,8 @@
               id="street1Id"
               class="form-control"
               type="text"
+              placeholder="{{ streetRequired | translate }}"
+              i18n-placeholder
               formControlName="street1"
             />
           </div>
@@ -172,6 +183,8 @@
               id="street2Id"
               class="form-control"
               type="text"
+              placeholder="{{ streetTwo | translate }}"
+              i18n-placeholder
               formControlName="street2"
             />
           </div>
@@ -186,6 +199,8 @@
               id="zipId"
               class="form-control"
               type="number"
+              placeholder="{{ zipRequired | translate }}"
+              i18n-placeholder
               formControlName="zip"
               [ngClass]="{
                 'is-invalid':
@@ -206,11 +221,13 @@
                 }}</span>
             </span>
           </div>
-          <div class="col-xxl-8 col-xl-6 col-lg-5 col-md-5 col-city">
+          <div class="col-xxl-6 col-xl-6 col-lg-5 col-md-5 col-city">
             <input
               id="cityId"
               class="form-control"
               type="text"
+              placeholder="{{ cityRequired | translate }}"
+              i18n-placeholder
               formControlName="city"
               [ngClass]="{
                 'is-invalid':
@@ -236,6 +253,8 @@
               id="countryId"
               class="form-control"
               type="text"
+              placeholder="{{ countryRequired | translate }}"
+              i18n-placeholder
               formControlName="country"
               [ngClass]="{
                 'is-invalid':
@@ -255,4 +274,3 @@
     </div>
   </div>
 </app-wizard-step>
-<br />Value: {{ signupForm.value | json }}

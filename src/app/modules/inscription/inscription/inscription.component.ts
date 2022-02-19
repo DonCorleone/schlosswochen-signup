@@ -41,6 +41,15 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class InscriptionComponent implements OnInit, OnDestroy {
   title = 'CONTACT.TITLE';
+  firstNameRequired = 'CONTACT.FIRSTNAMEREQUIRED';
+  lastNameRequired = 'CONTACT.LASTNAMEREQUIRED';
+  streetRequired = 'CONTACT.STREETREQUIRED';
+  streetTwo = 'CONTACT.STREETTWO'
+  zipRequired = 'CONTACT.ZIPREQUIRED';
+  cityRequired = 'CONTACT.CITYREQUIRED';
+  emailRequired = 'CONTACT.EMAILREQUIRED';
+  phoneRequired = 'CONTACT.PHONEREQUIRED';
+  countryRequired = 'CONTACT.COUNTRYREQUIRED';
 
   signupForm!: FormGroup;
   emailMessage: string = '';
