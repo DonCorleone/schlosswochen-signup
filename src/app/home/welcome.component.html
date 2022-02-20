@@ -22,7 +22,7 @@
       <div>
         <app-count-down [title]="'COUNTDOWNTITLE'"></app-count-down>
       </div>
-      <div *ngIf="loggedIn$ | async as loggedIn; else loginContent">
+      <!--div *ngIf="loggedIn$ | async as loggedIn; else loginContent">
         <p>
           <button class="btn btn-outline-danger" (click)="logout()">
             {{ "Logout" | uppercase | translate }}
@@ -37,34 +37,8 @@
 
       <ng-template #loginContent>
         <button class="btn btn-outline-success" (click)="login()">Login</button>
-      </ng-template>
-
-      <h2>Willkommen zu den Anmeldungen für die Schlosswochen 2022</h2>
-<br>
-      <p>
-        Sie können im nächsten Schritt <strong>maximal 3 Kinder</strong> für <strong>maximal 1 Woche</strong>
-        anmelden. <em>(Sollten Sie mehr Kinder anmelden wollen, müssen Sie die
-        Anmeldung ein zweites mal mit einer anderen eMailadresse wiederholen).</em>
-      </p>
-
-      <p>Die Plätze sind auf <strong>50 Teilnehmer pro Woche beschränkt.</strong></p>
-
-      <p>
-        Sie setzen als erstes eine provisorische Anmeldung ab, die ihnen die
-        nächst freien Plätze garantiert. Danach haben sie eine angemessene Zeit
-        zur verfügung um Ihre Angaben zu tätigen. <em>Die Anmeldung erhält nach den
-        letzten Schritt den Status ‘definitiv’. Sollte die Zeit verstreichen,
-        wird die Reservation automatisch gelöscht.</em>
-      </p>
-
-      <p>
-        Alle <strong>Plätze über 50</strong> landen der Reihe nach auf der <strong>Warteliste.</strong> Sie
-        erfahren von uns, falls ihre Kinder aufrücken und ihre Anmeldung
-        umgewandelt wird. Wünschen Sie ihre Anmeldungen nicht auf der Warteliste
-        zu haben, können Sie sie am Schluss löschen.
-      </p>
-
-      <p><strong>Klicken Sie bitte nun auf [>] resp. [Weiter]</strong></p>
+      </ng-template-->
+      <div [innerHtml]="welcomeText | translate | safe: 'html'" class="welcome-text"></div>
     </div>
   </div>
 </app-wizard-step>

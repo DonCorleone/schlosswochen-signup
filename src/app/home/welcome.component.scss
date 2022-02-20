@@ -33,8 +33,14 @@
 
   margin: 0.3rem;
 
-  p {
-    font-weight: 150;
+  .welcome-text {
+    em {
+      font-size: smaller;
+    }
+    strong {
+      font-size: larger;
+    }
+    font-weight: 200;
     font-kerning: auto;
   }
 }
