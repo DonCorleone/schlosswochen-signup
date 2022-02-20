@@ -16,7 +16,8 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./welcome.component.scss'],
 })
 export class WelcomeComponent implements OnDestroy {
-  public title = 'INSCRIPTION';
+  title = 'INSCRIPTION';
+  welcomeText = 'WELCOME';
   private loggedInSubscription: Subscription;
 
   constructor(
