@@ -22,7 +22,7 @@
       <div>
         <app-count-down [title]="'COUNTDOWNTITLE'"></app-count-down>
       </div>
-      <div *ngIf="loggedIn$ | async as loggedIn; else loginContent">
+      <!--div *ngIf="loggedIn$ | async as loggedIn; else loginContent">
         <p>
           <button class="btn btn-outline-danger" (click)="logout()">
             {{ "Logout" | uppercase | translate }}
@@ -37,7 +37,8 @@
 
       <ng-template #loginContent>
         <button class="btn btn-outline-success" (click)="login()">Login</button>
-      </ng-template>
+      </ng-template-->
+      <div [innerHtml]="welcomeText | translate | safe: 'html'" class="welcome-text"></div>
     </div>
   </div>
 </app-wizard-step>

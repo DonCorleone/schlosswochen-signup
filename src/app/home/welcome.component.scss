@@ -29,5 +29,18 @@
 .wizard-content-body {
   align-items: center;
   justify-content: center;
-  max-width: 100%;
+  max-width: 200%;
+
+  margin: 0.3rem;
+
+  .welcome-text {
+    em {
+      font-size: smaller;
+    }
+    strong {
+      font-size: larger;
+    }
+    font-weight: 200;
+    font-kerning: auto;
+  }
 }
