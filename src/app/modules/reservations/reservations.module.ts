@@ -19,10 +19,6 @@ import * as inscriptionState from "../inscription/state/inscription.reducer";
     ReservationsRoutingModule,
     ReactiveFormsModule,
     SharedModule,
-    StoreModule.forFeature(
-      inscriptionState.inscriptionFeatureKey,
-      inscriptionState.inscriptionReducer
-    ),
     TranslateModule,
   ],
   exports: [],

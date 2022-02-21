@@ -6,21 +6,21 @@
 >
   <div class="wizard-content">
     <div class="wizard-content-body">
-      <div class="alert alert-warning show language-chooser">
-        {{ "LANGUAGE" | translate }}:
-        <select #langSelect (change)="translate.use(langSelect.value)">
-          <option
-            class="alert-warning"
-            *ngFor="let lang of translate.getLangs()"
-            [value]="lang"
-            [selected]="lang === translate.currentLang"
-          >
-            {{ lang }}
-          </option>
-        </select>
-      </div>
-      <div>
-        <app-count-down [title]="'COUNTDOWNTITLE'"></app-count-down>
+      <div class="wizard-content-body">
+        <form novalidate>
+          <div class="form-group row mb-2">
+            <app-header [showWeek]="false" [showAmount]="false" [showCountdown]="false"></app-header>
+          </div>
+          <!-- <formly-form
+            [form]="signupForm"
+            [fields]="fields"
+            [model]="model"
+            [options]="options">
+          </formly-form> -->
+          <div class="form-group row mb-2">
+            <div [innerHtml]="welcomeText | translate | safe: 'html'" class="welcome-text"></div>
+          </div>
+        </form>
       </div>
       <!--div *ngIf="loggedIn$ | async as loggedIn; else loginContent">
         <p>
@@ -38,7 +38,6 @@
       <ng-template #loginContent>
         <button class="btn btn-outline-success" (click)="login()">Login</button>
       </ng-template-->
-      <div [innerHtml]="welcomeText | translate | safe: 'html'" class="welcome-text"></div>
-    </div>
+      </div>
   </div>
 </app-wizard-step>
