@@ -1,3 +1,10 @@
 <div *ngFor="let childsPerState of childsPerStates$ | async" class="text-info super-small">
   <em>{{ 'STATE.' + childsPerState?.state | translate }} {{"PLACES" | translate}}: {{childsPerState?.sumPerStateAndWeek}}</em>
 </div>
+<ng-container *ngIf="week && week.maxParticipants && (week.maxParticipants - sumPerWeek) > 0 else waitingList">
+  <p class="text-success"><em>Freie Plätze: {{ week.maxParticipants - sumPerWeek }}</em></p>
+</ng-container>
+<ng-template #waitingList>
+  <p class="text-danger"><em>Anmeldung kommen auf die Warteliste.</em></p>
+</ng-template>
+

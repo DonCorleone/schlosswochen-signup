@@ -390,6 +390,7 @@ export type Week = {
   published?: Maybe<Scalars["Boolean"]>
   week?: Maybe<Scalars["Int"]>
   year?: Maybe<Scalars["Int"]>
+  maxParticipants?: Maybe<Scalars["Int"]>
 }
 
 export type UpdateManyPayload = {

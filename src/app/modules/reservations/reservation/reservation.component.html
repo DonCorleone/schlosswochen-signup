@@ -6,6 +6,9 @@
   <div class="wizard-content">
     <div class="wizard-content-body">
       <form [formGroup]="signupForm">
+        <div class="form-group row mb-2">
+          <app-header [showWeek]="false" [showAmount]="false" [showCountdown]="false"></app-header>
+        </div>
         <div *ngIf="weeks$ | async as weeks" class="form-group row mb-2">
           <div
             *ngIf="submitted && reservationsPerWeekCtlr?.errors?.min"
@@ -22,11 +25,11 @@
                   {{ week.dateFrom | date: "dd.MM.YYYY":"de-CH" }} -
                   {{ week.dateTo | date: "dd.MM.YYYY":"de-CH" }}
                 </p>
-                <app-capacity [week]="week.week"></app-capacity>
+                <app-capacity [week]="week"></app-capacity>
               </div>
               <div class="weekReservation">
                 <div class="radio-header text-warning">
-                  {{ "NUMBEROFRESERVATIONS" | translate }}:
+                  {{ "NUMBEROFRESERVATIONS" | translate }}
                 </div>
                 <div class="radio-container">
                   <div

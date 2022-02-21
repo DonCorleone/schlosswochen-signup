@@ -12,17 +12,19 @@
       </option>
     </select>
   </div>
-  <div class="alert alert-primary show" role="alert">
+  <div *ngIf="showWeek" class="alert alert-primary show" role="alert">
     <span>{{ 'WEEKNR' | translate}} {{ inscription.week }}</span>
   </div>
-  <div class="alert alert-primary show" role="alert">
-    <span>{{ 'RESERVEDPLACES' | translate}}: {{ inscription.numOfChildren }}</span>
-  </div>
+  <ng-container *ngIf="places$ | async as places">
+    <div *ngIf="places && showAmount" class="alert alert-primary show reserved-places" role="alert">
+      <span>{{ 'RESERVEDPLACES' | translate}}: {{ places }}</span>
+    </div>
+  </ng-container>
   <div *ngIf="externalInput" class="alert alert-warning show" role="alert">
     <span>{{ externalInput }}</span>
   </div>
   <div
-    *ngIf="!(loggedIn$ | async) && (deadline$ | async) as deadline"
+    *ngIf="showCountdown && !(loggedIn$ | async) && (deadline$ | async) as deadline"
     class="alert alert-success show"
     role="alert"
   >

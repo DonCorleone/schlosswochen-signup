@@ -24,7 +24,7 @@ export interface subscriptionInsertReturnValue {
 // }
 export interface ChildsPerState {
   state: string;
-  sumPerStateAndWeek: string;
+  sumPerStateAndWeek: number;
 }
 export interface ChildsPerStateData {
   sumChildsPerState: ChildsPerState[];

@@ -17,6 +17,11 @@ export const upsertParticipant = createAction(
   props<{ participant: Participant }>()
 );
 
+export const setPlaces = createAction(
+  '[Inscription] Set Places',
+  props<{ places: number[] }>()
+);
+
 export const increaseCurrentParticipantNumber = createAction(
   '[Participant] Increase Current ParticipantNumber'
 );
