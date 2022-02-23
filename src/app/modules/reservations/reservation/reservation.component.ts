@@ -126,8 +126,4 @@ export class ReservationComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.weeks$ = this.reservationService.getWeeks(2022);
   }
-
-  addSumPerWeek($event: number) {
-    console.log($event);
-  }
 }

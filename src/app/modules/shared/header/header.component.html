@@ -17,7 +17,7 @@
   </div>
   <ng-container *ngIf="places$ | async as places">
     <div *ngIf="places && showAmount" class="alert alert-primary show reserved-places" role="alert">
-      <span>{{ 'RESERVEDPLACES' | translate}}: {{ places }}</span>
+      <span>{{ 'RESERVEDPLACES' | translate}} {{ places }}</span>
     </div>
   </ng-container>
   <div *ngIf="externalInput" class="alert alert-warning show" role="alert">
