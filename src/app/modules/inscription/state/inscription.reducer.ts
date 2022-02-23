@@ -1,4 +1,3 @@
-import * as AppState from '../../../state/app.state';
 import * as InscriptionAction from './inscription.actions';
 import {
   createFeatureSelector,
@@ -9,7 +8,7 @@ import {
 
 import {
   Participant,
-  Subscription as Inscription,
+  Subscription as Inscription, Week,
 } from 'src/app/models/Graphqlx';
 import { stat } from 'fs';
 import { WeeklyReservation } from '../../../models/Week';
@@ -17,6 +16,7 @@ import { WeeklyReservation } from '../../../models/Week';
 export const inscriptionFeatureKey = 'inscription';
 
 export interface InscriptionState {
+  week: Week;
   inscription: Inscription;
   currentParticipantNumber: number;
   places: number[];
@@ -43,7 +43,9 @@ const initialState: InscriptionState = {
     externalUserId: '',
   },
   currentParticipantNumber: 0,
-  places: []
+  places: [],
+  week: {
+  }
 };
 
 // Selector functions
@@ -69,6 +71,11 @@ export const getCurrentParticipantNumber = createSelector(
 export const getPlaces = createSelector(
   getInscriptionFeatureState,
   (state) => state.places
+);
+
+export const getWeek = createSelector(
+  getInscriptionFeatureState,
+  (state) => state.week
 );
 
 export const selectParticipantId = (state: InscriptionState) =>
@@ -122,6 +129,15 @@ export const inscriptionReducer = createReducer<InscriptionState>(
       return {
         ...state,
         places: [...action.places],
+      };
+    }
+  ),
+  on(
+    InscriptionAction.setWeek,
+    (state, action): InscriptionState => {
+      return {
+        ...state,
+        week: action.week,
       };
     }
   ),
