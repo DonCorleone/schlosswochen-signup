@@ -4,13 +4,16 @@
   text-align: center;
 
   span {
-    padding-right: 1rem;
     flex-wrap: nowrap;
   }
 }
 
 .reserved-places {
-  white-space: pre-wrap;
+  margin: 0 0.3rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .language-chooser {

@@ -1,6 +1,6 @@
 <div *ngIf="inscription$ | async as inscription">
   <div class="alert alert-warning show language-chooser">
-    {{ 'LANGUAGE' | translate}}:
+    {{ "LANGUAGE" | translate }}:
     <select #langSelect (change)="translate.use(langSelect.value)">
       <option
         class="alert-warning"
@@ -12,19 +12,37 @@
       </option>
     </select>
   </div>
-  <div *ngIf="showWeek" class="alert alert-primary show" role="alert">
-    <span>{{ 'WEEKNR' | translate}} {{ inscription.week }}</span>
-  </div>
+  <ng-container *ngIf="showWeek">
+    <div
+      *ngIf="week$ | async as week"
+      class="alert alert-primary show"
+      role="alert"
+    >
+      <span>{{ "WEEKNR" | translate }} {{ week.week }} <wbr /> </span
+      ><span>({{ week.dateFrom | date: "dd.MM.":"de-CH" }}-</span
+      ><span>{{ week.dateTo | date: "dd.MM.YYYY":"de-CH" }})</span>
+    </div>
+  </ng-container>
+
   <ng-container *ngIf="places$ | async as places">
-    <div *ngIf="places && showAmount" class="alert alert-primary show reserved-places" role="alert">
-      <span>{{ 'RESERVEDPLACES' | translate}} {{ places }}</span>
+    <div
+      *ngIf="places && showAmount"
+      class="alert alert-primary show"
+      role="alert"
+    >
+      <div>
+        {{ "RESERVEDPLACES" | translate }}: <wbr />
+      </div>
+      <div class="reserved-places" [innerHtml]="places$ | async | safe: 'html'"></div>
     </div>
   </ng-container>
   <div *ngIf="externalInput" class="alert alert-warning show" role="alert">
     <span>{{ externalInput }}</span>
   </div>
   <div
-    *ngIf="showCountdown && !(loggedIn$ | async) && (deadline$ | async) as deadline"
+    *ngIf="
+      showCountdown && !(loggedIn$ | async) && (deadline$ | async) as deadline
+    "
     class="alert alert-success show"
     role="alert"
   >

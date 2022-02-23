@@ -9,13 +9,19 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpLoaderFactory } from '../../app.module';
 import { HeaderComponent } from './header/header.component';
+import { SafePipe } from '../../pipes/safe.pipe';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [WizardStepComponent, HeaderComponent, CountDownComponent],
+  declarations: [
+    WizardStepComponent,
+    HeaderComponent,
+    CountDownComponent,
+    SafePipe,
+  ],
   imports: [
     CommonModule,
     TranslateModule.forChild({
@@ -30,6 +36,7 @@ export function createTranslateLoader(http: HttpClient) {
       wrappers: [{ name: 'row', component: RowWrapperComponent }],
     }),
   ],
-  exports: [WizardStepComponent, CountDownComponent, HeaderComponent],
+  exports: [WizardStepComponent, CountDownComponent, HeaderComponent,
+    SafePipe],
 })
 export class SharedModule {}

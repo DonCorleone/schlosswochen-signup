@@ -1,10 +1,6 @@
-export interface Week {
-  weeknr: number,
-  numOfDefReservations: number,
-  numOfProvReservations: number
-}
+import { Week } from './Graphqlx';
 
 export interface WeeklyReservation {
-  weekNr: number,
-  numberOfReservations: number
+  week: Week;
+  numberOfReservations: number;
 }

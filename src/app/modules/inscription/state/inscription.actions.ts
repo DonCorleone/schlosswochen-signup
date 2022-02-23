@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import {
   Participant,
-  Subscription as Inscription,
+  Subscription as Inscription, Week,
 } from '../../../models/Graphqlx';
 
 export const setInscription = createAction(
@@ -20,6 +20,11 @@ export const upsertParticipant = createAction(
 export const setPlaces = createAction(
   '[Inscription] Set Places',
   props<{ places: number[] }>()
+);
+
+export const setWeek = createAction(
+  '[Inscription] Set Week',
+    props<{ week: Week }>()
 );
 
 export const increaseCurrentParticipantNumber = createAction(

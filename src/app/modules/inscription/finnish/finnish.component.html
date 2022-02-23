@@ -6,9 +6,9 @@
 >
   <div class="wizard-content">
     <div class="wizard-content-body">
-      <div class="question text-warning" *ngIf="inscription">
+      <!-- div class="question text-warning" *ngIf="inscription">
         {{ "FINNISH.LOGINQUESTION" | translate }}
-      </div>
+      </div-->
       <div class="card" *ngIf="inscription">
         <div class="card-body">
           <h5 class="card-title">{{ "FINNISH.CONTACT" | translate }}</h5>
@@ -19,13 +19,13 @@
       <div class="card" *ngFor="let participant of participants; index as i">
         <div class="card-body">
           <h5 class="card-title">
-            {{ "FINNISH.PARTICIPANT" | translate }} {{ i }}
+            {{ "FINNISH.PARTICIPANT" | translate }} {{ i + 1 }}
           </h5>
           <p class="card-text">{{ participant }}</p>
         </div>
       </div>
 
-      <div class="card">
+      <!--div class="card">
         <div class="card-body">
           <div *ngIf="loggedIn$ | async as loggedIn; else loginContent">
             <p>
@@ -46,7 +46,7 @@
             </button></ng-template
           >
         </div>
-      </div>
+      </div-->
     </div>
   </div>
 </app-wizard-step>
