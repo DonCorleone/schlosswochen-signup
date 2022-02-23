@@ -14,6 +14,7 @@ import {
   SubscriptionInsertInput,
   Subscription as Inscription, Week,
 } from "../../../models/Graphqlx";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-reservation',
@@ -89,6 +90,19 @@ export class ReservationComponent implements OnInit, OnDestroy {
         .subscribe((inscription: Inscription) => {
 
           this.store.dispatch(InscriptionActions.setInscription({ inscription }));
+
+          let sumParticipants = 0;
+          this.reservationService.getReservationsPerWeek(weeklyReservation.weekNr)
+            .subscribe(sumChildsPerState  => {
+              sumChildsPerState.map(p => sumParticipants += p.sumPerStateAndWeek)
+
+              let places:number[]= [];
+              for (let i = (sumParticipants - weeklyReservation.numberOfReservations) + 1; i <= sumParticipants; i++) {
+                places.push(i);
+              }
+
+              this.store.dispatch(InscriptionActions.setPlaces({ places: places }));
+            });
 
           this.router
             .navigate(['/inscriptions/inscription',inscription._id])

@@ -97,13 +97,18 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     });
 
     const emailControl = this.signupForm.get('email');
-    emailControl?.valueChanges
+    const emailSubscription = emailControl?.valueChanges
       .pipe(debounceTime(1000))
       .subscribe(
         (value) => (this.emailMessage = this.setMessage(emailControl))
       );
 
+    if (emailSubscription){
+      this.subscriptions.push(emailSubscription);
+    }
+
     this.store.dispatch(InscriptionActions.resetCurrentParticipantNumber());
+    const externalUserSubscription = (
     combineLatest([
       this.store.select(AuthSelector.selectCurrentUserProfile),
       this.store.select(InscriptionReducer.getInscription),
@@ -140,8 +145,15 @@ export class InscriptionComponent implements OnInit, OnDestroy {
           }
         })
       )
-      .subscribe();
+      .subscribe());
+
+    this.subscriptions.push(externalUserSubscription);
+
   }
+
+
+
+
 
   goToPreviousStep() {
     //  this.router.navigate(['personal']);

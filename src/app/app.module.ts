@@ -36,6 +36,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import loader from '@angular-devkit/build-angular/src/webpack/plugins/single-test-transform';
 import { SafePipe } from './pipes/safe.pipe';
+import * as inscriptionState from "./modules/inscription/state/inscription.reducer";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -69,6 +70,12 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
     StoreModule.forRoot({ auth: authReducer }), // State object here like described
+
+    StoreModule.forFeature(
+      inscriptionState.inscriptionFeatureKey,
+      inscriptionState.inscriptionReducer
+    ),
+
     EffectsModule.forRoot([AuthEffects]),
 
     StoreDevtoolsModule.instrument({

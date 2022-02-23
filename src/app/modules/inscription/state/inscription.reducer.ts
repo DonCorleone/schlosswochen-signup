@@ -11,14 +11,15 @@ import {
   Participant,
   Subscription as Inscription,
 } from 'src/app/models/Graphqlx';
-import {stat} from "fs";
-import {WeeklyReservation} from "../../../models/Week";
+import { stat } from 'fs';
+import { WeeklyReservation } from '../../../models/Week';
 
 export const inscriptionFeatureKey = 'inscription';
 
 export interface InscriptionState {
   inscription: Inscription;
   currentParticipantNumber: number;
+  places: number[];
 }
 
 const initialState: InscriptionState = {
@@ -41,7 +42,8 @@ const initialState: InscriptionState = {
     participants: [],
     externalUserId: '',
   },
-  currentParticipantNumber: 0
+  currentParticipantNumber: 0,
+  places: []
 };
 
 // Selector functions
@@ -61,10 +63,16 @@ export const getDeadline = createSelector(
 
 export const getCurrentParticipantNumber = createSelector(
   getInscriptionFeatureState,
-  state => state.currentParticipantNumber
+  (state) => state.currentParticipantNumber
 );
 
-export const selectParticipantId = (state: InscriptionState) => state.inscription;
+export const getPlaces = createSelector(
+  getInscriptionFeatureState,
+  (state) => state.places
+);
+
+export const selectParticipantId = (state: InscriptionState) =>
+  state.inscription;
 
 // selector with param
 export const selectParticipantById = (participantId: string) =>
@@ -77,7 +85,7 @@ export const inscriptionReducer = createReducer<InscriptionState>(
   on(InscriptionAction.setInscription, (state, action) => {
     return {
       ...state,
-      inscription: action.inscription
+      inscription: action.inscription,
     };
   }),
   on(InscriptionAction.addParticipant, (state, action) => {
@@ -108,22 +116,40 @@ export const inscriptionReducer = createReducer<InscriptionState>(
       inscription,
     };
   }),
-  on(InscriptionAction.increaseCurrentParticipantNumber, (state): InscriptionState => {
-    return {
-      ...state,
-      currentParticipantNumber: state.currentParticipantNumber + 1
-    };
-  }),
-  on(InscriptionAction.decreaseCurrentParticipantNumber, (state): InscriptionState => {
-    return {
-      ...state,
-      currentParticipantNumber: state.currentParticipantNumber - 1
-    };
-  }),
-  on(InscriptionAction.resetCurrentParticipantNumber, (state): InscriptionState => {
-    return {
-      ...state,
-      currentParticipantNumber: 0
-    };
-  }),
+  on(
+    InscriptionAction.setPlaces,
+    (state, action): InscriptionState => {
+      return {
+        ...state,
+        places: [...action.places],
+      };
+    }
+  ),
+  on(
+    InscriptionAction.increaseCurrentParticipantNumber,
+    (state): InscriptionState => {
+      return {
+        ...state,
+        currentParticipantNumber: state.currentParticipantNumber + 1,
+      };
+    }
+  ),
+  on(
+    InscriptionAction.decreaseCurrentParticipantNumber,
+    (state): InscriptionState => {
+      return {
+        ...state,
+        currentParticipantNumber: state.currentParticipantNumber - 1,
+      };
+    }
+  ),
+  on(
+    InscriptionAction.resetCurrentParticipantNumber,
+    (state): InscriptionState => {
+      return {
+        ...state,
+        currentParticipantNumber: 0,
+      };
+    }
+  )
 );
