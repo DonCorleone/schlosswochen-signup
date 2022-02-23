@@ -1,18 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { checkAuth, login, logout } from '../../user/state/auth.actions';
-import {
-  selectCurrentUserProfile,
-  selectIsLoggedIn,
-} from '../../user/state/auth.selectors';
-import { Observable } from 'rxjs';
+import { ViewportScroller} from "@angular/common";
 
 @Component({
   selector: 'app-wizard-step',
   templateUrl: './wizard-step.component.html',
   styleUrls: ['./wizard-step.component.scss'],
 })
-export class WizardStepComponent {
+export class WizardStepComponent implements OnInit{
+
   @Input() title: string;
   @Input() titlePostfix = '';
   @Input() saveStep: boolean = false;
@@ -21,6 +16,12 @@ export class WizardStepComponent {
   @Output() previousStepClicked = new EventEmitter();
   @Output() saveStepClicked = new EventEmitter();
   @Output() nextStepClicked = new EventEmitter();
+
+  constructor(private viewportScroller: ViewportScroller) {
+  }
+  ngOnInit(): void {
+    this.viewportScroller.scrollToPosition([0,0]);
+  }
 
   goToPreviousStep() {
     this.previousStepClicked.emit();

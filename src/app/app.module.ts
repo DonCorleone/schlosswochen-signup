@@ -34,8 +34,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './modules/user/state/auth.effects';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import loader from '@angular-devkit/build-angular/src/webpack/plugins/single-test-transform';
-import { SafePipe } from './pipes/safe.pipe';
 import * as inscriptionState from "./modules/inscription/state/inscription.reducer";
 
 // AoT requires an exported function for factories
@@ -51,8 +49,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PageNotFoundComponent,
     SigninRedirectCallbackComponent,
     SignoutRedirectCallbackComponent,
-    UnauthorizedComponent,
-    SafePipe,
+    UnauthorizedComponent
   ],
   imports: [
     BrowserModule,

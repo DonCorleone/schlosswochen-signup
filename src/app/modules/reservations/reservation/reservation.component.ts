@@ -41,6 +41,10 @@ export class ReservationComponent implements OnInit, OnDestroy {
     this.maxReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
 
+  ngOnInit(): void {
+    this.weeks$ = this.reservationService.getWeeks(2022);
+  }
+
   signupForm = this.fb.group({
     numOfChilds: [0, [Validators.required, Validators.min(1)]],
   });
@@ -48,11 +52,11 @@ export class ReservationComponent implements OnInit, OnDestroy {
   reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
 
   createWeeklyReservation(
-    week: number,
+    week: Week,
     reservations: number
   ): WeeklyReservation {
     return {
-      weekNr: week,
+      week: week,
       numberOfReservations: reservations,
     };
   }
@@ -77,22 +81,22 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
       let subscriptionInsertInput: Partial<SubscriptionInsertInput> = {
         numOfChildren: weeklyReservation.numberOfReservations,
-        week: weeklyReservation.weekNr,
+        week: weeklyReservation.week.week,
         year: new Date().getFullYear(),
         deadline: deadline,
         reservationDate: new Date(),
         state: 'temporary'
-      }
-
+      };
 
       this.reservationSubscription = this.reservationService
         .insertOneSubscription(subscriptionInsertInput)
         .subscribe((inscription: Inscription) => {
 
+          this.store.dispatch(InscriptionActions.setWeek({ week: weeklyReservation.week }));
           this.store.dispatch(InscriptionActions.setInscription({ inscription }));
 
           let sumParticipants = 0;
-          this.reservationService.getReservationsPerWeek(weeklyReservation.weekNr)
+          this.reservationService.getReservationsPerWeek(weeklyReservation.week?.week!)
             .subscribe(sumChildsPerState  => {
               sumChildsPerState.map(p => sumParticipants += p.sumPerStateAndWeek)
 
@@ -121,9 +125,5 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.reservationSubscription.unsubscribe();
-  }
-
-  ngOnInit(): void {
-    this.weeks$ = this.reservationService.getWeeks(2022);
   }
 }

@@ -1,9 +1,9 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ChildsPerState } from 'src/app/models/Subscriptor';
 import { ReservationService } from 'src/app/service/reservation.service';
-import {Week} from "../../../models/Graphqlx";
+import { Week } from '../../../models/Graphqlx';
 
 @Component({
   selector: 'app-capacity',

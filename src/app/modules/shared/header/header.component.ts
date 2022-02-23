@@ -4,7 +4,7 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import {
   Maybe,
   Scalars,
-  Subscription as Inscription,
+  Subscription as Inscription, Week,
 } from 'src/app/models/Graphqlx';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
@@ -24,6 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showCountdown = true;
 
   inscription$: Observable<Inscription>;
+  week$: Observable<Week>;
   places$: Observable<string>;
   loggedIn$: Observable<boolean>;
   deadline$: Observable<Date>;
@@ -39,16 +40,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.loggedIn$ = this.store.select(selectIsLoggedIn);
       this.deadline$ = this.store.select(InscriptionReducer.getDeadline);
       this.inscription$ = this.store.select(InscriptionReducer.getInscription);
+      this.week$ = this.store.select(InscriptionReducer.getWeek);
       this.places$ = this.translate.stream('WAITINGLIST')
         .pipe(
           (o$) =>
             combineLatest([o$, this.store.select(InscriptionReducer.getPlaces)]).pipe(
               map(([waitingListStr, places]) => {
                 let stringArray: string[] = [];
-                places.forEach((x) =>
-                  stringArray.push(this.addPostfix(x, waitingListStr))
+                places.forEach((x) => {
+                    stringArray.push(this.addPostfix(x, waitingListStr));
+                  }
                 );
-                return stringArray.join(', ');
+                return stringArray.join('');
               })
             ),
           takeUntil(this._ngDestroy$)
@@ -57,9 +60,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
   private addPostfix(place: number, postfix: string): string {
     if (place >= 2) {
-      return place + `(${postfix})`;
+      return '<span>&#8226;' + place + ` (${postfix})</span>`;
     } else {
-      return place.toString();
+      return '<span>&#8226;' + place.toString() + '</span>';
     }
   }
 

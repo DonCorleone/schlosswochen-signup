@@ -2,6 +2,10 @@ hr {
   opacity: 0.5;
 }
 
+.row div:last-child hr {
+  display: none;
+}
+
 .radio-container {
   display: flex;
   flex-direction: row;
