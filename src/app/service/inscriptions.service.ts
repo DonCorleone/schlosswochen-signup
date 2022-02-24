@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
-import { Observable, of, throwError } from 'rxjs';
-import { tap, map, catchError } from 'rxjs/operators';
+import { Observable, of, throwError, tap, map, catchError  } from 'rxjs';
 import {
-  Subscription,
   Subscription as Inscription,
   SubscriptionQueryInput,
-  SubscriptionInsertInput,
-  SubscriptionUpdateInput
+  SubscriptionUpdateInput,
 } from '../models/Graphqlx';
 
 interface SubscriptionData {
@@ -15,10 +12,10 @@ interface SubscriptionData {
 }
 
 export interface updateOneSubscriptionData {
-  updateOneSubscription: Subscription;
+  updateOneSubscription: Inscription;
 }
 export interface upsertOneSubscriptionData {
-  upsertOneSubscription: Subscription;
+  upsertOneSubscription: Inscription;
 }
 
 @Injectable({
@@ -30,9 +27,12 @@ export class InscriptionsService {
     this.apollo = this.apolloProvider.use('writeClient');
   }
 
-  getInscription$(externalUserId: string, inscription: Inscription): Observable<Inscription> {
+  getInscription$(
+    externalUserId: string,
+    inscription: Inscription
+  ): Observable<Inscription> {
     if ((externalUserId == null || externalUserId == '') && inscription) {
-      if (inscription.lastName){
+      if (inscription.lastName) {
         return of(inscription);
       }
       return of(this.initializeInscription(inscription));
@@ -83,15 +83,15 @@ export class InscriptionsService {
   updateOneSubscription(
     subscriptionQueryInput: SubscriptionQueryInput,
     subscriptionUpdateInput: SubscriptionUpdateInput
-  ): Observable<Subscription> {
+  ): Observable<Inscription> {
     return this.apollo
       .mutate<updateOneSubscriptionData>({
-          mutation: gql`
-            mutation updateOneSubscription (
-              $query: SubscriptionQueryInput,
-              $set: SubscriptionUpdateInput!
-            ) {
-            updateOneSubscription (query: $query, set: $set) {
+        mutation: gql`
+          mutation updateOneSubscription(
+            $query: SubscriptionQueryInput
+            $set: SubscriptionUpdateInput!
+          ) {
+            updateOneSubscription(query: $query, set: $set) {
               _id
               city
               country
@@ -125,7 +125,7 @@ export class InscriptionsService {
         `,
         variables: {
           query: subscriptionQueryInput,
-          set: subscriptionUpdateInput
+          set: subscriptionUpdateInput,
         },
       })
       .pipe(
