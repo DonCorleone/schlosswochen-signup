@@ -1,31 +1,35 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
-  FormGroup,
-  FormBuilder,
-  Validators,
   AbstractControl,
-  FormArray,
+  FormBuilder,
+  FormGroup,
+  Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
 
-import {debounceTime, filter, map, takeUntil, tap} from 'rxjs/operators';
+import {
+  combineLatest,
+  debounceTime,
+  map,
+  Subject,
+  Subscription,
+  takeUntil,
+  tap,
+} from 'rxjs';
 
 import { InscriptionsService } from '../../../service/inscriptions.service';
 import * as InscriptionReducer from '../state/inscription.reducer';
 import * as InscriptionActions from '../state/inscription.actions';
-import { WeeklyReservation } from '../../../models/Week';
 import {
-  Subscription as Inscription,
   Participant,
+  Subscription as Inscription,
   SubscriptionParticipantsRelationInput,
-  SubscriptionUpdateInput,
-  SubscriptionInsertInput,
   SubscriptionQueryInput,
+  SubscriptionUpdateInput,
 } from 'src/app/models/Graphqlx';
 import * as AuthSelector from '../../user/state/auth.selectors';
-import { combineLatest, Subject, Subscription } from 'rxjs';
 import { ReservationService } from '../../../service/reservation.service';
 
 // since an object key can be any of those types, our key can too
@@ -146,7 +150,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
                         );
                       })
                     ),
-                    takeUntil(this._ngDestroy$);
+                      takeUntil(this._ngDestroy$);
                   }
 
                   this.displayInscription(inscription);
@@ -233,6 +237,13 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     return messageString;
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+
+    this._ngDestroy$.next();
+    this._ngDestroy$.complete();
+  }
+
   private displayInscription(inscription: Inscription) {
     if (this.signupForm) {
       this.signupForm.reset();
@@ -258,12 +269,5 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       externalUserId: inscription.externalUserId,
       participants: inscription.participants,
     });
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
-
-    this._ngDestroy$.next();
-    this._ngDestroy$.complete();
   }
 }

@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
-import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
+import { Observable, of, throwError, tap, map, catchError } from 'rxjs';
 import { updateManyParticipantsData } from '../models/Participant';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import {
   MutationInsertOneParticipantArgs,
   Participant,
-  ParticipantInsertInput, ParticipantQueryInput,
+  ParticipantInsertInput
 } from '../models/Graphqlx';
 
 @Injectable({
@@ -68,15 +67,20 @@ export class ParticipantService {
       );
   }
   upsertParticipant(
-    data: ParticipantInsertInput, participantId: string): Observable<ParticipantInsertInput> {
+    data: ParticipantInsertInput,
+    participantId: string
+  ): Observable<ParticipantInsertInput> {
     return this.apollo
       .mutate<MutationInsertOneParticipantArgs>({
         mutation: gql`
-          mutation ($participant_id: String!, $participantInsertInput: ParticipantInsertInput!) {
+          mutation (
+            $participant_id: String!
+            $participantInsertInput: ParticipantInsertInput!
+          ) {
             upsertOneParticipant(
-            query: {participant_id: $participant_id}
-            data: $participantInsertInput)
-            {
+              query: { participant_id: $participant_id }
+              data: $participantInsertInput
+            ) {
               _id
               participant_id
             }
@@ -101,7 +105,7 @@ export class ParticipantService {
       );
   }
 
-/*  deleteParticipant(id: string): Observable<{}> {
+  /*  deleteParticipant(id: string): Observable<{}> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.participantsUrl}/${id}`;
     return this.http.delete<Participant>(url, { headers }).pipe(
@@ -118,7 +122,7 @@ export class ParticipantService {
     );
   }*/
 
-/*  updateParticipant(participant: Participant): Observable<Participant> {
+  /*  updateParticipant(participant: Participant): Observable<Participant> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.participantsUrl}/${participant._id}`;
     return this.http.put<Participant>(url, participant, { headers }).pipe(

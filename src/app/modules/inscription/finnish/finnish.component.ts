@@ -1,19 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Dictionary } from '@ngrx/entity';
-import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import {map, take, takeUntil} from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { Observable, take } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import { Router } from '@angular/router';
-import { Participant } from '../../../models/Graphqlx';
 import { Subscription as Inscription } from 'src/app/models/Graphqlx';
 import {
   selectCurrentUserProfile,
   selectIsLoggedIn,
 } from '../../user/state/auth.selectors';
 import { checkAuth, login, logout } from '../../user/state/auth.actions';
-import {subscribe} from "graphql";
 
 @Component({
   selector: 'app-finnish',
@@ -41,25 +37,43 @@ export class FinnishComponent implements OnInit {
 
     this.store.dispatch(checkAuth());
 
-    this.inscription$ = this.inscriptionStore.select(InscriptionReducer.getInscription);
+    this.inscription$ = this.inscriptionStore.select(
+      InscriptionReducer.getInscription
+    );
 
-    this.inscriptionStore.select(InscriptionReducer.getInscription)
+    this.inscriptionStore
+      .select(InscriptionReducer.getInscription)
       .pipe(take(1))
       .subscribe((inscription: Inscription) => {
-        let contact=[];
-        contact.push(inscription.firstName + ' ' + inscription.lastName +'('+ inscription.salutation +')');
+        let contact = [];
+        contact.push(
+          inscription.firstName +
+            ' ' +
+            inscription.lastName +
+            '(' +
+            inscription.salutation +
+            ')'
+        );
         contact.push(inscription.zip + ' ' + inscription.city);
         contact.push(inscription.email);
         this.inscription = contact.join(', ');
 
-        inscription.participants?.forEach(participant => {
-          let participantParts=[];
-          participantParts.push(participant?.firstNameParticipant + ' ' + participant?.lastNameParticipant +'('+ participant?.salutation +')');
-          participantParts.push('*' + new Date(participant?.birthday)?.toLocaleDateString('de-CH'));
+        inscription.participants?.forEach((participant) => {
+          let participantParts = [];
+          participantParts.push(
+            participant?.firstNameParticipant +
+              ' ' +
+              participant?.lastNameParticipant +
+              '(' +
+              participant?.salutation +
+              ')'
+          );
+          participantParts.push(
+            '*' + new Date(participant?.birthday)?.toLocaleDateString('de-CH')
+          );
           this.participants.push(participantParts.join(', '));
-        })
-      }
-    );
+        });
+      });
   }
 
   login() {

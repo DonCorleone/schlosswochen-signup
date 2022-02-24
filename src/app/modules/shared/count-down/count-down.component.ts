@@ -5,8 +5,15 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import {interval, Observable, Subject, Subscription} from 'rxjs';
-import { map, take, takeUntil } from 'rxjs/operators';
+import {
+  interval,
+  map,
+  Observable,
+  Subject,
+  Subscription,
+  take,
+  takeUntil,
+} from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -16,7 +23,6 @@ import { TranslateService } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CountDownComponent implements OnInit, OnDestroy {
-
   @Input() dDay = new Date('Jan 01 2022 00:00:00');
   @Input() title = 'HELLO';
 
@@ -24,11 +30,10 @@ export class CountDownComponent implements OnInit, OnDestroy {
   minutesToDday$: Observable<number>;
   hoursToDday$: Observable<number>;
   daysToDday$: Observable<number>;
+  countDownTitle: string;
   private secondsToDdayTotal$: Observable<number>;
   private subscription$: Subscription;
-
   private _ngDestroy$ = new Subject<void>();
-  countDownTitle: string;
 
   constructor(public translate: TranslateService) {}
 
@@ -71,7 +76,7 @@ export class CountDownComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription$.unsubscribe()
+    this.subscription$.unsubscribe();
     this._ngDestroy$.next();
     this._ngDestroy$.complete();
   }

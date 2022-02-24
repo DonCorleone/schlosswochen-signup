@@ -6,11 +6,10 @@ import {
   OnInit,
 } from '@angular/core';
 import {
-  FormGroup,
-  FormBuilder,
-  Validators,
   AbstractControl,
-  FormArray,
+  FormBuilder,
+  FormGroup,
+  Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -24,20 +23,21 @@ import { ParticipantService } from 'src/app/service/participant.service';
 import {
   Participant,
   ParticipantInsertInput,
-  ParticipantQueryInput,
+  Subscription as Inscription,
   SubscriptionParticipantsRelationInput,
   SubscriptionUpdateInput,
 } from 'src/app/models/Graphqlx';
-import { Subscription as Inscription } from 'src/app/models/Graphqlx';
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
-import { combineLatest, Observable, Subscription, timer } from 'rxjs';
-import { scan, takeWhile, map, take, first, tap } from 'rxjs/operators';
-import { formatDate } from '@angular/common';
 import {
-  getCurrentParticipantNumber,
-  selectParticipantById,
-  selectParticipantId,
-} from '../../inscription/state/inscription.reducer';
+  combineLatest,
+  Observable,
+  scan,
+  Subscription,
+  takeWhile,
+  tap,
+  timer,
+} from 'rxjs';
+import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
@@ -86,15 +86,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   confirmEmailMessage: string = '';
 
   errorMessage = '';
-
+  subscriptions: Subscription[] = [];
+  FIRSTNAMEREQUIRED = 'PARTICIPANT.FIRSTNAMEREQUIRED';
   private validationMessages = {
     required: 'Please enter your email address.',
     email: 'Please enter a valid email address.',
     match: 'The confirmation does not match the email address.',
   };
-
-  subscriptions: Subscription[] = [];
-  FIRSTNAMEREQUIRED = 'PARTICIPANT.FIRSTNAMEREQUIRED';
 
   constructor(
     private fb: FormBuilder,
@@ -117,7 +115,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       ])
         .pipe(
           tap(([inscription, routeParams]) => {
-            if (inscription?.numOfChildren){
+            if (inscription?.numOfChildren) {
               this.numOfChilds = inscription.numOfChildren;
             }
             const deadline = new Date(inscription.deadline);
@@ -181,6 +179,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         })
     );
   }
+
   goToPreviousStep() {
     this.store.dispatch(InscriptionActions.decreaseCurrentParticipantNumber());
     this.subscriptions.push(
@@ -197,6 +196,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         })
     );
   }
+
   goToNextStep(): void {
     if (this.signupForm.invalid) {
       return;
@@ -300,7 +300,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         .select(InscriptionsReducer.getInscription)
         .subscribe((inscriptionStore) => {
           const link: string[] = [];
-          let numOfChildren = inscriptionStore?.numOfChildren ? inscriptionStore?.numOfChildren : 0;
+          let numOfChildren = inscriptionStore?.numOfChildren
+            ? inscriptionStore?.numOfChildren
+            : 0;
           for (let index = 1; index <= numOfChildren; index++) {
             let participantId = this.inscription._id + '-' + index;
 
@@ -345,6 +347,24 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     );
   }
 
+  setMessage(c: AbstractControl): string {
+    var messageString = '';
+    if ((c.touched || c.dirty) && c.errors) {
+      messageString = Object.keys(c.errors)
+        .map((key) =>
+          hasKey(this.validationMessages, key)
+            ? this.validationMessages[key]
+            : 'unknown error'
+        )
+        .join(' ');
+    }
+    return messageString;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+  }
+
   private displayParticipant(participant: Participant) {
     if (this.signupForm) {
       this.signupForm.reset();
@@ -362,23 +382,5 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this.signupForm.controls['birthday'].setValue(
       formatDate(participant.birthday, 'yyyy-MM-dd', 'en')
     );
-  }
-
-  setMessage(c: AbstractControl): string {
-    var messageString = '';
-    if ((c.touched || c.dirty) && c.errors) {
-      messageString = Object.keys(c.errors)
-        .map((key) =>
-          hasKey(this.validationMessages, key)
-            ? this.validationMessages[key]
-            : 'unknown error'
-        )
-        .join(' ');
-    }
-    return messageString;
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

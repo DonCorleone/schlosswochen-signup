@@ -1,18 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { Observable, throwError, catchError, map, tap  } from 'rxjs';
 import { ChildsPerState, ChildsPerStateData } from '../models/Subscriptor';
 import {
   Subscription as Inscription,
-  Subscription,
   SubscriptionInsertInput,
   Week,
 } from '../models/Graphqlx';
-import { WeekDay } from '@angular/common';
 
 export interface insertOneSubscriptionData {
-  insertOneSubscription: Subscription;
+  insertOneSubscription: Inscription;
 }
 
 interface weeksData {
@@ -25,7 +22,7 @@ interface weeksData {
 export class ReservationService {
   insertOneSubscription(
     subscriptionInsertInput: SubscriptionInsertInput
-  ): Observable<Subscription> {
+  ): Observable<Inscription> {
     return this.apollo
       .mutate<insertOneSubscriptionData>({
         mutation: gql`

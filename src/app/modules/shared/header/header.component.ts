@@ -2,15 +2,13 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import {
-  Maybe,
-  Scalars,
   Subscription as Inscription, Week,
 } from 'src/app/models/Graphqlx';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import { selectIsLoggedIn } from '../../user/state/auth.selectors';
 import { TranslateService } from '@ngx-translate/core';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { map, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-header',

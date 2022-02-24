@@ -1,13 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { checkAuth, login, logout } from '../modules/user/state/auth.actions';
 import {
   selectCurrentUserProfile,
   selectIsLoggedIn,
 } from '../modules/user/state/auth.selectors';
-import { take, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -18,18 +17,17 @@ import { TranslateService } from '@ngx-translate/core';
 export class WelcomeComponent implements OnDestroy {
   title = 'INSCRIPTION';
   welcomeText = 'WELCOME';
+  loggedIn$: Observable<boolean>;
+  profile$: Observable<any>;
+  countDownTitle: string;
   private loggedInSubscription: Subscription;
+  private _ngDestroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
     private store: Store<any>,
     public translate: TranslateService
   ) {}
-
-  loggedIn$: Observable<boolean>;
-  profile$: Observable<any>;
-  countDownTitle: string;
-  private _ngDestroy$ = new Subject<void>();
 
   ngOnInit() {
     this.translate
@@ -67,6 +65,7 @@ export class WelcomeComponent implements OnDestroy {
       }
     });
   }
+
   ngOnDestroy(): void {
     this.loggedInSubscription?.unsubscribe();
     this._ngDestroy$.complete();
