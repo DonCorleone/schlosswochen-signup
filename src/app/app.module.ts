@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { InMemoryCache } from '@apollo/client/core';
 import {
+  HTTP_INTERCEPTORS,
   HttpClient,
   HttpClientModule,
   HttpHeaders,
@@ -34,7 +35,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './modules/user/state/auth.effects';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import * as inscriptionState from "./modules/inscription/state/inscription.reducer";
+import * as inscriptionState from './modules/inscription/state/inscription.reducer';
+import { LoadingIndicatorInterceptor } from './interceptor/loading-indicator.interceptor';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -49,7 +51,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PageNotFoundComponent,
     SigninRedirectCallbackComponent,
     SignoutRedirectCallbackComponent,
-    UnauthorizedComponent
+    UnauthorizedComponent,
   ],
   imports: [
     BrowserModule,
@@ -89,6 +91,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     FormlyBootstrapModule,
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoadingIndicatorInterceptor,
+      multi: true,
+    },
     {
       provide: APOLLO_NAMED_OPTIONS, // <-- Different from standard initialization
       useFactory(httpLink: HttpLink): NamedOptions {

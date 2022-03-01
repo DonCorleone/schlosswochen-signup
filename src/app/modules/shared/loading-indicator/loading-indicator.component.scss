@@ -1,0 +1,23 @@
+.loading-indicator {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+}
+.loading-indicator:after {
+  content: " ";
+  display: block;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 6px solid white;
+  border-color: white transparent white transparent;
+  animation: loading-indicator 1.2s linear infinite;
+}
+@keyframes loading-indicator {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
