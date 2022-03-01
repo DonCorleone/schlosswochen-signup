@@ -17,10 +17,10 @@ import { TranslateService } from '@ngx-translate/core';
 export class WelcomeComponent implements OnDestroy {
   title = 'INSCRIPTION';
   welcomeText = 'WELCOME';
-  loggedIn$: Observable<boolean>;
-  profile$: Observable<any>;
+  loggedIn$: Observable<boolean> | undefined;
+  profile$: Observable<any> | undefined;
   countDownTitle: string;
-  private loggedInSubscription: Subscription;
+  private loggedInSubscription: Subscription | undefined;
   private _ngDestroy$ = new Subject<void>();
 
   constructor(
@@ -57,7 +57,7 @@ export class WelcomeComponent implements OnDestroy {
   }
 
   goToNextStep(): void {
-    this.loggedInSubscription = this.loggedIn$.subscribe((isLoggedIn) => {
+    this.loggedInSubscription = this.loggedIn$?.subscribe((isLoggedIn) => {
       if (isLoggedIn) {
         this.router.navigate(['inscriptions/inscription']).then();
       } else {

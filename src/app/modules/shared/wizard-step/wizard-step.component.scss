@@ -3,6 +3,7 @@
 .content {
   min-height: 85vh;
 }
+
 nav {
   width: 100%;
 }
@@ -10,11 +11,26 @@ nav {
 header {
   background-color: darken($base-color, 10);
   align-items: center;
-  justify-content:space-between;
+  justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 1;
 
+  .loader-background {
+    opacity: 0.1;
+    height: 100vh;
+    position: absolute;
+    width: 100%;
+    background-color: white;
+  }
+
+  app-loading-indicator {
+    position: absolute;
+    top: 50vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+  }
 
   h1 {
     color: white;
@@ -59,13 +75,12 @@ section {
 
       &:focus,
       &:hover {
-     //   outline: 0.2rem white solid;
-    //    background: darken($base-color, 20);
+        //   outline: 0.2rem white solid;
+        //    background: darken($base-color, 20);
       }
     }
   }
 }
-
 
 
 .footer {
@@ -80,6 +95,7 @@ section {
         span {
           display: block;
         }
+
         min-width: 10rem;
       }
     }
