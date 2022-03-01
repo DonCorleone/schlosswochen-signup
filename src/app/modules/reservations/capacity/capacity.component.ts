@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Component, Input, OnInit } from '@angular/core';
+import { Observable, tap } from 'rxjs';
 import { ChildsPerState } from 'src/app/models/Subscriptor';
 import { ReservationService } from 'src/app/service/reservation.service';
 import { Week } from '../../../models/Graphqlx';

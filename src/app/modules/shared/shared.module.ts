@@ -10,6 +10,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpLoaderFactory } from '../../app.module';
 import { HeaderComponent } from './header/header.component';
 import { SafePipe } from '../../pipes/safe.pipe';
+import { LoadingIndicatorComponent } from './loading-indicator/loading-indicator.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -21,6 +22,7 @@ export function createTranslateLoader(http: HttpClient) {
     HeaderComponent,
     CountDownComponent,
     SafePipe,
+    LoadingIndicatorComponent,
   ],
   imports: [
     CommonModule,
@@ -36,7 +38,12 @@ export function createTranslateLoader(http: HttpClient) {
       wrappers: [{ name: 'row', component: RowWrapperComponent }],
     }),
   ],
-  exports: [WizardStepComponent, CountDownComponent, HeaderComponent,
-    SafePipe],
+  exports: [
+    WizardStepComponent,
+    CountDownComponent,
+    HeaderComponent,
+    SafePipe,
+    LoadingIndicatorComponent,
+  ],
 })
 export class SharedModule {}

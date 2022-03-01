@@ -1,9 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
-import {Observable, Subscription} from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import * as InscriptionActions from '../../inscription/state/inscription.actions';
@@ -12,9 +12,9 @@ import { ReservationService } from 'src/app/service/reservation.service';
 import { environment } from '../../../../environments/environment.custom';
 import {
   SubscriptionInsertInput,
-  Subscription as Inscription, Week,
-} from "../../../models/Graphqlx";
-import {map} from "rxjs/operators";
+  Subscription as Inscription,
+  Week,
+} from '../../../models/Graphqlx';
 
 @Component({
   selector: 'app-reservation',
@@ -24,7 +24,7 @@ import {map} from "rxjs/operators";
 export class ReservationComponent implements OnInit, OnDestroy {
   title = 'RESERVATION';
 
- // maxWeeks: number = 1;
+  // maxWeeks: number = 1;
   weeks$: Observable<Week[]>;
   maxReservations: number = 1;
 
@@ -37,7 +37,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store<InscriptionReducer.InscriptionState>
   ) {
-  //  this.maxWeeks = +environment.MAX_NUMBER_OF_WEEKS!;
+    //  this.maxWeeks = +environment.MAX_NUMBER_OF_WEEKS!;
     this.maxReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
 
@@ -51,10 +51,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
 
-  createWeeklyReservation(
-    week: Week,
-    reservations: number
-  ): WeeklyReservation {
+  createWeeklyReservation(week: Week, reservations: number): WeeklyReservation {
     return {
       week: week,
       numberOfReservations: reservations,
@@ -85,31 +82,44 @@ export class ReservationComponent implements OnInit, OnDestroy {
         year: new Date().getFullYear(),
         deadline: deadline,
         reservationDate: new Date(),
-        state: 'temporary'
+        state: 'temporary',
       };
 
       this.reservationSubscription = this.reservationService
         .insertOneSubscription(subscriptionInsertInput)
         .subscribe((inscription: Inscription) => {
-
-          this.store.dispatch(InscriptionActions.setWeek({ week: weeklyReservation.week }));
-          this.store.dispatch(InscriptionActions.setInscription({ inscription }));
+          this.store.dispatch(
+            InscriptionActions.setWeek({ week: weeklyReservation.week })
+          );
+          this.store.dispatch(
+            InscriptionActions.setInscription({ inscription })
+          );
 
           let sumParticipants = 0;
-          this.reservationService.getReservationsPerWeek(weeklyReservation.week?.week!)
-            .subscribe(sumChildsPerState  => {
-              sumChildsPerState.map(p => sumParticipants += p.sumPerStateAndWeek)
+          this.reservationService
+            .getReservationsPerWeek(weeklyReservation.week?.week!)
+            .subscribe((sumChildsPerState) => {
+              sumChildsPerState.map(
+                (p) => (sumParticipants += p.sumPerStateAndWeek)
+              );
 
-              let places:number[]= [];
-              for (let i = (sumParticipants - weeklyReservation.numberOfReservations) + 1; i <= sumParticipants; i++) {
+              let places: number[] = [];
+              for (
+                let i =
+                  sumParticipants - weeklyReservation.numberOfReservations + 1;
+                i <= sumParticipants;
+                i++
+              ) {
                 places.push(i);
               }
 
-              this.store.dispatch(InscriptionActions.setPlaces({ places: places }));
+              this.store.dispatch(
+                InscriptionActions.setPlaces({ places: places })
+              );
             });
 
           this.router
-            .navigate(['/inscriptions/inscription',inscription._id])
+            .navigate(['/inscriptions/inscription', inscription._id])
             .then((x) => {
               this.reservationSubscription.unsubscribe();
             });

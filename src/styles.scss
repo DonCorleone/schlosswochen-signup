@@ -2,7 +2,9 @@
 @import "~bootstrap-icons/font/bootstrap-icons.css";
 @import "src/assets/styles/variables.scss";
 
-body { min-height: 100vh; }
+body {
+  min-height: 100vh;
+}
 
 * {
   border-radius: 0 !important;
@@ -14,6 +16,7 @@ body { min-height: 100vh; }
   font-size: 1.2rem;
   background-color: $base-color;
 }
+
 @media all and (min-width: 768px) {
   .wizard-content {
     padding: 0 10px;
@@ -24,6 +27,7 @@ body { min-height: 100vh; }
 .wizard-content-body {
   width: 100%;
 }
+
 @media all and (max-width: 767px) {
   .wizard-content-body {
     padding: 0.2rem !important;
@@ -37,7 +41,6 @@ body { min-height: 100vh; }
     padding-left: 0.3rem !important;
   }
 }
-
 
 
 .form-control {
