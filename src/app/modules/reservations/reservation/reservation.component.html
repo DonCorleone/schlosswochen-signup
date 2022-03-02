@@ -1,13 +1,13 @@
 <app-wizard-step
-  [title]="title"
-  (previousStepClicked)="goToPreviousStep()"
   (nextStepClicked)="goToNextStep()"
+  (previousStepClicked)="goToPreviousStep()"
+  [title]="title"
 >
   <div class="wizard-content">
     <div class="wizard-content-body">
       <form [formGroup]="signupForm">
         <div class="form-group row mb-2">
-          <app-header [showWeek]="false" [showAmount]="false" [showCountdown]="false"></app-header>
+          <app-header [showAmount]="false" [showCountdown]="false" [showWeek]="false"></app-header>
         </div>
         <div *ngIf="weeks$ | async as weeks" class="form-group row mb-2">
           <div
@@ -34,30 +34,30 @@
                 <div class="radio-container">
                   <div
                     *ngFor="
-                      let reservation of [].constructor(maxReservations);
+                      let reservation of [].constructor(maxNumberOfReservations);
                       let j = index
                     "
                   >
                     <label class="form-check-label">
-                      <span>{{ j + 1 }}</span>
+                      <span class="text-success">{{ j + 1 }}</span>
                       <input
-                        class="form-check-input"
                         [id]="
                           'numOfChilds_' +
                           (j + 1).toString() +
                           '_week_' +
                           (week.week).toString()
                         "
-                        type="radio"
                         [value]="createWeeklyReservation(week, j + 1)"
+                        class="form-check-input"
                         formControlName="numOfChilds"
+                        type="radio"
                       />
                     </label>
                   </div>
                 </div>
               </div>
             </div>
-            <hr />
+            <hr/>
           </div>
         </div>
       </form>

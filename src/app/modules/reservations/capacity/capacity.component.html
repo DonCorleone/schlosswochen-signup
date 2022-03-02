@@ -1,10 +1,19 @@
 <div *ngFor="let childsPerState of childsPerStates$ | async" class="text-info super-small">
-  <em>{{ 'STATE.' + childsPerState?.state | translate }} {{"PLACES" | translate}}: {{childsPerState?.sumPerStateAndWeek}}</em>
+  <em>{{ 'STATE.' + childsPerState?.state | translate }} {{"PLACES" | translate}}
+    : {{childsPerState?.sumPerStateAndWeek}}</em>
 </div>
-<ng-container *ngIf="week && week.maxParticipants && (week.maxParticipants - sumPerWeek) > 0 else waitingList">
-  <p class="text-success"><em>Freie Plätze: {{ week.maxParticipants - sumPerWeek }}</em></p>
+<ng-container *ngIf="freePlacesThisWeek > 0">
+  <div class="text-success super-small"><em>Freie Plätze: {{ freePlacesThisWeek }}</em></div>
 </ng-container>
-<ng-template #waitingList>
-  <p class="text-danger"><em>Anmeldung kommen auf die Warteliste.</em></p>
-</ng-template>
+<ng-container *ngIf="freePlacesThisWeek > 0 && placesOnWaitingList > 1">
+  <div class="text-danger  super-small"><em> {{ placesOnWaitingList }} Plätze kämen auf die Warteliste.</em>
+  </div>
+</ng-container>
+<ng-container *ngIf="freePlacesThisWeek > 0 && placesOnWaitingList === 1">
+  <div class="text-danger super-small"><em> {{ placesOnWaitingList }} Platz käme auf die Warteliste.</em>
+  </div>
+</ng-container>
+<ng-container *ngIf="freePlacesThisWeek < 0">
+  <div class="text-danger super-small"><em>Alle Anmeldung kommen auf die Warteliste.</em></div>
+</ng-container>
 

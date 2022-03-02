@@ -3,6 +3,7 @@ import { Observable, tap } from 'rxjs';
 import { ChildsPerState } from 'src/app/models/Subscriptor';
 import { ReservationService } from 'src/app/service/reservation.service';
 import { Week } from '../../../models/Graphqlx';
+import { environment } from '../../../../environments/environment.custom';
 
 @Component({
   selector: 'app-capacity',
@@ -15,8 +16,13 @@ export class CapacityComponent implements OnInit {
   sumPerWeek = 0;
 
   childsPerStates$: Observable<ChildsPerState[]> | undefined;
+  maxNumberOfReservations = 1;
+  freePlacesThisWeek = 0;
+  placesOnWaitingList = 0;
 
-  constructor(private reservationService: ReservationService) {}
+  constructor(private reservationService: ReservationService) {
+    this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
+  }
 
   ngOnInit(): void {
     if (this.week?.week) {
@@ -30,6 +36,9 @@ export class CapacityComponent implements OnInit {
             });
 
             this.sumPerWeek = total;
+            this.freePlacesThisWeek = this.week.maxParticipants! - total;
+            this.placesOnWaitingList =
+              this.maxNumberOfReservations - this.freePlacesThisWeek;
           })
         );
     }
