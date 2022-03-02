@@ -11,8 +11,8 @@ import { WeeklyReservation } from 'src/app/models/Week';
 import { ReservationService } from 'src/app/service/reservation.service';
 import { environment } from '../../../../environments/environment.custom';
 import {
-  SubscriptionInsertInput,
   Subscription as Inscription,
+  SubscriptionInsertInput,
   Week,
 } from '../../../models/Graphqlx';
 
@@ -26,10 +26,14 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   // maxWeeks: number = 1;
   weeks$: Observable<Week[]>;
-  maxReservations: number = 1;
+  maxNumberOfReservations: number = 1;
 
   reservationSubscription: Subscription;
   submitted = false;
+  signupForm = this.fb.group({
+    numOfChilds: [0, [Validators.required, Validators.min(1)]],
+  });
+  reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
 
   constructor(
     private fb: FormBuilder,
@@ -38,18 +42,12 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private store: Store<InscriptionReducer.InscriptionState>
   ) {
     //  this.maxWeeks = +environment.MAX_NUMBER_OF_WEEKS!;
-    this.maxReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
+    this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
 
   ngOnInit(): void {
     this.weeks$ = this.reservationService.getWeeks(2022);
   }
-
-  signupForm = this.fb.group({
-    numOfChilds: [0, [Validators.required, Validators.min(1)]],
-  });
-
-  reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
 
   createWeeklyReservation(week: Week, reservations: number): WeeklyReservation {
     return {
