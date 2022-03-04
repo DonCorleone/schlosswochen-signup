@@ -19,14 +19,14 @@
           </div>
           <div *ngFor="let weekVM of weekVMs">
             <div *ngIf="weekVM && weekVM.week" class="weekBlock">
-              <div class="weekSituation">
+              <div class="weekOverview">
                 <h2 class="text-light">{{ "WEEKNR" | translate }} {{ weekVM.week }}</h2>
                 <p class="text-light">
                   {{ weekVM.dateFrom | date: "dd.MM.YYYY":"de-CH" }} -
                   {{ weekVM.dateTo | date: "dd.MM.YYYY":"de-CH" }}
                 </p>
-                <app-capacity [weekVM]="weekVM"></app-capacity>
               </div>
+              <app-capacity [weekVM]="weekVM"></app-capacity>
               <div class="weekReservation">
                 <div class="radio-header text-light">
                   {{ "NUMBEROFRESERVATIONS" | translate }}

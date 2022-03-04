@@ -1,20 +1,9 @@
-<div
-  *ngFor="let participantsPerState of weekVM.participantsPerStates"
-  class="text-info super-small"
->
-  <em
-  >{{ "STATE." + participantsPerState?.state | translate }}
-    {{ "PLACES" | translate }} :
-    {{ participantsPerState?.sumPerStateAndWeek }}</em
-  >
-</div>
 <div class="free-places">
   <ng-container>
     <span
       [ngClass]="weekVM.freePlacesThisWeek > 0 ? 'text-success' : 'text-danger'"
       class="text-success super-small"
-    >
-    Freie Plätze:
+    >{{ "CAPACITY.FREEPLACESTHISWEEK" | translate }}:
       {{ weekVM.freePlacesThisWeek >= 0 ? weekVM.freePlacesThisWeek : 0 }}
       </span
       >
@@ -24,7 +13,7 @@
   >
     <span class="text-danger super-small"
     ><em>
-        ({{ weekVM.placesOnWaitingList }} Plätze kämen auf die Warteliste.)</em
+        ({{ weekVM.placesOnWaitingList }} {{ "CAPACITY.WAITINGLISTNPLACES" | translate }})</em
     >
     </span>
   </ng-container>
@@ -32,12 +21,12 @@
     *ngIf="weekVM.freePlacesThisWeek > 0 && weekVM.placesOnWaitingList === 1"
   >
     <span class="text-danger super-small"
-    ><em> ({{ weekVM.placesOnWaitingList }} Platz käme auf die Warteliste.)</em>
+    ><em> ({{ weekVM.placesOnWaitingList }} {{ "CAPACITY.WAITINGLISTONEPLACE" | translate }})</em>
     </span>
   </ng-container>
   <ng-container *ngIf="weekVM.freePlacesThisWeek < 0">
     <span class="text-danger super-small"
-    ><em>(Alle Anmeldung kommen auf die Warteliste.)</em></span
+    ><em>({{ "CAPACITY.WAITINGLISTALLPLACES" | translate }})</em></span
     >
   </ng-container>
 </div>
