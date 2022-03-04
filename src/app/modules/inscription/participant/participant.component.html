@@ -1,35 +1,35 @@
 <app-wizard-step
-  [title]="title"
-  [titlePostfix]="currentParticipantNumber.toString()"
-  [saveStep]="currentParticipantNumber >= numOfChilds"
-  (previousStepClicked)="goToPreviousStep()"
   (nextStepClicked)="goToNextStep()"
+  (previousStepClicked)="goToPreviousStep()"
   (saveStepClicked)="goToSaveStep()"
+  [saveStep]="currentParticipantNumber >= numOfChilds"
+  [titlePostfix]="currentParticipantNumber.toString()"
+  [title]="title"
 >
   <div class="wizard-content">
     <div class="wizard-content-body">
-      <form novalidate [formGroup]="signupForm">
+      <form [formGroup]="signupForm" novalidate>
         <div class="form-group row mb-2">
           <app-header></app-header>
         </div>
 
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label" for="salutationId">
+          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="salutationId">
             {{ "PARTICIPANT.SALUTATION.TITLE" | translate }}
           </label>
           <div class="col-lg-8 col-md-8">
             <select
-              id="salutationId"
-              class="form-control"
-              formControlName="salutation"
               [ngClass]="{
                 'is-invalid':
                   (signupForm.get('salutation')?.touched ||
                     signupForm.get('salutation')?.dirty) &&
                   !signupForm.get('salutation')?.valid
               }"
+              class="form-control"
+              formControlName="salutation"
+              id="salutationId"
             >
-              <option value="" disabled selected hidden>
+              <option disabled hidden selected value="">
                 {{ "PARTICIPANT.SALUTATIONPH" | translate }}
               </option>
               <option value="F">{{ "PARTICIPANT.SALUTATION.F" | translate }}</option>
@@ -46,25 +46,25 @@
 
         <div class="form-group row mb-2">
           <label
-            class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label"
+            class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light"
             for="firstNameParticipantId"
           >
             {{ "PARTICIPANT.FIRSTNAME" | translate }}
           </label>
           <div class="col-lg-8 col-md-8">
             <input
-              id="firstNameParticipantId"
-              class="form-control"
-              type="text"
-              placeholder="{{ firstNameRequired | translate }}"
-              i18n-placeholder
-              formControlName="firstNameParticipant"
               [ngClass]="{
                 'is-invalid':
                   (signupForm.get('firstNameParticipant')?.touched ||
                     signupForm.get('firstNameParticipant')?.dirty) &&
                   !signupForm.get('firstNameParticipant')?.valid
               }"
+              class="form-control"
+              formControlName="firstNameParticipant"
+              i18n-placeholder
+              id="firstNameParticipantId"
+              placeholder="{{ firstNameRequired | translate }}"
+              type="text"
             />
             <span class="invalid-feedback">
               <span
@@ -85,25 +85,25 @@
 
         <div class="form-group row mb-2">
           <label
-            class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label"
+            class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light"
             for="lastNameParticipantId"
           >
             {{ "PARTICIPANT.LASTNAME" | translate }}</label
           >
           <div class="col-lg-8 col-md-8">
             <input
-              id="lastNameParticipantId"
-              class="form-control"
-              type="text"
-              placeholder="{{ lastNameRequired | translate }}"
-              i18n-placeholder
-              formControlName="lastNameParticipant"
               [ngClass]="{
                 'is-invalid':
                   (signupForm.get('lastNameParticipant')?.touched ||
                     signupForm.get('lastNameParticipant')?.dirty) &&
                   !signupForm.get('lastNameParticipant')?.valid
               }"
+              class="form-control"
+              formControlName="lastNameParticipant"
+              i18n-placeholder
+              id="lastNameParticipantId"
+              placeholder="{{ lastNameRequired | translate }}"
+              type="text"
             />
             <span class="invalid-feedback">
               <span
@@ -121,23 +121,23 @@
         </div>
 
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label" for="birthdayId">
+          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="birthdayId">
             {{ "PARTICIPANT.BIRTHDAY" | translate }}
           </label>
           <div class="col-lg-8 col-md-8">
             <input
-              id="birthdayId"
-              class="form-control"
-              type="date"
-              placeholder="{{ birthdayRequired | translate }}"
-              i18n-placeholder
-              formControlName="birthday"
               [ngClass]="{
                 'is-invalid':
                   (signupForm.get('birthday')?.touched ||
                     signupForm.get('birthday')?.dirty) &&
                   !signupForm.get('birthday')?.valid
               }"
+              class="form-control"
+              formControlName="birthday"
+              i18n-placeholder
+              id="birthdayId"
+              placeholder="{{ birthdayRequired | translate }}"
+              type="date"
             />
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('birthday')?.errors?.required">
@@ -149,40 +149,40 @@
 
         <div class="form-group row mb-2 flex-sm-nowrap">
           <label
-            class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label"
+            class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light"
             for="fotoAllowedId"
           >
             {{ "PARTICIPANT.FOTOALLOWED" | translate }}
           </label>
           <div class="col-lg-8 col-md-8 nowrap">
             <input
-              id="fotoAllowedId"
               class="form-check-input"
+              formControlName="fotoAllowed"
+              id="fotoAllowedId"
               type="checkbox"
               value="true"
-              formControlName="fotoAllowed"
             />
           </div>
         </div>
 
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label" for="commentId">
+          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="commentId">
             {{ "PARTICIPANT.COMMENT" | translate }}
           </label>
           <div class="col-lg-8 col-md-8">
             <textarea
-              id="commentId"
               class="form-control"
-              placeholder="{{ commentPh | translate }}"
-              i18n-placeholder
               formControlName="comment"
+              i18n-placeholder
+              id="commentId"
+              placeholder="{{ commentPh | translate }}"
             >
             </textarea>
           </div>
         </div>
 
         <!-- <div class="form-group row mb-2">
-          <div class="col-md-2 col-form-label">
+          <div class="col-md-2 col-form-label text-light">
           </div>
           <div class="col-lg-8 col-md-6 btn-row">
             <button class="btn btn-primary mr-3"

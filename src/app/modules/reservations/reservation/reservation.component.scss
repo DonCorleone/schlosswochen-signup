@@ -23,15 +23,23 @@ hr {
 }
 
 .weekBlock {
+  column-gap: 1rem;
   display: flex;
+  align-items: baseline;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-left: 0.8rem;
 }
 
-.weekSituation {
+.weekOverview {
+  flex: auto;
   padding-right: 2rem;
+  display: flex;
+  flex-direction: row;
+  column-gap: 1rem;
+  align-items: baseline;
+  flex-wrap: wrap;
 }
 
 .weekReservation {
@@ -48,7 +56,7 @@ label {
   padding-right: 1rem;
   text-align: center;
 
-  .form-check-label{
+  .form-check-label {
     padding-left: unset !important;
   }
 

@@ -1,12 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
-import { Observable, throwError, catchError, map, tap  } from 'rxjs';
+import {
+  catchError,
+  combineLatest,
+  map,
+  mergeMap,
+  Observable,
+  tap,
+} from 'rxjs';
 import { ChildsPerState, ChildsPerStateData } from '../models/Subscriptor';
 import {
   Subscription as Inscription,
   SubscriptionInsertInput,
   Week,
 } from '../models/Graphqlx';
+import { WeekVM } from '../models/Week';
+import { environment } from '../../environments/environment.custom';
 
 export interface insertOneSubscriptionData {
   insertOneSubscription: Inscription;
@@ -20,6 +29,14 @@ interface weeksData {
   providedIn: 'root',
 })
 export class ReservationService {
+  private readonly maxNumberOfReservations: number;
+  private apollo: ApolloBase;
+
+  constructor(private apolloProvider: Apollo) {
+    this.apollo = this.apolloProvider.use('writeClient');
+    this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
+  }
+
   insertOneSubscription(
     subscriptionInsertInput: SubscriptionInsertInput
   ): Observable<Inscription> {
@@ -78,9 +95,13 @@ export class ReservationService {
       );
   }
 
-  private apollo: ApolloBase;
-  constructor(private apolloProvider: Apollo) {
-    this.apollo = this.apolloProvider.use('writeClient');
+  getWeekVMs(year: number): Observable<WeekVM[]> {
+    const b = this.getWeeks(year).pipe((weeks$) => {
+      const a = this.mapWeekCapacity(weeks$);
+
+      return a;
+    });
+    return b;
   }
 
   getWeeks(year: number): Observable<Week[]> {
@@ -88,7 +109,7 @@ export class ReservationService {
       .watchQuery<weeksData>({
         query: gql`
           query ($year: Int) {
-            weeks(query: {year: $year}, sortBy: WEEK_ASC) {
+            weeks(query: { year: $year }, sortBy: WEEK_ASC) {
               dateFrom
               dateTo
               week
@@ -101,7 +122,8 @@ export class ReservationService {
       .valueChanges.pipe(
         tap((result) => console.log(JSON.stringify(result))),
         map((result) => (<weeksData>result?.data)?.weeks),
-        catchError(this.handleError));
+        catchError(this.handleError)
+      );
   }
 
   getReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
@@ -125,6 +147,47 @@ export class ReservationService {
       );
   }
 
+  private mapWeekCapacity(weeks$: Observable<Week[]>): Observable<WeekVM[]> {
+    const z = weeks$.pipe(
+      mergeMap((arr) => {
+        const y = combineLatest(
+          arr.map((week) => {
+            const x = this.getReservationsPerWeek(week.week!).pipe(
+              map((participantsPerStates) => {
+                return this.mapWeekVM(participantsPerStates, week);
+              })
+            );
+            return x;
+          })
+        );
+        return y;
+      })
+    );
+    return z;
+  }
+
+  private mapWeekVM(participantsPerStates: ChildsPerState[], week: Week) {
+    let total: number = 0;
+    participantsPerStates.map((participantsPerState) => {
+      total += participantsPerState.sumPerStateAndWeek;
+    });
+
+    const sumPerWeek = total;
+    const freePlacesThisWeek = week.maxParticipants! - total;
+    const placesOnWaitingList =
+      this.maxNumberOfReservations - freePlacesThisWeek;
+
+    const weekVM: WeekVM = {
+      ...week,
+      sumPerWeek,
+      freePlacesThisWeek,
+      placesOnWaitingList,
+      participantsPerStates,
+    };
+
+    return weekVM;
+  }
+
   private handleError(err: any): Observable<never> {
     // in a real world app, we may send the server to some remote logging infrastructure
     // instead of just logging it to the console
@@ -138,6 +201,6 @@ export class ReservationService {
       errorMessage = `Backend returned code ${err.status}: ${err.body.error}`;
     }
     console.error(err);
-    return throwError(errorMessage);
+    throw errorMessage;
   }
 }
