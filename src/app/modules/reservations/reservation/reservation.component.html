@@ -9,7 +9,7 @@
         <div class="form-group row mb-2">
           <app-header [showAmount]="false" [showCountdown]="false" [showWeek]="false"></app-header>
         </div>
-        <div *ngIf="weeks$ | async as weeks" class="form-group row mb-2">
+        <div *ngIf="weekVMs$ | async as weekVMs" class="form-group row mb-2">
           <div
             *ngIf="submitted && reservationsPerWeekCtlr?.errors?.min"
             class="alert alert-danger fade show"
@@ -17,18 +17,18 @@
           >
             {{ "SELECTIONREQUIRED" | translate }}:
           </div>
-          <div *ngFor="let week of weeks">
-            <div *ngIf="week && week.week" class="weekBlock">
+          <div *ngFor="let weekVM of weekVMs">
+            <div *ngIf="weekVM && weekVM.week" class="weekBlock">
               <div class="weekSituation">
-                <h2>{{ "WEEKNR" | translate }} {{ week.week }}</h2>
-                <p>
-                  {{ week.dateFrom | date: "dd.MM.YYYY":"de-CH" }} -
-                  {{ week.dateTo | date: "dd.MM.YYYY":"de-CH" }}
+                <h2 class="text-light">{{ "WEEKNR" | translate }} {{ weekVM.week }}</h2>
+                <p class="text-light">
+                  {{ weekVM.dateFrom | date: "dd.MM.YYYY":"de-CH" }} -
+                  {{ weekVM.dateTo | date: "dd.MM.YYYY":"de-CH" }}
                 </p>
-                <app-capacity [week]="week"></app-capacity>
+                <app-capacity [weekVM]="weekVM"></app-capacity>
               </div>
               <div class="weekReservation">
-                <div class="radio-header text-warning">
+                <div class="radio-header text-light">
                   {{ "NUMBEROFRESERVATIONS" | translate }}
                 </div>
                 <div class="radio-container">
@@ -39,15 +39,18 @@
                     "
                   >
                     <label class="form-check-label">
-                      <span class="text-success">{{ j + 1 }}</span>
+                      <span
+                        [ngClass]="(j+1) <= weekVM.freePlacesThisWeek ? 'text-success' : 'text-danger'"
+                      ><strong>{{ j + 1 }}</strong></span>
                       <input
                         [id]="
                           'numOfChilds_' +
                           (j + 1).toString() +
                           '_week_' +
-                          (week.week).toString()
+                          (weekVM.week).toString()
                         "
-                        [value]="createWeeklyReservation(week, j + 1)"
+                        [ngClass]="(j+1) <= weekVM.freePlacesThisWeek ? 'alert-success' : 'alert-danger'"
+                        [value]="createWeeklyReservation(weekVM, j + 1)"
                         class="form-check-input"
                         formControlName="numOfChilds"
                         type="radio"

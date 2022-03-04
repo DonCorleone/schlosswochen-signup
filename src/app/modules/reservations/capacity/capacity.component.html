@@ -1,19 +1,43 @@
-<div *ngFor="let childsPerState of childsPerStates$ | async" class="text-info super-small">
-  <em>{{ 'STATE.' + childsPerState?.state | translate }} {{"PLACES" | translate}}
-    : {{childsPerState?.sumPerStateAndWeek}}</em>
+<div
+  *ngFor="let participantsPerState of weekVM.participantsPerStates"
+  class="text-info super-small"
+>
+  <em
+  >{{ "STATE." + participantsPerState?.state | translate }}
+    {{ "PLACES" | translate }} :
+    {{ participantsPerState?.sumPerStateAndWeek }}</em
+  >
 </div>
-<ng-container *ngIf="freePlacesThisWeek > 0">
-  <div class="text-success super-small"><em>Freie Plätze: {{ freePlacesThisWeek }}</em></div>
-</ng-container>
-<ng-container *ngIf="freePlacesThisWeek > 0 && placesOnWaitingList > 1">
-  <div class="text-danger  super-small"><em> {{ placesOnWaitingList }} Plätze kämen auf die Warteliste.</em>
-  </div>
-</ng-container>
-<ng-container *ngIf="freePlacesThisWeek > 0 && placesOnWaitingList === 1">
-  <div class="text-danger super-small"><em> {{ placesOnWaitingList }} Platz käme auf die Warteliste.</em>
-  </div>
-</ng-container>
-<ng-container *ngIf="freePlacesThisWeek < 0">
-  <div class="text-danger super-small"><em>Alle Anmeldung kommen auf die Warteliste.</em></div>
-</ng-container>
-
+<div class="free-places">
+  <ng-container>
+    <span
+      [ngClass]="weekVM.freePlacesThisWeek > 0 ? 'text-success' : 'text-danger'"
+      class="text-success super-small"
+    >
+    Freie Plätze:
+      {{ weekVM.freePlacesThisWeek >= 0 ? weekVM.freePlacesThisWeek : 0 }}
+      </span
+      >
+  </ng-container>
+  <ng-container
+    *ngIf="weekVM.freePlacesThisWeek > 0 && weekVM.placesOnWaitingList > 1"
+  >
+    <span class="text-danger super-small"
+    ><em>
+        ({{ weekVM.placesOnWaitingList }} Plätze kämen auf die Warteliste.)</em
+    >
+    </span>
+  </ng-container>
+  <ng-container
+    *ngIf="weekVM.freePlacesThisWeek > 0 && weekVM.placesOnWaitingList === 1"
+  >
+    <span class="text-danger super-small"
+    ><em> ({{ weekVM.placesOnWaitingList }} Platz käme auf die Warteliste.)</em>
+    </span>
+  </ng-container>
+  <ng-container *ngIf="weekVM.freePlacesThisWeek < 0">
+    <span class="text-danger super-small"
+    ><em>(Alle Anmeldung kommen auf die Warteliste.)</em></span
+    >
+  </ng-container>
+</div>

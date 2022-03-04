@@ -7,14 +7,14 @@ import { Observable, Subscription } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import * as InscriptionActions from '../../inscription/state/inscription.actions';
-import { WeeklyReservation } from 'src/app/models/Week';
+import { WeeklyReservation, WeekVM } from 'src/app/models/Week';
 import { ReservationService } from 'src/app/service/reservation.service';
-import { environment } from '../../../../environments/environment.custom';
 import {
   Subscription as Inscription,
   SubscriptionInsertInput,
   Week,
 } from '../../../models/Graphqlx';
+import { environment } from '../../../../environments/environment.custom';
 
 @Component({
   selector: 'app-reservation',
@@ -25,7 +25,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   title = 'RESERVATION';
 
   // maxWeeks: number = 1;
-  weeks$: Observable<Week[]>;
+  weekVMs$: Observable<WeekVM[]>;
   maxNumberOfReservations: number = 1;
 
   reservationSubscription: Subscription;
@@ -41,12 +41,11 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store<InscriptionReducer.InscriptionState>
   ) {
-    //  this.maxWeeks = +environment.MAX_NUMBER_OF_WEEKS!;
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
 
   ngOnInit(): void {
-    this.weeks$ = this.reservationService.getWeeks(2022);
+    this.weekVMs$ = this.reservationService.getWeekVMs(2022);
   }
 
   createWeeklyReservation(week: Week, reservations: number): WeeklyReservation {
@@ -119,19 +118,19 @@ export class ReservationComponent implements OnInit, OnDestroy {
           this.router
             .navigate(['/inscriptions/inscription', inscription._id])
             .then((x) => {
-              this.reservationSubscription.unsubscribe();
+              this.reservationSubscription?.unsubscribe();
             });
         });
     }
   }
 
   goToPreviousStep() {
-    this.router.navigate(['welcome']).then((x) => {
-      this.reservationSubscription.unsubscribe();
+    this.router.navigate(['/welcome']).then((x) => {
+      this.reservationSubscription?.unsubscribe();
     });
   }
 
   ngOnDestroy(): void {
-    this.reservationSubscription.unsubscribe();
+    this.reservationSubscription?.unsubscribe();
   }
 }
