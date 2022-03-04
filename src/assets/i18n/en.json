@@ -12,6 +12,12 @@
   "TIMELEFT": "Time left",
   "INSCRIPTION": "Inscription",
   "RESERVATION": "Reservation",
+  "CAPACITY": {
+    "FREEPLACESTHISWEEK": "Free places",
+    "WAITINGLISTNPLACES": "Places would go on waiting list",
+    "WAITINGLISTONEPLACE": "Place would go on waiting list",
+    "WAITINGLISTALLPLACES": "All places will go the waiting list"
+  },
   "WAITINGLIST": "Waiting list",
   "WELCOME": "<h2>Welcome to the registrations for the Castle Weeks 2022.</h2>\n<br>\n<p>In the next step you can register a <strong style=\"font-size:larger\">maximum of 3 children</strong> for a <strong\n        style=\"font-size:larger\">maximum of 1\n        week</strong>. <br><em style=\"font-size:smaller\">(If you want to register more\n        children, you have to repeat the registration a second time with a different eMail address).</em></p>\n\n<p>The places are <strong style=\"font-size:larger\">limited</strong>.</p>\n\n<p>First you make a provisional registration, which guarantees you the next available places. After that you will have a\n    reasonable time to fill in your data. <br><em style=\"font-size:smaller\">After the last step, the registration will\n        get the status 'definite'. If\n        the\n        time elapses, the reservation will be automatically cancelled.</em></p>\n\n<p>All <strong style=\"font-size:larger\">places obove this limit</strong> will be put on the <strong\n        style=\"font-size:larger\">waiting list</strong>. You will be notified if your\n    children move up and your\n    registration is changed. If you do not wish to have your registrations on the waiting list, you can delete them at\n    the end.</p>\n\n<p><strong style=\"font-size:larger\">Please click now on [>] resp. [Continue].</strong></p>",
   "CONTACT": {

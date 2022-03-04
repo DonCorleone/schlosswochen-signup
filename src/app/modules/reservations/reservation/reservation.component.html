@@ -1,15 +1,15 @@
 <app-wizard-step
-  [title]="title"
-  (previousStepClicked)="goToPreviousStep()"
   (nextStepClicked)="goToNextStep()"
+  (previousStepClicked)="goToPreviousStep()"
+  [title]="title"
 >
   <div class="wizard-content">
     <div class="wizard-content-body">
       <form [formGroup]="signupForm">
         <div class="form-group row mb-2">
-          <app-header [showWeek]="false" [showAmount]="false" [showCountdown]="false"></app-header>
+          <app-header [showAmount]="false" [showCountdown]="false" [showWeek]="false"></app-header>
         </div>
-        <div *ngIf="weeks$ | async as weeks" class="form-group row mb-2">
+        <div *ngIf="weekVMs$ | async as weekVMs" class="form-group row mb-2">
           <div
             *ngIf="submitted && reservationsPerWeekCtlr?.errors?.min"
             class="alert alert-danger fade show"
@@ -17,47 +17,50 @@
           >
             {{ "SELECTIONREQUIRED" | translate }}:
           </div>
-          <div *ngFor="let week of weeks">
-            <div *ngIf="week && week.week" class="weekBlock">
-              <div class="weekSituation">
-                <h2>{{ "WEEKNR" | translate }} {{ week.week }}</h2>
-                <p>
-                  {{ week.dateFrom | date: "dd.MM.YYYY":"de-CH" }} -
-                  {{ week.dateTo | date: "dd.MM.YYYY":"de-CH" }}
+          <div *ngFor="let weekVM of weekVMs">
+            <div *ngIf="weekVM && weekVM.week" class="weekBlock">
+              <div class="weekOverview">
+                <h2 class="text-light">{{ "WEEKNR" | translate }} {{ weekVM.week }}</h2>
+                <p class="text-light">
+                  {{ weekVM.dateFrom | date: "dd.MM.YYYY":"de-CH" }} -
+                  {{ weekVM.dateTo | date: "dd.MM.YYYY":"de-CH" }}
                 </p>
-                <app-capacity [week]="week"></app-capacity>
               </div>
+              <app-capacity [weekVM]="weekVM"></app-capacity>
               <div class="weekReservation">
-                <div class="radio-header text-warning">
+                <div class="radio-header text-light">
                   {{ "NUMBEROFRESERVATIONS" | translate }}
                 </div>
                 <div class="radio-container">
                   <div
                     *ngFor="
-                      let reservation of [].constructor(maxReservations);
+                      let reservation of [].constructor(maxNumberOfReservations);
                       let j = index
                     "
                   >
                     <label class="form-check-label">
-                      <span>{{ j + 1 }}</span>
+                      <span
+                        [ngClass]="(j+1) <= weekVM.freePlacesThisWeek ? 'text-success' : 'text-danger'"
+                      ><strong>{{ j + 1 }}</strong></span>
                       <input
-                        class="form-check-input"
                         [id]="
                           'numOfChilds_' +
                           (j + 1).toString() +
                           '_week_' +
-                          (week.week).toString()
+                          (weekVM.week).toString()
                         "
-                        type="radio"
-                        [value]="createWeeklyReservation(week, j + 1)"
+                        [ngClass]="(j+1) <= weekVM.freePlacesThisWeek ? 'alert-success' : 'alert-danger'"
+                        [value]="createWeeklyReservation(weekVM, j + 1)"
+                        class="form-check-input"
                         formControlName="numOfChilds"
+                        type="radio"
                       />
                     </label>
                   </div>
                 </div>
               </div>
             </div>
-            <hr />
+            <hr/>
           </div>
         </div>
       </form>
