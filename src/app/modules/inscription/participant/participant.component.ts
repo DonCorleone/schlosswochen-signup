@@ -39,6 +39,7 @@ import {
 } from 'rxjs';
 import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
+import { reservationState } from '../../../models/Week';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -327,7 +328,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             street1: inscriptionStore.street1,
             street2: inscriptionStore.street2,
             city: inscriptionStore.city,
-            state: 'definitive',
+            state:
+              inscriptionStore.state === reservationState.TEMPORARY
+                ? reservationState.DEFINITIVE
+                : reservationState.DEFINITIVE_WAITINGLIST,
             zip: inscriptionStore.zip,
             participants: subscriptionParticipantsRelationInput,
             externalUserId: inscriptionStore.externalUserId,
@@ -336,7 +340,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           this.subscriptions.push(
             this.inscriptionsService
               .updateInscription(this.inscription._id, subscription)
-              .subscribe((inscriptionId) => {
+              .subscribe((inscriptionNew) => {
+                this.store.dispatch(
+                  InscriptionActions.setInscription({
+                    inscription: inscriptionNew,
+                  })
+                );
                 this.store.dispatch(
                   InscriptionActions.resetCurrentParticipantNumber()
                 );

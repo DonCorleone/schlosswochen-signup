@@ -14,6 +14,11 @@ hr {
 
 .radio-header {
   padding-right: 1rem;
+  align-self: flex-end;
+}
+
+input {
+  margin-bottom: 2px;
 }
 
 .alert {
@@ -58,6 +63,7 @@ label {
 
   .form-check-label {
     padding-left: unset !important;
+    padding-bottom: 2px;
   }
 
   span {

@@ -9,6 +9,7 @@
   "WEEKNR": "Week Nr.",
   "RESERVEDPLACES": "Reserved places:",
   "NUMBEROFRESERVATIONS": "Number of participants:",
+  "NUMBEROFWAITINGLISTPLACES": "Number of waiting list positions?",
   "TIMELEFT": "Time left",
   "INSCRIPTION": "Inscription",
   "RESERVATION": "Reservation",
@@ -82,8 +83,11 @@
     "SAVE": "Save",
     "NEXT": "Next"
   },
+  "STATE": "State",
   "STATE.definitive": "Definitive",
   "STATE.temporary ": "Temporary",
+  "STATE.definitiveWaitingList": "On waiting list",
+  "STATE.temporaryWaitingList": "Temporarly on waiting list",
   "PLACES": "Reservations",
   "FINNISH": {
     "TITLE": "Finnish",

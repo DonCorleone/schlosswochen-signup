@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
-import { Observable, of, throwError, tap, map, catchError  } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import {
   Subscription as Inscription,
   SubscriptionQueryInput,
   SubscriptionUpdateInput,
 } from '../models/Graphqlx';
+import { reservationState } from '../models/Week';
 
 interface SubscriptionData {
   subscription: Inscription;
@@ -14,6 +15,7 @@ interface SubscriptionData {
 export interface updateOneSubscriptionData {
   updateOneSubscription: Inscription;
 }
+
 export interface upsertOneSubscriptionData {
   upsertOneSubscription: Inscription;
 }
@@ -23,19 +25,21 @@ export interface upsertOneSubscriptionData {
 })
 export class InscriptionsService {
   private apollo: ApolloBase;
+
   constructor(private apolloProvider: Apollo) {
     this.apollo = this.apolloProvider.use('writeClient');
   }
 
   getInscription$(
     externalUserId: string,
-    inscription: Inscription
+    inscription: Inscription,
+    reservationState: reservationState
   ): Observable<Inscription> {
     if ((externalUserId == null || externalUserId == '') && inscription) {
       if (inscription.lastName) {
         return of(inscription);
       }
-      return of(this.initializeInscription(inscription));
+      return of(this.initializeInscription(inscription, reservationState));
     }
     return this.apollo
       .watchQuery<SubscriptionData>({
@@ -139,7 +143,7 @@ export class InscriptionsService {
   updateInscription(
     id: string,
     variable: SubscriptionUpdateInput
-  ): Observable<string> {
+  ): Observable<Inscription> {
     return this.apollo
       .mutate<updateOneSubscriptionData>({
         mutation: gql`
@@ -152,6 +156,33 @@ export class InscriptionsService {
               set: $subscriptionUpdateInput
             ) {
               _id
+              city
+              country
+              deadline
+              email
+              externalUserId
+              firstName
+              lastName
+              numOfChildren
+              participants {
+                _id
+                birthday
+                comment
+                externalUserId
+                firstNameParticipant
+                fotoAllowed
+                lastNameParticipant
+                participant_id
+                salutation
+              }
+              phone
+              reservationDate
+              salutation
+              state
+              street1
+              street2
+              week
+              zip
             }
           }
         `,
@@ -163,9 +194,8 @@ export class InscriptionsService {
       .pipe(
         // tap(result => console.log('SubscriptionService.updateSubscription: updateOneSubscriptionData', JSON.stringify(result))),
         map((result) => {
-          return (<updateOneSubscriptionData>(
-            result?.data
-          ))?.updateOneSubscription?._id?.toString();
+          return (<updateOneSubscriptionData>result?.data)
+            ?.updateOneSubscription;
         }),
         catchError(this.handleError)
       );
@@ -216,7 +246,10 @@ export class InscriptionsService {
     return throwError(errorMessage);
   }
 
-  private initializeInscription(inscription: Inscription): Inscription {
+  private initializeInscription(
+    inscription: Inscription,
+    reservationState: reservationState
+  ): Inscription {
     // Return an initialized inscription
     return {
       _id: inscription._id,
@@ -232,7 +265,7 @@ export class InscriptionsService {
       phone: '',
       reservationDate: inscription.reservationDate,
       salutation: '',
-      state: 'temporary',
+      state: reservationState,
       street1: '',
       street2: '',
       week: inscription.week,
