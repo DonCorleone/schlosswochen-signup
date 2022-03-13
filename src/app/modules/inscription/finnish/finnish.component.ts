@@ -23,6 +23,7 @@ export class FinnishComponent implements OnInit {
   loggedIn$: Observable<boolean>;
   profile$: Observable<any>;
   inscription: string;
+  stateDesc: string;
   participants: string[] = [];
 
   constructor(
@@ -45,6 +46,7 @@ export class FinnishComponent implements OnInit {
       .select(InscriptionReducer.getInscription)
       .pipe(take(1))
       .subscribe((inscription: Inscription) => {
+        this.stateDesc = inscription.state!;
         let contact = [];
         contact.push(
           inscription.firstName +

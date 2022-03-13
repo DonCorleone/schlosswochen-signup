@@ -8,23 +8,23 @@
       </span
       >
   </ng-container>
-  <ng-container
-    *ngIf="weekVM.freePlacesThisWeek > 0 && weekVM.placesOnWaitingList > 1"
-  >
-    <span class="text-danger super-small"
-    ><em>
-        ({{ weekVM.placesOnWaitingList }} {{ "CAPACITY.WAITINGLISTNPLACES" | translate }})</em
+  <!--  <ng-container
+      *ngIf="weekVM.freePlacesThisWeek > 0 && weekVM.placesOnWaitingList > 1"
     >
-    </span>
-  </ng-container>
-  <ng-container
-    *ngIf="weekVM.freePlacesThisWeek > 0 && weekVM.placesOnWaitingList === 1"
-  >
-    <span class="text-danger super-small"
-    ><em> ({{ weekVM.placesOnWaitingList }} {{ "CAPACITY.WAITINGLISTONEPLACE" | translate }})</em>
-    </span>
-  </ng-container>
-  <ng-container *ngIf="weekVM.freePlacesThisWeek < 0">
+      <span class="text-danger super-small"
+      ><em>
+          ({{ weekVM.placesOnWaitingList }} {{ "CAPACITY.WAITINGLISTNPLACES" | translate }})</em
+      >
+      </span>
+    </ng-container>-->
+  <!--  <ng-container
+      *ngIf="weekVM.freePlacesThisWeek > 0 && weekVM.placesOnWaitingList === 1"
+    >
+      <span class="text-danger super-small"
+      ><em> ({{ weekVM.placesOnWaitingList }} {{ "CAPACITY.WAITINGLISTONEPLACE" | translate }})</em>
+      </span>
+    </ng-container>-->
+  <ng-container *ngIf="weekVM.freePlacesThisWeek <= 0">
     <span class="text-danger super-small"
     ><em>({{ "CAPACITY.WAITINGLISTALLPLACES" | translate }})</em></span
     >

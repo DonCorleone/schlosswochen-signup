@@ -8,6 +8,7 @@
   "SELECTIONREQUIRED": "Bitte Woche und anzahl Teilnehmer wählen",
   "WEEKNR": "Schlosswoche Nr.",
   "NUMBEROFRESERVATIONS": "Reservation für wieviele Plätze?",
+  "NUMBEROFWAITINGLISTPLACES": "Warteliste für wieviele Plätze?",
   "RESERVEDPLACES": "Reservierte Plätze",
   "TIMELEFT": "Verbleibende Zeit",
   "INSCRIPTION": "Anmeldung",
@@ -84,8 +85,11 @@
     "SAVE": "Speichern",
     "NEXT": "Weiter"
   },
-  "STATE.definitive": "Definitive",
-  "STATE.temporary": "Provisorische",
+  "STATE": "Status",
+  "STATE.definitive": "Definitiv",
+  "STATE.temporary": "Provisorisch",
+  "STATE.definitiveWaitingList": "Auf Warteliste",
+  "STATE.temporaryWaitingList": "Temporär auf Warteliste",
   "PLACES": "Reservationen",
   "FINNISH": {
     "TITLE": "Abschluss",
