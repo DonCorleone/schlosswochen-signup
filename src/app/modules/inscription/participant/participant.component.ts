@@ -33,6 +33,7 @@ import {
   Observable,
   scan,
   Subscription,
+  take,
   takeWhile,
   tap,
   timer,
@@ -299,6 +300,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.store
         .select(InscriptionsReducer.getInscription)
+        .pipe(take(1))
         .subscribe((inscriptionStore) => {
           const link: string[] = [];
           let numOfChildren = inscriptionStore?.numOfChildren
