@@ -31,6 +31,7 @@ import {
 } from 'src/app/models/Graphqlx';
 import * as AuthSelector from '../../user/state/auth.selectors';
 import { ReservationService } from '../../../service/reservation.service';
+import { reservationState } from '../../../models/Week';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -122,12 +123,22 @@ export class InscriptionComponent implements OnInit, OnDestroy {
         tap(([externalUser, inscription, params]) => {
           if (externalUser?.sub?.length > 0 || inscription) {
             this.inscriptionService
-              .getInscription$(externalUser?.sub, inscription)
+              .getInscription$(
+                externalUser?.sub,
+                inscription,
+                inscription.state
+                  ? (<any>reservationState)[inscription.state!]
+                  : reservationState.TEMPORARY
+              )
               .subscribe({
                 next: (inscription: Inscription) => {
                   if (!inscription) {
                     this.inscriptionService
-                      .getInscription$('', inscription)
+                      .getInscription$(
+                        '',
+                        inscription,
+                        reservationState.TEMPORARY
+                      )
                       .subscribe((x) => (inscription = x));
                   }
 

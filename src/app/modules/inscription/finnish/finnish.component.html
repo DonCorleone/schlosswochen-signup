@@ -1,27 +1,37 @@
 <app-wizard-step
-  [title]="title"
-  [previousEnabled]="false"
-  (previousStepClicked)="goToPreviousStep()"
   (nextStepClicked)="goToNextStep()"
+  (previousStepClicked)="goToPreviousStep()"
+  [previousEnabled]="false"
+  [title]="title"
 >
   <div class="wizard-content">
-    <div class="wizard-content-body">
+    <div *ngIf="inscription" class="wizard-content-body bg-dark">
       <!-- div class="question text-warning" *ngIf="inscription">
         {{ "FINNISH.LOGINQUESTION" | translate }}
       </div-->
-      <div class="card" *ngIf="inscription">
-        <div class="card-body">
-          <h5 class="card-title">{{ "FINNISH.CONTACT" | translate }}</h5>
-          <p class="card-text">{{ inscription }}</p>
+
+      <div *ngIf="stateDesc"
+           class="card">
+        <div class="card-body text-secondary">
+          <h5 class="card-title">{{ "STATE" | translate }}</h5>
+          <p [ngClass]="this.stateDesc.startsWith('definitive') ? 'bg-success' : 'bg-danger'"
+             class="badge">{{ ("STATE." + stateDesc) | translate }}</p>
         </div>
       </div>
 
-      <div class="card" *ngFor="let participant of participants; index as i">
+      <div *ngIf="inscription" class="card">
         <div class="card-body">
-          <h5 class="card-title">
+          <h5 class="card-title text-warning">{{ "FINNISH.CONTACT" | translate }}</h5>
+          <p class="card-text text-secondary">{{ inscription }}</p>
+        </div>
+      </div>
+
+      <div *ngFor="let participant of participants; index as i" class="card">
+        <div class="card-body">
+          <h5 class="card-title text-info">
             {{ "FINNISH.PARTICIPANT" | translate }} {{ i + 1 }}
           </h5>
-          <p class="card-text">{{ participant }}</p>
+          <p class="card-text text-secondary">{{ participant }}</p>
         </div>
       </div>
 

@@ -7,7 +7,11 @@ import { Observable, Subscription } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import * as InscriptionActions from '../../inscription/state/inscription.actions';
-import { WeeklyReservation, WeekVM } from 'src/app/models/Week';
+import {
+  reservationState,
+  WeeklyReservation,
+  WeekVM,
+} from 'src/app/models/Week';
 import { ReservationService } from 'src/app/service/reservation.service';
 import {
   Subscription as Inscription,
@@ -27,7 +31,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   // maxWeeks: number = 1;
   weekVMs$: Observable<WeekVM[]>;
   maxNumberOfReservations: number = 1;
-
+  reservationStateEnum = reservationState;
   reservationSubscription: Subscription;
   submitted = false;
   signupForm = this.fb.group({
@@ -48,10 +52,15 @@ export class ReservationComponent implements OnInit, OnDestroy {
     this.weekVMs$ = this.reservationService.getWeekVMs(2022);
   }
 
-  createWeeklyReservation(week: Week, reservations: number): WeeklyReservation {
+  createWeeklyReservation(
+    week: Week,
+    reservations: number,
+    state: reservationState
+  ): WeeklyReservation {
     return {
       week: week,
       numberOfReservations: reservations,
+      state: state,
     };
   }
 
@@ -79,7 +88,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
         year: new Date().getFullYear(),
         deadline: deadline,
         reservationDate: new Date(),
-        state: 'temporary',
+        state: weeklyReservation.state,
       };
 
       this.reservationSubscription = this.reservationService
