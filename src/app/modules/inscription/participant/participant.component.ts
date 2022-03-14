@@ -30,7 +30,6 @@ import {
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import {
   combineLatest,
-  map,
   Observable,
   scan,
   Subject,
@@ -165,6 +164,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
           this.store
             .select(InscriptionsReducer.getInscription)
+            .pipe(takeUntil(this._ngDestroy$))
             .subscribe((inscription) => {
               if (
                 inscription &&
@@ -188,6 +188,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.store
         .select(InscriptionsReducer.getCurrentParticipantNumber)
+        .pipe(takeUntil(this._ngDestroy$))
         .subscribe((p) => {
           this.currentParticipantNumber = p;
           if (this.currentParticipantNumber === 0) {
@@ -367,21 +368,18 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           //   this.subscriptions.push(
           this.inscriptionsService
             .updateInscription(this.inscription._id, subscription)
-            .pipe(
-              takeUntil(this._ngDestroy$),
-              map((inscriptionNew) => {
-                this.store.dispatch(
-                  InscriptionActions.setInscription({
-                    inscription: inscriptionNew,
-                  })
-                );
-                this.store.dispatch(
-                  InscriptionActions.resetCurrentParticipantNumber()
-                );
-                this.router.navigate(['/inscriptions/finnish']).then();
-              })
-            )
-            .subscribe();
+            .pipe(takeUntil(this._ngDestroy$))
+            .subscribe((inscriptionNew) => {
+              this.store.dispatch(
+                InscriptionActions.setInscription({
+                  inscription: inscriptionNew,
+                })
+              );
+              this.store.dispatch(
+                InscriptionActions.resetCurrentParticipantNumber()
+              );
+              this.router.navigate(['/inscriptions/finnish']).then();
+            });
         })
     );
   }
