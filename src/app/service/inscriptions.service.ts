@@ -78,7 +78,6 @@ export class InscriptionsService {
         variables: { externalUserId },
       })
       .valueChanges.pipe(
-        tap((result) => console.log(JSON.stringify(result))),
         map((result) => (<SubscriptionData>result?.data)?.subscription),
         catchError(this.handleError)
       );

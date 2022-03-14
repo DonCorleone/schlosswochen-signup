@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
 
-import { Observable, of, throwError, tap, map, catchError } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { updateManyParticipantsData } from '../models/Participant';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import {
   MutationInsertOneParticipantArgs,
   Participant,
-  ParticipantInsertInput
+  ParticipantInsertInput,
 } from '../models/Graphqlx';
 
 @Injectable({
@@ -19,6 +19,7 @@ export class ParticipantService {
   private participants: Participant[] = [];
 
   private apollo: ApolloBase;
+
   constructor(private http: HttpClient, private apolloProvider: Apollo) {
     this.apollo = this.apolloProvider.use('writeClient');
   }
@@ -28,7 +29,6 @@ export class ParticipantService {
       return of(this.participants);
     }
     return this.http.get<Participant[]>(this.participantsUrl).pipe(
-      tap((data) => console.log(JSON.stringify(data))),
       tap((data) => (this.participants = data)),
       catchError(this.handleError)
     );
@@ -53,12 +53,6 @@ export class ParticipantService {
         },
       })
       .pipe(
-        tap((result) =>
-          console.log(
-            'ParticipantService.updateExternalUserId: updateManySubscriptionsData',
-            JSON.stringify(result)
-          )
-        ),
         map((result) => {
           return (<updateManyParticipantsData>result.data)
             ?.updateManyParticipants?.matchedCount;
@@ -66,6 +60,7 @@ export class ParticipantService {
         catchError(this.handleError)
       );
   }
+
   upsertParticipant(
     data: ParticipantInsertInput,
     participantId: string
@@ -92,12 +87,6 @@ export class ParticipantService {
         },
       })
       .pipe(
-        tap((data) =>
-          console.log(
-            'ParticipantService.createParticipant.insertOneParticipant',
-            JSON.stringify(data)
-          )
-        ),
         map((result) => {
           return <ParticipantInsertInput>result.data?.data;
         }),

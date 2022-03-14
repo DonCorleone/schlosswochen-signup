@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { checkAuth, login, logout } from '../modules/user/state/auth.actions';
 import {
@@ -20,7 +20,6 @@ export class WelcomeComponent implements OnDestroy {
   loggedIn$: Observable<boolean> | undefined;
   profile$: Observable<any> | undefined;
   countDownTitle: string;
-  private loggedInSubscription: Subscription | undefined;
   private _ngDestroy$ = new Subject<void>();
 
   constructor(
@@ -57,18 +56,20 @@ export class WelcomeComponent implements OnDestroy {
   }
 
   goToNextStep(): void {
-    this.loggedInSubscription = this.loggedIn$?.subscribe((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.router.navigate(['inscriptions/inscription']).then();
-      } else {
-        this.router.navigate(['reservation']).then();
-      }
-    });
+    this.loggedIn$
+      ?.pipe(takeUntil(this._ngDestroy$))
+      .subscribe((isLoggedIn) => {
+        if (isLoggedIn) {
+          this.router.navigate(['inscriptions/inscription']).then();
+        } else {
+          this.router.navigate(['reservation']).then();
+        }
+      });
   }
 
   ngOnDestroy(): void {
-    this.loggedInSubscription?.unsubscribe();
-    this._ngDestroy$.complete();
+    console.log('WelcomeComponent destroyed');
     this._ngDestroy$.next();
+    this._ngDestroy$.complete();
   }
 }

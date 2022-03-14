@@ -30,10 +30,13 @@ import {
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import {
   combineLatest,
+  map,
   Observable,
   scan,
+  Subject,
   Subscription,
   take,
+  takeUntil,
   takeWhile,
   tap,
   timer,
@@ -79,17 +82,15 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   inscription!: Inscription;
 
   timer$: Observable<number> | undefined;
-
   signupForm!: FormGroup;
   currentParticipantNumber = 0;
   currentParticipantNumber$: Observable<number>;
-
   emailMessage: string = '';
   confirmEmailMessage: string = '';
-
   errorMessage = '';
   subscriptions: Subscription[] = [];
   FIRSTNAMEREQUIRED = 'PARTICIPANT.FIRSTNAMEREQUIRED';
+  private _ngDestroy$ = new Subject<void>();
   private validationMessages = {
     required: 'Please enter your email address.',
     email: 'Please enter a valid email address.',
@@ -190,9 +191,17 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         .subscribe((p) => {
           this.currentParticipantNumber = p;
           if (this.currentParticipantNumber === 0) {
-            this.router.navigate(['/inscriptions/inscription']).then();
+            this.router.navigate(['/inscriptions/inscription']).then((x) => {
+              console.log(
+                'ParticipantComponent navigate /inscriptions/inscription'
+              );
+            });
           } else {
-            this.router.navigate(['/inscriptions/participant']).then();
+            this.router.navigate(['/inscriptions/participant']).then((x) => {
+              console.log(
+                'ParticipantComponent navigate /inscriptions/participant'
+              );
+            });
           }
           return;
         })
@@ -211,7 +220,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         InscriptionActions.increaseCurrentParticipantNumber()
       );
-      this.router.navigate(['/inscriptions/participant']).then();
+      this.router.navigate(['/inscriptions/participant']).then((x) => {
+        console.log('ParticipantComponent navigate /inscriptions/participant');
+      });
       return;
     }
 
@@ -235,53 +246,69 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   saveParticipant(participant: Participant, isSaveStep: boolean): void {
-    // if (participant.id === 0) {
-    //   this.participantService.createParticipant(participant).subscribe({
-    //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
-    //     error: err => this.errorMessage = err
-    //   });
-    // } else {
-    //   this.participantService.updateParticipant(participant).subscribe({
-    //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
-    //     error: err => this.errorMessage = err
-    //   });
-    // }
     const participantInsertInput: ParticipantInsertInput = {
       ...participant,
     };
-    this.subscriptions.push(
-      this.participantService
-        .upsertParticipant(
-          participantInsertInput,
-          participantInsertInput.participant_id!
-        )
-        .subscribe((res) => {
-          this.subscriptions.push(
-            this.store
-              .select(AuthSelector.selectIsLoggedIn)
-              .subscribe((isLoggedIn) => {
-                if (isLoggedIn) {
-                  this.store.dispatch(
-                    InscriptionActions.upsertParticipant({ participant })
-                  );
-                } else {
-                  this.store.dispatch(
-                    InscriptionActions.addParticipant({ participant })
-                  );
-                }
 
-                if (isSaveStep) {
-                  this.saveInscription();
-                } else {
-                  this.store.dispatch(
-                    InscriptionActions.increaseCurrentParticipantNumber()
-                  );
-                  this.router.navigate(['/inscriptions/participant']).then();
-                }
-              })
-          );
-        })
-    );
+    this.participantService
+      .upsertParticipant(
+        participantInsertInput,
+        participantInsertInput.participant_id!
+      )
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.store
+          .select(AuthSelector.selectIsLoggedIn)
+          .pipe(take(1))
+          .subscribe((isLoggedIn) => {
+            if (isLoggedIn) {
+              this.store.dispatch(
+                InscriptionActions.upsertParticipant({ participant })
+              );
+            } else {
+              this.store
+                .select(InscriptionsReducer.getInscription)
+                .pipe(take(1))
+                .subscribe((inscription) => {
+                  let participantFromStore: Participant | null | undefined;
+                  if (
+                    inscription &&
+                    inscription.participants &&
+                    inscription.participants.length > 0
+                  ) {
+                    participantFromStore = inscription?.participants?.find(
+                      (p) =>
+                        p?.participant_id ===
+                        participantInsertInput.participant_id
+                    );
+                  }
+                  if (participantFromStore) {
+                    this.store.dispatch(
+                      InscriptionActions.upsertParticipant({ participant })
+                    );
+                  } else {
+                    this.store.dispatch(
+                      InscriptionActions.addParticipant({ participant })
+                    );
+                  }
+                  if (isSaveStep) {
+                    this.saveInscription();
+                  } else {
+                    this.store.dispatch(
+                      InscriptionActions.increaseCurrentParticipantNumber()
+                    );
+                    this.router
+                      .navigate(['/inscriptions/participant'])
+                      .then((x) => {
+                        console.log(
+                          'ParticipantComponent navigate /inscriptions/participant'
+                        );
+                      });
+                  }
+                });
+            }
+          });
+      });
   }
 
   goToSaveStep(): void {
@@ -315,8 +342,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           let json = JSON.stringify(link);
           sessionStorage.setItem('participants', json);
 
-          console.log(JSON.parse(json));
-
           const subscriptionParticipantsRelationInput: SubscriptionParticipantsRelationInput =
             {
               link: link,
@@ -339,10 +364,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             externalUserId: inscriptionStore.externalUserId,
           };
           subscription.participants = subscriptionParticipantsRelationInput;
-          this.subscriptions.push(
-            this.inscriptionsService
-              .updateInscription(this.inscription._id, subscription)
-              .subscribe((inscriptionNew) => {
+          //   this.subscriptions.push(
+          this.inscriptionsService
+            .updateInscription(this.inscription._id, subscription)
+            .pipe(
+              takeUntil(this._ngDestroy$),
+              map((inscriptionNew) => {
                 this.store.dispatch(
                   InscriptionActions.setInscription({
                     inscription: inscriptionNew,
@@ -353,7 +380,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
                 );
                 this.router.navigate(['/inscriptions/finnish']).then();
               })
-          );
+            )
+            .subscribe();
         })
     );
   }
@@ -374,6 +402,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+
+    console.log('ParticipantComponent destroyed');
+    this._ngDestroy$.next();
+    this._ngDestroy$.complete();
   }
 
   private displayParticipant(participant: Participant) {
