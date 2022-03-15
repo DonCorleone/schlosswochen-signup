@@ -28,14 +28,24 @@
   <ng-container *ngIf="places$ | async as places">
     <div
       *ngIf="places && showAmount"
-      class="alert alert-primary show"
+      [ngClass]="
+        inscription.state?.toLowerCase()?.includes('waitinglist')
+          ? 'alert-warning'
+          : 'alert-success'
+      "
+      class="alert show"
       role="alert"
     >
-      <div>
-        {{ "RESERVEDPLACES" | translate }}:
-        <wbr/>
-      </div>
-      <div [innerHtml]="places$ | async | safe: 'html'" class="reserved-places"></div>
+      <span *ngIf="inscription.numOfChildren! === 1">
+        {{ "RESERVEDPLACE" | translate }}
+      </span>
+      <span *ngIf="inscription.numOfChildren! > 1">
+        {{ "RESERVEDPLACES" | translate }}
+      </span>
+      <span
+        [innerHtml]="places$ | async | safe: 'html'"
+        class="reserved-places"
+      ></span>
     </div>
   </ng-container>
   <div *ngIf="externalInput" class="alert alert-warning show" role="alert">
@@ -45,7 +55,7 @@
     *ngIf="
       showCountdown && !(loggedIn$ | async) && (deadline$ | async) as deadline
     "
-    class="alert alert-success show"
+    class="alert alert-info show"
     role="alert"
   >
     <app-count-down [dDay]="deadline" [title]="'TIMELEFT'"></app-count-down>

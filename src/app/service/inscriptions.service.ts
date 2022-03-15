@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
-import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import {
   Subscription as Inscription,
   SubscriptionQueryInput,
   SubscriptionUpdateInput,
 } from '../models/Graphqlx';
-import { reservationState } from '../models/Week';
+import { ReservationState } from '../models/Interfaces';
 
 interface SubscriptionData {
   subscription: Inscription;
@@ -33,7 +33,7 @@ export class InscriptionsService {
   getInscription$(
     externalUserId: string,
     inscription: Inscription,
-    reservationState: reservationState
+    reservationState: ReservationState
   ): Observable<Inscription> {
     if ((externalUserId == null || externalUserId == '') && inscription) {
       if (inscription.lastName) {
@@ -247,7 +247,7 @@ export class InscriptionsService {
 
   private initializeInscription(
     inscription: Inscription,
-    reservationState: reservationState
+    reservationState: ReservationState
   ): Inscription {
     // Return an initialized inscription
     return {

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { WeekVM } from '../../../models/Week';
+import { WeekVM } from '../../../models/Interfaces';
 
 @Component({
   selector: 'app-capacity',

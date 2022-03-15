@@ -33,7 +33,6 @@ import {
   Observable,
   scan,
   Subject,
-  Subscription,
   take,
   takeUntil,
   takeWhile,
@@ -41,7 +40,7 @@ import {
 } from 'rxjs';
 import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { reservationState } from '../../../models/Week';
+import { ReservationState } from '../../../models/Interfaces';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -348,9 +347,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           street2: inscriptionStore.street2,
           city: inscriptionStore.city,
           state:
-            inscriptionStore.state === reservationState.TEMPORARY
-              ? reservationState.DEFINITIVE
-              : reservationState.DEFINITIVE_WAITINGLIST,
+            inscriptionStore.state === ReservationState.TEMPORARY
+              ? ReservationState.DEFINITIVE
+              : ReservationState.DEFINITIVE_WAITINGLIST,
           zip: inscriptionStore.zip,
           participants: subscriptionParticipantsRelationInput,
           externalUserId: inscriptionStore.externalUserId,

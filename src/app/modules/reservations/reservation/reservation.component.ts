@@ -7,11 +7,6 @@ import { Observable, take } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import * as InscriptionActions from '../../inscription/state/inscription.actions';
-import {
-  reservationState,
-  WeeklyReservation,
-  WeekVM,
-} from 'src/app/models/Week';
 import { ReservationService } from 'src/app/service/reservation.service';
 import {
   Subscription as Inscription,
@@ -19,6 +14,12 @@ import {
   Week,
 } from '../../../models/Graphqlx';
 import { environment } from '../../../../environments/environment.custom';
+import {
+  Place,
+  ReservationState,
+  WeeklyReservation,
+  WeekVM,
+} from '../../../models/Interfaces';
 
 @Component({
   selector: 'app-reservation',
@@ -28,10 +29,10 @@ import { environment } from '../../../../environments/environment.custom';
 export class ReservationComponent implements OnInit, OnDestroy {
   title = 'RESERVATION';
 
+  reservationStateEnum = ReservationState;
   // maxWeeks: number = 1;
   weekVMs$: Observable<WeekVM[]>;
   maxNumberOfReservations: number = 1;
-  reservationStateEnum = reservationState;
   submitted = false;
   signupForm = this.fb.group({
     numOfChilds: [0, [Validators.required, Validators.min(1)]],
@@ -54,7 +55,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   createWeeklyReservation(
     week: Week,
     reservations: number,
-    state: reservationState
+    state: ReservationState
   ): WeeklyReservation {
     return {
       week: week,
@@ -64,7 +65,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   goToNextStep(): void {
-
     if (this.signupForm.invalid) {
       this.submitted = true;
       return;
@@ -108,14 +108,17 @@ export class ReservationComponent implements OnInit, OnDestroy {
                 (p) => (sumParticipants += p.sumPerStateAndWeek)
               );
 
-              let places: number[] = [];
+              let places: Place[] = [];
               for (
                 let i =
                   sumParticipants - weeklyReservation.numberOfReservations + 1;
                 i <= sumParticipants;
                 i++
               ) {
-                places.push(i);
+                places.push({
+                  placeNumber: i,
+                  reservationState: weeklyReservation.state,
+                });
               }
 
               this.store.dispatch(

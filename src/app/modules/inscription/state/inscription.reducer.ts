@@ -6,12 +6,8 @@ import {
   on,
 } from '@ngrx/store';
 
-import {
-  Participant,
-  Subscription as Inscription, Week,
-} from 'src/app/models/Graphqlx';
-import { stat } from 'fs';
-import { WeeklyReservation } from '../../../models/Week';
+import { Subscription as Inscription, Week } from 'src/app/models/Graphqlx';
+import { Place } from '../../../models/Interfaces';
 
 export const inscriptionFeatureKey = 'inscription';
 
@@ -19,7 +15,7 @@ export interface InscriptionState {
   week: Week;
   inscription: Inscription;
   currentParticipantNumber: number;
-  places: number[];
+  places: Place[];
 }
 
 const initialState: InscriptionState = {
@@ -44,8 +40,7 @@ const initialState: InscriptionState = {
   },
   currentParticipantNumber: 0,
   places: [],
-  week: {
-  }
+  week: {},
 };
 
 // Selector functions
@@ -123,24 +118,18 @@ export const inscriptionReducer = createReducer<InscriptionState>(
       inscription,
     };
   }),
-  on(
-    InscriptionAction.setPlaces,
-    (state, action): InscriptionState => {
-      return {
-        ...state,
-        places: [...action.places],
-      };
-    }
-  ),
-  on(
-    InscriptionAction.setWeek,
-    (state, action): InscriptionState => {
-      return {
-        ...state,
-        week: action.week,
-      };
-    }
-  ),
+  on(InscriptionAction.setPlaces, (state, action): InscriptionState => {
+    return {
+      ...state,
+      places: [...action.places],
+    };
+  }),
+  on(InscriptionAction.setWeek, (state, action): InscriptionState => {
+    return {
+      ...state,
+      week: action.week,
+    };
+  }),
   on(
     InscriptionAction.increaseCurrentParticipantNumber,
     (state): InscriptionState => {

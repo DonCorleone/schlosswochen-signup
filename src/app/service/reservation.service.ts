@@ -7,8 +7,8 @@ import {
   SubscriptionInsertInput,
   Week,
 } from '../models/Graphqlx';
-import { WeekVM } from '../models/Week';
 import { environment } from '../../environments/environment.custom';
+import { WeekVM } from '../models/Interfaces';
 
 export interface insertOneSubscriptionData {
   insertOneSubscription: Inscription;
