@@ -1,21 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
-import {
-  catchError,
-  combineLatest,
-  map,
-  mergeMap,
-  Observable,
-  tap,
-} from 'rxjs';
+import { catchError, combineLatest, map, mergeMap, Observable } from 'rxjs';
 import { ChildsPerState, ChildsPerStateData } from '../models/Subscriptor';
 import {
   Subscription as Inscription,
   SubscriptionInsertInput,
   Week,
 } from '../models/Graphqlx';
-import { WeekVM } from '../models/Week';
 import { environment } from '../../environments/environment.custom';
+import { WeekVM } from '../models/Interfaces';
 
 export interface insertOneSubscriptionData {
   insertOneSubscription: Inscription;
@@ -82,12 +75,6 @@ export class ReservationService {
         },
       })
       .pipe(
-        tap((data) =>
-          console.log(
-            'ReservationService.createWeeklyReservation.insertOneSubscription',
-            JSON.stringify(data)
-          )
-        ),
         map((result) => {
           return (<insertOneSubscriptionData>result.data).insertOneSubscription;
         }),
@@ -120,14 +107,12 @@ export class ReservationService {
         variables: { year },
       })
       .valueChanges.pipe(
-        tap((result) => console.log(JSON.stringify(result))),
         map((result) => (<weeksData>result?.data)?.weeks),
         catchError(this.handleError)
       );
   }
 
   getReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
-    console.log(`Get Reservations Per Week`);
     return this.apollo
       .watchQuery<ChildsPerStateData>({
         query: gql`
@@ -141,10 +126,7 @@ export class ReservationService {
         variables: { week: week },
         fetchPolicy: 'no-cache',
       })
-      .valueChanges.pipe(
-        tap((result) => console.log(JSON.stringify(result))),
-        map((result) => result.data.sumChildsPerState)
-      );
+      .valueChanges.pipe(map((result) => result.data.sumChildsPerState));
   }
 
   private mapWeekCapacity(weeks$: Observable<Week[]>): Observable<WeekVM[]> {

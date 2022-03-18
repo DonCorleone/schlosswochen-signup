@@ -2,6 +2,7 @@
   padding: 0.1rem 0rem;
   margin: 0.2rem 0rem;
   text-align: center;
+  white-space: pre-wrap;
 
   span {
     flex-wrap: nowrap;
@@ -10,14 +11,15 @@
 
 .reserved-places {
   margin: 0 0.3rem;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
+  //display: flex;
+  //flex-direction: row;
+  //flex-wrap: wrap;
+  //justify-content: center;
 }
 
 .language-chooser {
   width: 100%;
+
   select {
     background-color: transparent;
     height: 2rem;

@@ -14,7 +14,7 @@
            class="card">
         <div class="card-body text-secondary">
           <h5 class="card-title">{{ "STATE" | translate }}</h5>
-          <p [ngClass]="this.stateDesc.startsWith('definitive') ? 'bg-success' : 'bg-danger'"
+          <p [ngClass]="this.stateDesc.endsWith('WaitingList') ? 'bg-warning' : 'bg-success'"
              class="badge">{{ ("STATE." + stateDesc) | translate }}</p>
         </div>
       </div>

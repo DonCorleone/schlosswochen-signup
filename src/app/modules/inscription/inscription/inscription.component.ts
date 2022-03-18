@@ -14,7 +14,7 @@ import {
   debounceTime,
   map,
   Subject,
-  Subscription,
+  take,
   takeUntil,
   tap,
 } from 'rxjs';
@@ -31,7 +31,7 @@ import {
 } from 'src/app/models/Graphqlx';
 import * as AuthSelector from '../../user/state/auth.selectors';
 import { ReservationService } from '../../../service/reservation.service';
-import { reservationState } from '../../../models/Week';
+import { ReservationState } from '../../../models/Interfaces';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -65,7 +65,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   private validationMessages = {
     email: 'Please enter a valid email address.',
   };
-  private subscriptions: Subscription[] = [];
+
   private _ngDestroy$ = new Subject<void>();
 
   constructor(
@@ -103,23 +103,21 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     });
 
     const emailControl = this.signupForm.get('email');
-    const emailSubscription = emailControl?.valueChanges
-      .pipe(debounceTime(1000))
+    emailControl?.valueChanges
+      .pipe(debounceTime(1000), takeUntil(this._ngDestroy$))
       .subscribe(
         (value) => (this.emailMessage = this.setMessage(emailControl))
       );
 
-    if (emailSubscription) {
-      this.subscriptions.push(emailSubscription);
-    }
-
     this.store.dispatch(InscriptionActions.resetCurrentParticipantNumber());
-    const externalUserSubscription = combineLatest([
+
+    combineLatest([
       this.store.select(AuthSelector.selectCurrentUserProfile),
       this.store.select(InscriptionReducer.getInscription),
       this.route.params,
     ])
       .pipe(
+        takeUntil(this._ngDestroy$),
         tap(([externalUser, inscription, params]) => {
           if (externalUser?.sub?.length > 0 || inscription) {
             this.inscriptionService
@@ -127,9 +125,10 @@ export class InscriptionComponent implements OnInit, OnDestroy {
                 externalUser?.sub,
                 inscription,
                 inscription.state
-                  ? (<any>reservationState)[inscription.state!]
-                  : reservationState.TEMPORARY
+                  ? (<any>ReservationState)[inscription.state!]
+                  : ReservationState.TEMPORARY
               )
+              .pipe(take(1))
               .subscribe({
                 next: (inscription: Inscription) => {
                   if (!inscription) {
@@ -137,31 +136,36 @@ export class InscriptionComponent implements OnInit, OnDestroy {
                       .getInscription$(
                         '',
                         inscription,
-                        reservationState.TEMPORARY
+                        ReservationState.TEMPORARY
                       )
+                      .pipe(take(1))
                       .subscribe((x) => (inscription = x));
                   }
 
                   if (externalUser) {
-                    this.reservationService.getWeeks(2022).pipe(
-                      map((weeks) => {
-                        const inscriptionsWeek = weeks.find(
-                          (week) => week.week === inscription?.week
-                        );
-                        if (inscriptionsWeek) {
-                          this.store.dispatch(
-                            InscriptionActions.setWeek({
-                              week: inscriptionsWeek,
-                            })
+                    this.reservationService
+                      .getWeeks(2022)
+                      .pipe(
+                        map((weeks) => {
+                          const inscriptionsWeek = weeks.find(
+                            (week) => week.week === inscription?.week
                           );
-                        }
+                          if (inscriptionsWeek) {
+                            this.store.dispatch(
+                              InscriptionActions.setWeek({
+                                week: inscriptionsWeek,
+                              })
+                            );
+                          }
 
-                        this.store.dispatch(
-                          InscriptionActions.setInscription({ inscription })
-                        );
-                      })
-                    ),
-                      takeUntil(this._ngDestroy$);
+                          this.store.dispatch(
+                            InscriptionActions.setInscription({ inscription })
+                          );
+                        }),
+                        take(1)
+                      )
+                      .subscribe(),
+                      take(1);
                   }
 
                   this.displayInscription(inscription);
@@ -172,12 +176,10 @@ export class InscriptionComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
-
-    this.subscriptions.push(externalUserSubscription);
   }
 
   goToPreviousStep() {
-    //  this.router.navigate(['personal']);
+    console.log('InscriptionComponent goToPreviousStep');
   }
 
   goToNextStep(): void {
@@ -194,7 +196,9 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         InscriptionActions.increaseCurrentParticipantNumber()
       );
-      this.router.navigate(['/inscriptions/participant']).then();
+      this.router.navigate(['/inscriptions/participant']).then((x) => {
+        console.log('InscriptionComponent goToNextStep');
+      });
       return;
     }
 
@@ -221,6 +225,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
 
     this.inscriptionService
       .updateOneSubscription(subscriptionQueryInput, subscriptioUpdateInput)
+      .pipe(take(1))
       .subscribe((inscription: Inscription) => {
         this.store.dispatch(
           InscriptionActions.setInscription({
@@ -230,7 +235,9 @@ export class InscriptionComponent implements OnInit, OnDestroy {
         this.store.dispatch(
           InscriptionActions.increaseCurrentParticipantNumber()
         );
-        this.router.navigate(['/inscriptions/participant']).then();
+        this.router.navigate(['/inscriptions/participant']).then((x) => {
+          console.log('InscriptionComponent goToNextStep');
+        });
       });
   }
 
@@ -249,8 +256,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
-
+    console.log('InscriptionComponent destroyed');
     this._ngDestroy$.next();
     this._ngDestroy$.complete();
   }

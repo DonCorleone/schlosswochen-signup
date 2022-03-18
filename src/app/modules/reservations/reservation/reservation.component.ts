@@ -3,15 +3,10 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, take } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import * as InscriptionActions from '../../inscription/state/inscription.actions';
-import {
-  reservationState,
-  WeeklyReservation,
-  WeekVM,
-} from 'src/app/models/Week';
 import { ReservationService } from 'src/app/service/reservation.service';
 import {
   Subscription as Inscription,
@@ -19,6 +14,12 @@ import {
   Week,
 } from '../../../models/Graphqlx';
 import { environment } from '../../../../environments/environment.custom';
+import {
+  Place,
+  ReservationState,
+  WeeklyReservation,
+  WeekVM,
+} from '../../../models/Interfaces';
 
 @Component({
   selector: 'app-reservation',
@@ -28,11 +29,10 @@ import { environment } from '../../../../environments/environment.custom';
 export class ReservationComponent implements OnInit, OnDestroy {
   title = 'RESERVATION';
 
+  reservationStateEnum = ReservationState;
   // maxWeeks: number = 1;
   weekVMs$: Observable<WeekVM[]>;
   maxNumberOfReservations: number = 1;
-  reservationStateEnum = reservationState;
-  reservationSubscription: Subscription;
   submitted = false;
   signupForm = this.fb.group({
     numOfChilds: [0, [Validators.required, Validators.min(1)]],
@@ -55,7 +55,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   createWeeklyReservation(
     week: Week,
     reservations: number,
-    state: reservationState
+    state: ReservationState
   ): WeeklyReservation {
     return {
       week: week,
@@ -65,9 +65,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   goToNextStep(): void {
-    console.log(this.signupForm);
-    console.log('Saved: ' + JSON.stringify(this.signupForm.value));
-
     if (this.signupForm.invalid) {
       this.submitted = true;
       return;
@@ -91,8 +88,9 @@ export class ReservationComponent implements OnInit, OnDestroy {
         state: weeklyReservation.state,
       };
 
-      this.reservationSubscription = this.reservationService
+      this.reservationService
         .insertOneSubscription(subscriptionInsertInput)
+        .pipe(take(1))
         .subscribe((inscription: Inscription) => {
           this.store.dispatch(
             InscriptionActions.setWeek({ week: weeklyReservation.week })
@@ -104,19 +102,23 @@ export class ReservationComponent implements OnInit, OnDestroy {
           let sumParticipants = 0;
           this.reservationService
             .getReservationsPerWeek(weeklyReservation.week?.week!)
+            .pipe(take(1))
             .subscribe((sumChildsPerState) => {
               sumChildsPerState.map(
                 (p) => (sumParticipants += p.sumPerStateAndWeek)
               );
 
-              let places: number[] = [];
+              let places: Place[] = [];
               for (
                 let i =
                   sumParticipants - weeklyReservation.numberOfReservations + 1;
                 i <= sumParticipants;
                 i++
               ) {
-                places.push(i);
+                places.push({
+                  placeNumber: i,
+                  reservationState: weeklyReservation.state,
+                });
               }
 
               this.store.dispatch(
@@ -127,7 +129,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
           this.router
             .navigate(['/inscriptions/inscription', inscription._id])
             .then((x) => {
-              this.reservationSubscription?.unsubscribe();
+              console.log('ReservationComponent goToNextStep');
             });
         });
     }
@@ -135,11 +137,11 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   goToPreviousStep() {
     this.router.navigate(['/welcome']).then((x) => {
-      this.reservationSubscription?.unsubscribe();
+      console.log('ReservationComponent goToPreviousStep');
     });
   }
 
   ngOnDestroy(): void {
-    this.reservationSubscription?.unsubscribe();
+    console.log('ReservationComponent destroyed');
   }
 }

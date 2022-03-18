@@ -1,14 +1,12 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import {
-  Subscription as Inscription, Week,
-} from 'src/app/models/Graphqlx';
+import { combineLatest, map, Observable, Subject, takeUntil } from 'rxjs';
+import { Subscription as Inscription, Week } from 'src/app/models/Graphqlx';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import { selectIsLoggedIn } from '../../user/state/auth.selectors';
 import { TranslateService } from '@ngx-translate/core';
-import { map, takeUntil, tap } from 'rxjs';
+import { ReservationState } from '../../../models/Interfaces';
 
 @Component({
   selector: 'app-header',
@@ -39,28 +37,25 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.deadline$ = this.store.select(InscriptionReducer.getDeadline);
       this.inscription$ = this.store.select(InscriptionReducer.getInscription);
       this.week$ = this.store.select(InscriptionReducer.getWeek);
-      this.places$ = this.translate.stream('WAITINGLIST')
-        .pipe(
-          (o$) =>
-            combineLatest([o$, this.store.select(InscriptionReducer.getPlaces)]).pipe(
-              map(([waitingListStr, places]) => {
-                let stringArray: string[] = [];
-                places.forEach((x) => {
-                    stringArray.push(this.addPostfix(x, waitingListStr));
-                  }
-                );
-                return stringArray.join('');
-              })
-            ),
-          takeUntil(this._ngDestroy$)
-        )
-    }
-  }
-  private addPostfix(place: number, postfix: string): string {
-    if (place >= 2) {
-      return '<span>&#8226;' + place + ` (${postfix})</span>`;
-    } else {
-      return '<span>&#8226;' + place.toString() + '</span>';
+      this.places$ = this.translate.stream('WAITINGLIST').pipe(
+        (o$) =>
+          combineLatest([
+            o$,
+            this.store.select(InscriptionReducer.getPlaces),
+          ]).pipe(
+            map(([waitingListStr, places]) => {
+              let placesStr = places.map((p) => p.placeNumber).join(',');
+              if (
+                places[0]?.reservationState ===
+                ReservationState.TEMPORARY_WAITINGLIST
+              ) {
+                placesStr = placesStr + ` (${waitingListStr})`;
+              }
+              return placesStr;
+            })
+          ),
+        takeUntil(this._ngDestroy$)
+      );
     }
   }
 

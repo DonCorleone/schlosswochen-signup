@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, take } from 'rxjs';
+import { Observable, Subject, take } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import { Router } from '@angular/router';
@@ -16,7 +16,7 @@ import { checkAuth, login, logout } from '../../user/state/auth.actions';
   templateUrl: './finnish.component.html',
   styleUrls: ['./finnish.component.scss'],
 })
-export class FinnishComponent implements OnInit {
+export class FinnishComponent implements OnInit, OnDestroy {
   title = 'FINNISH.TITLE';
   inscription$: Observable<Inscription>;
 
@@ -25,6 +25,8 @@ export class FinnishComponent implements OnInit {
   inscription: string;
   stateDesc: string;
   participants: string[] = [];
+
+  private _ngDestroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -84,12 +86,22 @@ export class FinnishComponent implements OnInit {
 
   logout(): void {
     this.store.dispatch(logout());
-    this.router.navigate(['/welcome']).then();
+    this.router.navigate(['/welcome']).then((x) => {
+      console.log('FinnishComponent logout');
+    });
   }
 
   goToPreviousStep() {}
 
   goToNextStep(): void {
-    this.router.navigate(['/welcome']).then();
+    this.router.navigate(['/welcome']).then((x) => {
+      console.log('FinnishComponent goToNextStep');
+    });
+  }
+
+  ngOnDestroy(): void {
+    console.log('FinnishComponent destroyed');
+    this._ngDestroy$.next();
+    this._ngDestroy$.complete();
   }
 }

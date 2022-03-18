@@ -32,14 +32,15 @@ import {
   combineLatest,
   Observable,
   scan,
-  Subscription,
+  Subject,
+  take,
+  takeUntil,
   takeWhile,
-  tap,
   timer,
 } from 'rxjs';
 import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { reservationState } from '../../../models/Week';
+import { ReservationState } from '../../../models/Interfaces';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -78,17 +79,14 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   inscription!: Inscription;
 
   timer$: Observable<number> | undefined;
-
   signupForm!: FormGroup;
   currentParticipantNumber = 0;
   currentParticipantNumber$: Observable<number>;
-
   emailMessage: string = '';
   confirmEmailMessage: string = '';
-
   errorMessage = '';
-  subscriptions: Subscription[] = [];
   FIRSTNAMEREQUIRED = 'PARTICIPANT.FIRSTNAMEREQUIRED';
+  private _ngDestroy$ = new Subject<void>();
   private validationMessages = {
     required: 'Please enter your email address.',
     email: 'Please enter a valid email address.',
@@ -109,93 +107,97 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const nowInS = new Date().getTime();
 
-    this.subscriptions.push(
-      combineLatest([
-        this.store.select(InscriptionsReducer.getInscription),
-        this.activeRoute.params,
-      ])
-        .pipe(
-          tap(([inscription, routeParams]) => {
-            if (inscription?.numOfChildren) {
-              this.numOfChilds = inscription.numOfChildren;
-            }
-            const deadline = new Date(inscription.deadline);
-            this.timer$ = timer(0, 60000).pipe(
-              scan(
-                (acc) => --acc,
-                Math.trunc((deadline.getTime() - nowInS) / 1000 / 60)
-              ),
-              takeWhile((x) => x >= 0)
-            );
+    combineLatest([
+      this.store.select(InscriptionsReducer.getInscription),
+      this.activeRoute.params,
+    ])
+      .pipe(takeUntil(this._ngDestroy$))
+      .subscribe(([inscription, routeParams]) => {
+        if (inscription?.numOfChildren) {
+          this.numOfChilds = inscription.numOfChildren;
+        }
+        const deadline = new Date(inscription.deadline);
+        this.timer$ = timer(0, 60000).pipe(
+          scan(
+            (acc) => --acc,
+            Math.trunc((deadline.getTime() - nowInS) / 1000 / 60)
+          ),
+          takeWhile((x) => x >= 0)
+        );
 
-            this.inscription = inscription;
+        this.inscription = inscription;
 
-            this.loadParticipantDetail(inscription._id);
-            this.changeDetectorRef.markForCheck();
-          })
-        )
-        .subscribe()
-    );
+        this.loadParticipantDetail(inscription._id);
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   loadParticipantDetail(inscriptionId: string) {
     this.currentParticipantNumber$ = this.store.select(
       InscriptionsReducer.getCurrentParticipantNumber
     );
-    this.subscriptions.push(
-      this.store
-        .select(InscriptionsReducer.getCurrentParticipantNumber)
-        .subscribe((currentParticipantNr) => {
-          this.currentParticipantNumber = currentParticipantNr;
 
-          const participantId: string = `${inscriptionId}-${+currentParticipantNr}`;
+    this.store
+      .select(InscriptionsReducer.getCurrentParticipantNumber)
+      .pipe(takeUntil(this._ngDestroy$))
+      .subscribe((currentParticipantNr) => {
+        this.currentParticipantNumber = currentParticipantNr;
 
-          this.signupForm = this.fb.group({
-            salutation: ['', [Validators.required]],
-            firstNameParticipant: ['', [Validators.required]],
-            lastNameParticipant: ['', [Validators.required]],
-            birthday: [new Date(), [Validators.required]],
-            participant_id: participantId,
-            externalUserId: '',
-            fotoAllowed: [true, [Validators.required]],
-            comment: '',
-          });
+        const participantId: string = `${inscriptionId}-${+currentParticipantNr}`;
 
-          this.store
-            .select(InscriptionsReducer.getInscription)
-            .subscribe((inscription) => {
-              if (
-                inscription &&
-                inscription.participants &&
-                inscription.participants.length > 0
-              ) {
-                const participant = inscription?.participants?.find(
-                  (p) => p?.participant_id === participantId
-                );
-                if (participant) {
-                  this.displayParticipant(participant);
-                }
+        this.signupForm = this.fb.group({
+          salutation: ['', [Validators.required]],
+          firstNameParticipant: ['', [Validators.required]],
+          lastNameParticipant: ['', [Validators.required]],
+          birthday: [new Date(), [Validators.required]],
+          participant_id: participantId,
+          externalUserId: '',
+          fotoAllowed: [true, [Validators.required]],
+          comment: '',
+        });
+
+        this.store
+          .select(InscriptionsReducer.getInscription)
+          .pipe(takeUntil(this._ngDestroy$))
+          .subscribe((inscription) => {
+            if (
+              inscription &&
+              inscription.participants &&
+              inscription.participants.length > 0
+            ) {
+              const participant = inscription?.participants?.find(
+                (p) => p?.participant_id === participantId
+              );
+              if (participant) {
+                this.displayParticipant(participant);
               }
-            });
-        })
-    );
+            }
+          });
+      });
   }
 
   goToPreviousStep() {
     this.store.dispatch(InscriptionActions.decreaseCurrentParticipantNumber());
-    this.subscriptions.push(
-      this.store
-        .select(InscriptionsReducer.getCurrentParticipantNumber)
-        .subscribe((p) => {
-          this.currentParticipantNumber = p;
-          if (this.currentParticipantNumber === 0) {
-            this.router.navigate(['/inscriptions/inscription']).then();
-          } else {
-            this.router.navigate(['/inscriptions/participant']).then();
-          }
-          return;
-        })
-    );
+    this.store
+      .select(InscriptionsReducer.getCurrentParticipantNumber)
+      .pipe(takeUntil(this._ngDestroy$))
+      .subscribe((p) => {
+        this.currentParticipantNumber = p;
+        if (this.currentParticipantNumber === 0) {
+          this.router.navigate(['/inscriptions/inscription']).then((x) => {
+            console.log(
+              'ParticipantComponent navigate /inscriptions/inscription'
+            );
+          });
+        } else {
+          this.router.navigate(['/inscriptions/participant']).then((x) => {
+            console.log(
+              'ParticipantComponent navigate /inscriptions/participant'
+            );
+          });
+        }
+        return;
+      });
   }
 
   goToNextStep(): void {
@@ -210,7 +212,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         InscriptionActions.increaseCurrentParticipantNumber()
       );
-      this.router.navigate(['/inscriptions/participant']).then();
+      this.router.navigate(['/inscriptions/participant']).then((x) => {
+        console.log('ParticipantComponent navigate /inscriptions/participant');
+      });
       return;
     }
 
@@ -234,53 +238,69 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   saveParticipant(participant: Participant, isSaveStep: boolean): void {
-    // if (participant.id === 0) {
-    //   this.participantService.createParticipant(participant).subscribe({
-    //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
-    //     error: err => this.errorMessage = err
-    //   });
-    // } else {
-    //   this.participantService.updateParticipant(participant).subscribe({
-    //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
-    //     error: err => this.errorMessage = err
-    //   });
-    // }
     const participantInsertInput: ParticipantInsertInput = {
       ...participant,
     };
-    this.subscriptions.push(
-      this.participantService
-        .upsertParticipant(
-          participantInsertInput,
-          participantInsertInput.participant_id!
-        )
-        .subscribe((res) => {
-          this.subscriptions.push(
-            this.store
-              .select(AuthSelector.selectIsLoggedIn)
-              .subscribe((isLoggedIn) => {
-                if (isLoggedIn) {
-                  this.store.dispatch(
-                    InscriptionActions.upsertParticipant({ participant })
-                  );
-                } else {
-                  this.store.dispatch(
-                    InscriptionActions.addParticipant({ participant })
-                  );
-                }
 
-                if (isSaveStep) {
-                  this.saveInscription();
-                } else {
-                  this.store.dispatch(
-                    InscriptionActions.increaseCurrentParticipantNumber()
-                  );
-                  this.router.navigate(['/inscriptions/participant']).then();
-                }
-              })
-          );
-        })
-    );
+    this.participantService
+      .upsertParticipant(
+        participantInsertInput,
+        participantInsertInput.participant_id!
+      )
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.store
+          .select(AuthSelector.selectIsLoggedIn)
+          .pipe(take(1))
+          .subscribe((isLoggedIn) => {
+            if (isLoggedIn) {
+              this.store.dispatch(
+                InscriptionActions.upsertParticipant({ participant })
+              );
+            } else {
+              this.store
+                .select(InscriptionsReducer.getInscription)
+                .pipe(take(1))
+                .subscribe((inscription) => {
+                  let participantFromStore: Participant | null | undefined;
+                  if (
+                    inscription &&
+                    inscription.participants &&
+                    inscription.participants.length > 0
+                  ) {
+                    participantFromStore = inscription?.participants?.find(
+                      (p) =>
+                        p?.participant_id ===
+                        participantInsertInput.participant_id
+                    );
+                  }
+                  if (participantFromStore) {
+                    this.store.dispatch(
+                      InscriptionActions.upsertParticipant({ participant })
+                    );
+                  } else {
+                    this.store.dispatch(
+                      InscriptionActions.addParticipant({ participant })
+                    );
+                  }
+                  if (isSaveStep) {
+                    this.saveInscription();
+                  } else {
+                    this.store.dispatch(
+                      InscriptionActions.increaseCurrentParticipantNumber()
+                    );
+                    this.router
+                      .navigate(['/inscriptions/participant'])
+                      .then((x) => {
+                        console.log(
+                          'ParticipantComponent navigate /inscriptions/participant'
+                        );
+                      });
+                  }
+                });
+            }
+          });
+      });
   }
 
   goToSaveStep(): void {
@@ -296,64 +316,61 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   saveInscription() {
-    this.subscriptions.push(
-      this.store
-        .select(InscriptionsReducer.getInscription)
-        .subscribe((inscriptionStore) => {
-          const link: string[] = [];
-          let numOfChildren = inscriptionStore?.numOfChildren
-            ? inscriptionStore?.numOfChildren
-            : 0;
-          for (let index = 1; index <= numOfChildren; index++) {
-            let participantId = this.inscription._id + '-' + index;
+    this.store
+      .select(InscriptionsReducer.getInscription)
+      .pipe(take(1))
+      .subscribe((inscriptionStore) => {
+        const link: string[] = [];
+        let numOfChildren = inscriptionStore?.numOfChildren
+          ? inscriptionStore?.numOfChildren
+          : 0;
+        for (let index = 1; index <= numOfChildren; index++) {
+          let participantId = this.inscription._id + '-' + index;
 
-            link.push(participantId);
-          }
-          sessionStorage.setItem('inscription', this.inscription._id);
-          let json = JSON.stringify(link);
-          sessionStorage.setItem('participants', json);
+          link.push(participantId);
+        }
+        sessionStorage.setItem('inscription', this.inscription._id);
+        let json = JSON.stringify(link);
+        sessionStorage.setItem('participants', json);
 
-          console.log(JSON.parse(json));
-
-          const subscriptionParticipantsRelationInput: SubscriptionParticipantsRelationInput =
-            {
-              link: link,
-            };
-          const subscription: SubscriptionUpdateInput = {
-            firstName: inscriptionStore.firstName,
-            lastName: inscriptionStore.lastName,
-            _id: inscriptionStore._id,
-            email: inscriptionStore.email,
-            phone: inscriptionStore.phone,
-            street1: inscriptionStore.street1,
-            street2: inscriptionStore.street2,
-            city: inscriptionStore.city,
-            state:
-              inscriptionStore.state === reservationState.TEMPORARY
-                ? reservationState.DEFINITIVE
-                : reservationState.DEFINITIVE_WAITINGLIST,
-            zip: inscriptionStore.zip,
-            participants: subscriptionParticipantsRelationInput,
-            externalUserId: inscriptionStore.externalUserId,
+        const subscriptionParticipantsRelationInput: SubscriptionParticipantsRelationInput =
+          {
+            link: link,
           };
-          subscription.participants = subscriptionParticipantsRelationInput;
-          this.subscriptions.push(
-            this.inscriptionsService
-              .updateInscription(this.inscription._id, subscription)
-              .subscribe((inscriptionNew) => {
-                this.store.dispatch(
-                  InscriptionActions.setInscription({
-                    inscription: inscriptionNew,
-                  })
-                );
-                this.store.dispatch(
-                  InscriptionActions.resetCurrentParticipantNumber()
-                );
-                this.router.navigate(['/inscriptions/finnish']).then();
+        const subscription: SubscriptionUpdateInput = {
+          firstName: inscriptionStore.firstName,
+          lastName: inscriptionStore.lastName,
+          _id: inscriptionStore._id,
+          email: inscriptionStore.email,
+          phone: inscriptionStore.phone,
+          street1: inscriptionStore.street1,
+          street2: inscriptionStore.street2,
+          city: inscriptionStore.city,
+          state:
+            inscriptionStore.state === ReservationState.TEMPORARY
+              ? ReservationState.DEFINITIVE
+              : ReservationState.DEFINITIVE_WAITINGLIST,
+          zip: inscriptionStore.zip,
+          participants: subscriptionParticipantsRelationInput,
+          externalUserId: inscriptionStore.externalUserId,
+        };
+        subscription.participants = subscriptionParticipantsRelationInput;
+        //   this.subscriptions.push(
+        this.inscriptionsService
+          .updateInscription(this.inscription._id, subscription)
+          .pipe(takeUntil(this._ngDestroy$))
+          .subscribe((inscriptionNew) => {
+            this.store.dispatch(
+              InscriptionActions.setInscription({
+                inscription: inscriptionNew,
               })
-          );
-        })
-    );
+            );
+            this.store.dispatch(
+              InscriptionActions.resetCurrentParticipantNumber()
+            );
+            this.router.navigate(['/inscriptions/finnish']).then();
+          });
+      });
   }
 
   setMessage(c: AbstractControl): string {
@@ -371,7 +388,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    console.log('ParticipantComponent destroyed');
+    this._ngDestroy$.next();
+    this._ngDestroy$.complete();
   }
 
   private displayParticipant(participant: Participant) {
