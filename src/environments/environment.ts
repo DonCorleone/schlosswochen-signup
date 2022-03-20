@@ -3,7 +3,15 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  API_KEY_IMAGE4IO: '',
+  API_SECRET_IMAGE4IO: '',
+  API_URL_IMAGE4IO: '',
+  APP_ID_REALM: '',
+  NODE_VERSION: '',
+  APP_ID_REALM_READWRITE: '',
+  MAX_NUMBER_OF_RESERVATIONS: '',
+  MAX_NUMBER_OF_WEEKS: '',
 };
 
 /*

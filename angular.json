@@ -21,7 +21,10 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/Schlosswochen-Inscription",
-            "allowedCommonJsDependencies": ["crypto", "stream"],
+            "allowedCommonJsDependencies": [
+              "crypto",
+              "stream"
+            ],
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -37,7 +40,9 @@
               {
                 "glob": "**/*",
                 "input": "src/assets/",
-                "ignore": ["**/*.scss"],
+                "ignore": [
+                  "**/*.scss"
+                ],
                 "output": "/assets/"
               },
               {
@@ -57,7 +62,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "with": "src/environments/environment.custom.ts"
                 }
               ],
               "optimization": true,
@@ -78,15 +83,15 @@
                   "maximumWarning": "2kb",
                   "maximumError": "4kb"
                 }
-              ],
-              "custom": {
-                "fileReplacements": [
-                  {
-                    "replace": "src/environments/environment.ts",
-                    "with": "src/environments/environment.custom.ts"
-                  }
-                ]
-              }
+              ]
+            },
+            "custom": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.custom.ts"
+                }
+              ]
             },
             "development": {
               "buildOptimizer": false,
@@ -106,6 +111,9 @@
           "configurations": {
             "production": {
               "browserTarget": "Schlosswochen-Inscription:build:production"
+            },
+            "custom": {
+              "browserTarget": "Schlosswochen-Inscription:build:custom"
             },
             "development": {
               "browserTarget": "Schlosswochen-Inscription:build:development"
@@ -131,11 +139,15 @@
               {
                 "glob": "**/*",
                 "input": "src/assets/",
-                "ignore": ["**/*.scss"],
+                "ignore": [
+                  "**/*.scss"
+                ],
                 "output": "/assets/"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss"
+            ],
             "scripts": []
           }
         },
@@ -147,7 +159,9 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         },
         "e2e": {

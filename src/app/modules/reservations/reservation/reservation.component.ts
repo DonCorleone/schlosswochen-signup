@@ -13,7 +13,7 @@ import {
   SubscriptionInsertInput,
   Week,
 } from '../../../models/Graphqlx';
-import { environment } from '../../../../environments/environment.custom';
+import { environment } from '../../../../environments/environment';
 import {
   Place,
   ReservationState,
