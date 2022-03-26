@@ -37,6 +37,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import * as inscriptionState from './modules/inscription/state/inscription.reducer';
 import { LoadingIndicatorInterceptor } from './interceptor/loading-indicator.interceptor';
+import { LoadingIndicatorService } from './service/loading-indicator.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -91,6 +92,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     FormlyBootstrapModule,
   ],
   providers: [
+    LoadingIndicatorService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: LoadingIndicatorInterceptor,
