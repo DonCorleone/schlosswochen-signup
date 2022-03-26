@@ -1,0 +1,38 @@
+.icon-wrapper {
+
+  background-color: #090909;
+
+  svg {
+    width: 100%;
+    height: auto;
+    max-height: 135px;
+  }
+
+  @media all and (max-width: 768px) {
+    svg {
+      //   width: 125%;
+      viewBox: "880 0 4251.971 595.281";
+    }
+  }
+
+  .svg-bg {
+    // fill: red;
+    cursor: pointer;
+  }
+
+  .svg-stroke {
+    stroke: #a093b1;
+  }
+
+  .svg-fill {
+    fill: #a093b1;
+  }
+
+  .svg-fill-different {
+    fill: #337ab7;
+  }
+
+  .svg-fill-stroke {
+    fill: #a093b1;
+  }
+}

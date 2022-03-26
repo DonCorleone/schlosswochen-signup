@@ -37,7 +37,7 @@ header {
     margin: 0;
     padding: 0.5rem;
     text-align: center;
-    font-size: 2.8rem;
+    font-size: 1.5rem;
   }
 }
 
@@ -89,6 +89,13 @@ section {
 }
 
 @media all and (min-width: 768px) {
+
+  header {
+    h1 {
+      font-size: 2rem;
+    }
+  }
+
   section {
     div {
       button {

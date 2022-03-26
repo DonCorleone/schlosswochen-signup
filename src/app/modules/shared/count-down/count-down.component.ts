@@ -5,16 +5,9 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import {
-  interval,
-  map,
-  Observable,
-  Subject,
-  Subscription,
-  take,
-  takeUntil,
-} from 'rxjs';
+import { interval, map, Observable, Subject, take, takeUntil, tap } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-count-down',
@@ -32,10 +25,12 @@ export class CountDownComponent implements OnInit, OnDestroy {
   daysToDday$: Observable<number>;
   countDownTitle: string;
   private secondsToDdayTotal$: Observable<number>;
-  private subscription$: Subscription;
   private _ngDestroy$ = new Subject<void>();
 
-  constructor(public translate: TranslateService) {}
+  constructor(
+    public translate: TranslateService,
+    private routerService: Router
+  ) {}
 
   ngOnInit() {
     const timeDifference = this.dDay.getTime() - new Date().getTime();
@@ -47,10 +42,19 @@ export class CountDownComponent implements OnInit, OnDestroy {
     const time = Math.floor(timeDifference / milliSecondsInASecond);
     this.secondsToDdayTotal$ = interval(1000).pipe(
       take(time),
-      map((x) => time - x)
+      map((x) => {
+        return time - x;
+      }),
+      tap((timeLeft) => {
+        console.log(timeLeft);
+        if (timeLeft === 1) {
+          this.routerService.navigate(['']);
+        }
+      })
     );
 
-    this.subscription$ = this.secondsToDdayTotal$.subscribe();
+    this.secondsToDdayTotal$.pipe(takeUntil(this._ngDestroy$)).subscribe();
+
     this.secondsToDday$ = this.secondsToDdayTotal$.pipe(
       map((x) => Math.floor(x % SecondsInAMinute))
     );
@@ -67,6 +71,7 @@ export class CountDownComponent implements OnInit, OnDestroy {
         Math.floor(x / (SecondsInAMinute * minutesInAnHour * hoursInADay))
       )
     );
+
     this.translate
       .stream(this.title)
       .pipe(takeUntil(this._ngDestroy$))
@@ -76,7 +81,6 @@ export class CountDownComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription$.unsubscribe();
     this._ngDestroy$.next();
     this._ngDestroy$.complete();
   }

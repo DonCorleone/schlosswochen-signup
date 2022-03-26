@@ -44,7 +44,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             this.store.select(InscriptionReducer.getPlaces),
           ]).pipe(
             map(([waitingListStr, places]) => {
-              let placesStr = places.map((p) => p.placeNumber).join(',');
+              let placesStr = places.map((p) => p.placeNumber).join(' & ');
               if (
                 places[0]?.reservationState ===
                 ReservationState.TEMPORARY_WAITINGLIST
