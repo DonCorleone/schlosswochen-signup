@@ -3,14 +3,14 @@
   (previousStepClicked)="goToPreviousStep()"
   (saveStepClicked)="goToSaveStep()"
   [saveStep]="currentParticipantNumber >= numOfChilds"
-  [titlePostfix]="currentParticipantNumber.toString()"
-  [title]="title"
 >
   <div class="wizard-content">
     <div class="wizard-content-body">
       <form [formGroup]="signupForm" novalidate>
         <div class="form-group row mb-2">
-          <app-header></app-header>
+          <app-header
+            [titlePostfix]="currentParticipantNumber.toString()"
+            [title]="title"></app-header>
         </div>
 
         <div class="form-group row mb-2">

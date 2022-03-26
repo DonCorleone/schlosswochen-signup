@@ -18,6 +18,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showWeek = true;
   @Input() showAmount = true;
   @Input() showCountdown = true;
+  @Input() title = '';
+  @Input() titlePostfix = '';
 
   inscription$: Observable<Inscription>;
   week$: Observable<Week>;
