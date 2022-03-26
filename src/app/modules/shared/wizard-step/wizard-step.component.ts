@@ -28,13 +28,16 @@ export class WizardStepComponent implements OnInit {
 
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0]);
+    this.loadingIndicatorService.stop();
   }
 
   goToPreviousStep() {
+    this.loadingIndicatorService.start();
     this.previousStepClicked.emit();
   }
 
   goToNextStep() {
+    this.loadingIndicatorService.start();
     this.nextStepClicked.emit();
   }
 
