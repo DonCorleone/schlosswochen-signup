@@ -1,15 +1,27 @@
-.card{
+h1 {
+  text-align: center;
+  padding-top: 0.7rem;
+}
+
+.wizard-content-body {
+  background-color: unset !important;
+}
+
+.card {
   border-style: none;
   border-style: none;
 }
-.card-header{
+
+.card-header {
   border-style: none;
   border-style: none;
 }
-.card-body{
-    border-style: none;
-    border-style: none;
+
+.card-body {
+  border-style: none;
+  border-style: none;
 }
-.question{
+
+.question {
   margin: 1rem;
 }
