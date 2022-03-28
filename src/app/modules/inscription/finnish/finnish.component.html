@@ -2,8 +2,8 @@
   (nextStepClicked)="goToNextStep()"
   (previousStepClicked)="goToPreviousStep()"
   [previousEnabled]="false"
-  [title]="title"
 >
+  <h1>{{title | translate}}</h1>
   <div class="wizard-content">
     <div *ngIf="inscription" class="wizard-content-body bg-dark">
       <!-- div class="question text-warning" *ngIf="inscription">

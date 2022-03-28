@@ -8,8 +8,6 @@ import { LoadingIndicatorService } from '../../../service/loading-indicator.serv
   styleUrls: ['./wizard-step.component.scss'],
 })
 export class WizardStepComponent implements OnInit {
-  @Input() title: string;
-  @Input() titlePostfix = '';
   @Input() saveStep: boolean = false;
   @Input() nextEnabled: boolean = true;
   @Input() previousEnabled: boolean = true;
