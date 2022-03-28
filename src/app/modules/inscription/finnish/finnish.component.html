@@ -3,8 +3,9 @@
   (previousStepClicked)="goToPreviousStep()"
   [previousEnabled]="false"
 >
-  <h1>{{title | translate}}</h1>
+
   <div class="wizard-content">
+    <h1>{{title | translate}}</h1>
     <div *ngIf="inscription" class="wizard-content-body bg-dark">
       <!-- div class="question text-warning" *ngIf="inscription">
         {{ "FINNISH.LOGINQUESTION" | translate }}
