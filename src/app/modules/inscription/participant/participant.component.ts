@@ -41,6 +41,7 @@ import {
 import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { ReservationState } from '../../../models/Interfaces';
+import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -101,7 +102,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private store: Store<InscriptionsReducer.InscriptionState>,
     private changeDetectorRef: ChangeDetectorRef,
     private participantService: ParticipantService,
-    private inscriptionsService: InscriptionsService
+    private inscriptionsService: InscriptionsService,
+    private loadingIndicatorService: LoadingIndicatorService
   ) {}
 
   ngOnInit(): void {
@@ -133,6 +135,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   loadParticipantDetail(inscriptionId: string) {
+    this.loadingIndicatorService.stop();
     this.currentParticipantNumber$ = this.store.select(
       InscriptionsReducer.getCurrentParticipantNumber
     );
