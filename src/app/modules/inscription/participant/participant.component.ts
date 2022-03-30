@@ -93,6 +93,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     email: 'Please enter a valid email address.',
     match: 'The confirmation does not match the email address.',
   };
+  private initDate = new Date();
 
   constructor(
     private fb: FormBuilder,
@@ -152,7 +153,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           salutation: ['', [Validators.required]],
           firstNameParticipant: ['', [Validators.required]],
           lastNameParticipant: ['', [Validators.required]],
-          birthday: [new Date(), [Validators.required]],
+          birthday: [this.initDate, [Validators.required]],
           participant_id: participantId,
           externalUserId: '',
           fotoAllowed: [true, [Validators.required]],
@@ -204,10 +205,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   goToNextStep(): void {
-    if (this.signupForm.invalid) {
-      return;
-    }
-    if (!this.signupForm.valid) {
+    if (this.signupForm.invalid || !this.signupForm.valid) {
+      Object.keys(this.signupForm.controls).forEach((field) => {
+        // {1}
+        const control = this.signupForm.get(field); // {2}
+        control?.markAsTouched({ onlySelf: true }); // {3}
+      });
+      this.loadingIndicatorService.stop();
       return;
     }
 
@@ -221,9 +225,17 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const birthday = new Date(this.signupForm.value.birthday);
+
+    if (birthday.toDateString() == this.initDate.toDateString()) {
+      this.signupForm.controls['birthday'].setErrors({ incorrect: true });
+      this.loadingIndicatorService.stop();
+      return;
+    }
+
     let participant = {
       ...this.signupForm.value,
-      birthday: new Date(this.signupForm.value.birthday),
+      birthday: birthday,
     };
 
     this.saveParticipant(participant, false);
@@ -307,10 +319,28 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   goToSaveStep(): void {
-    if (this.signupForm.valid && this.signupForm.dirty) {
+    if (this.signupForm.invalid || !this.signupForm.valid) {
+      Object.keys(this.signupForm.controls).forEach((field) => {
+        // {1}
+        const control = this.signupForm.get(field); // {2}
+        control?.markAsTouched({ onlySelf: true }); // {3}
+      });
+      this.loadingIndicatorService.stop();
+      return;
+    }
+
+    const birthday = new Date(this.signupForm.value.birthday);
+
+    if (birthday.toDateString() == this.initDate.toDateString()) {
+      this.signupForm.controls['birthday'].setErrors({ incorrect: true });
+      this.loadingIndicatorService.stop();
+      return;
+    }
+
+    if (this.signupForm.dirty) {
       let participant = {
         ...this.signupForm.value,
-        birthday: new Date(this.signupForm.value.birthday),
+        birthday: birthday,
       };
       this.saveParticipant(participant, true);
     } else {

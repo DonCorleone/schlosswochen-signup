@@ -32,6 +32,7 @@ import {
 import * as AuthSelector from '../../user/state/auth.selectors';
 import { ReservationService } from '../../../service/reservation.service';
 import { ReservationState } from '../../../models/Interfaces';
+import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -74,7 +75,8 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     private reservationService: ReservationService,
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store<InscriptionReducer.InscriptionState>
+    private store: Store<InscriptionReducer.InscriptionState>,
+    private loadingIndicatorService: LoadingIndicatorService
   ) {}
 
   ngOnInit(): void {
@@ -184,6 +186,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
 
   goToNextStep(): void {
     if (this.signupForm.invalid) {
+      this.loadingIndicatorService.stop();
       Object.keys(this.signupForm.controls).forEach((field) => {
         // {1}
         const control = this.signupForm.get(field); // {2}

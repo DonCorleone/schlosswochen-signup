@@ -20,6 +20,7 @@ import {
   WeeklyReservation,
   WeekVM,
 } from '../../../models/Interfaces';
+import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
 
 @Component({
   selector: 'app-reservation',
@@ -43,7 +44,8 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private reservationService: ReservationService,
     private router: Router,
-    private store: Store<InscriptionReducer.InscriptionState>
+    private store: Store<InscriptionReducer.InscriptionState>,
+    private loadingIndicatorService: LoadingIndicatorService
   ) {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
@@ -67,6 +69,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   goToNextStep(): void {
     if (this.signupForm.invalid) {
       this.submitted = true;
+      this.loadingIndicatorService.stop();
       return;
     }
 
