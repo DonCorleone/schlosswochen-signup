@@ -68,9 +68,6 @@
               <span *ngIf="signupForm.get('firstName')?.errors?.required">{{
                 "CONTACT.FIRSTNAMEMISSING" | translate
                 }}</span>
-              <span *ngIf="signupForm.get('firstName')?.errors?.minlength">{{
-                "CONTACT.FIRSTNAMEMINIMUMLENGTH" | translate
-                }}</span>
             </span>
           </div>
         </div>
@@ -96,9 +93,6 @@
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('lastName')?.errors?.required">{{
                 "CONTACT.LASTNAMEMISSING" | translate
-                }}</span>
-              <span *ngIf="signupForm.get('lastName')?.errors?.maxlength">{{
-                "CONTACT.LASTNAMEMAXLEMNGTH" | translate
                 }}</span>
             </span>
           </div>
