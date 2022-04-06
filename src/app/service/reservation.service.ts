@@ -8,7 +8,7 @@ import {
   Week,
 } from '../models/Graphqlx';
 import { environment } from '../../environments/environment';
-import { WeekVM } from '../models/Interfaces';
+import { ReservationState, WeekVM } from '../models/Interfaces';
 
 export interface insertOneSubscriptionData {
   insertOneSubscription: Inscription;
@@ -151,7 +151,12 @@ export class ReservationService {
   private mapWeekVM(participantsPerStates: ChildsPerState[], week: Week) {
     let total: number = 0;
     participantsPerStates.map((participantsPerState) => {
-      total += participantsPerState.sumPerStateAndWeek;
+      if (
+        participantsPerState.state === ReservationState.TEMPORARY ||
+        participantsPerState.state === ReservationState.DEFINITIVE
+      ) {
+        total += participantsPerState.sumPerStateAndWeek;
+      }
     });
 
     const sumPerWeek = total;
