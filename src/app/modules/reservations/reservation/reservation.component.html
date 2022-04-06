@@ -5,7 +5,7 @@
   <div class="wizard-content">
     <div class="wizard-content-body">
       <form [formGroup]="signupForm">
-        <div class="form-group row mb-2">
+        <div class="form-group mb-2">
           <app-header
             [showAmount]="false"
             [showCountdown]="false"
@@ -13,7 +13,7 @@
             [title]="title"
           ></app-header>
         </div>
-        <div *ngIf="weekVMs$ | async as weekVMs" class="form-group row mb-2">
+        <div *ngIf="weekVMs$ | async as weekVMs" class="form-group mb-2">
           <div
             *ngIf="submitted && reservationsPerWeekCtlr?.errors?.min"
             class="alert alert-danger fade show"
