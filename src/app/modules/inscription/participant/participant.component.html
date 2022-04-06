@@ -38,7 +38,7 @@
             </select>
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('salutation')?.errors?.required">
-                Please enter a salutation.
+                {{ "PARTICIPANT.SALUTATIONMISSING" | translate }}
               </span>
             </span>
           </div>
@@ -70,14 +70,7 @@
               <span
                 *ngIf="signupForm.get('firstNameParticipant')?.errors?.required"
               >
-                Please enter the first name.
-              </span>
-              <span
-                *ngIf="
-                  signupForm.get('firstNameParticipant')?.errors?.minlength
-                "
-              >
-                The first name must be longer than 3 characters.
+                {{ "PARTICIPANT.FIRSTNAMEMISSING" | translate}}
               </span>
             </span>
           </div>
@@ -109,12 +102,7 @@
               <span
                 *ngIf="signupForm.get('lastNameParticipant')?.errors?.required"
               >
-                Please enter the last name.
-              </span>
-              <span
-                *ngIf="signupForm.get('lastNameParticipant')?.errors?.maxlength"
-              >
-                The last name must be less than 50 characters.
+                {{ "PARTICIPANT.LASTNAMEMISSING" | translate}}
               </span>
             </span>
           </div>
@@ -141,7 +129,7 @@
             />
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('birthday')?.errors?.required">
-                Please enter the birthday.
+                {{ "PARTICIPANT.BIRTHDAYMISSING" | translate}}
               </span>
             </span>
           </div>

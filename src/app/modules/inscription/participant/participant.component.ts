@@ -228,7 +228,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     const birthday = new Date(this.signupForm.value.birthday);
 
     if (birthday.toDateString() == this.initDate.toDateString()) {
-      this.signupForm.controls['birthday'].setErrors({ incorrect: true });
+      this.signupForm.controls['birthday'].setErrors({ required: true });
       this.loadingIndicatorService.stop();
       return;
     }
@@ -332,7 +332,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     const birthday = new Date(this.signupForm.value.birthday);
 
     if (birthday.toDateString() == this.initDate.toDateString()) {
-      this.signupForm.controls['birthday'].setErrors({ incorrect: true });
+      this.signupForm.controls['birthday'].setErrors({ required: true });
       this.loadingIndicatorService.stop();
       return;
     }

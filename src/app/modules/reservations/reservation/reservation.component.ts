@@ -107,9 +107,14 @@ export class ReservationComponent implements OnInit, OnDestroy {
             .getReservationsPerWeek(weeklyReservation.week?.week!)
             .pipe(take(1))
             .subscribe((sumChildsPerState) => {
-              sumChildsPerState.map(
-                (p) => (sumParticipants += p.sumPerStateAndWeek)
-              );
+              sumChildsPerState.map((p) => {
+                if (
+                  p.state === ReservationState.DEFINITIVE ||
+                  p.state === ReservationState.TEMPORARY
+                ) {
+                  sumParticipants += p.sumPerStateAndWeek;
+                }
+              });
 
               let places: Place[] = [];
               for (
