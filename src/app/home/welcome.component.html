@@ -1,15 +1,15 @@
 ﻿<app-wizard-step
-  [title]="title"
-  [previousEnabled]="false"
-  (previousStepClicked)="goToPreviousStep()"
   (nextStepClicked)="goToNextStep()"
+  (previousStepClicked)="goToPreviousStep()"
+  [previousEnabled]="false"
+  [title]="title"
 >
   <div class="wizard-content">
     <div class="wizard-content-body">
       <div class="wizard-content-body">
         <form novalidate>
-          <div class="form-group row mb-2">
-            <app-header [showWeek]="false" [showAmount]="false" [showCountdown]="false"></app-header>
+          <div class="form-group mb-2">
+            <app-header [showAmount]="false" [showCountdown]="false" [showWeek]="false"></app-header>
           </div>
           <!-- <formly-form
             [form]="signupForm"
@@ -17,7 +17,7 @@
             [model]="model"
             [options]="options">
           </formly-form> -->
-          <div class="form-group row mb-2">
+          <div class="form-group mb-2">
             <div [innerHtml]="welcomeText | translate | safe: 'html'" class="welcome-text"></div>
           </div>
         </form>
@@ -38,6 +38,6 @@
       <ng-template #loginContent>
         <button class="btn btn-outline-success" (click)="login()">Login</button>
       </ng-template-->
-      </div>
+    </div>
   </div>
 </app-wizard-step>
