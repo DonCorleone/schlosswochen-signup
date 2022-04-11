@@ -34,7 +34,7 @@
               </div>
               <app-capacity [weekVM]="weekVM"></app-capacity>
               <div
-                *ngIf="weekVM.freePlacesThisWeek > 0"
+                *ngIf="weekVM.published && weekVM.freePlacesThisWeek > 0"
                 class="weekReservation"
               >
                 <div class="radio-header text-light">
@@ -78,7 +78,7 @@
                 </div>
               </div>
               <div
-                *ngIf="weekVM.freePlacesThisWeek < maxNumberOfReservations"
+                *ngIf="weekVM.published && weekVM.freePlacesThisWeek < maxNumberOfReservations"
                 class="weekReservation"
               >
                 <div class="radio-header text-light">

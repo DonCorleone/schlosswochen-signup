@@ -101,6 +101,7 @@ export class ReservationService {
               dateTo
               week
               maxParticipants
+              published
             }
           }
         `,
