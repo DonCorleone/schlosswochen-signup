@@ -1,0 +1,12 @@
+identifier: ld24pc35v7b8cdu9
+appPort: 1864
+staticPort: 1668
+reloadPort: 2667
+hostName: localhost
+projectName: Schlosswochen-Inscription
+homeFolder: /Users/developer/Documents/scm/schlosswochen-ch/schlosswochen-ch-signup
+distFolder: ./dist/Schlosswochen-Inscription
+outDir: >-
+  /Users/developer/Documents/scm/schlosswochen-ch/schlosswochen-ch-signup/dist/static
+handle404: ''
+allowErrorCollect: false
