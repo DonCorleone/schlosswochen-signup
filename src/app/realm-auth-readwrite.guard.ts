@@ -10,8 +10,8 @@ export class RealmAuthGuardReadWrite implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      return realm.getValidAccessTokenReadWrite().then(accessToken => {
-        return !!accessToken;
-      });
-  };
+    return realm.getValidAccessTokenReadWrite().then(accessToken => {
+      return accessToken ? true : false;
+    });
+  }
 }
