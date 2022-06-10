@@ -14,7 +14,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { HttpLink } from 'apollo-angular/http';
 import { AppComponent } from './app.component';
-import { APOLLO_NAMED_OPTIONS, NamedOptions } from 'apollo-angular';
+import { APOLLO_NAMED_OPTIONS, NamedOptions, ApolloModule } from 'apollo-angular';
 import * as realm from './realm';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -59,6 +59,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    ApolloModule,
     CoreModule,
     SharedModule,
     TranslateModule.forRoot({
@@ -109,7 +110,7 @@ export function HttpLoaderFactory(http: HttpClient) {
               uri: realm.graphqlUrlReadWrite,
               headers: new HttpHeaders().set(
                 'Authorization',
-                `Bearer ${sessionStorage.getItem('tokenReadWrite')}`
+                `Bearer ${localStorage.getItem('tokenReadWrite')}`
               ),
             }),
           },
@@ -120,7 +121,7 @@ export function HttpLoaderFactory(http: HttpClient) {
               uri: realm.graphqlUrl,
               headers: new HttpHeaders().set(
                 'Authorization',
-                `Bearer ${sessionStorage.getItem('token')}`
+                `Bearer ${localStorage.getItem('token')}`
               ),
             }),
           },
