@@ -10,9 +10,9 @@ export class RealmAuthGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      return realm.getValidAccessToken().then(accessToken => {
-        return !!accessToken;
-      });
-  };
+    return realm.getValidAccessToken().then(accessToken => {
+      return accessToken ? true : false;
+    });
+  }
 }
 
