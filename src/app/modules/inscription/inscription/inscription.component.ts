@@ -145,8 +145,10 @@ export class InscriptionComponent implements OnInit, OnDestroy {
                   }
 
                   if (externalUser) {
+
+
                     this.reservationService
-                      .getWeeks(2022)
+                      .getWeeks(2023)
                       .pipe(
                         map((weeks) => {
                           const inscriptionsWeek = weeks.find(
