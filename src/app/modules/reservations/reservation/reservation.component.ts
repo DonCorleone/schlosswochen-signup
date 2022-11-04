@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
@@ -41,7 +41,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private reservationService: ReservationService,
     private router: Router,
     private store: Store<InscriptionReducer.InscriptionState>,
