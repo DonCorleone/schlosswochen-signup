@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -57,7 +57,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   phoneRequired = 'CONTACT.PHONEREQUIRED';
   countryRequired = 'CONTACT.COUNTRYREQUIRED';
 
-  signupForm!: FormGroup;
+  signupForm!: UntypedFormGroup;
   emailMessage: string = '';
   confirmEmailMessage: string = '';
   isEditMode = false;
@@ -70,7 +70,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   private _ngDestroy$ = new Subject<void>();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private inscriptionService: InscriptionsService,
     private reservationService: ReservationService,
     private route: ActivatedRoute,
@@ -145,8 +145,10 @@ export class InscriptionComponent implements OnInit, OnDestroy {
                   }
 
                   if (externalUser) {
+
+
                     this.reservationService
-                      .getWeeks(2022)
+                      .getWeeks(2023)
                       .pipe(
                         map((weeks) => {
                           const inscriptionsWeek = weeks.find(

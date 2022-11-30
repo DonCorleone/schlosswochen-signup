@@ -188,8 +188,10 @@
       }
     }
   },
-  "defaultProject": "Schlosswochen-Inscription",
   "cli": {
-    "defaultCollection": "@ngrx/schematics"
+    "schematicCollections": [
+      "@ngrx/schematics"
+    ],
+    "analytics": "808a67d6-7411-4450-9824-8668116bf537"
   }
 }

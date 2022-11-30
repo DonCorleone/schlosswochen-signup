@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -80,7 +80,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   inscription!: Inscription;
 
   timer$: Observable<number> | undefined;
-  signupForm!: FormGroup;
+  signupForm!: UntypedFormGroup;
   currentParticipantNumber = 0;
   currentParticipantNumber$: Observable<number>;
   emailMessage: string = '';
@@ -96,7 +96,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   private initDate = new Date();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private activeRoute: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
