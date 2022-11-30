@@ -9,6 +9,8 @@ import {
 } from '../models/Graphqlx';
 import { environment } from '../../environments/environment';
 import { ReservationState, WeekVM } from '../models/Interfaces';
+import { HttpClient } from '@angular/common/http';
+import { ServerResponseWeek } from 'netlify/models/weekModel';
 
 export interface insertOneSubscriptionData {
   insertOneSubscription: Inscription;
@@ -25,7 +27,7 @@ export class ReservationService {
   private readonly maxNumberOfReservations: number;
   private apollo: ApolloBase;
 
-  constructor(private apolloProvider: Apollo) {
+  constructor(private apolloProvider: Apollo, private httpClient: HttpClient) {
     this.apollo = this.apolloProvider.use('writeClient');
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
@@ -83,12 +85,11 @@ export class ReservationService {
   }
 
   getWeekVMs(year: number): Observable<WeekVM[]> {
-    const b = this.getWeeks(year).pipe((weeks$) => {
-      const a = this.mapWeekCapacity(weeks$);
-
-      return a;
-    });
-    return b;
+    return this.httpClient
+      .get<ServerResponseWeek>(`.netlify/functions/getWeeks`)
+      .pipe((week) => {
+        return this.mapWeekCapacity(week);
+      });
   }
 
   getWeeks(year: number): Observable<Week[]> {
@@ -130,23 +131,22 @@ export class ReservationService {
       .valueChanges.pipe(map((result) => result.data.sumChildsPerState));
   }
 
-  private mapWeekCapacity(weeks$: Observable<Week[]>): Observable<WeekVM[]> {
-    const z = weeks$.pipe(
-      mergeMap((arr) => {
-        const y = combineLatest(
-          arr.map((week) => {
-            const x = this.getReservationsPerWeek(week.week!).pipe(
+  private mapWeekCapacity(
+    response: Observable<ServerResponseWeek>
+  ): Observable<WeekVM[]> {
+    return response.pipe(
+      mergeMap((response) => {
+        return combineLatest<WeekVM[]>(
+          response.message.map((serverDataWeek) => {
+            return this.getReservationsPerWeek(serverDataWeek.week!).pipe(
               map((participantsPerStates) => {
-                return this.mapWeekVM(participantsPerStates, week);
+                return this.mapWeekVM(participantsPerStates, serverDataWeek);
               })
             );
-            return x;
           })
         );
-        return y;
       })
     );
-    return z;
   }
 
   private mapWeekVM(participantsPerStates: ChildsPerState[], week: Week) {
