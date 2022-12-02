@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "config": "ts-node ./scripts/setenv.ts",
-    "start": "npm run config --environment=develop && ng serve --configuration=custom",
-    "build": "npm run config --environment=prod && ng build --configuration=production",
+    "netlify": "NODE_OPTIONS=--inspect netlify functions:serve",
+    "config-develop": "ts-node ./scripts/setenv.ts --environment=develop",
+    "config-prod": "ts-node ./scripts/setenv.ts --environment=prod",
+    "start": "npm run config-develop --environment=develop && ng serve --configuration=custom",
+    "build": "npm run config-prod --environment=prod && ng build --configuration=custom",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

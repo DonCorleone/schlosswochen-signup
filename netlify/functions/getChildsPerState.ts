@@ -1,11 +1,11 @@
 import { Handler } from '@netlify/functions';
-import { GetWeeksResponse } from "../models/weekModel";
-
+import {SumChildsPerStateResponse} from "../models/weekModel";
 const fetch = require('node-fetch');
 
 const handler: Handler = async (event, context) => {
   return fetch(
-    `https://realm.mongodb.com/api/client/v2.0/app/${process.env.APP_ID_REALM!}/graphql`,
+    `https://realm.mongodb.com/api/client/v2.0/app/${process.env
+      .APP_ID_REALM!}/graphql`,
     {
       method: 'POST',
       headers: {
@@ -14,22 +14,19 @@ const handler: Handler = async (event, context) => {
       },
       body: JSON.stringify({
         query: `
-          query ($year: Int) {
-            weeks(query: { year: $year }, sortBy: WEEK_ASC) {
-              dateFrom
-              dateTo
-              week
-              maxParticipants
-              published
+          query ($week: Int!) {
+            sumChildsPerState(input: $week) {
+              state
+              sumPerStateAndWeek
             }
           }
       `,
-        variables: { year: event?.queryStringParameters?.year },
+        variables: { week: event?.queryStringParameters?.week },
       }),
     }
   )
     .then((res: any) => res.json())
-    .then((result: GetWeeksResponse) => {
+    .then((result: SumChildsPerStateResponse) => {
       return {
         statusCode: 200,
         body: JSON.stringify({ message: result }),
@@ -37,4 +34,3 @@ const handler: Handler = async (event, context) => {
     });
 };
 export { handler };
-

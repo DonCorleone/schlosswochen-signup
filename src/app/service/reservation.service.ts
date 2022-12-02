@@ -10,15 +10,16 @@ import {
 import { environment } from '../../environments/environment';
 import { ReservationState, WeekVM } from '../models/Interfaces';
 import { HttpClient } from '@angular/common/http';
-import { ServerResponseWeek } from 'netlify/models/weekModel';
+import {
+  GetWeeksResponse,
+  ServerResponseWeek, SumChildsPerStatePayload,
+  SumChildsPerStateResponse,
+} from 'netlify/models/weekModel';
 
 export interface insertOneSubscriptionData {
   insertOneSubscription: Inscription;
 }
 
-interface weeksData {
-  weeks: Week[];
-}
 
 @Injectable({
   providedIn: 'root',
@@ -85,73 +86,53 @@ export class ReservationService {
   }
 
   getWeekVMs(year: number): Observable<WeekVM[]> {
-    return this.httpClient
-      .get<ServerResponseWeek>(`.netlify/functions/getWeeks`)
-      .pipe((week) => {
-        return this.mapWeekCapacity(week);
-      });
-  }
+    const b = this.getWeeks(year).pipe((weeks$) => {
+      const a = this.mapWeekCapacity(weeks$);
 
+      return a;
+    });
+    return b;
+  }
   getWeeks(year: number): Observable<Week[]> {
-    return this.apollo
-      .watchQuery<weeksData>({
-        query: gql`
-          query ($year: Int) {
-            weeks(query: { year: $year }, sortBy: WEEK_ASC) {
-              dateFrom
-              dateTo
-              week
-              maxParticipants
-              published
-            }
-          }
-        `,
-        variables: { year },
-      })
-      .valueChanges.pipe(
-        map((result) => (<weeksData>result?.data)?.weeks),
+    return this.httpClient
+      .get<GetWeeksResponse>(
+        `.netlify/functions/getWeeks?year=${year}`
+      ).pipe(
+        map((result: GetWeeksResponse) => result?.message?.data?.weeks),
         catchError(this.handleError)
       );
   }
 
   getReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
-    return this.apollo
-      .watchQuery<ChildsPerStateData>({
-        query: gql`
-          query GetReservationsPerWeek($week: Int!) {
-            sumChildsPerState(input: $week) {
-              state
-              sumPerStateAndWeek
-            }
-          }
-        `,
-        variables: { week: week },
-        fetchPolicy: 'no-cache',
-      })
-      .valueChanges.pipe(map((result) => result.data.sumChildsPerState));
+    return this.httpClient
+      .get<SumChildsPerStatePayload>(
+        `.netlify/functions/getChildsPerState?week=${week}`
+      )
+      .pipe(map((payload) => payload?.data?.sumChildsPerState));
   }
 
-  private mapWeekCapacity(
-    response: Observable<ServerResponseWeek>
-  ): Observable<WeekVM[]> {
-    return response.pipe(
-      mergeMap((response) => {
-        return combineLatest<WeekVM[]>(
-          response.message.map((serverDataWeek) => {
-            return this.getReservationsPerWeek(serverDataWeek.week!).pipe(
+  private mapWeekCapacity(weeks$: Observable<Week[]>): Observable<WeekVM[]> {
+    const z = weeks$.pipe(
+      mergeMap((arr) => {
+        const y = combineLatest(
+          arr.map((week) => {
+            const x = this.getReservationsPerWeek(week.week!).pipe(
               map((participantsPerStates) => {
-                return this.mapWeekVM(participantsPerStates, serverDataWeek);
+                return this.mapWeekVM(participantsPerStates, week);
               })
             );
+            return x;
           })
         );
+        return y;
       })
     );
+    return z;
   }
 
   private mapWeekVM(participantsPerStates: ChildsPerState[], week: Week) {
     let total: number = 0;
-    participantsPerStates.map((participantsPerState) => {
+    participantsPerStates?.map((participantsPerState) => {
       if (
         participantsPerState.state === ReservationState.TEMPORARY ||
         participantsPerState.state === ReservationState.DEFINITIVE
