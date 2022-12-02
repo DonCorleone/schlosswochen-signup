@@ -6,7 +6,7 @@ import {
   on,
 } from '@ngrx/store';
 
-import { Subscription as Inscription, Week } from 'src/app/models/Graphqlx';
+import { Subscription as Inscription, Week } from 'netlify/models/Graphqlx';
 import { Place } from '../../../models/Interfaces';
 
 export const inscriptionFeatureKey = 'inscription';

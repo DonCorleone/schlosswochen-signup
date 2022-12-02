@@ -12,7 +12,7 @@ import {
   Subscription as Inscription,
   SubscriptionInsertInput,
   Week,
-} from '../../../models/Graphqlx';
+} from 'netlify/models/Graphqlx';
 import { environment } from '../../../../environments/environment';
 import {
   Place,

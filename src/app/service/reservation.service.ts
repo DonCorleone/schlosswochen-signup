@@ -1,25 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
 import { catchError, combineLatest, map, mergeMap, Observable } from 'rxjs';
-import { ChildsPerState, ChildsPerStateData } from '../models/Subscriptor';
-import {
-  Subscription as Inscription,
-  SubscriptionInsertInput,
-  Week,
-} from '../models/Graphqlx';
+import { ChildsPerState } from '../models/Subscriptor';
 import { environment } from '../../environments/environment';
 import { ReservationState, WeekVM } from '../models/Interfaces';
 import { HttpClient } from '@angular/common/http';
 import {
   GetWeeksResponse,
-  ServerResponseWeek, SumChildsPerStatePayload,
-  SumChildsPerStateResponse,
+  SumChildsPerStatePayload,
 } from 'netlify/models/weekModel';
+import {
+  Subscription as Inscription,
+  SubscriptionInsertInput,
+  Week,
+} from 'netlify/models/Graphqlx';
 
 export interface insertOneSubscriptionData {
   insertOneSubscription: Inscription;
 }
-
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +34,18 @@ export class ReservationService {
   insertOneSubscription(
     subscriptionInsertInput: SubscriptionInsertInput
   ): Observable<Inscription> {
-    return this.apollo
+    return this.httpClient.post(
+      `.netlify/functions/insertOneSubscription`,
+      subscriptionInsertInput
+    );
+    /*      .pipe(
+        map((result) => {
+          return (<insertOneSubscriptionData>result.data).insertOneSubscription;
+        }),
+        catchError(this.handleError)
+      )*/
+
+    /*    return this.apollo
       .mutate<insertOneSubscriptionData>({
         mutation: gql`
           mutation insertOneSubscription($data: SubscriptionInsertInput!) {
@@ -76,13 +85,7 @@ export class ReservationService {
         variables: {
           data: subscriptionInsertInput,
         },
-      })
-      .pipe(
-        map((result) => {
-          return (<insertOneSubscriptionData>result.data).insertOneSubscription;
-        }),
-        catchError(this.handleError)
-      );
+      })*/
   }
 
   getWeekVMs(year: number): Observable<WeekVM[]> {
@@ -95,9 +98,8 @@ export class ReservationService {
   }
   getWeeks(year: number): Observable<Week[]> {
     return this.httpClient
-      .get<GetWeeksResponse>(
-        `.netlify/functions/getWeeks?year=${year}`
-      ).pipe(
+      .get<GetWeeksResponse>(`.netlify/functions/getWeeks?year=${year}`)
+      .pipe(
         map((result: GetWeeksResponse) => result?.message?.data?.weeks),
         catchError(this.handleError)
       );
@@ -112,22 +114,19 @@ export class ReservationService {
   }
 
   private mapWeekCapacity(weeks$: Observable<Week[]>): Observable<WeekVM[]> {
-    const z = weeks$.pipe(
+    return weeks$.pipe(
       mergeMap((arr) => {
-        const y = combineLatest(
+        return combineLatest(
           arr.map((week) => {
-            const x = this.getReservationsPerWeek(week.week!).pipe(
+            return this.getReservationsPerWeek(week.week!).pipe(
               map((participantsPerStates) => {
                 return this.mapWeekVM(participantsPerStates, week);
               })
             );
-            return x;
           })
         );
-        return y;
       })
     );
-    return z;
   }
 
   private mapWeekVM(participantsPerStates: ChildsPerState[], week: Week) {

@@ -4,7 +4,7 @@ import { Observable, Subject, take } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import { Router } from '@angular/router';
-import { Subscription as Inscription } from 'src/app/models/Graphqlx';
+import { Subscription as Inscription } from 'netlify/models/Graphqlx';
 import {
   selectCurrentUserProfile,
   selectIsLoggedIn,

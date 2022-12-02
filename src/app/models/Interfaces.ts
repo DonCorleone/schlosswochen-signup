@@ -1,4 +1,4 @@
-import { Week } from './Graphqlx';
+import { Week } from 'netlify/models/Graphqlx';
 
 export enum ReservationState {
   TEMPORARY = 'temporary',

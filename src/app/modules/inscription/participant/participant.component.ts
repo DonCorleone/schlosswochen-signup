@@ -26,7 +26,7 @@ import {
   Subscription as Inscription,
   SubscriptionParticipantsRelationInput,
   SubscriptionUpdateInput,
-} from 'src/app/models/Graphqlx';
+} from 'netlify/models/Graphqlx';
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import {
   combineLatest,

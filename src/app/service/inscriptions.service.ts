@@ -5,7 +5,7 @@ import {
   Subscription as Inscription,
   SubscriptionQueryInput,
   SubscriptionUpdateInput,
-} from '../models/Graphqlx';
+} from 'netlify/models/Graphqlx';
 import { ReservationState } from '../models/Interfaces';
 
 interface SubscriptionData {

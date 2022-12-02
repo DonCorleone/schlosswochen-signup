@@ -28,7 +28,7 @@ import {
   SubscriptionParticipantsRelationInput,
   SubscriptionQueryInput,
   SubscriptionUpdateInput,
-} from 'src/app/models/Graphqlx';
+} from 'netlify/models/Graphqlx';
 import * as AuthSelector from '../../user/state/auth.selectors';
 import { ReservationService } from '../../../service/reservation.service';
 import { ReservationState } from '../../../models/Interfaces';

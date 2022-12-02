@@ -9,7 +9,7 @@ import {
   MutationInsertOneParticipantArgs,
   Participant,
   ParticipantInsertInput,
-} from '../models/Graphqlx';
+} from 'netlify/models/Graphqlx';
 
 @Injectable({
   providedIn: 'root',
