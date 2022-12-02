@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo, ApolloBase, gql } from 'apollo-angular';
-import { catchError, combineLatest, map, mergeMap, Observable } from 'rxjs';
+import {catchError, combineLatest, map, mergeMap, Observable, tap} from 'rxjs';
 import { ChildsPerState } from '../models/Subscriptor';
 import { environment } from '../../environments/environment';
 import { ReservationState, WeekVM } from '../models/Interfaces';
@@ -14,6 +14,10 @@ import {
   SubscriptionInsertInput,
   Week,
 } from 'netlify/models/Graphqlx';
+import {
+  InsertOneSubscriptionPayload,
+  InsertOneSubscriptionResponse
+} from "../../../netlify/functions/insertOneSubscription";
 
 export interface insertOneSubscriptionData {
   insertOneSubscription: Inscription;
@@ -34,16 +38,16 @@ export class ReservationService {
   insertOneSubscription(
     subscriptionInsertInput: SubscriptionInsertInput
   ): Observable<Inscription> {
-    return this.httpClient.post(
+    return this.httpClient.post<InsertOneSubscriptionResponse>(
       `.netlify/functions/insertOneSubscription`,
        subscriptionInsertInput
-    );
-    /*      .pipe(
+    ).pipe(
+        tap(p => console.log(JSON.stringify(p))),
         map((result) => {
-          return (<insertOneSubscriptionData>result.data).insertOneSubscription;
+          return result?.message?.insertOneSubscription;
         }),
         catchError(this.handleError)
-      )*/
+      );
 
     /*    return this.apollo
       .mutate<insertOneSubscriptionData>({

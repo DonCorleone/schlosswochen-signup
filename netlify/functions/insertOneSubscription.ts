@@ -1,16 +1,21 @@
 import { Handler } from '@netlify/functions';
 import { GetWeeksResponse } from '../models/weekModel';
-import { SubscriptionInsertInput } from 'netlify/models/Graphqlx';
+import { Subscription as Inscription } from 'netlify/models/Graphqlx';
 
 const fetch = require('node-fetch');
+export interface InsertOneSubscriptionPayload {
+  insertOneSubscription: Inscription;
+}
+
+export interface Message {
+  data: InsertOneSubscriptionPayload;
+}
+
+export interface InsertOneSubscriptionResponse {
+  message: InsertOneSubscriptionPayload;
+}
 
 const handler: Handler = async (event, context) => {
-  var subscriptionInsertInput: SubscriptionInsertInput;
-
-  subscriptionInsertInput = event.body as SubscriptionInsertInput;
-
-  console.log(JSON.stringify(subscriptionInsertInput));
-
   return fetch(
     `https://realm.mongodb.com/api/client/v2.0/app/${process.env.APP_ID_REALM!}/graphql`,
     {
@@ -60,10 +65,10 @@ const handler: Handler = async (event, context) => {
     }
   )
     .then((res: any) => res.json())
-    .then((result: GetWeeksResponse) => {
+    .then((result: Message) => {
       return {
         statusCode: 200,
-        body: JSON.stringify({ message: result }),
+        body: JSON.stringify({ message: result?.data }),
       };
     });
 };

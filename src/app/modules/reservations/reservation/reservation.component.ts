@@ -3,7 +3,7 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
-import { Observable, take } from 'rxjs';
+import {Observable, take, tap} from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import * as InscriptionActions from '../../inscription/state/inscription.actions';
@@ -99,7 +99,8 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
       this.reservationService
         .insertOneSubscription(subscriptionInsertInput)
-        .pipe(take(1))
+        .pipe(
+          take(1))
         .subscribe((inscription: Inscription) => {
           this.store.dispatch(
             InscriptionActions.setWeek({ week: weeklyReservation.week })
@@ -113,7 +114,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
             .getReservationsPerWeek(weeklyReservation.week?.week!)
             .pipe(take(1))
             .subscribe((sumChildsPerState) => {
-              sumChildsPerState.map((p) => {
+              sumChildsPerState?.map((p) => {
                 if (
                   p.state === ReservationState.DEFINITIVE ||
                   p.state === ReservationState.TEMPORARY
