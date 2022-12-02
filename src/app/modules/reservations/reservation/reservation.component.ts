@@ -52,7 +52,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.weekVMs$ = this.reservationService.getWeekVMs(2023);
+    this.weekVMs$ = this.reservationService.getWeekVMs(2022);
   }
 
   createWeeklyReservation(
