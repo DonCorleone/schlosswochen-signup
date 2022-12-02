@@ -13,6 +13,7 @@ export interface Place {
 }
 
 export interface WeeklyReservation {
+  year: number;
   week: Week;
   numberOfReservations: number;
   state: ReservationState;

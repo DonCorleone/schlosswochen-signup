@@ -33,12 +33,14 @@ export class ReservationComponent implements OnInit, OnDestroy {
   reservationStateEnum = ReservationState;
   // maxWeeks: number = 1;
   weekVMs$: Observable<WeekVM[]>;
+  year: number;
   maxNumberOfReservations: number = 1;
   submitted = false;
   signupForm = this.fb.group({
     numOfChilds: [0, [Validators.required, Validators.min(1)]],
   });
   reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
+
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -48,20 +50,22 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private loadingIndicatorService: LoadingIndicatorService
   ) {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
+    this.year = +environment.UPCOMING_YEAR;
   }
 
   ngOnInit(): void {
-
-    this.weekVMs$ = this.reservationService.getWeekVMs(2023);
+    this.weekVMs$ = this.reservationService.getWeekVMs(this.year);
     this.weekVMs$.subscribe(p => console.log(JSON.stringify(p)));
   }
 
   createWeeklyReservation(
+    year: number,
     week: Week,
     reservations: number,
     state: ReservationState
   ): WeeklyReservation {
     return {
+      year: year,
       week: week,
       numberOfReservations: reservations,
       state: state,
@@ -87,7 +91,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
       let subscriptionInsertInput: Partial<SubscriptionInsertInput> = {
         numOfChildren: weeklyReservation.numberOfReservations,
         week: weeklyReservation.week.week,
-        year: new Date().getFullYear(),
+        year: weeklyReservation.year,
         deadline: deadline,
         reservationDate: new Date(),
         state: weeklyReservation.state,

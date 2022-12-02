@@ -15,7 +15,8 @@ const environmentFileContent = isProduction
    NODE_VERSION: "${process.env.NODE_VERSION}",
    APP_ID_REALM_READWRITE: "${process.env.APP_ID_REALM_READWRITE}",
    MAX_NUMBER_OF_RESERVATIONS: "${process.env.MAX_NUMBER_OF_RESERVATIONS}",
-   MAX_NUMBER_OF_WEEKS: "${process.env.MAX_NUMBER_OF_WEEKS}"
+   MAX_NUMBER_OF_WEEKS: "${process.env.MAX_NUMBER_OF_WEEKS}",
+   UPCOMING_YEAR: "${process.env.UPCOMING_YEAR}",
 };`
   : `export const environment = {
    production: false,
@@ -26,7 +27,8 @@ const environmentFileContent = isProduction
    NODE_VERSION: "${process.env.NODE_VERSION}",
    APP_ID_REALM_READWRITE: "${process.env.APP_ID_REALM_READWRITE}",
    MAX_NUMBER_OF_RESERVATIONS: "${process.env.MAX_NUMBER_OF_RESERVATIONS}",
-   MAX_NUMBER_OF_WEEKS: "${process.env.MAX_NUMBER_OF_WEEKS}"
+   MAX_NUMBER_OF_WEEKS: "${process.env.MAX_NUMBER_OF_WEEKS}",
+   UPCOMING_YEAR: "${process.env.UPCOMING_YEAR}",
 };`; // write the content to the respective file
 writeFile(targetPath, environmentFileContent, function (err: any) {
   if (err) {

@@ -9,9 +9,10 @@ const handler: Handler = async (event, context) => {
 
   subscriptionInsertInput = event.body as SubscriptionInsertInput;
 
+  console.log(JSON.stringify(subscriptionInsertInput));
+
   return fetch(
-    `https://realm.mongodb.com/api/client/v2.0/app/${process.env
-      .APP_ID_REALM!}/graphql`,
+    `https://realm.mongodb.com/api/client/v2.0/app/${process.env.APP_ID_REALM!}/graphql`,
     {
       method: 'POST',
       headers: {
@@ -19,7 +20,7 @@ const handler: Handler = async (event, context) => {
         apiKey: process.env.FETCH_GRAPHQL,
       },
       body: JSON.stringify({
-        mutation: `
+        query: `
         mutation insertOneSubscription($data: SubscriptionInsertInput!) {
             insertOneSubscription(data: $data) {
               _id
@@ -54,7 +55,7 @@ const handler: Handler = async (event, context) => {
             }
           }
       `,
-        data: subscriptionInsertInput,
+        variables : { data: JSON.parse(event.body ?? '') },
       }),
     }
   )

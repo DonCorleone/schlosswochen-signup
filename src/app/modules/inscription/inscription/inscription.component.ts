@@ -47,6 +47,7 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 })
 export class InscriptionComponent implements OnInit, OnDestroy {
   title = 'CONTACT.TITLE';
+  year: number;
   firstNameRequired = 'CONTACT.FIRSTNAMEREQUIRED';
   lastNameRequired = 'CONTACT.LASTNAMEREQUIRED';
   streetRequired = 'CONTACT.STREETREQUIRED';
@@ -69,6 +70,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
 
   private _ngDestroy$ = new Subject<void>();
 
+
   constructor(
     private fb: UntypedFormBuilder,
     private inscriptionService: InscriptionsService,
@@ -77,7 +79,10 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store<InscriptionReducer.InscriptionState>,
     private loadingIndicatorService: LoadingIndicatorService
-  ) {}
+  ) {
+
+    this.year = process?.env?.UPCOMING_YEAR ? +process?.env?.UPCOMING_YEAR : 0;
+  }
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
@@ -148,7 +153,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
 
 
                     this.reservationService
-                      .getWeeks(2023)
+                      .getWeeks(this.year)
                       .pipe(
                         map((weeks) => {
                           const inscriptionsWeek = weeks.find(
