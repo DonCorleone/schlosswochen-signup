@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Apollo, ApolloBase, gql } from 'apollo-angular';
-import {catchError, combineLatest, map, mergeMap, Observable, tap} from 'rxjs';
+import {
+  catchError,
+  combineLatest,
+  map,
+  mergeMap,
+  Observable,
+  tap,
+} from 'rxjs';
 import { ChildsPerState } from '../models/Subscriptor';
 import { environment } from '../../environments/environment';
 import { ReservationState, WeekVM } from '../models/Interfaces';
@@ -14,91 +20,39 @@ import {
   SubscriptionInsertInput,
   Week,
 } from 'netlify/models/Graphqlx';
-import {
-  InsertOneSubscriptionPayload,
-  InsertOneSubscriptionResponse
-} from "../../../netlify/functions/insertOneSubscription";
-
-export interface insertOneSubscriptionData {
-  insertOneSubscription: Inscription;
-}
+import { InsertOneSubscriptionResponse } from '../../../netlify/functions/insertOneSubscription';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReservationService {
   private readonly maxNumberOfReservations: number;
-  private apollo: ApolloBase;
 
-  constructor(private apolloProvider: Apollo, private httpClient: HttpClient) {
-    this.apollo = this.apolloProvider.use('writeClient');
+  constructor(private httpClient: HttpClient) {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
 
   insertOneSubscription(
     subscriptionInsertInput: SubscriptionInsertInput
   ): Observable<Inscription> {
-    return this.httpClient.post<InsertOneSubscriptionResponse>(
-      `.netlify/functions/insertOneSubscription`,
-       subscriptionInsertInput
-    ).pipe(
-        tap(p => console.log(JSON.stringify(p))),
+    return this.httpClient
+      .post<InsertOneSubscriptionResponse>(
+        `.netlify/functions/insertOneSubscription`,
+        subscriptionInsertInput
+      )
+      .pipe(
+        tap((p) => console.log(JSON.stringify(p))),
         map((result) => {
           return result?.message?.insertOneSubscription;
         }),
         catchError(this.handleError)
       );
-
-    /*    return this.apollo
-      .mutate<insertOneSubscriptionData>({
-        mutation: gql`
-          mutation insertOneSubscription($data: SubscriptionInsertInput!) {
-            insertOneSubscription(data: $data) {
-              _id
-              city
-              country
-              deadline
-              email
-              externalUserId
-              firstName
-              lastName
-              numOfChildren
-              participants {
-                _id
-                birthday
-                comment
-                externalUserId
-                firstNameParticipant
-                fotoAllowed
-                lastNameParticipant
-                participant_id
-                salutation
-              }
-              phone
-              reservationDate
-              salutation
-              state
-              street1
-              street2
-              week
-              year
-              zip
-            }
-          }
-        `,
-        variables: {
-          data: subscriptionInsertInput,
-        },
-      })*/
   }
 
   getWeekVMs(year: number): Observable<WeekVM[]> {
-    const b = this.getWeeks(year).pipe((weeks$) => {
-      const a = this.mapWeekCapacity(weeks$);
-
-      return a;
+    return this.getWeeks(year).pipe((weeks$) => {
+      return this.mapWeekCapacity(weeks$);
     });
-    return b;
   }
   getWeeks(year: number): Observable<Week[]> {
     return this.httpClient

@@ -3,7 +3,7 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
-import {Observable, take, tap} from 'rxjs';
+import { Observable, take, tap } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import * as InscriptionActions from '../../inscription/state/inscription.actions';
@@ -41,7 +41,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
   });
   reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
 
-
   constructor(
     private fb: UntypedFormBuilder,
     private reservationService: ReservationService,
@@ -55,7 +54,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.weekVMs$ = this.reservationService.getWeekVMs(this.year);
-    this.weekVMs$.subscribe(p => console.log(JSON.stringify(p)));
+    this.weekVMs$.subscribe((p) => console.log(JSON.stringify(p)));
   }
 
   createWeeklyReservation(
@@ -99,8 +98,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
       this.reservationService
         .insertOneSubscription(subscriptionInsertInput)
-        .pipe(
-          take(1))
+        .pipe(take(1))
         .subscribe((inscription: Inscription) => {
           this.store.dispatch(
             InscriptionActions.setWeek({ week: weeklyReservation.week })
