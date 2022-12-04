@@ -7,6 +7,8 @@ import {
   SubscriptionUpdateInput,
 } from 'netlify/models/Graphqlx';
 import { ReservationState } from '../models/Interfaces';
+import {InsertOneSubscriptionResponse} from "../../../netlify/functions/insertOneSubscription";
+import {HttpClient} from "@angular/common/http";
 
 interface SubscriptionData {
   subscription: Inscription;
@@ -26,7 +28,7 @@ export interface upsertOneSubscriptionData {
 export class InscriptionsService {
   private apollo: ApolloBase;
 
-  constructor(private apolloProvider: Apollo) {
+  constructor(private apolloProvider: Apollo, private httpClient: HttpClient) {
     this.apollo = this.apolloProvider.use('writeClient');
   }
 
@@ -87,7 +89,21 @@ export class InscriptionsService {
     subscriptionQueryInput: SubscriptionQueryInput,
     subscriptionUpdateInput: SubscriptionUpdateInput
   ): Observable<Inscription> {
-    return this.apollo
+    return this.httpClient
+      .post<updateOneSubscriptionData>(
+        `.netlify/functions/updateOneSubscription`,
+        {
+          query: subscriptionQueryInput,
+          set: subscriptionUpdateInput,
+        }
+      ).pipe(
+        map((result: updateOneSubscriptionData) => {
+          return result.updateOneSubscription;
+        }),
+        catchError(this.handleError)
+      );
+
+/*    return this.apollo
       .mutate<updateOneSubscriptionData>({
         mutation: gql`
           mutation updateOneSubscription(
@@ -136,7 +152,7 @@ export class InscriptionsService {
           return (<updateOneSubscriptionData>result.data).updateOneSubscription;
         }),
         catchError(this.handleError)
-      );
+      );*/
   }
 
   updateInscription(
