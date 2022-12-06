@@ -24,7 +24,7 @@ export interface UpdateOneSubscriptionRequestPayload {
 
 const handler: Handler = async (event, context) => {
 
-  var requestPayload:UpdateOneSubscriptionRequestPayload  = JSON.parse(event.body ?? '');
+  const requestPayload: UpdateOneSubscriptionRequestPayload = JSON.parse(event.body ?? '');
 
   return fetch(
     `https://realm.mongodb.com/api/client/v2.0/app/${process.env.APP_ID_REALM!}/graphql`,
@@ -73,8 +73,8 @@ const handler: Handler = async (event, context) => {
           }
       `,
         variables:{
-          query: requestPayload.subscriptionQueryInput,
-          set: requestPayload.subscriptionUpdateInput,
+          query: {... requestPayload.subscriptionQueryInput},
+          set: {... requestPayload.subscriptionUpdateInput},
         }
       }),
     }
