@@ -1,18 +1,17 @@
 import { Handler } from '@netlify/functions';
-import { GetWeeksResponse } from '../models/weekModel';
 import { Subscription as Inscription } from 'netlify/models/Graphqlx';
 
 const fetch = require('node-fetch');
-export interface InsertOneSubscriptionPayload {
+export interface InsertOneInscriptionPayload {
   insertOneSubscription: Inscription;
 }
 
 export interface Message {
-  data: InsertOneSubscriptionPayload;
+  data: InsertOneInscriptionPayload;
 }
 
-export interface InsertOneSubscriptionResponse {
-  message: InsertOneSubscriptionPayload;
+export interface InsertOneInscriptionResponse {
+  message: InsertOneInscriptionPayload;
 }
 
 const handler: Handler = async (event, context) => {

@@ -20,7 +20,7 @@ import {
   SubscriptionInsertInput,
   Week,
 } from 'netlify/models/Graphqlx';
-import { InsertOneSubscriptionResponse } from '../../../netlify/functions/insertOneSubscription';
+import { InsertOneInscriptionResponse } from '../../../netlify/functions/insertOneInscription';
 
 @Injectable({
   providedIn: 'root',
@@ -36,8 +36,8 @@ export class ReservationService {
     subscriptionInsertInput: SubscriptionInsertInput
   ): Observable<Inscription> {
     return this.httpClient
-      .post<InsertOneSubscriptionResponse>(
-        `.netlify/functions/insertOneSubscription`,
+      .post<InsertOneInscriptionResponse>(
+        `.netlify/functions/insertOneInscription`,
         subscriptionInsertInput
       )
       .pipe(

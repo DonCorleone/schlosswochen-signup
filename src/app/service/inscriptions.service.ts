@@ -7,19 +7,18 @@ import {
   SubscriptionUpdateInput,
 } from 'netlify/models/Graphqlx';
 import { ReservationState } from '../models/Interfaces';
-import {InsertOneSubscriptionResponse} from "../../../netlify/functions/insertOneSubscription";
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from '@angular/common/http';
 
 interface SubscriptionData {
   subscription: Inscription;
 }
 
-export interface updateOneSubscriptionData {
+export interface updateOneInscriptionData {
   updateOneSubscription: Inscription;
 }
 
-export interface updateOneSubscriptionResponse {
-  message: updateOneSubscriptionData;
+export interface updateOneInscriptionResponse {
+  message: updateOneInscriptionData;
 }
 
 @Injectable({
@@ -86,18 +85,19 @@ export class InscriptionsService {
   }
 
   updateOneSubscription(
-    subscriptionQueryInput: SubscriptionQueryInput,
-    subscriptionUpdateInput: SubscriptionUpdateInput
+    inscriptionQueryInput: SubscriptionQueryInput,
+    inscriptionUpdateInput: SubscriptionUpdateInput
   ): Observable<Inscription> {
     return this.httpClient
-      .post<updateOneSubscriptionResponse>(
-        `.netlify/functions/updateOneSubscription`,
+      .post<updateOneInscriptionResponse>(
+        `.netlify/functions/updateOneInscription`,
         {
-          query: subscriptionQueryInput,
-          set: subscriptionUpdateInput,
+          query: inscriptionQueryInput,
+          set: inscriptionUpdateInput,
         }
-      ).pipe(
-        map((result: updateOneSubscriptionResponse) => {
+      )
+      .pipe(
+        map((result: updateOneInscriptionResponse) => {
           return result?.message?.updateOneSubscription;
         }),
         catchError(this.handleError)
@@ -109,7 +109,7 @@ export class InscriptionsService {
     variable: SubscriptionUpdateInput
   ): Observable<Inscription> {
     return this.apollo
-      .mutate<updateOneSubscriptionData>({
+      .mutate<updateOneInscriptionData>({
         mutation: gql`
           mutation (
             $id: ObjectId
@@ -158,8 +158,7 @@ export class InscriptionsService {
       .pipe(
         // tap(result => console.log('SubscriptionService.updateSubscription: updateOneSubscriptionData', JSON.stringify(result))),
         map((result) => {
-          return (<updateOneSubscriptionData>result?.data)
-            ?.updateOneSubscription;
+          return (<updateOneInscriptionData>result?.data)?.updateOneSubscription;
         }),
         catchError(this.handleError)
       );
@@ -167,7 +166,7 @@ export class InscriptionsService {
 
   updateExternalUserId(id: string, variable: string): Observable<string> {
     return this.apollo
-      .mutate<updateOneSubscriptionData>({
+      .mutate<updateOneInscriptionData>({
         mutation: gql`
           mutation ($id: ObjectId, $externalUserId: String!) {
             updateOneSubscription(
@@ -186,7 +185,7 @@ export class InscriptionsService {
       .pipe(
         //   tap(result => console.log('SubscriptionService.updateExternalUserId: updateOneSubscriptionData', JSON.stringify(result))),
         map((result) => {
-          return (<updateOneSubscriptionData>(
+          return (<updateOneInscriptionData>(
             result.data
           )).updateOneSubscription?._id?.toString();
         }),
