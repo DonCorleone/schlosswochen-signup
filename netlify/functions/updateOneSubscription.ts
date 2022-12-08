@@ -1,8 +1,9 @@
 import { Handler } from '@netlify/functions';
-import { GetWeeksResponse } from '../models/weekModel';
-import {Subscription as Inscription, SubscriptionQueryInput, SubscriptionUpdateInput} from 'netlify/models/Graphqlx';
-import { catchError, EMPTY, map } from 'rxjs';
-import { updateOneSubscriptionData } from '../../src/app/service/inscriptions.service';
+import {
+  Subscription as Inscription,
+  SubscriptionQueryInput,
+  SubscriptionUpdateInput,
+} from 'netlify/models/Graphqlx';
 
 const fetch = require('node-fetch');
 export interface InsertOneSubscriptionPayload {
@@ -18,16 +19,26 @@ export interface InsertOneSubscriptionResponse {
 }
 
 export interface UpdateOneSubscriptionRequestPayload {
-  subscriptionQueryInput: SubscriptionQueryInput,
-  subscriptionUpdateInput: SubscriptionUpdateInput
+  query: SubscriptionQueryInput;
+  set: SubscriptionUpdateInput;
 }
 
 const handler: Handler = async (event, context) => {
+  const requestPayload: UpdateOneSubscriptionRequestPayload = JSON.parse(
+    event.body ?? ''
+  );
 
-  const requestPayload: UpdateOneSubscriptionRequestPayload = JSON.parse(event.body ?? '');
+  console.log('insertOneSubscription body ' + event.body);
+  console.log(
+    'insertOneSubscription update '+ JSON.stringify( requestPayload.query)
+  );
+  console.log(
+    'insertOneSubscription query ' + JSON.stringify(requestPayload.set)
+  );
 
   return fetch(
-    `https://realm.mongodb.com/api/client/v2.0/app/${process.env.APP_ID_REALM!}/graphql`,
+    `https://realm.mongodb.com/api/client/v2.0/app/${process.env
+      .APP_ID_REALM!}/graphql`,
     {
       method: 'POST',
       headers: {
@@ -37,7 +48,7 @@ const handler: Handler = async (event, context) => {
       body: JSON.stringify({
         query: `
           mutation updateOneSubscription(
-            $query: SubscriptionQueryInput
+            $query: SubscriptionQueryInput!
             $set: SubscriptionUpdateInput!
           ) {
             updateOneSubscription(query: $query, set: $set) {
@@ -72,10 +83,10 @@ const handler: Handler = async (event, context) => {
             }
           }
       `,
-        variables:{
-          query: {... requestPayload.subscriptionQueryInput},
-          set: {... requestPayload.subscriptionUpdateInput},
-        }
+        variables: {
+          query: { ...requestPayload.query },
+          set: { ...requestPayload.set },
+        },
       }),
     }
   )

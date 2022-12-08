@@ -18,8 +18,8 @@ export interface updateOneSubscriptionData {
   updateOneSubscription: Inscription;
 }
 
-export interface upsertOneSubscriptionData {
-  upsertOneSubscription: Inscription;
+export interface updateOneSubscriptionResponse {
+  message: updateOneSubscriptionData;
 }
 
 @Injectable({
@@ -90,69 +90,18 @@ export class InscriptionsService {
     subscriptionUpdateInput: SubscriptionUpdateInput
   ): Observable<Inscription> {
     return this.httpClient
-      .post<updateOneSubscriptionData>(
+      .post<updateOneSubscriptionResponse>(
         `.netlify/functions/updateOneSubscription`,
         {
           query: subscriptionQueryInput,
           set: subscriptionUpdateInput,
         }
       ).pipe(
-        map((result: updateOneSubscriptionData) => {
-          return result.updateOneSubscription;
+        map((result: updateOneSubscriptionResponse) => {
+          return result?.message?.updateOneSubscription;
         }),
         catchError(this.handleError)
       );
-
-/*    return this.apollo
-      .mutate<updateOneSubscriptionData>({
-        mutation: gql`
-          mutation updateOneSubscription(
-            $query: SubscriptionQueryInput
-            $set: SubscriptionUpdateInput!
-          ) {
-            updateOneSubscription(query: $query, set: $set) {
-              _id
-              city
-              country
-              deadline
-              email
-              externalUserId
-              firstName
-              lastName
-              numOfChildren
-              participants {
-                _id
-                birthday
-                comment
-                externalUserId
-                firstNameParticipant
-                fotoAllowed
-                lastNameParticipant
-                participant_id
-                salutation
-              }
-              phone
-              reservationDate
-              salutation
-              state
-              street1
-              street2
-              week
-              zip
-            }
-          }
-        `,
-        variables: {
-          query: subscriptionQueryInput,
-          set: subscriptionUpdateInput,
-        },
-      })
-      .pipe(
-        map((result) => {
-          return (<updateOneSubscriptionData>result.data).updateOneSubscription;
-        }),
-        catchError(this.handleError)
-      );*/
   }
 
   updateInscription(

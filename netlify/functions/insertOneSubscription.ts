@@ -16,6 +16,9 @@ export interface InsertOneSubscriptionResponse {
 }
 
 const handler: Handler = async (event, context) => {
+
+  console.log("insertOneSubscription body " + event.body);
+
   return fetch(
     `https://realm.mongodb.com/api/client/v2.0/app/${process.env.APP_ID_REALM!}/graphql`,
     {
