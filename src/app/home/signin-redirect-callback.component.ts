@@ -5,6 +5,7 @@ import { InscriptionsService } from '../service/inscriptions.service';
 import { Observable, Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { selectCurrentUserProfile } from '../modules/user/state/auth.selectors';
+import {SubscriptionQueryInput, SubscriptionUpdateInput} from "../../../netlify/models/Graphqlx";
 
 @Component({
   selector: 'app-signin-callback',
@@ -36,8 +37,15 @@ export class SigninRedirectCallbackComponent implements OnInit, OnDestroy {
       this.profileSubscription = this.store
         .pipe(select(selectCurrentUserProfile))
         .subscribe((x) => {
+          const varQuery: Partial<SubscriptionQueryInput> = {
+            _id: inscriptionId
+          };
+          const varSet: Partial<SubscriptionUpdateInput> = {
+            externalUserId: x.sub
+          };
+
           this.subExIdSubscription = this.inscriptionsService
-            .updateExternalUserId(inscriptionId, x.sub)
+            .updateOneSubscription(varQuery, varSet)
             .subscribe((subscriptionResult) => {
               this.partExIdSubscription = this.participantService
                 .updateExternalUserId(participantArray, x.sub)

@@ -4,12 +4,17 @@ import { HttpClient } from '@angular/common/http';
 
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { updateManyParticipantsData } from '../models/Participant';
-import { Apollo, ApolloBase, gql } from 'apollo-angular';
+
 import {
-  MutationInsertOneParticipantArgs,
   Participant,
   ParticipantInsertInput,
+  ParticipantQueryInput,
+  ParticipantUpdateInput,
 } from 'netlify/models/Graphqlx';
+import {
+  upsertOneParticipantResponse,
+} from '../../../netlify/functions/upsertOneParticipant';
+import { upsertManyParticipantResponse } from '../../../netlify/functions/upsertManyParticipant';
 
 @Injectable({
   providedIn: 'root',
@@ -18,44 +23,41 @@ export class ParticipantService {
   private participantsUrl = 'api/participants';
   private participants: Participant[] = [];
 
-  private apollo: ApolloBase;
-
-  constructor(private http: HttpClient, private apolloProvider: Apollo) {
-    this.apollo = this.apolloProvider.use('writeClient');
-  }
+  constructor(private httpClient: HttpClient) {}
 
   getParticipants(): Observable<Participant[]> {
     if (this.participants) {
       return of(this.participants);
     }
-    return this.http.get<Participant[]>(this.participantsUrl).pipe(
+    return this.httpClient.get<Participant[]>(this.participantsUrl).pipe(
       tap((data) => (this.participants = data)),
       catchError(this.handleError)
     );
   }
 
-  updateExternalUserId(ids: string[], variable: string): Observable<number> {
-    return this.apollo
-      .mutate<updateManyParticipantsData>({
-        mutation: gql`
-          mutation ($ids: [String], $externalUserId: String!) {
-            updateManyParticipants(
-              query: { participant_id_in: $ids }
-              set: { externalUserId: $externalUserId }
-            ) {
-              matchedCount
-            }
-          }
-        `,
-        variables: {
-          ids: ids,
-          externalUserId: variable,
-        },
-      })
+  updateExternalUserId(
+    ids: string[],
+    externalUserId: string
+  ): Observable<number> {
+    const varQuery: Partial<ParticipantQueryInput> = {
+      participant_id_in: ids,
+    };
+
+    const varSet: Partial<ParticipantUpdateInput> = {
+      externalUserId: externalUserId,
+    };
+
+    return this.httpClient
+      .post<upsertManyParticipantResponse>(
+        `.netlify/functions/upsertManyParticipant`,
+        {
+          query: varQuery,
+          data: varSet,
+        }
+      )
       .pipe(
-        map((result) => {
-          return (<updateManyParticipantsData>result.data)
-            ?.updateManyParticipants?.matchedCount;
+        map((result: upsertManyParticipantResponse) => {
+          return result.message?.matchedCount;
         }),
         catchError(this.handleError)
       );
@@ -65,30 +67,21 @@ export class ParticipantService {
     data: ParticipantInsertInput,
     participantId: string
   ): Observable<ParticipantInsertInput> {
-    return this.apollo
-      .mutate<MutationInsertOneParticipantArgs>({
-        mutation: gql`
-          mutation (
-            $participant_id: String!
-            $participantInsertInput: ParticipantInsertInput!
-          ) {
-            upsertOneParticipant(
-              query: { participant_id: $participant_id }
-              data: $participantInsertInput
-            ) {
-              _id
-              participant_id
-            }
-          }
-        `,
-        variables: {
-          participant_id: participantId,
-          participantInsertInput: data,
-        },
-      })
+    let subscriptionQueryInput: Partial<ParticipantQueryInput> = {
+      participant_id: participantId,
+    };
+
+    return this.httpClient
+      .post<upsertOneParticipantResponse>(
+        `.netlify/functions/upsertOneParticipant`,
+        {
+          query: subscriptionQueryInput,
+          data: data,
+        }
+      )
       .pipe(
-        map((result) => {
-          return <ParticipantInsertInput>result.data?.data;
+        map((result: upsertOneParticipantResponse) => {
+          return result?.message?.insertOneSubscription;
         }),
         catchError(this.handleError)
       );
@@ -97,7 +90,7 @@ export class ParticipantService {
   /*  deleteParticipant(id: string): Observable<{}> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.participantsUrl}/${id}`;
-    return this.http.delete<Participant>(url, { headers }).pipe(
+    return this.httpClient.delete<Participant>(url, { headers }).pipe(
       tap((data) => console.log('deleteParticipant: ' + id)),
       tap((data) => {
         const foundIndex = this.participants.findIndex(
@@ -114,7 +107,7 @@ export class ParticipantService {
   /*  updateParticipant(participant: Participant): Observable<Participant> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.participantsUrl}/${participant._id}`;
-    return this.http.put<Participant>(url, participant, { headers }).pipe(
+    return this.httpClient.put<Participant>(url, participant, { headers }).pipe(
       tap(() => console.log('updateParticipant: ' + participant._id)),
       // Update the item in the list
       // This is required because the selected participant that was edited

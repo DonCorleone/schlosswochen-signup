@@ -14,17 +14,38 @@ const handler: Handler = async (event, context) => {
       },
       body: JSON.stringify({
         query: `
-          query ($year: Int) {
-            weeks(query: { year: $year }, sortBy: WEEK_ASC) {
-              dateFrom
-              dateTo
+          query ($externalUserId: String!) {
+            subscription(query: { externalUserId: $externalUserId }) {
+              _id
+              externalUserId
+              reservationDate
               week
-              maxParticipants
-              published
+              year
+              numOfChildren
+              email
+              phone
+              salutation
+              firstName
+              lastName
+              street1
+              street2
+              zip
+              city
+              country
+              participants {
+                participant_id
+                externalUserId
+                salutation
+                firstNameParticipant
+                lastNameParticipant
+                birthday
+                comment
+                fotoAllowed
+              }
             }
           }
       `,
-        variables: { year: event?.queryStringParameters?.year },
+        variables: { externalUserId: event?.queryStringParameters?.userId },
       }),
     }
   )

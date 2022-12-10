@@ -24,7 +24,7 @@ import {
   Participant,
   ParticipantInsertInput,
   Subscription as Inscription,
-  SubscriptionParticipantsRelationInput,
+  SubscriptionParticipantsRelationInput, SubscriptionQueryInput,
   SubscriptionUpdateInput,
 } from 'netlify/models/Graphqlx';
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
@@ -389,8 +389,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         };
         subscription.participants = subscriptionParticipantsRelationInput;
         //   this.subscriptions.push(
+
+        const filter: Partial<SubscriptionQueryInput>  = {
+          _id: this.inscription._id
+        }
+
         this.inscriptionsService
-          .updateInscription(this.inscription._id, subscription)
+          .updateOneSubscription(filter, subscription)
           .pipe(takeUntil(this._ngDestroy$))
           .subscribe((inscriptionNew) => {
             this.store.dispatch(
