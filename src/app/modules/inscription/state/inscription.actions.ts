@@ -3,7 +3,7 @@ import {
   Participant,
   Subscription as Inscription,
   Week,
-} from '../../../models/Graphqlx';
+} from 'netlify/models/Graphqlx';
 import { Place } from '../../../models/Interfaces';
 
 export const setInscription = createAction(

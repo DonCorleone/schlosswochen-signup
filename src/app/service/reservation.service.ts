@@ -1,157 +1,95 @@
 import { Injectable } from '@angular/core';
-import { Apollo, ApolloBase, gql } from 'apollo-angular';
-import { catchError, combineLatest, map, mergeMap, Observable } from 'rxjs';
-import { ChildsPerState, ChildsPerStateData } from '../models/Subscriptor';
+import {
+  catchError,
+  combineLatest,
+  map,
+  mergeMap,
+  Observable,
+  tap,
+} from 'rxjs';
+import { ChildsPerState } from '../models/Subscriptor';
+import { environment } from '../../environments/environment';
+import { ReservationState, WeekVM } from '../models/Interfaces';
+import { HttpClient } from '@angular/common/http';
+import {
+  GetWeeksResponse,
+  SumChildsPerStatePayload,
+} from 'netlify/models/weekModel';
 import {
   Subscription as Inscription,
   SubscriptionInsertInput,
   Week,
-} from '../models/Graphqlx';
-import { environment } from '../../environments/environment';
-import { ReservationState, WeekVM } from '../models/Interfaces';
-
-export interface insertOneSubscriptionData {
-  insertOneSubscription: Inscription;
-}
-
-interface weeksData {
-  weeks: Week[];
-}
+} from 'netlify/models/Graphqlx';
+import { InsertOneInscriptionResponse } from '../../../netlify/functions/insertOneInscription';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReservationService {
   private readonly maxNumberOfReservations: number;
-  private apollo: ApolloBase;
 
-  constructor(private apolloProvider: Apollo) {
-    this.apollo = this.apolloProvider.use('writeClient');
+  constructor(private httpClient: HttpClient) {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
 
   insertOneSubscription(
     subscriptionInsertInput: SubscriptionInsertInput
   ): Observable<Inscription> {
-    return this.apollo
-      .mutate<insertOneSubscriptionData>({
-        mutation: gql`
-          mutation insertOneSubscription($data: SubscriptionInsertInput!) {
-            insertOneSubscription(data: $data) {
-              _id
-              city
-              country
-              deadline
-              email
-              externalUserId
-              firstName
-              lastName
-              numOfChildren
-              participants {
-                _id
-                birthday
-                comment
-                externalUserId
-                firstNameParticipant
-                fotoAllowed
-                lastNameParticipant
-                participant_id
-                salutation
-              }
-              phone
-              reservationDate
-              salutation
-              state
-              street1
-              street2
-              week
-              year
-              zip
-            }
-          }
-        `,
-        variables: {
-          data: subscriptionInsertInput,
-        },
-      })
+    return this.httpClient
+      .post<InsertOneInscriptionResponse>(
+        `.netlify/functions/insertOneInscription`,
+        subscriptionInsertInput
+      )
       .pipe(
+        tap((p) => console.log(JSON.stringify(p))),
         map((result) => {
-          return (<insertOneSubscriptionData>result.data).insertOneSubscription;
+          return result?.message?.insertOneSubscription;
         }),
         catchError(this.handleError)
       );
   }
 
   getWeekVMs(year: number): Observable<WeekVM[]> {
-    const b = this.getWeeks(year).pipe((weeks$) => {
-      const a = this.mapWeekCapacity(weeks$);
-
-      return a;
+    return this.getWeeks(year).pipe((weeks$) => {
+      return this.mapWeekCapacity(weeks$);
     });
-    return b;
   }
-
   getWeeks(year: number): Observable<Week[]> {
-    return this.apollo
-      .watchQuery<weeksData>({
-        query: gql`
-          query ($year: Int) {
-            weeks(query: { year: $year }, sortBy: WEEK_ASC) {
-              dateFrom
-              dateTo
-              week
-              maxParticipants
-              published
-            }
-          }
-        `,
-        variables: { year },
-      })
-      .valueChanges.pipe(
-        map((result) => (<weeksData>result?.data)?.weeks),
+    return this.httpClient
+      .get<GetWeeksResponse>(`.netlify/functions/getWeeks?year=${year}`)
+      .pipe(
+        map((result: GetWeeksResponse) => result?.message?.data?.weeks),
         catchError(this.handleError)
       );
   }
 
   getReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
-    return this.apollo
-      .watchQuery<ChildsPerStateData>({
-        query: gql`
-          query GetReservationsPerWeek($week: Int!) {
-            sumChildsPerState(input: $week) {
-              state
-              sumPerStateAndWeek
-            }
-          }
-        `,
-        variables: { week: week },
-        fetchPolicy: 'no-cache',
-      })
-      .valueChanges.pipe(map((result) => result.data.sumChildsPerState));
+    return this.httpClient
+      .get<SumChildsPerStatePayload>(
+        `.netlify/functions/getChildsPerState?week=${week}`
+      )
+      .pipe(map((payload) => payload?.data?.sumChildsPerState));
   }
 
   private mapWeekCapacity(weeks$: Observable<Week[]>): Observable<WeekVM[]> {
-    const z = weeks$.pipe(
+    return weeks$.pipe(
       mergeMap((arr) => {
-        const y = combineLatest(
+        return combineLatest(
           arr.map((week) => {
-            const x = this.getReservationsPerWeek(week.week!).pipe(
+            return this.getReservationsPerWeek(week.week!).pipe(
               map((participantsPerStates) => {
                 return this.mapWeekVM(participantsPerStates, week);
               })
             );
-            return x;
           })
         );
-        return y;
       })
     );
-    return z;
   }
 
   private mapWeekVM(participantsPerStates: ChildsPerState[], week: Week) {
     let total: number = 0;
-    participantsPerStates.map((participantsPerState) => {
+    participantsPerStates?.map((participantsPerState) => {
       if (
         participantsPerState.state === ReservationState.TEMPORARY ||
         participantsPerState.state === ReservationState.DEFINITIVE

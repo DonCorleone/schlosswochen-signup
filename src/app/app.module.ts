@@ -1,21 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { InMemoryCache } from '@apollo/client/core';
 import {
   HTTP_INTERCEPTORS,
   HttpClient,
   HttpClientModule,
-  HttpHeaders,
 } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
-import { HttpLink } from 'apollo-angular/http';
 import { AppComponent } from './app.component';
-import { APOLLO_NAMED_OPTIONS, NamedOptions, ApolloModule } from 'apollo-angular';
-import * as realm from './realm';
 import { AppRoutingModule } from './app-routing.module';
 
 import { environment } from '../environments/environment';
@@ -59,7 +54,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    ApolloModule,
     CoreModule,
     SharedModule,
     TranslateModule.forRoot({
@@ -98,36 +92,6 @@ export function HttpLoaderFactory(http: HttpClient) {
       provide: HTTP_INTERCEPTORS,
       useClass: LoadingIndicatorInterceptor,
       multi: true,
-    },
-    {
-      provide: APOLLO_NAMED_OPTIONS, // <-- Different from standard initialization
-      useFactory(httpLink: HttpLink): NamedOptions {
-        return {
-          readAndWriteClient: {
-            // <-- this settings will be saved by name: newClientName
-            cache: new InMemoryCache(),
-            link: httpLink.create({
-              uri: realm.graphqlUrlReadWrite,
-              headers: new HttpHeaders().set(
-                'Authorization',
-                `Bearer ${localStorage.getItem('tokenReadWrite')}`
-              ),
-            }),
-          },
-          writeClient: {
-            // <-- this settings will be saved by name: newClientName
-            cache: new InMemoryCache(),
-            link: httpLink.create({
-              uri: realm.graphqlUrl,
-              headers: new HttpHeaders().set(
-                'Authorization',
-                `Bearer ${localStorage.getItem('token')}`
-              ),
-            }),
-          },
-        };
-      },
-      deps: [HttpLink],
     },
   ],
   bootstrap: [AppComponent],

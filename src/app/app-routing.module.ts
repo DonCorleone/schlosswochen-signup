@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RealmAuthGuard } from './realm-auth.guard';
 import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './home/page-not-found.component';
 import { WelcomeComponent } from './home/welcome.component';
@@ -20,16 +19,14 @@ const routes: Routes = [
         loadChildren: () =>
           import('./modules/reservations/reservations.module').then(
             (m) => m.ReservationsModule
-          ),
-        canActivate: [RealmAuthGuard],
+          )
       },
       {
         path: 'inscriptions',
         loadChildren: () =>
           import('./modules/inscription/inscription.module').then(
             (m) => m.InscriptionModule
-          ),
-        canActivate: [RealmAuthGuard],
+          )
       },
       { path: '', redirectTo: 'welcome', pathMatch: 'full' },
     ],

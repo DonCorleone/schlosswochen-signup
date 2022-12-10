@@ -12,6 +12,7 @@ export const environment = {
   APP_ID_REALM_READWRITE: '',
   MAX_NUMBER_OF_RESERVATIONS: '',
   MAX_NUMBER_OF_WEEKS: '',
+  UPCOMING_YEAR: '',
 };
 
 /*

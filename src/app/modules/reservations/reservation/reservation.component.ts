@@ -3,7 +3,7 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
-import { Observable, take } from 'rxjs';
+import { Observable, take, tap } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import * as InscriptionActions from '../../inscription/state/inscription.actions';
@@ -12,7 +12,7 @@ import {
   Subscription as Inscription,
   SubscriptionInsertInput,
   Week,
-} from '../../../models/Graphqlx';
+} from 'netlify/models/Graphqlx';
 import { environment } from '../../../../environments/environment';
 import {
   Place,
@@ -33,6 +33,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   reservationStateEnum = ReservationState;
   // maxWeeks: number = 1;
   weekVMs$: Observable<WeekVM[]>;
+  year: number;
   maxNumberOfReservations: number = 1;
   submitted = false;
   signupForm = this.fb.group({
@@ -48,6 +49,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private loadingIndicatorService: LoadingIndicatorService
   ) {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
+    this.year = +environment.UPCOMING_YEAR;
   }
 
   ngOnInit(): void {
@@ -56,11 +58,13 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   createWeeklyReservation(
+    year: number,
     week: Week,
     reservations: number,
     state: ReservationState
   ): WeeklyReservation {
     return {
+      year: year,
       week: week,
       numberOfReservations: reservations,
       state: state,
@@ -86,7 +90,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
       let subscriptionInsertInput: Partial<SubscriptionInsertInput> = {
         numOfChildren: weeklyReservation.numberOfReservations,
         week: weeklyReservation.week.week,
-        year: new Date().getFullYear(),
+        year: weeklyReservation.year,
         deadline: deadline,
         reservationDate: new Date(),
         state: weeklyReservation.state,
@@ -108,7 +112,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
             .getReservationsPerWeek(weeklyReservation.week?.week!)
             .pipe(take(1))
             .subscribe((sumChildsPerState) => {
-              sumChildsPerState.map((p) => {
+              sumChildsPerState?.map((p) => {
                 if (
                   p.state === ReservationState.DEFINITIVE ||
                   p.state === ReservationState.TEMPORARY

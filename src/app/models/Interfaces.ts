@@ -1,4 +1,4 @@
-import { Week } from './Graphqlx';
+import { Week } from 'netlify/models/Graphqlx';
 
 export enum ReservationState {
   TEMPORARY = 'temporary',
@@ -13,6 +13,7 @@ export interface Place {
 }
 
 export interface WeeklyReservation {
+  year: number;
   week: Week;
   numberOfReservations: number;
   state: ReservationState;

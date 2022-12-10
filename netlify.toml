@@ -1,0 +1,13 @@
+[functions]
+external_node_modules = ["axios"]
+
+[build]
+command = "npm run build --configuration=production"
+functions = "netlify/functions"
+publish = "dist/Schlosswochen-Inscription"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+
