@@ -1,19 +1,13 @@
 import { Injectable } from '@angular/core';
-
 import { HttpClient } from '@angular/common/http';
-
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
-import { updateManyParticipantsData } from '../models/Participant';
-
 import {
   Participant,
   ParticipantInsertInput,
   ParticipantQueryInput,
   ParticipantUpdateInput,
 } from 'netlify/models/Graphqlx';
-import {
-  upsertOneParticipantResponse,
-} from '../../../netlify/functions/upsertOneParticipant';
+import { upsertOneParticipantResponse } from '../../../netlify/functions/upsertOneParticipant';
 import { upsertManyParticipantResponse } from '../../../netlify/functions/upsertManyParticipant';
 
 @Injectable({
