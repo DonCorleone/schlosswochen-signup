@@ -1,10 +1,21 @@
 [functions]
 external_node_modules = ["axios"]
 
+[dev]
+[[redirects]]
+from = "/api/*"
+to =  "http://localhost:9999/.netlify/functions/:splat"
+status = 200
+
 [build]
 command = "npm run build --configuration=production"
 functions = "netlify/functions"
 publish = "dist/Schlosswochen-Inscription"
+
+[[redirects]]
+from = "/api/*"
+to =  "/.netlify/functions/:splat"
+status = 200
 
 [[redirects]]
 from = "/*"

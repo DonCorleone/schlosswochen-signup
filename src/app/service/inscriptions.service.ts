@@ -40,7 +40,7 @@ export class InscriptionsService {
 
     return this.httpClient
       .get<SubscriptionData>(
-        `.netlify/functions/getInscription?externalUserId=${externalUserId}`
+        `/api/getInscription?externalUserId=${externalUserId}`
       )
       .pipe(
         map((result: SubscriptionData) => result?.subscription),
@@ -54,7 +54,7 @@ export class InscriptionsService {
   ): Observable<Inscription> {
     return this.httpClient
       .post<updateOneInscriptionResponse>(
-        `.netlify/functions/updateOneInscription`,
+        `/api/updateOneInscription`,
         {
           query: inscriptionQueryInput,
           set: inscriptionUpdateInput,

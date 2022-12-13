@@ -43,7 +43,7 @@ export class ParticipantService {
 
     return this.httpClient
       .post<upsertManyParticipantResponse>(
-        `.netlify/functions/upsertManyParticipant`,
+        `/api/upsertManyParticipant`,
         {
           query: varQuery,
           data: varSet,
@@ -67,7 +67,7 @@ export class ParticipantService {
 
     return this.httpClient
       .post<upsertOneParticipantResponse>(
-        `.netlify/functions/upsertOneParticipant`,
+        `/api/upsertOneParticipant`,
         {
           query: subscriptionQueryInput,
           data: data,

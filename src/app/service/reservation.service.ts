@@ -37,7 +37,7 @@ export class ReservationService {
   ): Observable<Inscription> {
     return this.httpClient
       .post<InsertOneInscriptionResponse>(
-        `.netlify/functions/insertOneInscription`,
+        `/api/insertOneInscription`,
         subscriptionInsertInput
       )
       .pipe(
@@ -56,7 +56,7 @@ export class ReservationService {
   }
   getWeeks(year: number): Observable<Week[]> {
     return this.httpClient
-      .get<GetWeeksResponse>(`.netlify/functions/getWeeks?year=${year}`)
+      .get<GetWeeksResponse>(`/api/getWeeks?year=${year}`)
       .pipe(
         map((result: GetWeeksResponse) => result?.message?.data?.weeks),
         catchError(this.handleError)
@@ -66,7 +66,7 @@ export class ReservationService {
   getReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
     return this.httpClient
       .get<SumChildsPerStatePayload>(
-        `.netlify/functions/getChildsPerState?week=${week}`
+        `/api/getChildsPerState?week=${week}`
       )
       .pipe(map((payload) => payload?.data?.sumChildsPerState));
   }
