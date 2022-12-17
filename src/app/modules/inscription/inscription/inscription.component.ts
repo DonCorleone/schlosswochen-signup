@@ -212,12 +212,12 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let subscriptioUpdateInput: Partial<SubscriptionUpdateInput> = {
+    let inscriptionUpdateInput: Partial<SubscriptionUpdateInput> = {
       ...this.signupForm.value,
     };
 
     let subscriptionQueryInput: Partial<SubscriptionQueryInput> = {
-      _id: subscriptioUpdateInput._id,
+      _id: inscriptionUpdateInput._id,
     };
     const inscription = { inscription: this.signupForm.value };
     let participants: Participant[] = inscription.inscription.participants;
@@ -231,10 +231,10 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     let participantsUpdateObj: SubscriptionParticipantsRelationInput = {
       link: links,
     };
-    subscriptioUpdateInput.participants = participantsUpdateObj;
+    inscriptionUpdateInput.participants = participantsUpdateObj;
 
     this.inscriptionService
-      .updateOneSubscription(subscriptionQueryInput, subscriptioUpdateInput)
+      .updateOneSubscription(subscriptionQueryInput, inscriptionUpdateInput)
       .pipe(take(1))
       .subscribe((inscription: Inscription) => {
         this.store.dispatch(

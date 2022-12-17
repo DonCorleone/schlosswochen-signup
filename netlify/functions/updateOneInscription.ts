@@ -72,6 +72,17 @@ const handler: Handler = async (event, context) => {
                 participant_id
                 salutation
               }
+              children {
+                _id
+                birthday
+                comment
+                externalUserId
+                firstNameParticipant
+                fotoAllowed
+                lastNameParticipant
+                participant_id
+                salutation
+              }
               phone
               reservationDate
               salutation

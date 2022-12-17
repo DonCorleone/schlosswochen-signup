@@ -99,6 +99,7 @@ export class InscriptionsService {
       firstName: '',
       lastName: '',
       numOfChildren: inscription.numOfChildren,
+      children: [],
       participants: [],
       phone: '',
       reservationDate: inscription.reservationDate,
