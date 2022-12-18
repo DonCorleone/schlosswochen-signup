@@ -23,10 +23,10 @@ import { ParticipantService } from 'src/app/service/participant.service';
 import {
   Participant,
   ParticipantInsertInput,
-  Subscription as Inscription,
+  Subscription as Inscription, SubscriptionChild,
   SubscriptionParticipantsRelationInput, SubscriptionQueryInput,
-  SubscriptionUpdateInput,
-} from 'netlify/models/Graphqlx';
+  SubscriptionUpdateInput
+} from "netlify/models/Graphqlx";
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import {
   combineLatest,
@@ -257,6 +257,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       ...participant,
     };
 
+    const child: SubscriptionChild = {
+      ...participant as SubscriptionChild
+    }
+
     this.participantService
       .upsertParticipant(
         participantInsertInput,
@@ -271,6 +275,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             if (isLoggedIn) {
               this.store.dispatch(
                 InscriptionActions.upsertParticipant({ participant })
+              );
+              this.store.dispatch(
+                InscriptionActions.upsertChild({ child })
               );
             } else {
               this.store
@@ -293,7 +300,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
                     this.store.dispatch(
                       InscriptionActions.upsertParticipant({ participant })
                     );
+                    this.store.dispatch(
+                      InscriptionActions.upsertChild({ child })
+                    );
                   } else {
+                    this.store.dispatch(
+                      InscriptionActions.addChild({ child })
+                    );
                     this.store.dispatch(
                       InscriptionActions.addParticipant({ participant })
                     );
@@ -352,10 +365,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this.store
       .select(InscriptionsReducer.getInscription)
       .pipe(take(1))
-      .subscribe((inscriptionStore) => {
+      .subscribe((inscriptionFromStore) => {
         const link: string[] = [];
-        let numOfChildren = inscriptionStore?.numOfChildren
-          ? inscriptionStore?.numOfChildren
+        let numOfChildren = inscriptionFromStore?.numOfChildren
+          ? inscriptionFromStore?.numOfChildren
           : 0;
         for (let index = 1; index <= numOfChildren; index++) {
           let participantId = this.inscription._id + '-' + index;
@@ -370,24 +383,25 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           {
             link: link,
           };
-        const subscription: SubscriptionUpdateInput = {
-          firstName: inscriptionStore.firstName,
-          lastName: inscriptionStore.lastName,
-          _id: inscriptionStore._id,
-          email: inscriptionStore.email,
-          phone: inscriptionStore.phone,
-          street1: inscriptionStore.street1,
-          street2: inscriptionStore.street2,
-          city: inscriptionStore.city,
+        const subscriptionUpdateInput: SubscriptionUpdateInput = {
+          firstName: inscriptionFromStore.firstName,
+          lastName: inscriptionFromStore.lastName,
+          _id: inscriptionFromStore._id,
+          email: inscriptionFromStore.email,
+          phone: inscriptionFromStore.phone,
+          street1: inscriptionFromStore.street1,
+          street2: inscriptionFromStore.street2,
+          city: inscriptionFromStore.city,
           state:
-            inscriptionStore.state === ReservationState.TEMPORARY
+            inscriptionFromStore.state === ReservationState.TEMPORARY
               ? ReservationState.DEFINITIVE
               : ReservationState.DEFINITIVE_WAITINGLIST,
-          zip: inscriptionStore.zip,
+          zip: inscriptionFromStore.zip,
           participants: subscriptionParticipantsRelationInput,
-          externalUserId: inscriptionStore.externalUserId,
+          externalUserId: inscriptionFromStore.externalUserId,
+          children: inscriptionFromStore.children
         };
-        subscription.participants = subscriptionParticipantsRelationInput;
+        subscriptionUpdateInput.participants = subscriptionParticipantsRelationInput;
         //   this.subscriptions.push(
 
         const filter: Partial<SubscriptionQueryInput>  = {
@@ -395,7 +409,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         }
 
         this.inscriptionsService
-          .updateOneSubscription(filter, subscription)
+          .updateOneSubscription(filter, subscriptionUpdateInput)
           .pipe(takeUntil(this._ngDestroy$))
           .subscribe((inscriptionNew) => {
             this.store.dispatch(

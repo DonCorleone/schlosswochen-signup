@@ -24,11 +24,11 @@ import * as InscriptionReducer from '../state/inscription.reducer';
 import * as InscriptionActions from '../state/inscription.actions';
 import {
   Participant,
-  Subscription as Inscription,
+  Subscription as Inscription, SubscriptionChild,
   SubscriptionParticipantsRelationInput,
   SubscriptionQueryInput,
-  SubscriptionUpdateInput,
-} from 'netlify/models/Graphqlx';
+  SubscriptionUpdateInput
+} from "netlify/models/Graphqlx";
 import * as AuthSelector from '../../user/state/auth.selectors';
 import { ReservationService } from '../../../service/reservation.service';
 import { ReservationState } from '../../../models/Interfaces';
@@ -106,6 +106,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       ],
       country: ['Switzerland', [Validators.required]],
       participants: [],
+      children: [],
       externalUserId: '',
     });
 
@@ -216,26 +217,11 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       ...this.signupForm.value,
     };
 
-    let subscriptionQueryInput: Partial<SubscriptionQueryInput> = {
-      _id: inscriptionUpdateInput._id,
-    };
-    const inscription = { inscription: this.signupForm.value };
-    let participants: Participant[] = inscription.inscription.participants;
-    let links: string[] = [];
-
-    if (participants?.length > 0) {
-      participants.forEach((x) => {
-        links.push(x.participant_id!);
-      });
-    }
-    let participantsUpdateObj: SubscriptionParticipantsRelationInput = {
-      link: links,
-    };
-    inscriptionUpdateInput.participants = participantsUpdateObj;
+    const inscriptionForm = { inscription: this.signupForm.value };
 
     this.store.dispatch(
       InscriptionActions.setInscription({
-        inscription: inscription.inscription,
+        inscription: inscriptionForm.inscription,
       })
     );
     this.store.dispatch(
@@ -307,6 +293,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       country: inscription.country,
       externalUserId: inscription.externalUserId,
       participants: inscription.participants,
+      children: inscription.children,
     });
   }
 }

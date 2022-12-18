@@ -36,6 +36,7 @@ const initialState: InscriptionState = {
     state: 'temporary',
     zip: '',
     participants: [],
+    children: [],
     externalUserId: '',
   },
   currentParticipantNumber: 0,
@@ -95,7 +96,16 @@ export const inscriptionReducer = createReducer<InscriptionState>(
       ...state,
       inscription: {
         ...state.inscription,
-        participants: [...state.inscription.participants!, action.participant],
+        participants: [...state.inscription.participants!, action.participant]
+      },
+    };
+  }),
+  on(InscriptionAction.addChild, (state, action) => {
+    return {
+      ...state,
+      inscription: {
+        ...state.inscription,
+        children: [...state.inscription.children!, action.child]
       },
     };
   }),
@@ -112,6 +122,25 @@ export const inscriptionReducer = createReducer<InscriptionState>(
 
     const inscription = { ...state.inscription };
     inscription.participants = newArray;
+
+    return {
+      ...state, //copying the orignal state
+      inscription,
+    };
+  }),
+  on(InscriptionAction.upsertChild, (state, action) => {
+    const index = state.inscription.children?.findIndex(
+      (child) =>
+        child?.participant_id === action.child.participant_id
+    ); //finding index of the item
+
+    // @ts-ignore
+    const newArray = [...state.inscription?.children]; //making a new array
+
+    newArray[index!] = action.child; //changing value in the new array
+
+    const inscription = { ...state.inscription };
+    inscription.children = newArray;
 
     return {
       ...state, //copying the orignal state
