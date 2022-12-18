@@ -1,8 +1,5 @@
 import { Handler } from '@netlify/functions';
-import {
-  ParticipantQueryInput, ParticipantUpdateInput,
-  UpdateManyPayload,
-} from 'netlify/models/Graphqlx';
+import { UpdateManyPayload } from 'netlify/models/Graphqlx';
 
 const fetch = require('node-fetch');
 export interface Message {
@@ -13,18 +10,19 @@ export interface upsertManyParticipantResponse {
   message: UpdateManyPayload;
 }
 
-export interface upsertManyParticipantRequestPayload {
+/*export interface upsertManyParticipantRequestPayload {
   query: ParticipantQueryInput;
   set: ParticipantUpdateInput;
-}
+}*/
 
 const handler: Handler = async (event, context) => {
-  const requestPayload: upsertManyParticipantRequestPayload = JSON.parse(
+/*  const requestPayload: upsertManyParticipantRequestPayload = JSON.parse(
     event.body ?? ''
-  );
+  );*/
 
   return fetch(
-    `https://realm.mongodb.com/api/client/v2.0/app/${process.env.APP_ID_REALM!}/graphql`,
+    `https://realm.mongodb.com/api/client/v2.0/app/${process.env
+      .APP_ID_REALM!}/graphql`,
     {
       method: 'POST',
       headers: {
@@ -45,10 +43,10 @@ const handler: Handler = async (event, context) => {
             }
           }
       `,
-        variables: {
+/*        variables: {
           query: { ...requestPayload.query },
           data: { ...requestPayload.set },
-        },
+        },*/
       }),
     }
   )

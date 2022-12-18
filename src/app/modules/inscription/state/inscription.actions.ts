@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store';
 import {
-  Participant,
   Subscription as Inscription, SubscriptionChild,
   Week
 } from "netlify/models/Graphqlx";
@@ -9,14 +8,6 @@ import { Place } from '../../../models/Interfaces';
 export const setInscription = createAction(
   '[Inscription] Set Inscription',
   props<{ inscription: Inscription }>()
-);
-export const addParticipant = createAction(
-  '[Inscription] Add Participant',
-  props<{ participant: Participant }>()
-);
-export const upsertParticipant = createAction(
-  '[Inscription] Upsert Participant',
-  props<{ participant: Participant }>()
 );
 
 export const addChild = createAction(

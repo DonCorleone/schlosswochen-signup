@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
-import {
-  Participant,
-  ParticipantInsertInput,
-  ParticipantQueryInput,
-  ParticipantUpdateInput,
-} from 'netlify/models/Graphqlx';
 import { upsertOneParticipantResponse } from '../../../netlify/functions/upsertOneParticipant';
 import { upsertManyParticipantResponse } from '../../../netlify/functions/upsertManyParticipant';
 
@@ -15,21 +9,11 @@ import { upsertManyParticipantResponse } from '../../../netlify/functions/upsert
 })
 export class ParticipantService {
   private participantsUrl = 'api/participants';
-  private participants: Participant[] = [];
+ // private participants: Participant[] = [];
 
   constructor(private httpClient: HttpClient) {}
 
-  getParticipants(): Observable<Participant[]> {
-    if (this.participants) {
-      return of(this.participants);
-    }
-    return this.httpClient.get<Participant[]>(this.participantsUrl).pipe(
-      tap((data) => (this.participants = data)),
-      catchError(this.handleError)
-    );
-  }
-
-  updateExternalUserId(
+/*  updateExternalUserId(
     ids: string[],
     externalUserId: string
   ): Observable<number> {
@@ -55,9 +39,9 @@ export class ParticipantService {
         }),
         catchError(this.handleError)
       );
-  }
+  }*/
 
-  upsertParticipant(
+/*  upsertParticipant(
     data: ParticipantInsertInput,
     participantId: string
   ): Observable<ParticipantInsertInput> {
@@ -79,7 +63,7 @@ export class ParticipantService {
         }),
         catchError(this.handleError)
       );
-  }
+  }*/
 
   /*  deleteParticipant(id: string): Observable<{}> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });

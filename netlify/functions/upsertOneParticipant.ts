@@ -1,7 +1,5 @@
 import { Handler } from '@netlify/functions';
 import {
-  ParticipantInsertInput,
-  ParticipantQueryInput,
   Subscription as Inscription,
 } from 'netlify/models/Graphqlx';
 
@@ -18,15 +16,17 @@ export interface upsertOneParticipantResponse {
   message: upsertOneParticipantPayload;
 }
 
+/*
 export interface upsertOneParticipantRequestPayload {
   query: ParticipantQueryInput;
   data: ParticipantInsertInput;
 }
+*/
 
 const handler: Handler = async (event, context) => {
-  const requestPayload: upsertOneParticipantRequestPayload = JSON.parse(
+/*  const requestPayload: upsertOneParticipantRequestPayload = JSON.parse(
     event.body ?? ''
-  );
+  );*/
 
   return fetch(
     `https://realm.mongodb.com/api/client/v2.0/app/${process.env.APP_ID_REALM!}/graphql`,
@@ -51,10 +51,10 @@ const handler: Handler = async (event, context) => {
             }
           }
       `,
-        variables: {
+/*        variables: {
           query: { ...requestPayload.query },
           data: { ...requestPayload.data },
-        },
+        },*/
       }),
     }
   )

@@ -23,10 +23,7 @@ import { InscriptionsService } from '../../../service/inscriptions.service';
 import * as InscriptionReducer from '../state/inscription.reducer';
 import * as InscriptionActions from '../state/inscription.actions';
 import {
-  Participant,
-  Subscription as Inscription, SubscriptionChild,
-  SubscriptionParticipantsRelationInput,
-  SubscriptionQueryInput,
+  Subscription as Inscription,
   SubscriptionUpdateInput
 } from "netlify/models/Graphqlx";
 import * as AuthSelector from '../../user/state/auth.selectors';
@@ -212,10 +209,12 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       });
       return;
     }
+/*
 
     let inscriptionUpdateInput: Partial<SubscriptionUpdateInput> = {
       ...this.signupForm.value,
     };
+*/
 
     const inscriptionForm = { inscription: this.signupForm.value };
 
@@ -292,7 +291,6 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       zip: inscription.zip,
       country: inscription.country,
       externalUserId: inscription.externalUserId,
-      participants: inscription.participants,
       children: inscription.children,
     });
   }

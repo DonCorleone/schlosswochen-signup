@@ -35,7 +35,6 @@ const initialState: InscriptionState = {
     city: '',
     state: 'temporary',
     zip: '',
-    participants: [],
     children: [],
     externalUserId: '',
   },
@@ -77,11 +76,11 @@ export const getWeek = createSelector(
 export const selectParticipantId = (state: InscriptionState) =>
   state.inscription;
 
-// selector with param
+/*// selector with param
 export const selectParticipantById = (participantId: string) =>
   createSelector(selectParticipantId, (inscription: Inscription) =>
     inscription?.participants?.find((c) => c?.participant_id === participantId)
-  );
+  );*/
 
 export const inscriptionReducer = createReducer<InscriptionState>(
   initialState,
@@ -89,15 +88,6 @@ export const inscriptionReducer = createReducer<InscriptionState>(
     return {
       ...state,
       inscription: action.inscription,
-    };
-  }),
-  on(InscriptionAction.addParticipant, (state, action) => {
-    return {
-      ...state,
-      inscription: {
-        ...state.inscription,
-        participants: [...state.inscription.participants!, action.participant]
-      },
     };
   }),
   on(InscriptionAction.addChild, (state, action) => {
@@ -109,7 +99,7 @@ export const inscriptionReducer = createReducer<InscriptionState>(
       },
     };
   }),
-  on(InscriptionAction.upsertParticipant, (state, action) => {
+/*  on(InscriptionAction.upsertParticipant, (state, action) => {
     const index = state.inscription.participants?.findIndex(
       (participant) =>
         participant?.participant_id === action.participant.participant_id
@@ -127,7 +117,7 @@ export const inscriptionReducer = createReducer<InscriptionState>(
       ...state, //copying the orignal state
       inscription,
     };
-  }),
+  }),*/
   on(InscriptionAction.upsertChild, (state, action) => {
     const index = state.inscription.children?.findIndex(
       (child) =>

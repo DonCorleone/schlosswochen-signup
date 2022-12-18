@@ -47,13 +47,13 @@ export class SigninRedirectCallbackComponent implements OnInit, OnDestroy {
           this.subExIdSubscription = this.inscriptionsService
             .updateOneSubscription(varQuery, varSet)
             .subscribe((subscriptionResult) => {
-              this.partExIdSubscription = this.participantService
+/*              this.partExIdSubscription = this.participantService
                 .updateExternalUserId(participantArray, x.sub)
                 .subscribe((participantResult) => {
                   if (participantResult == participantArray.length) {
                     this.router.navigate(['/welcome']).then();
                   }
-                });
+                });*/
             });
         });
     }

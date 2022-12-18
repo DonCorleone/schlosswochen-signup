@@ -62,18 +62,18 @@ export class FinnishComponent implements OnInit, OnDestroy {
         contact.push(inscription.email);
         this.inscription = contact.join(', ');
 
-        inscription.participants?.forEach((participant) => {
+        inscription.children?.forEach((child) => {
           let participantParts = [];
           participantParts.push(
-            participant?.firstNameParticipant +
+            child?.firstNameParticipant +
               ' ' +
-              participant?.lastNameParticipant +
+              child?.lastNameParticipant +
               '(' +
-              participant?.salutation +
+              child?.salutation +
               ')'
           );
           participantParts.push(
-            '*' + new Date(participant?.birthday)?.toLocaleDateString('de-CH')
+            '*' + new Date(child?.birthday)?.toLocaleDateString('de-CH')
           );
           this.participants.push(participantParts.join(', '));
         });

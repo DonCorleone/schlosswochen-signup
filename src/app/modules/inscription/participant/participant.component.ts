@@ -21,12 +21,11 @@ import * as AuthSelector from '../../user/state/auth.selectors';
 import * as InscriptionsReducer from '../../inscription/state/inscription.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
 import {
-  Participant,
-  ParticipantInsertInput,
-  Subscription as Inscription, SubscriptionChild,
-  SubscriptionParticipantsRelationInput, SubscriptionQueryInput,
-  SubscriptionUpdateInput
-} from "netlify/models/Graphqlx";
+  Subscription as Inscription,
+  SubscriptionChild,
+  SubscriptionQueryInput,
+  SubscriptionUpdateInput,
+} from 'netlify/models/Graphqlx';
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import {
   combineLatest,
@@ -164,12 +163,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           .select(InscriptionsReducer.getInscription)
           .pipe(takeUntil(this._ngDestroy$))
           .subscribe((inscription) => {
-            if (
-              inscription &&
-              inscription.participants &&
-              inscription.participants.length > 0
-            ) {
-              const participant = inscription?.participants?.find(
+            if (inscription?.children) {
+              const participant = inscription?.children?.find(
                 (p) => p?.participant_id === participantId
               );
               if (participant) {
@@ -233,12 +228,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let participant = {
+    let child = {
       ...this.signupForm.value,
       birthday: birthday,
     };
 
-    this.saveParticipant(participant, false);
+   this.saveParticipant(child, false);
     // if (participant.id === 0) {
     //   this.participantService.createParticipant(participant).subscribe({
     //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
@@ -252,64 +247,32 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     // }
   }
 
-  saveParticipant(participant: Participant, isSaveStep: boolean): void {
-    const participantInsertInput: ParticipantInsertInput = {
-      ...participant,
-    };
-
-    const child: SubscriptionChild = {
-      ...participant as SubscriptionChild
-    }
-
-    this.participantService
-      .upsertParticipant(
-        participantInsertInput,
-        participantInsertInput.participant_id!
-      )
-      .pipe(take(1))
-      .subscribe((res) => {
+  saveParticipant(child: SubscriptionChild, isSaveStep: boolean): void {
         this.store
           .select(AuthSelector.selectIsLoggedIn)
           .pipe(take(1))
           .subscribe((isLoggedIn) => {
             if (isLoggedIn) {
-              this.store.dispatch(
-                InscriptionActions.upsertParticipant({ participant })
-              );
-              this.store.dispatch(
-                InscriptionActions.upsertChild({ child })
-              );
+              this.store.dispatch(InscriptionActions.upsertChild({ child }));
             } else {
               this.store
                 .select(InscriptionsReducer.getInscription)
                 .pipe(take(1))
                 .subscribe((inscription) => {
-                  let participantFromStore: Participant | null | undefined;
-                  if (
-                    inscription &&
-                    inscription.participants &&
-                    inscription.participants.length > 0
-                  ) {
-                    participantFromStore = inscription?.participants?.find(
-                      (p) =>
-                        p?.participant_id ===
-                        participantInsertInput.participant_id
+                  let participantFromStore: SubscriptionChild | null | undefined;
+                  if (inscription?.children) {
+                    participantFromStore = inscription?.children?.find(
+                      (subscriptionChild) =>
+                        subscriptionChild?.participant_id ===
+                        child.participant_id
                     );
                   }
                   if (participantFromStore) {
                     this.store.dispatch(
-                      InscriptionActions.upsertParticipant({ participant })
-                    );
-                    this.store.dispatch(
                       InscriptionActions.upsertChild({ child })
                     );
                   } else {
-                    this.store.dispatch(
-                      InscriptionActions.addChild({ child })
-                    );
-                    this.store.dispatch(
-                      InscriptionActions.addParticipant({ participant })
-                    );
+                    this.store.dispatch(InscriptionActions.addChild({ child }));
                   }
                   if (isSaveStep) {
                     this.saveInscription();
@@ -328,7 +291,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
                 });
             }
           });
-      });
   }
 
   goToSaveStep(): void {
@@ -351,11 +313,11 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     }
 
     if (this.signupForm.dirty) {
-      let participant = {
+      let subscriptionChild = {
         ...this.signupForm.value,
         birthday: birthday,
       };
-      this.saveParticipant(participant, true);
+      this.saveParticipant(subscriptionChild, true);
     } else {
       this.saveInscription();
     }
@@ -379,10 +341,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         let json = JSON.stringify(link);
         sessionStorage.setItem('participants', json);
 
-        const subscriptionParticipantsRelationInput: SubscriptionParticipantsRelationInput =
-          {
-            link: link,
-          };
         const subscriptionUpdateInput: SubscriptionUpdateInput = {
           firstName: inscriptionFromStore.firstName,
           lastName: inscriptionFromStore.lastName,
@@ -397,16 +355,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               ? ReservationState.DEFINITIVE
               : ReservationState.DEFINITIVE_WAITINGLIST,
           zip: inscriptionFromStore.zip,
-          participants: subscriptionParticipantsRelationInput,
           externalUserId: inscriptionFromStore.externalUserId,
-          children: inscriptionFromStore.children
+          children: inscriptionFromStore.children,
         };
-        subscriptionUpdateInput.participants = subscriptionParticipantsRelationInput;
-        //   this.subscriptions.push(
 
-        const filter: Partial<SubscriptionQueryInput>  = {
-          _id: this.inscription._id
-        }
+        const filter: Partial<SubscriptionQueryInput> = {
+          _id: this.inscription._id,
+        };
 
         this.inscriptionsService
           .updateOneSubscription(filter, subscriptionUpdateInput)
@@ -445,7 +400,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this._ngDestroy$.complete();
   }
 
-  private displayParticipant(participant: Participant) {
+  private displayParticipant(participant: SubscriptionChild) {
     if (this.signupForm) {
       this.signupForm.reset();
     }
