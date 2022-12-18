@@ -28,14 +28,6 @@ const handler: Handler = async (event, context) => {
     event.body ?? ''
   );
 
-  console.log('upsertOneParticipant body ' + event.body);
-  console.log(
-    'upsertOneParticipant query ' + JSON.stringify(requestPayload.query)
-  );
-  console.log(
-    'upsertOneParticipant data ' + JSON.stringify(requestPayload.data)
-  );
-
   return fetch(
     `https://realm.mongodb.com/api/client/v2.0/app/${process.env.APP_ID_REALM!}/graphql`,
     {

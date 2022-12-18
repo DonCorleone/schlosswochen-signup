@@ -233,7 +233,19 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     };
     inscriptionUpdateInput.participants = participantsUpdateObj;
 
-    this.inscriptionService
+    this.store.dispatch(
+      InscriptionActions.setInscription({
+        inscription: inscription.inscription,
+      })
+    );
+    this.store.dispatch(
+      InscriptionActions.increaseCurrentParticipantNumber()
+    );
+    this.router.navigate(['/inscriptions/participant']).then((x) => {
+      console.log('InscriptionComponent goToNextStep');
+    });
+
+/*    this.inscriptionService
       .updateOneSubscription(subscriptionQueryInput, inscriptionUpdateInput)
       .pipe(take(1))
       .subscribe((inscription: Inscription) => {
@@ -248,7 +260,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
         this.router.navigate(['/inscriptions/participant']).then((x) => {
           console.log('InscriptionComponent goToNextStep');
         });
-      });
+      });*/
   }
 
   setMessage(c: AbstractControl): string {

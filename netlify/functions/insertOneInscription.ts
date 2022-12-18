@@ -1,5 +1,8 @@
 import { Handler } from '@netlify/functions';
-import { Subscription as Inscription } from 'netlify/models/Graphqlx';
+import {
+  Subscription as Inscription,
+  SubscriptionInsertInput
+} from "netlify/models/Graphqlx";
 
 const fetch = require('node-fetch');
 export interface InsertOneInscriptionPayload {
@@ -14,7 +17,16 @@ export interface InsertOneInscriptionResponse {
   message: InsertOneInscriptionPayload;
 }
 
+export interface InsertOneInscriptionRequestPayload {
+  data: SubscriptionInsertInput;
+}
+
 const handler: Handler = async (event, context) => {
+
+  const requestPayload: InsertOneInscriptionRequestPayload = {
+    data: JSON.parse(event.body ?? '')
+  }
+
 
   console.log("insertOneSubscription body " + event.body);
 
@@ -73,7 +85,7 @@ const handler: Handler = async (event, context) => {
             }
           }
       `,
-        variables : { data: JSON.parse(event.body ?? '') },
+        variables : { data: requestPayload.data },
       }),
     }
   )

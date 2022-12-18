@@ -1,15 +1,10 @@
 import { Handler } from '@netlify/functions';
 import {
-  ParticipantInsertInput,
   ParticipantQueryInput, ParticipantUpdateInput,
-  Subscription as Inscription, UpdateManyPayload,
+  UpdateManyPayload,
 } from 'netlify/models/Graphqlx';
 
 const fetch = require('node-fetch');
-export interface upsertManyParticipantPayload {
-  insertManySubscription: Inscription;
-}
-
 export interface Message {
   data: UpdateManyPayload;
 }
@@ -26,14 +21,6 @@ export interface upsertManyParticipantRequestPayload {
 const handler: Handler = async (event, context) => {
   const requestPayload: upsertManyParticipantRequestPayload = JSON.parse(
     event.body ?? ''
-  );
-
-  console.log('upsertOneParticipant body ' + event.body);
-  console.log(
-    'upsertManyParticipant query ' + JSON.stringify(requestPayload.query)
-  );
-  console.log(
-    'upsertManyParticipant set ' + JSON.stringify(requestPayload.set)
   );
 
   return fetch(
