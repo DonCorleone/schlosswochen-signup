@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { select, Store } from "@ngrx/store";
 import { combineLatest, map, Observable, Subject, takeUntil } from 'rxjs';
 import { Subscription as Inscription, Week } from 'netlify/models/Graphqlx';
 
@@ -34,16 +34,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    if (this.store && this.translate) {
-      this.loggedIn$ = this.store.select(selectIsLoggedIn);
-      this.deadline$ = this.store.select(InscriptionReducer.getDeadline);
-      this.inscription$ = this.store.select(InscriptionReducer.getInscription);
-      this.week$ = this.store.select(InscriptionReducer.getWeek);
+   if (this.store && this.translate) {
+      this.loggedIn$ = this.store.pipe(select(selectIsLoggedIn));
+      this.deadline$ = this.store.pipe(select(InscriptionReducer.getDeadline));
+      this.inscription$ = this.store.pipe(select(InscriptionReducer.getInscription));
+      this.week$ = this.store.pipe(select(InscriptionReducer.getWeek));
       this.places$ = this.translate.stream('WAITINGLIST').pipe(
         (o$) =>
           combineLatest([
             o$,
-            this.store.select(InscriptionReducer.getPlaces),
+            this.store.pipe(select(InscriptionReducer.getPlaces)),
           ]).pipe(
             map(([waitingListStr, places]) => {
               let placesStr = places.map((p) => p.placeNumber).join(' & ');

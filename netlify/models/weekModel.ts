@@ -1,3 +1,5 @@
+import { ChildrenPerStateItem, QuerySumChildsPerStateArgs } from "./Graphqlx";
+
 export interface Week {
   dateFrom: Date;
   dateTo: Date;
@@ -32,19 +34,3 @@ export interface ServerResponseWeek {
   message: ServerDataWeeks[];
 }
 
-export interface SumChildsPerState {
-  state: string;
-  sumPerStateAndWeek: number;
-}
-
-export interface Data {
-  sumChildsPerState: SumChildsPerState[];
-}
-
-export interface SumChildsPerStatePayload {
-  data: Data;
-}
-
-export interface SumChildsPerStateResponse {
-  message: SumChildsPerStatePayload;
-}

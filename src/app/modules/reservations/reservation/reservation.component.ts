@@ -3,7 +3,7 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
-import { Observable, take, tap } from 'rxjs';
+import { Observable, Subject, takeUntil } from "rxjs";
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import * as InscriptionActions from '../../inscription/state/inscription.actions';
@@ -15,12 +15,12 @@ import {
 } from 'netlify/models/Graphqlx';
 import { environment } from '../../../../environments/environment';
 import {
-  Place,
   ReservationState,
   WeeklyReservation,
   WeekVM,
 } from '../../../models/Interfaces';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
+import { WeeksService } from "../../../service/weeks.service";
 
 @Component({
   selector: 'app-reservation',
@@ -41,9 +41,12 @@ export class ReservationComponent implements OnInit, OnDestroy {
   });
   reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
 
+  private _ngDestroy$ = new Subject<void>();
+
   constructor(
     private fb: UntypedFormBuilder,
     private reservationService: ReservationService,
+    private weekService: WeeksService,
     private router: Router,
     private store: Store<InscriptionReducer.InscriptionState>,
     private loadingIndicatorService: LoadingIndicatorService
@@ -53,8 +56,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.weekVMs$ = this.reservationService.getWeekVMs(this.year);
-    this.weekVMs$.subscribe((p) => console.log(JSON.stringify(p)));
+    this.weekVMs$ = this.weekService.getWeekVMs(this.year);
   }
 
   createWeeklyReservation(
@@ -78,14 +80,15 @@ export class ReservationComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const weeklyReservationControl = this.signupForm.get('numOfChilds');
+    let weeklyReservation: WeeklyReservation = this.signupForm.get('numOfChilds')?.value;
 
-    if (weeklyReservationControl) {
-      let weeklyReservation: WeeklyReservation =
-        weeklyReservationControl?.value;
-      let deadlineMs =
-        (5 + weeklyReservation.numberOfReservations * 3) * 60 * 1000;
-      let deadline = new Date(new Date().getTime() + deadlineMs);
+    if (weeklyReservation) {
+
+      this.store.dispatch(
+        InscriptionActions.setWeek({ week: weeklyReservation.week })
+      );
+
+      let deadline = this.calcDeadline(weeklyReservation);
 
       let subscriptionInsertInput: Partial<SubscriptionInsertInput> = {
         numOfChildren: weeklyReservation.numberOfReservations,
@@ -98,54 +101,29 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
       this.reservationService
         .insertOneSubscription(subscriptionInsertInput)
-        .pipe(take(1))
-        .subscribe((inscription: Inscription) => {
-          this.store.dispatch(
-            InscriptionActions.setWeek({ week: weeklyReservation.week })
-          );
-          this.store.dispatch(
-            InscriptionActions.setInscription({ inscription })
-          );
+        .pipe(
+          takeUntil(this._ngDestroy$)
+        ).subscribe((inscription: Inscription) => {
 
-          let sumParticipants = 0;
-          this.reservationService
-            .getReservationsPerWeek(weeklyReservation.week?.week!)
-            .pipe(take(1))
-            .subscribe((sumChildsPerState) => {
-              sumChildsPerState?.map((p) => {
-                if (
-                  p.state === ReservationState.DEFINITIVE ||
-                  p.state === ReservationState.TEMPORARY
-                ) {
-                  sumParticipants += p.sumPerStateAndWeek;
-                }
-              });
+        this.store.dispatch(
+          InscriptionActions.setInscription({ inscription })
+        );
 
-              let places: Place[] = [];
-              for (
-                let i =
-                  sumParticipants - weeklyReservation.numberOfReservations + 1;
-                i <= sumParticipants;
-                i++
-              ) {
-                places.push({
-                  placeNumber: i,
-                  reservationState: weeklyReservation.state,
-                });
-              }
+        this.weekService.setPlaces(weeklyReservation);
 
-              this.store.dispatch(
-                InscriptionActions.setPlaces({ places: places })
-              );
-            });
-
-          this.router
+        this.router
             .navigate(['/inscriptions/inscription', inscription._id])
             .then((x) => {
               console.log('ReservationComponent goToNextStep');
             });
         });
     }
+  }
+
+  private calcDeadline(weeklyReservation: WeeklyReservation) {
+    let deadlineMs =
+      (5 + weeklyReservation.numberOfReservations * 3) * 60 * 1000;
+    return new Date(new Date().getTime() + deadlineMs);
   }
 
   goToPreviousStep() {
@@ -156,5 +134,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('ReservationComponent destroyed');
+    this._ngDestroy$.next();
+    this._ngDestroy$.complete();
   }
 }

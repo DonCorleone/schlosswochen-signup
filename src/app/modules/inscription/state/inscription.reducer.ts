@@ -95,11 +95,11 @@ export const inscriptionReducer = createReducer<InscriptionState>(
       ...state,
       inscription: {
         ...state.inscription,
-        children: [...state.inscription.children!, action.child]
+        children: [...state.inscription.children!, action.child],
       },
     };
   }),
-/*  on(InscriptionAction.upsertParticipant, (state, action) => {
+  /*  on(InscriptionAction.upsertParticipant, (state, action) => {
     const index = state.inscription.participants?.findIndex(
       (participant) =>
         participant?.participant_id === action.participant.participant_id
@@ -120,8 +120,7 @@ export const inscriptionReducer = createReducer<InscriptionState>(
   }),*/
   on(InscriptionAction.upsertChild, (state, action) => {
     const index = state.inscription.children?.findIndex(
-      (child) =>
-        child?.participant_id === action.child.participant_id
+      (child) => child?.participant_id === action.child.participant_id
     ); //finding index of the item
 
     // @ts-ignore

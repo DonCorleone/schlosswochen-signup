@@ -13,7 +13,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 
 import * as InscriptionActions from '../state/inscription.actions';
 
@@ -29,6 +29,7 @@ import {
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import {
   combineLatest,
+  EMPTY,
   Observable,
   scan,
   Subject,
@@ -41,20 +42,6 @@ import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { ReservationState } from '../../../models/Interfaces';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
-
-function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
-  const emailControl = c.get('email');
-  const confirmControl = c.get('confirmEmail');
-
-  if (emailControl?.pristine || confirmControl?.pristine) {
-    return null;
-  }
-
-  if (emailControl?.value === confirmControl?.value) {
-    return null;
-  }
-  return { match: true };
-}
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -110,11 +97,14 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     const nowInS = new Date().getTime();
 
     combineLatest([
-      this.store.select(InscriptionsReducer.getInscription),
+      this.store.pipe(select(InscriptionsReducer.getInscription)),
       this.activeRoute.params,
     ])
       .pipe(takeUntil(this._ngDestroy$))
       .subscribe(([inscription, routeParams]) => {
+        if (!inscription) {
+          return;
+        }
         if (inscription?.numOfChildren) {
           this.numOfChilds = inscription.numOfChildren;
         }
@@ -136,13 +126,15 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   loadParticipantDetail(inscriptionId: string) {
     this.loadingIndicatorService.stop();
-    this.currentParticipantNumber$ = this.store.select(
-      InscriptionsReducer.getCurrentParticipantNumber
+    this.currentParticipantNumber$ = this.store.pipe(
+      select(InscriptionsReducer.getCurrentParticipantNumber)
     );
 
     this.store
-      .select(InscriptionsReducer.getCurrentParticipantNumber)
-      .pipe(takeUntil(this._ngDestroy$))
+      .pipe(
+        select(InscriptionsReducer.getCurrentParticipantNumber),
+        takeUntil(this._ngDestroy$)
+      )
       .subscribe((currentParticipantNr) => {
         this.currentParticipantNumber = currentParticipantNr;
 
@@ -160,8 +152,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         });
 
         this.store
-          .select(InscriptionsReducer.getInscription)
-          .pipe(takeUntil(this._ngDestroy$))
+          .pipe(
+            select(InscriptionsReducer.getInscription),
+            takeUntil(this._ngDestroy$)
+          )
           .subscribe((inscription) => {
             if (inscription?.children) {
               const participant = inscription?.children?.find(
@@ -178,8 +172,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   goToPreviousStep() {
     this.store.dispatch(InscriptionActions.decreaseCurrentParticipantNumber());
     this.store
-      .select(InscriptionsReducer.getCurrentParticipantNumber)
-      .pipe(takeUntil(this._ngDestroy$))
+      .pipe(
+        select(InscriptionsReducer.getCurrentParticipantNumber),
+        takeUntil(this._ngDestroy$)
+      )
       .subscribe((p) => {
         this.currentParticipantNumber = p;
         if (this.currentParticipantNumber === 0) {
@@ -233,7 +229,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       birthday: birthday,
     };
 
-   this.saveParticipant(child, false);
+    this.saveParticipant(child, false);
     // if (participant.id === 0) {
     //   this.participantService.createParticipant(participant).subscribe({
     //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
@@ -247,50 +243,42 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     // }
   }
 
-  saveParticipant(child: SubscriptionChild, isSaveStep: boolean): void {
-        this.store
-          .select(AuthSelector.selectIsLoggedIn)
-          .pipe(take(1))
-          .subscribe((isLoggedIn) => {
-            if (isLoggedIn) {
-              this.store.dispatch(InscriptionActions.upsertChild({ child }));
-            } else {
-              this.store
-                .select(InscriptionsReducer.getInscription)
-                .pipe(take(1))
-                .subscribe((inscription) => {
-                  let participantFromStore: SubscriptionChild | null | undefined;
-                  if (inscription?.children) {
-                    participantFromStore = inscription?.children?.find(
-                      (subscriptionChild) =>
-                        subscriptionChild?.participant_id ===
-                        child.participant_id
-                    );
-                  }
-                  if (participantFromStore) {
-                    this.store.dispatch(
-                      InscriptionActions.upsertChild({ child })
-                    );
-                  } else {
-                    this.store.dispatch(InscriptionActions.addChild({ child }));
-                  }
-                  if (isSaveStep) {
-                    this.saveInscription();
-                  } else {
-                    this.store.dispatch(
-                      InscriptionActions.increaseCurrentParticipantNumber()
-                    );
-                    this.router
-                      .navigate(['/inscriptions/participant'])
-                      .then((x) => {
-                        console.log(
-                          'ParticipantComponent navigate /inscriptions/participant'
-                        );
-                      });
-                  }
-                });
-            }
+  saveParticipant(
+    subscriptionChild: SubscriptionChild,
+    isSaveStep: boolean
+  ): void {
+    this.store
+      .pipe(select(InscriptionsReducer.getInscription), take(1))
+      .subscribe((inscription) => {
+        let participantFromStore: SubscriptionChild | null | undefined;
+        if (inscription?.children) {
+          participantFromStore = inscription?.children?.find(
+            (child) =>
+              child?.participant_id === subscriptionChild?.participant_id
+          );
+        }
+        if (participantFromStore) {
+          this.store.dispatch(
+            InscriptionActions.upsertChild({ child: subscriptionChild })
+          );
+        } else {
+          this.store.dispatch(
+            InscriptionActions.addChild({ child: subscriptionChild })
+          );
+        }
+        if (isSaveStep) {
+          this.saveInscription();
+        } else {
+          this.store.dispatch(
+            InscriptionActions.increaseCurrentParticipantNumber()
+          );
+          this.router.navigate(['/inscriptions/participant']).then((x) => {
+            console.log(
+              'ParticipantComponent navigate /inscriptions/participant'
+            );
           });
+        }
+      });
   }
 
   goToSaveStep(): void {
@@ -313,7 +301,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     }
 
     if (this.signupForm.dirty) {
-      let subscriptionChild = {
+      let subscriptionChild: SubscriptionChild = {
         ...this.signupForm.value,
         birthday: birthday,
       };
@@ -325,22 +313,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   saveInscription() {
     this.store
-      .select(InscriptionsReducer.getInscription)
-      .pipe(take(1))
+      .pipe(select(InscriptionsReducer.getInscription), take(1))
       .subscribe((inscriptionFromStore) => {
-        const link: string[] = [];
-        let numOfChildren = inscriptionFromStore?.numOfChildren
-          ? inscriptionFromStore?.numOfChildren
-          : 0;
-        for (let index = 1; index <= numOfChildren; index++) {
-          let participantId = this.inscription._id + '-' + index;
-
-          link.push(participantId);
-        }
-        sessionStorage.setItem('inscription', this.inscription._id);
-        let json = JSON.stringify(link);
-        sessionStorage.setItem('participants', json);
-
         const subscriptionUpdateInput: SubscriptionUpdateInput = {
           firstName: inscriptionFromStore.firstName,
           lastName: inscriptionFromStore.lastName,
@@ -365,7 +339,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
         this.inscriptionsService
           .updateOneSubscription(filter, subscriptionUpdateInput)
-          .pipe(takeUntil(this._ngDestroy$))
           .subscribe((inscriptionNew) => {
             this.store.dispatch(
               InscriptionActions.setInscription({

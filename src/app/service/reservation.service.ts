@@ -5,30 +5,40 @@ import {
   map,
   mergeMap,
   Observable,
+  take,
   tap,
 } from 'rxjs';
-import { ChildsPerState } from '../models/Subscriptor';
 import { environment } from '../../environments/environment';
-import { ReservationState, WeekVM } from '../models/Interfaces';
+import {
+  Place,
+  ReservationState,
+  WeeklyReservation,
+  WeekVM,
+} from '../models/Interfaces';
 import { HttpClient } from '@angular/common/http';
+import { GetWeeksResponse } from 'netlify/models/weekModel';
 import {
-  GetWeeksResponse,
-  SumChildsPerStatePayload,
-} from 'netlify/models/weekModel';
-import {
+  ChildrenPerStateItem,
   Subscription as Inscription,
   SubscriptionInsertInput,
+  SumPerWeekAndYear,
   Week,
 } from 'netlify/models/Graphqlx';
 import { InsertOneInscriptionResponse } from '../../../netlify/functions/insertOneInscription';
+import * as InscriptionActions from '../modules/inscription/state/inscription.actions';
+import { Store } from '@ngrx/store';
+import * as InscriptionReducer from '../modules/inscription/state/inscription.reducer';
+import { SumChildsPerStatePayload } from '../../../netlify/functions/getChildsPerState';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReservationService {
   private readonly maxNumberOfReservations: number;
-
-  constructor(private httpClient: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    private store: Store<InscriptionReducer.InscriptionState>
+  ) {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
 
@@ -47,71 +57,6 @@ export class ReservationService {
         }),
         catchError(this.handleError)
       );
-  }
-
-  getWeekVMs(year: number): Observable<WeekVM[]> {
-    return this.getWeeks(year).pipe((weeks$) => {
-      return this.mapWeekCapacity(weeks$);
-    });
-  }
-  getWeeks(year: number): Observable<Week[]> {
-    return this.httpClient
-      .get<GetWeeksResponse>(`/api/getWeeks?year=${year}`)
-      .pipe(
-        map((result: GetWeeksResponse) => result?.message?.data?.weeks),
-        catchError(this.handleError)
-      );
-  }
-
-  getReservationsPerWeek(week: number): Observable<ChildsPerState[]> {
-    return this.httpClient
-      .get<SumChildsPerStatePayload>(
-        `/api/getChildsPerState?week=${week}`
-      )
-      .pipe(map((payload) => payload?.data?.sumChildsPerState));
-  }
-
-  private mapWeekCapacity(weeks$: Observable<Week[]>): Observable<WeekVM[]> {
-    return weeks$.pipe(
-      mergeMap((arr) => {
-        return combineLatest(
-          arr.map((week) => {
-            return this.getReservationsPerWeek(week.week!).pipe(
-              map((participantsPerStates) => {
-                return this.mapWeekVM(participantsPerStates, week);
-              })
-            );
-          })
-        );
-      })
-    );
-  }
-
-  private mapWeekVM(participantsPerStates: ChildsPerState[], week: Week) {
-    let total: number = 0;
-    participantsPerStates?.map((participantsPerState) => {
-      if (
-        participantsPerState.state === ReservationState.TEMPORARY ||
-        participantsPerState.state === ReservationState.DEFINITIVE
-      ) {
-        total += participantsPerState.sumPerStateAndWeek;
-      }
-    });
-
-    const sumPerWeek = total;
-    const freePlacesThisWeek = week.maxParticipants! - total;
-    const placesOnWaitingList =
-      this.maxNumberOfReservations - freePlacesThisWeek;
-
-    const weekVM: WeekVM = {
-      ...week,
-      sumPerWeek,
-      freePlacesThisWeek,
-      placesOnWaitingList,
-      participantsPerStates,
-    };
-
-    return weekVM;
   }
 
   private handleError(err: any): Observable<never> {

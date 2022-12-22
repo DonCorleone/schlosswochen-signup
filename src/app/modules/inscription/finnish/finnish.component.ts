@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { select, Store } from "@ngrx/store";
 import { Observable, Subject, take } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
@@ -35,18 +35,20 @@ export class FinnishComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.loggedIn$ = this.store.select(selectIsLoggedIn);
-    this.profile$ = this.store.select(selectCurrentUserProfile);
+    this.loggedIn$ = this.store.pipe(select(selectIsLoggedIn));
+    this.profile$ = this.store.pipe(select(selectCurrentUserProfile));
 
     this.store.dispatch(checkAuth());
 
-    this.inscription$ = this.inscriptionStore.select(
-      InscriptionReducer.getInscription
+    this.inscription$ = this.inscriptionStore.pipe(
+      select(InscriptionReducer.getInscription)
     );
 
     this.inscriptionStore
-      .select(InscriptionReducer.getInscription)
-      .pipe(take(1))
+      .pipe(
+        select(InscriptionReducer.getInscription),
+        take(1)
+      )
       .subscribe((inscription: Inscription) => {
         this.stateDesc = inscription.state!;
         let contact = [];

@@ -1,6 +1,19 @@
 import { Handler } from '@netlify/functions';
-import {SumChildsPerStateResponse} from "../models/weekModel";
+import { ChildrenPerStateItem, SumPerWeekAndYear } from "../models/Graphqlx";
 const fetch = require('node-fetch');
+
+export interface Data {
+  sumChildsPerState: SumPerWeekAndYear[];
+}
+
+export interface SumChildsPerStatePayload {
+  data: Data;
+}
+
+export interface SumChildsPerStateResponse {
+  message: SumChildsPerStatePayload;
+}
+
 
 const handler: Handler = async (event, context) => {
   return fetch(
@@ -14,14 +27,15 @@ const handler: Handler = async (event, context) => {
       },
       body: JSON.stringify({
         query: `
-          query ($week: Int!) {
-            sumChildsPerState(input: $week) {
+          query {
+            sumPerWeekAndYears {
+              year
+              week
               state
               sumPerStateAndWeek
             }
           }
-      `,
-        variables: { week: event?.queryStringParameters?.week },
+      `
       }),
     }
   )

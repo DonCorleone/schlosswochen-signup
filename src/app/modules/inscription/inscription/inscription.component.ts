@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 
 import {
   combineLatest,
@@ -22,14 +22,12 @@ import {
 import { InscriptionsService } from '../../../service/inscriptions.service';
 import * as InscriptionReducer from '../state/inscription.reducer';
 import * as InscriptionActions from '../state/inscription.actions';
-import {
-  Subscription as Inscription,
-  SubscriptionUpdateInput
-} from "netlify/models/Graphqlx";
+import { Subscription as Inscription } from 'netlify/models/Graphqlx';
 import * as AuthSelector from '../../user/state/auth.selectors';
 import { ReservationService } from '../../../service/reservation.service';
 import { ReservationState } from '../../../models/Interfaces';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
+import { WeeksService } from '../../../service/weeks.service';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -67,17 +65,16 @@ export class InscriptionComponent implements OnInit, OnDestroy {
 
   private _ngDestroy$ = new Subject<void>();
 
-
   constructor(
     private fb: UntypedFormBuilder,
     private inscriptionService: InscriptionsService,
+    private weekService: WeeksService,
     private reservationService: ReservationService,
     private route: ActivatedRoute,
     private router: Router,
     private store: Store<InscriptionReducer.InscriptionState>,
     private loadingIndicatorService: LoadingIndicatorService
   ) {
-
     this.year = process?.env?.UPCOMING_YEAR ? +process?.env?.UPCOMING_YEAR : 0;
   }
 
@@ -117,8 +114,8 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     this.store.dispatch(InscriptionActions.resetCurrentParticipantNumber());
 
     combineLatest([
-      this.store.select(AuthSelector.selectCurrentUserProfile),
-      this.store.select(InscriptionReducer.getInscription),
+      this.store.pipe(select(AuthSelector.selectCurrentUserProfile)),
+      this.store.pipe(select(InscriptionReducer.getInscription)),
       this.route.params,
     ])
       .pipe(
@@ -148,9 +145,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
                   }
 
                   if (externalUser) {
-
-
-                    this.reservationService
+                    this.weekService
                       .getWeeks(this.year)
                       .pipe(
                         map((weeks) => {
@@ -209,7 +204,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       });
       return;
     }
-/*
+    /*
 
     let inscriptionUpdateInput: Partial<SubscriptionUpdateInput> = {
       ...this.signupForm.value,
@@ -223,14 +218,12 @@ export class InscriptionComponent implements OnInit, OnDestroy {
         inscription: inscriptionForm.inscription,
       })
     );
-    this.store.dispatch(
-      InscriptionActions.increaseCurrentParticipantNumber()
-    );
+    this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
     this.router.navigate(['/inscriptions/participant']).then((x) => {
       console.log('InscriptionComponent goToNextStep');
     });
 
-/*    this.inscriptionService
+    /*    this.inscriptionService
       .updateOneSubscription(subscriptionQueryInput, inscriptionUpdateInput)
       .pipe(take(1))
       .subscribe((inscription: Inscription) => {
