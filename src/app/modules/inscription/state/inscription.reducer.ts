@@ -90,15 +90,7 @@ export const inscriptionReducer = createReducer<InscriptionState>(
       inscription: action.inscription,
     };
   }),
-  on(InscriptionAction.addChild, (state, action) => {
-    return {
-      ...state,
-      inscription: {
-        ...state.inscription,
-        children: [...state.inscription.children!, action.child],
-      },
-    };
-  }),
+
   /*  on(InscriptionAction.upsertParticipant, (state, action) => {
     const index = state.inscription.participants?.findIndex(
       (participant) =>
@@ -123,8 +115,16 @@ export const inscriptionReducer = createReducer<InscriptionState>(
       (child) => child?.participant_id === action.child.participant_id
     ); //finding index of the item
 
-    // @ts-ignore
-    const newArray = [...state.inscription?.children]; //making a new array
+    if (index! < 0 || !state.inscription?.children){
+      return {
+        ...state,
+        inscription: {
+          ...state.inscription,
+          children: [...state.inscription.children!, action.child],
+        },
+      };
+    }
+    const newArray = [...state.inscription.children!]; //making a new array
 
     newArray[index!] = action.child; //changing value in the new array
 

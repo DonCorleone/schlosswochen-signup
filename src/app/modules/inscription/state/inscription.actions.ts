@@ -10,10 +10,6 @@ export const setInscription = createAction(
   props<{ inscription: Inscription }>()
 );
 
-export const addChild = createAction(
-  '[Inscription] Add Child',
-  props<{ child: SubscriptionChild }>()
-);
 export const upsertChild = createAction(
   '[Inscription] Upsert Child',
   props<{ child: SubscriptionChild }>()

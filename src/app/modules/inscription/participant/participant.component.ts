@@ -68,7 +68,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   timer$: Observable<number> | undefined;
   signupForm!: UntypedFormGroup;
   currentParticipantNumber = 0;
-  currentParticipantNumber$: Observable<number>;
   emailMessage: string = '';
   confirmEmailMessage: string = '';
   errorMessage = '';
@@ -125,17 +124,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   loadParticipantDetail(inscriptionId: string) {
-    this.loadingIndicatorService.stop();
-    this.currentParticipantNumber$ = this.store.pipe(
-      select(InscriptionsReducer.getCurrentParticipantNumber)
-    );
-
     this.store
       .pipe(
         select(InscriptionsReducer.getCurrentParticipantNumber),
         takeUntil(this._ngDestroy$)
       )
       .subscribe((currentParticipantNr) => {
+        this.loadingIndicatorService.stop();
         this.currentParticipantNumber = currentParticipantNr;
 
         const participantId: string = `${inscriptionId}-${+currentParticipantNr}`;
@@ -170,29 +165,27 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   goToPreviousStep() {
-    this.store.dispatch(InscriptionActions.decreaseCurrentParticipantNumber());
-    this.store
-      .pipe(
-        select(InscriptionsReducer.getCurrentParticipantNumber),
-        takeUntil(this._ngDestroy$)
-      )
-      .subscribe((p) => {
-        this.currentParticipantNumber = p;
-        if (this.currentParticipantNumber === 0) {
-          this.router.navigate(['/inscriptions/inscription']).then((x) => {
-            console.log(
-              'ParticipantComponent navigate /inscriptions/inscription'
-            );
-          });
-        } else {
-          this.router.navigate(['/inscriptions/participant']).then((x) => {
-            console.log(
-              'ParticipantComponent navigate /inscriptions/participant'
-            );
-          });
-        }
-        return;
+    const birthday = new Date(this.signupForm.value.birthday);
+    let child = {
+      ...this.signupForm.value,
+      birthday: birthday,
+    };
+
+    this.store.dispatch(InscriptionActions.upsertChild({ child }));
+
+    if (this.currentParticipantNumber <= 1) {
+      this.router.navigate(['/inscriptions/inscription']).then((x) => {
+        console.log('ParticipantComponent navigate /inscriptions/inscription');
       });
+    } else {
+      this.store.dispatch(
+        InscriptionActions.decreaseCurrentParticipantNumber()
+      );
+      this.router.navigate(['/inscriptions/participant']).then((x) => {
+        console.log('ParticipantComponent navigate /inscriptions/participant');
+      });
+    }
+    return;
   }
 
   goToNextStep(): void {
@@ -253,19 +246,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         let participantFromStore: SubscriptionChild | null | undefined;
         if (inscription?.children) {
           participantFromStore = inscription?.children?.find(
-            (child) =>
-              child?.participant_id === subscriptionChild?.participant_id
+            (childFromStore) =>
+              childFromStore?.participant_id ===
+              subscriptionChild?.participant_id
           );
         }
-        if (participantFromStore) {
-          this.store.dispatch(
-            InscriptionActions.upsertChild({ child: subscriptionChild })
-          );
-        } else {
-          this.store.dispatch(
-            InscriptionActions.addChild({ child: subscriptionChild })
-          );
-        }
+
+        this.store.dispatch(
+          InscriptionActions.upsertChild({ child: subscriptionChild })
+        );
+
         if (isSaveStep) {
           this.saveInscription();
         } else {
