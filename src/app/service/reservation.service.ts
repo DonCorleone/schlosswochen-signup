@@ -12,11 +12,9 @@ import { environment } from '../../environments/environment';
 import {
   Place,
   ReservationState,
-  WeeklyReservation,
-  WeekVM,
+  WeeklyReservation
 } from '../models/Interfaces';
 import { HttpClient } from '@angular/common/http';
-import { GetWeeksResponse } from 'netlify/models/weekModel';
 import {
   ChildrenPerStateItem,
   Subscription as Inscription,

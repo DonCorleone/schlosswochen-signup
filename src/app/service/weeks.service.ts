@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, combineLatest, EMPTY, map, mergeMap, Observable, take } from "rxjs";
-import { ChildrenPerStateItem, SumPerWeekAndYear, Week } from "../../../netlify/models/Graphqlx";
+import { ChildrenPerStateItem, SumPerWeekAndYear } from "../../../netlify/models/Graphqlx";
 import { HttpClient } from '@angular/common/http';
 import { SumChildsPerStatePayload } from '../../../netlify/functions/getChildsPerState';
-import { Place, ReservationState, WeeklyReservation, WeekVM } from "../models/Interfaces";
-import { GetWeeksResponse } from "../../../netlify/models/weekModel";
+import { Place, ReservationState, WeeklyReservation } from "../models/Interfaces";
 import * as InscriptionActions from "../modules/inscription/state/inscription.actions";
 import { Store } from "@ngrx/store";
 import * as InscriptionReducer from "../modules/inscription/state/inscription.reducer";
 import { environment } from "../../environments/environment";
+import { WeekCapacity } from "../models/week-capacity";
+import { GetWeeksResponse } from "../../../netlify/functions/getWeeks";
+import { Week } from "../../../netlify/models/weekModel";
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +47,7 @@ export class WeeksService {
   }
 
 
-  private mapWeekCapacity(weeks$: Observable<Week[]>): Observable<WeekVM[]> {
+  mapWeekCapacity(weeks$: Observable<Week[]>): Observable<WeekCapacity[]> {
     return weeks$.pipe(
       mergeMap((arr) => {
         return combineLatest(
@@ -54,7 +56,7 @@ export class WeeksService {
             return this.sumperWeekAnsStates.pipe(
               map((participantsPerStates) => {
 
-                const sumPerSate: SumPerWeekAndYear[] = participantsPerStates.filter(p => p.week == week && p.year == this.year);
+                const sumPerSate: SumPerWeekAndYear[] = participantsPerStates.filter(p => p?.week == week.week && p.year == this.year);
                 return this.mapWeekVM(sumPerSate, week);
               })
             );
@@ -80,7 +82,7 @@ export class WeeksService {
     const placesOnWaitingList =
       this.maxNumberOfReservations - freePlacesThisWeek;
 
-    const weekVM: WeekVM = {
+    const weekVM: WeekCapacity = {
       ...week,
       sumPerWeek,
       freePlacesThisWeek,
@@ -91,7 +93,7 @@ export class WeeksService {
     return weekVM;
   }
 
-  getWeekVMs(year: number): Observable<WeekVM[]> {
+  getWeekVMs(year: number): Observable<WeekCapacity[]> {
     return this.getWeeks(year).pipe((weeks$) => {
       return this.mapWeekCapacity(weeks$);
     });
@@ -99,6 +101,15 @@ export class WeeksService {
   getWeeks(year: number): Observable<Week[]> {
     return this.httpClient
       .get<GetWeeksResponse>(`/api/getWeeks?year=${year}`)
+      .pipe(
+        map((result: GetWeeksResponse) => result?.message?.data?.weeks),
+        catchError(this.handleError)
+      );
+  }
+
+  get(): Observable<Week[]> {
+    return this.httpClient
+      .get<GetWeeksResponse>(`/api/getWeeks?year=${environment.UPCOMING_YEAR}`)
       .pipe(
         map((result: GetWeeksResponse) => result?.message?.data?.weeks),
         catchError(this.handleError)

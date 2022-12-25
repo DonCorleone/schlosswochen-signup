@@ -8,6 +8,9 @@ import { SharedModule } from 'src/app/modules/shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
 import {StoreModule} from "@ngrx/store";
 import * as inscriptionState from "../inscription/state/inscription.reducer";
+import { weekReducer } from "./state/weeks.reducer";
+import { EffectsModule } from "@ngrx/effects";
+import { WeeksEffect } from "./state/weeks.effects";
 
 @NgModule({
   declarations: [
@@ -20,6 +23,8 @@ import * as inscriptionState from "../inscription/state/inscription.reducer";
     ReactiveFormsModule,
     SharedModule,
     TranslateModule,
+    StoreModule.forFeature('myWeeks', weekReducer),
+    EffectsModule.forFeature([WeeksEffect])
   ],
   exports: [],
 })

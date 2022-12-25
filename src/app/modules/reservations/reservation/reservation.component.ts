@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Store } from '@ngrx/store';
+import { select, Store } from "@ngrx/store";
 import { Observable, Subject, takeUntil } from "rxjs";
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
@@ -16,11 +16,13 @@ import {
 import { environment } from '../../../../environments/environment';
 import {
   ReservationState,
-  WeeklyReservation,
-  WeekVM,
+  WeeklyReservation
 } from '../../../models/Interfaces';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
 import { WeeksService } from "../../../service/weeks.service";
+import { WeekCapacity } from "../../../models/week-capacity";
+import { invokeWeeksAPI } from "../state/weeks.action";
+import { selectWeeks } from "../state/weeks.selector";
 
 @Component({
   selector: 'app-reservation',
@@ -32,7 +34,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   reservationStateEnum = ReservationState;
   // maxWeeks: number = 1;
-  weekVMs$: Observable<WeekVM[]>;
+  weekVMs$: Observable<WeekCapacity[]>;
   year: number;
   maxNumberOfReservations: number = 1;
   submitted = false;
@@ -40,6 +42,10 @@ export class ReservationComponent implements OnInit, OnDestroy {
     numOfChilds: [0, [Validators.required, Validators.min(1)]],
   });
   reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
+
+  weeks$ = this.superStore.pipe(select(selectWeeks)).pipe((p) => {
+    return this.weekService.mapWeekCapacity(p);
+  });
 
   private _ngDestroy$ = new Subject<void>();
 
@@ -49,14 +55,15 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private weekService: WeeksService,
     private router: Router,
     private store: Store<InscriptionReducer.InscriptionState>,
-    private loadingIndicatorService: LoadingIndicatorService
+    private loadingIndicatorService: LoadingIndicatorService,
+    private superStore: Store
   ) {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
     this.year = +environment.UPCOMING_YEAR;
   }
 
   ngOnInit(): void {
-    this.weekVMs$ = this.weekService.getWeekVMs(this.year);
+    this.store.dispatch(invokeWeeksAPI());
   }
 
   createWeeklyReservation(

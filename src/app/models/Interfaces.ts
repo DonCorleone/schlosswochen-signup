@@ -19,9 +19,3 @@ export interface WeeklyReservation {
   state: ReservationState;
 }
 
-export interface WeekVM extends Week {
-  participantsPerStates: any;
-  sumPerWeek: number;
-  freePlacesThisWeek: number;
-  placesOnWaitingList: number;
-}

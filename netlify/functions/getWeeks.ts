@@ -1,11 +1,24 @@
 import { Handler } from '@netlify/functions';
-import { GetWeeksResponse } from "../models/weekModel";
+import { Week } from "../models/weekModel";
 
 const fetch = require('node-fetch');
 
+export interface Data {
+  weeks: Week[];
+}
+
+export interface GetWeeksPayload {
+  data: Data;
+}
+
+export interface GetWeeksResponse {
+  message: GetWeeksPayload;
+}
+
 const handler: Handler = async (event, context) => {
   return fetch(
-    `https://realm.mongodb.com/api/client/v2.0/app/${process.env.APP_ID_REALM!}/graphql`,
+    `https://realm.mongodb.com/api/client/v2.0/app/${process.env
+      .APP_ID_REALM!}/graphql`,
     {
       method: 'POST',
       headers: {
@@ -37,4 +50,3 @@ const handler: Handler = async (event, context) => {
     });
 };
 export { handler };
-
