@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { Week } from "../../../../../netlify/models/weekModel";
+import { Week } from "../../../../../netlify/models/Graphqlx";
 
 export const invokeWeeksAPI = createAction(
   '[Weeks API] Invoke Weeks Fetch API'

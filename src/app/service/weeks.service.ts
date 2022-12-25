@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, combineLatest, EMPTY, map, mergeMap, Observable, take } from "rxjs";
-import { ChildrenPerStateItem, SumPerWeekAndYear } from "../../../netlify/models/Graphqlx";
+import { ChildrenPerStateItem, SumPerWeekAndYear, Week } from "../../../netlify/models/Graphqlx";
 import { HttpClient } from '@angular/common/http';
 import { SumChildsPerStatePayload } from '../../../netlify/functions/getChildsPerState';
 import { Place, ReservationState, WeeklyReservation } from "../models/Interfaces";
@@ -10,7 +10,6 @@ import * as InscriptionReducer from "../modules/inscription/state/inscription.re
 import { environment } from "../../environments/environment";
 import { WeekCapacity } from "../models/week-capacity";
 import { GetWeeksResponse } from "../../../netlify/functions/getWeeks";
-import { Week } from "../../../netlify/models/weekModel";
 
 @Injectable({
   providedIn: 'root',

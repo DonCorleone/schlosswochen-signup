@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions';
-import { Week } from "../models/weekModel";
+import { Week } from 'netlify/models/Graphqlx';
 
 const fetch = require('node-fetch');
 

@@ -34,7 +34,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   reservationStateEnum = ReservationState;
   // maxWeeks: number = 1;
-  weekVMs$: Observable<WeekCapacity[]>;
   year: number;
   maxNumberOfReservations: number = 1;
   submitted = false;
