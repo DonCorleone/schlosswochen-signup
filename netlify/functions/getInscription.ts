@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions';
-import { GetWeeksResponse } from "../models/weekModel";
+import { GetWeeksResponse } from "./getWeeks";
 
 const fetch = require('node-fetch');
 

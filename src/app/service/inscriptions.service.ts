@@ -37,10 +37,17 @@ export class InscriptionsService {
       }
       return of(this.initializeInscription(inscription, reservationState));
     }
+    return this.get(externalUserId);
+  }
 
+  get(externalUserId?: string):Observable<Inscription> {
+    let queryParam = '';
+    if (externalUserId){
+      queryParam = `?externalUserId=${externalUserId}`;
+    }
     return this.httpClient
       .get<SubscriptionData>(
-        `/api/getInscription?externalUserId=${externalUserId}`
+        '/api/getInscription' + queryParam
       )
       .pipe(
         map((result: SubscriptionData) => result?.subscription),

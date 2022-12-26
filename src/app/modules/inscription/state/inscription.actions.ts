@@ -1,9 +1,19 @@
 import { createAction, props } from '@ngrx/store';
 import {
+  Subscription,
   Subscription as Inscription, SubscriptionChild,
   Week
 } from "netlify/models/Graphqlx";
 import { Place } from '../../../models/Interfaces';
+
+export const invokeInscriptionAPI = createAction(
+  '[Inscription API] Invoke Inscription Fetch API'
+);
+
+export const inscriptionFetchAPISuccess = createAction(
+  '[Inscription API] Fetch Inscription Success',
+  props<{ inscription: Inscription }>()
+);
 
 export const setInscription = createAction(
   '[Inscription] Set Inscription',

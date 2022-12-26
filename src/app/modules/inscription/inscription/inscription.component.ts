@@ -28,6 +28,8 @@ import { ReservationService } from '../../../service/reservation.service';
 import { ReservationState } from '../../../models/Interfaces';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
 import { WeeksService } from '../../../service/weeks.service';
+import { invokeInscriptionAPI } from "../state/inscription.actions";
+import { selectInscription } from "../state/inscription.selector";
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -59,6 +61,8 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   isEditMode = false;
   errorMessage = '';
 
+  inscription$ = this.superStore.pipe(select(selectInscription));
+
   private validationMessages = {
     email: 'Please enter a valid email address.',
   };
@@ -73,6 +77,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private store: Store<InscriptionReducer.InscriptionState>,
+    private superStore: Store,
     private loadingIndicatorService: LoadingIndicatorService
   ) {
     this.year = process?.env?.UPCOMING_YEAR ? +process?.env?.UPCOMING_YEAR : 0;
@@ -112,22 +117,22 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       );
 
     this.store.dispatch(InscriptionActions.resetCurrentParticipantNumber());
+    this.store.dispatch(invokeInscriptionAPI());
 
     combineLatest([
       this.store.pipe(select(AuthSelector.selectCurrentUserProfile)),
-      this.store.pipe(select(InscriptionReducer.getInscription)),
-      this.route.params,
+      this.inscription$
     ])
       .pipe(
         takeUntil(this._ngDestroy$),
-        tap(([externalUser, inscription, params]) => {
-          if (externalUser?.sub?.length > 0 || inscription) {
+        tap(([externalUser, inscription]) => {
+/*          if (externalUser?.sub?.length > 0 || inscription) {
             this.inscriptionService
               .getInscription$(
                 externalUser?.sub,
-                inscription,
-                inscription.state
-                  ? (<any>ReservationState)[inscription.state!]
+                inscription.inscription,
+                inscription.inscription.state
+                  ? (<any>ReservationState)[inscription.inscription.state!]
                   : ReservationState.TEMPORARY
               )
               .pipe(take(1))
@@ -142,9 +147,9 @@ export class InscriptionComponent implements OnInit, OnDestroy {
                       )
                       .pipe(take(1))
                       .subscribe((x) => (inscription = x));
-                  }
+                  }*/
 
-                  if (externalUser) {
+/*                  if (externalUser) {
                     this.weekService
                       .getWeeks(this.year)
                       .pipe(
@@ -168,13 +173,13 @@ export class InscriptionComponent implements OnInit, OnDestroy {
                       )
                       .subscribe(),
                       take(1);
-                  }
+                  }*/
 
-                  this.displayInscription(inscription);
-                },
+                  this.displayInscription(inscription.inscription);
+/*                },
                 error: (err) => (this.errorMessage = err),
               });
-          }
+          }*/
         })
       )
       .subscribe();

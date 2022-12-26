@@ -10,6 +10,8 @@ import { InscriptionComponent } from './inscription/inscription.component';
 import { ParticipantComponent } from './participant/participant.component';
 import { FinnishComponent } from './finnish/finnish.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { StoreModule } from "@ngrx/store";
+import { inscriptionReducer } from "./state/inscription.reducer";
 
 @NgModule({
   declarations: [InscriptionComponent, ParticipantComponent, FinnishComponent],
@@ -19,6 +21,8 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     FormlyModule.forRoot(),
     FormlyBootstrapModule,
+
+    StoreModule.forFeature('myWeeks', inscriptionReducer),
     ReservationsModule,
     SharedModule,
     TranslateModule,
