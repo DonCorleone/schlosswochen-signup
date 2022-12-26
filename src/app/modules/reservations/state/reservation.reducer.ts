@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store";
 import { Subscription, Week } from "../../../../../netlify/models/Graphqlx";
-import { saveNewInscriptionAPISuccess, weeksFetchAPISuccess } from "./weeks.action";
+import { saveNewInscriptionAPISuccess, weeksFetchAPISuccess } from "./reservation.action";
 
 export interface StatusQuo {
   inscription: Subscription;

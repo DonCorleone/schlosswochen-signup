@@ -10,7 +10,7 @@ import * as InscriptionReducer from "../modules/inscription/state/inscription.re
 import { environment } from "../../environments/environment";
 import { WeekCapacity } from "../models/week-capacity";
 import { GetWeeksResponse } from "../../../netlify/functions/getWeeks";
-import { StatusQuo } from "../modules/reservations/state/weeks.reducer";
+import { StatusQuo } from "../modules/reservations/state/reservation.reducer";
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +45,6 @@ export class WeeksService {
         })
       );
   }
-
 
   mapWeekCapacity(weeks$: Observable<StatusQuo>): Observable<WeekCapacity[]> {
     return weeks$.pipe(

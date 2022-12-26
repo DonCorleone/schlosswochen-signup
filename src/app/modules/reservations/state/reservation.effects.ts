@@ -2,20 +2,20 @@ import { Injectable } from "@angular/core";
 import { select, Store } from "@ngrx/store";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { EMPTY, map, mergeMap, switchMap, withLatestFrom } from "rxjs";
-import { selectWeeks } from "./weeks.selector";
+import { selectWeeks } from "./reservation.selector";
 import {
   invokeSaveNewInscriptionAPI,
   invokeWeeksAPI,
   saveNewInscriptionAPISuccess,
   weeksFetchAPISuccess
-} from "./weeks.action";
+} from "./reservation.action";
 import { WeeksService } from "../../../service/weeks.service";
 import { setAPIStatus } from "../../../shared/store/app.action";
 import { ReservationService } from "../../../service/reservation.service";
 import { AppState } from "../../../shared/store/appState";
 
 @Injectable()
-export class WeeksEffect {
+export class ReservationReducer {
   constructor(
     private actions$: Actions,
     private weeksService: WeeksService,

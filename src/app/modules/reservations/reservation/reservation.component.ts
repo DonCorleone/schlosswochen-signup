@@ -24,8 +24,8 @@ import {
   invokeSaveNewInscriptionAPI,
   invokeWeeksAPI,
   saveNewInscriptionAPISuccess,
-} from '../state/weeks.action';
-import { selectWeeks } from '../state/weeks.selector';
+} from '../state/reservation.action';
+import { selectWeeks } from '../state/reservation.selector';
 import { AppState } from '../../../shared/store/appState';
 import { selectAppState } from '../../../shared/store/app.selector';
 import { setAPIStatus } from '../../../shared/store/app.action';

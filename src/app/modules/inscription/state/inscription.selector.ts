@@ -1,4 +1,4 @@
 import { createFeatureSelector } from "@ngrx/store";
-import { StatusQuo } from "../../reservations/state/weeks.reducer";
+import { StatusQuo } from "../../reservations/state/reservation.reducer";
 
-export const selectInscription = createFeatureSelector<StatusQuo>('myWeeks');
+export const selectInscription = createFeatureSelector<StatusQuo>('myReservation');

@@ -6,25 +6,21 @@ import { CapacityComponent } from './capacity/capacity.component';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
-import {StoreModule} from "@ngrx/store";
-import * as inscriptionState from "../inscription/state/inscription.reducer";
-import { weekReducer } from "./state/weeks.reducer";
-import { EffectsModule } from "@ngrx/effects";
-import { WeeksEffect } from "./state/weeks.effects";
+import { StoreModule } from '@ngrx/store';
+import { weekReducer } from './state/reservation.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { ReservationReducer } from './state/reservation.effects';
 
 @NgModule({
-  declarations: [
-    ReservationComponent,
-    CapacityComponent
-  ],
+  declarations: [ReservationComponent, CapacityComponent],
   imports: [
     CommonModule,
     ReservationsRoutingModule,
     ReactiveFormsModule,
     SharedModule,
     TranslateModule,
-    StoreModule.forFeature('myWeeks', weekReducer),
-    EffectsModule.forFeature([WeeksEffect])
+    StoreModule.forFeature('myReservation', weekReducer),
+    EffectsModule.forFeature([ReservationReducer]),
   ],
   exports: [],
 })
