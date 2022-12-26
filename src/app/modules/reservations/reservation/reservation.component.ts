@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { select, Store } from "@ngrx/store";
-import { Observable, Subject, takeUntil } from "rxjs";
+import { select, Store } from '@ngrx/store';
+import { combineLatestWith, forkJoin, map, Subject, takeUntil } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import * as InscriptionActions from '../../inscription/state/inscription.actions';
@@ -16,13 +16,20 @@ import {
 import { environment } from '../../../../environments/environment';
 import {
   ReservationState,
-  WeeklyReservation
+  WeeklyReservation,
 } from '../../../models/Interfaces';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
-import { WeeksService } from "../../../service/weeks.service";
-import { WeekCapacity } from "../../../models/week-capacity";
-import { invokeWeeksAPI } from "../state/weeks.action";
-import { selectWeeks } from "../state/weeks.selector";
+import { WeeksService } from '../../../service/weeks.service';
+import {
+  invokeSaveNewInscriptionAPI,
+  invokeWeeksAPI,
+  saveNewInscriptionAPISuccess,
+} from '../state/weeks.action';
+import { selectWeeks } from '../state/weeks.selector';
+import { AppState } from '../../../shared/store/appState';
+import { selectAppState } from '../../../shared/store/app.selector';
+import { setAPIStatus } from '../../../shared/store/app.action';
+import { combineLatest } from 'rxjs/internal/operators/combineLatest';
 
 @Component({
   selector: 'app-reservation',
@@ -55,7 +62,8 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store<InscriptionReducer.InscriptionState>,
     private loadingIndicatorService: LoadingIndicatorService,
-    private superStore: Store
+    private superStore: Store,
+    private appStore: Store<AppState>
   ) {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
     this.year = +environment.UPCOMING_YEAR;
@@ -86,10 +94,10 @@ export class ReservationComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let weeklyReservation: WeeklyReservation = this.signupForm.get('numOfChilds')?.value;
+    let weeklyReservation: WeeklyReservation =
+      this.signupForm.get('numOfChilds')?.value;
 
     if (weeklyReservation) {
-
       this.store.dispatch(
         InscriptionActions.setWeek({ week: weeklyReservation.week })
       );
@@ -105,25 +113,49 @@ export class ReservationComponent implements OnInit, OnDestroy {
         state: weeklyReservation.state,
       };
 
-      this.reservationService
+      this.save(subscriptionInsertInput);
+      /*      this.reservationService
         .insertOneSubscription(subscriptionInsertInput)
-        .pipe(
-          takeUntil(this._ngDestroy$)
-        ).subscribe((inscription: Inscription) => {
+        .pipe(takeUntil(this._ngDestroy$))
+        .subscribe((inscription: Inscription) => {
+          this.store.dispatch(
+            InscriptionActions.setInscription({ inscription })
+          );
 
-        this.store.dispatch(
-          InscriptionActions.setInscription({ inscription })
-        );
+          this.weekService.setPlaces(weeklyReservation);
 
-        this.weekService.setPlaces(weeklyReservation);
-
-        this.router
+          this.router
             .navigate(['/inscriptions/inscription', inscription._id])
             .then((x) => {
               console.log('ReservationComponent goToNextStep');
             });
-        });
+        });*/
     }
+  }
+
+  save(subscriptionInsertInput: Partial<SubscriptionInsertInput>) {
+    this.store.dispatch(
+      invokeSaveNewInscriptionAPI({ newInscription: subscriptionInsertInput })
+    );
+
+    let apiStatus$ = this.appStore.pipe(select(selectAppState));
+    apiStatus$.subscribe((apState) => {
+      if (apState.apiStatus == 'success') {
+        this.superStore
+          .pipe(select(selectWeeks), takeUntil(this._ngDestroy$))
+          .subscribe((x) => {
+            this.appStore.dispatch(
+              setAPIStatus({
+                apiStatus: { apiResponseMessage: '', apiStatus: '' },
+              })
+            );
+
+            this.router.navigate([
+              '/inscriptions/inscription',
+            ]);
+          });
+      }
+    });
   }
 
   private calcDeadline(weeklyReservation: WeeklyReservation) {

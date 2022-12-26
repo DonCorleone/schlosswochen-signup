@@ -10,6 +10,7 @@ import * as InscriptionReducer from "../modules/inscription/state/inscription.re
 import { environment } from "../../environments/environment";
 import { WeekCapacity } from "../models/week-capacity";
 import { GetWeeksResponse } from "../../../netlify/functions/getWeeks";
+import { StatusQuo } from "../modules/reservations/state/weeks.reducer";
 
 @Injectable({
   providedIn: 'root',
@@ -46,11 +47,11 @@ export class WeeksService {
   }
 
 
-  mapWeekCapacity(weeks$: Observable<Week[]>): Observable<WeekCapacity[]> {
+  mapWeekCapacity(weeks$: Observable<StatusQuo>): Observable<WeekCapacity[]> {
     return weeks$.pipe(
-      mergeMap((arr) => {
+      mergeMap((statusQuo) => {
         return combineLatest(
-          arr.map((week) => {
+          statusQuo.weeks.map((week) => {
 
             return this.sumperWeekAnsStates.pipe(
               map((participantsPerStates) => {
@@ -92,11 +93,6 @@ export class WeeksService {
     return weekVM;
   }
 
-  getWeekVMs(year: number): Observable<WeekCapacity[]> {
-    return this.getWeeks(year).pipe((weeks$) => {
-      return this.mapWeekCapacity(weeks$);
-    });
-  }
   getWeeks(year: number): Observable<Week[]> {
     return this.httpClient
       .get<GetWeeksResponse>(`/api/getWeeks?year=${year}`)

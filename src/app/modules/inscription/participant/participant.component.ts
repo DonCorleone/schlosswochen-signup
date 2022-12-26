@@ -17,7 +17,6 @@ import { select, Store } from '@ngrx/store';
 
 import * as InscriptionActions from '../state/inscription.actions';
 
-import * as AuthSelector from '../../user/state/auth.selectors';
 import * as InscriptionsReducer from '../../inscription/state/inscription.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
 import {

@@ -24,7 +24,7 @@ import { UnauthorizedComponent } from './home/unauthorized.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
-import { AuthModule } from '@auth0/auth0-angular';
+import { AuthModule, AuthState } from "@auth0/auth0-angular";
 import { authReducer } from './modules/user/state/auth.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './modules/user/state/auth.effects';
@@ -33,6 +33,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import * as inscriptionState from './modules/inscription/state/inscription.reducer';
 import { LoadingIndicatorInterceptor } from './interceptor/loading-indicator.interceptor';
 import { LoadingIndicatorService } from './service/loading-indicator.service';
+import { appReducer } from "./shared/store/app.reducer";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -64,14 +65,14 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient],
       },
     }),
-    StoreModule.forRoot({ auth: authReducer }), // State object here like described
+    StoreModule.forRoot({ appState: appReducer, auth: authReducer }),
 
     StoreModule.forFeature(
       inscriptionState.inscriptionFeatureKey,
       inscriptionState.inscriptionReducer
     ),
 
-    EffectsModule.forRoot([AuthEffects]),
+    EffectsModule.forRoot([]),
 
     StoreDevtoolsModule.instrument({
       name: 'Schlosswochen Inscription',

@@ -40,6 +40,21 @@ export class ReservationService {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
 
+  create(payload: SubscriptionInsertInput): Observable<Inscription> {
+    return this.httpClient
+      .post<InsertOneInscriptionResponse>(
+        `/api/insertOneInscription`,
+        payload
+      )
+      .pipe(
+        tap((p) => console.log(JSON.stringify(p))),
+        map((result) => {
+          return result?.message?.insertOneSubscription;
+        }),
+        catchError(this.handleError)
+      );
+  }
+
   insertOneSubscription(
     subscriptionInsertInput: SubscriptionInsertInput
   ): Observable<Inscription> {
