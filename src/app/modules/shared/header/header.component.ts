@@ -25,15 +25,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   deadline$: Observable<Date>;
   private _ngDestroy$ = new Subject<void>();
   constructor(
-    private superStore: Store,
+    private store: Store,
     public translate: TranslateService
   ) {}
 
   ngOnInit(): void {
-    if (this.superStore && this.translate) {
-      this.loggedIn$ = this.superStore.pipe(select(selectIsLoggedIn));
-      this.deadline$ = this.superStore.pipe(select(getDeadline));
-      this.inscription$ = this.superStore
+    if (this.store && this.translate) {
+      this.loggedIn$ = this.store.pipe(select(selectIsLoggedIn));
+      this.deadline$ = this.store.pipe(select(getDeadline));
+      this.inscription$ = this.store
         .pipe(select(selectWeeks))
         .pipe(map((p) => p?.inscription));
       this.week$ = this.getWeek();
@@ -41,7 +41,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getWeek(): Observable<Week | undefined> {
-    return this.superStore.pipe(select(selectWeeks)).pipe(
+    return this.store.pipe(select(selectWeeks)).pipe(
       map(state => {
         return state.weeks.find((p) => p.week == state.inscription.week);
       })

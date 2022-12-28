@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { StatusQuo } from '../state/reservation.reducer';
-export const selectWeeks = createFeatureSelector<StatusQuo>('myReservation');
+import { State } from '../state/reservation.reducer';
+export const selectWeeks = createFeatureSelector<State>('myReservation');
 export const getDeadline = createSelector(
   selectWeeks,
   (state) => new Date(state.inscription.deadline)

@@ -10,12 +10,12 @@ import {
   weeksFetchAPISuccess,
 } from './reservation.action';
 
-export interface StatusQuo {
+export interface State {
   inscription: Subscription;
   weeks: ReadonlyArray<Week>;
   currentParticipantNumber: number;
 }
-export const initialState: StatusQuo = {
+export const initialState: State = {
   inscription: {},
   weeks: [],
   currentParticipantNumber: 0

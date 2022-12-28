@@ -24,8 +24,7 @@ export class FinnishComponent implements OnInit, OnDestroy {
   private _ngDestroy$ = new Subject<void>();
   constructor(
     private router: Router,
-    private store: Store<any>,
-    private superStore: Store
+    private store: Store
   ) {}
 
   ngOnInit(): void {
@@ -34,7 +33,7 @@ export class FinnishComponent implements OnInit, OnDestroy {
 
     this.store.dispatch(checkAuth());
 
-    this.superStore.pipe(
+    this.store.pipe(
       select(selectWeeks),
       takeUntil(this._ngDestroy$),
       map((p) => {

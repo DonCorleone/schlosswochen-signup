@@ -68,7 +68,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   numOfChilds: number = 0;
   inscription!: Inscription;
-  inscription$ = this.superStore.pipe(select(selectWeeks));
+  inscription$ = this.store.pipe(select(selectWeeks));
 
   timer$: Observable<number> | undefined;
   signupForm!: UntypedFormGroup;
@@ -90,7 +90,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private activeRoute: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private superStore: Store,
+    private store: Store,
     private appStore: Store<AppState>,
     private changeDetectorRef: ChangeDetectorRef,
     private participantService: ParticipantService,
@@ -127,7 +127,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   loadParticipantDetail(inscriptionId: string) {
-    this.superStore
+    this.store
       .pipe(select(getCurrentParticipantNumber), takeUntil(this._ngDestroy$))
       .subscribe((currentParticipantNr) => {
         this.loadingIndicatorService.stop();
@@ -164,7 +164,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       birthday: birthday,
     };
 
-    this.superStore.dispatch(upsertChild({ child }));
+    this.store.dispatch(upsertChild({ child }));
 
     if (this.currentParticipantNumber <= 1) {
       this.router.navigate(['/inscriptions/inscription']).then((x) => {
@@ -173,7 +173,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         );
       });
     } else {
-      this.superStore.dispatch(decreaseCurrentParticipantNumber());
+      this.store.dispatch(decreaseCurrentParticipantNumber());
       this.router.navigate(['/inscriptions/participant']).then((x) => {
         console.log(
           `ParticipantComponent navigate /inscriptions/participant: ${x}`
@@ -212,12 +212,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     subscriptionChild: SubscriptionChild,
     isSaveStep: boolean
   ): void {
-    this.superStore.dispatch(upsertChild({ child: subscriptionChild }));
+    this.store.dispatch(upsertChild({ child: subscriptionChild }));
 
     if (isSaveStep) {
       this.saveInscription();
     } else {
-      this.superStore.dispatch(increaseCurrentParticipantNumber());
+      this.store.dispatch(increaseCurrentParticipantNumber());
       this.router.navigate(['/inscriptions/participant']).then((x) => {
         console.log(
           `ParticipantComponent navigate /inscriptions/participant: ${x}`
@@ -257,7 +257,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   saveInscription() {
-    this.superStore.dispatch(
+    this.store.dispatch(
       invokeUpdateInscriptionAPI({
         updateInscription: {
           ...this.inscription,
@@ -324,7 +324,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   private goToFinnishView() {
-    this.superStore.dispatch(resetCurrentParticipantNumber());
+    this.store.dispatch(resetCurrentParticipantNumber());
     this.router.navigate(['/inscriptions/finnish']).then();
   }
 
@@ -343,7 +343,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   private manageDirtiness(): boolean {
     if (!this.signupForm.dirty) {
-      this.superStore.dispatch(increaseCurrentParticipantNumber());
+      this.store.dispatch(increaseCurrentParticipantNumber());
       this.router.navigate(['/inscriptions/participant']).then((x) => {
         console.log(
           `ParticipantComponent navigate /inscriptions/participant: ${x}`

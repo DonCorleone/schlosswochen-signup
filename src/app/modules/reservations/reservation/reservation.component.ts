@@ -38,7 +38,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     numOfChilds: [0, [Validators.required, Validators.min(1)]],
   });
   reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
-  weeks$ = this.superStore.pipe(select(selectWeeks)).pipe((p) => {
+  weeks$ = this.store.pipe(select(selectWeeks)).pipe((p) => {
     return this.weekService.mapWeekCapacity(p);
   });
   private _ngDestroy$ = new Subject<void>();
@@ -48,7 +48,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private weekService: WeeksService,
     private router: Router,
     private loadingIndicatorService: LoadingIndicatorService,
-    private superStore: Store,
+    private store: Store,
     private appStore: Store<AppState>
   ) {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
@@ -56,7 +56,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.superStore.dispatch(invokeWeeksAPI());
+    this.store.dispatch(invokeWeeksAPI());
   }
 
   createWeeklyReservation(
@@ -99,7 +99,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   save(subscriptionInsertInput: Partial<SubscriptionInsertInput>) {
-    this.superStore.dispatch(
+    this.store.dispatch(
       invokeSaveNewInscriptionAPI({ newInscription: subscriptionInsertInput })
     );
 

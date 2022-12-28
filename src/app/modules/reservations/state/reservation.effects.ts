@@ -27,7 +27,6 @@ export class ReservationEffects {
     private store: Store,
     private appStore: Store<AppState>
   ) {}
-
   loadAllWeeks$ = createEffect(() =>
     this.actions$.pipe(
       ofType(invokeWeeksAPI),
@@ -42,7 +41,6 @@ export class ReservationEffects {
       })
     )
   );
-
   saveNewInscription$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(invokeSaveNewInscriptionAPI),
@@ -63,7 +61,6 @@ export class ReservationEffects {
       })
     );
   });
-
   updateInscriptionAPI$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(invokeUpdateInscriptionAPI),

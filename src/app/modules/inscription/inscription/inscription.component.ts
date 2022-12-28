@@ -62,7 +62,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   isEditMode = false;
   errorMessage = '';
 
-  inscription$ = this.superStore.pipe(select(selectWeeks));
+  inscription$ = this.store.pipe(select(selectWeeks));
 
   private validationMessages = {
     email: 'Please enter a valid email address.',
@@ -77,7 +77,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     private reservationService: ReservationService,
     private route: ActivatedRoute,
     private router: Router,
-    private superStore: Store,
+    private store: Store,
     private appStore: Store<AppState>,
     private loadingIndicatorService: LoadingIndicatorService
   ) {
@@ -114,11 +114,11 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       .pipe(debounceTime(1000), takeUntil(this._ngDestroy$))
       .subscribe((_) => (this.emailMessage = this.setMessage(emailControl)));
 
-    this.superStore.dispatch(resetCurrentParticipantNumber());
-    this.superStore.dispatch(invokeInscriptionAPI());
+    this.store.dispatch(resetCurrentParticipantNumber());
+    this.store.dispatch(invokeInscriptionAPI());
 
     combineLatest([
-      this.superStore.pipe(select(AuthSelector.selectCurrentUserProfile)),
+      this.store.pipe(select(AuthSelector.selectCurrentUserProfile)),
       this.inscription$,
     ])
       .pipe(
@@ -221,7 +221,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   }
 
   update() {
-    this.superStore.dispatch(
+    this.store.dispatch(
       invokeUpdateInscriptionAPI({
         updateInscription: { ...this.signupForm.value },
       })
@@ -244,7 +244,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
 
   private goToParticipantsView() {
     this.loadingIndicatorService.stop();
-    this.superStore.dispatch(increaseCurrentParticipantNumber());
+    this.store.dispatch(increaseCurrentParticipantNumber());
     this.router.navigate(['/inscriptions/participant']).then((x) => {
       console.log(`InscriptionComponent goToNextStep: ${x}`);
     });

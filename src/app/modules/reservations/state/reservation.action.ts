@@ -40,15 +40,12 @@ export const upsertChild = createAction(
   '[Inscription] Upsert Child',
   props<{ child: SubscriptionChild }>()
 );
-
 export const increaseCurrentParticipantNumber = createAction(
   '[Participant] Increase Current ParticipantNumber'
 );
-
 export const decreaseCurrentParticipantNumber = createAction(
   '[Participant] Decrease Current ParticipantNumber'
 );
-
 export const resetCurrentParticipantNumber = createAction(
   '[Participant] Reset Current ParticipantNumber'
 );

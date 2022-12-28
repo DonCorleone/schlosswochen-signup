@@ -1,14 +1,23 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, combineLatest, EMPTY, map, mergeMap, Observable, take } from "rxjs";
-import { SumPerWeekAndYear, Week } from "../../../netlify/models/Graphqlx";
+import {
+  BehaviorSubject,
+  catchError,
+  combineLatest,
+  EMPTY,
+  map,
+  mergeMap,
+  Observable,
+  take,
+} from 'rxjs';
+import { SumPerWeekAndYear, Week } from '../../../netlify/models/Graphqlx';
 import { HttpClient } from '@angular/common/http';
 import { SumChildsPerStatePayload } from '../../../netlify/functions/getChildsPerState';
-import { ReservationState } from "../models/Interfaces";
-import { Store } from "@ngrx/store";
-import { environment } from "../../environments/environment";
-import { WeekCapacity } from "../models/week-capacity";
-import { GetWeeksResponse } from "../../../netlify/functions/getWeeks";
-import { StatusQuo } from "../modules/reservations/state/reservation.reducer";
+import { ReservationState } from '../models/Interfaces';
+import { Store } from '@ngrx/store';
+import { environment } from '../../environments/environment';
+import { WeekCapacity } from '../models/week-capacity';
+import { GetWeeksResponse } from '../../../netlify/functions/getWeeks';
+import { State } from '../modules/reservations/state/reservation.reducer';
 
 @Injectable({
   providedIn: 'root',
@@ -21,10 +30,7 @@ export class WeeksService {
 
   private readonly maxNumberOfReservations: number;
   private readonly year: number;
-  constructor(
-    private httpClient: HttpClient,
-    private superStore: Store
-  ) {
+  constructor(private httpClient: HttpClient, private store: Store) {
     this.year = +environment.UPCOMING_YEAR;
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
     this.loadInitialData();
@@ -44,16 +50,17 @@ export class WeeksService {
       );
   }
 
-  mapWeekCapacity(weeks$: Observable<StatusQuo>): Observable<WeekCapacity[]> {
+  mapWeekCapacity(weeks$: Observable<State>): Observable<WeekCapacity[]> {
     return weeks$.pipe(
       mergeMap((statusQuo) => {
         return combineLatest(
           statusQuo.weeks.map((week) => {
-
             return this.weeklyReservation.pipe(
               map((participantsPerStates) => {
-
-                const sumPerSate: SumPerWeekAndYear[] = participantsPerStates.filter(p => p?.week == week.week && p.year == this.year);
+                const sumPerSate: SumPerWeekAndYear[] =
+                  participantsPerStates.filter(
+                    (p) => p?.week == week.week && p.year == this.year
+                  );
                 return this.mapWeekVM(sumPerSate, week);
               })
             );
@@ -88,15 +95,6 @@ export class WeeksService {
     };
 
     return weekVM;
-  }
-
-  getWeeks(year: number): Observable<Week[]> {
-    return this.httpClient
-      .get<GetWeeksResponse>(`/api/getWeeks?year=${year}`)
-      .pipe(
-        map((result: GetWeeksResponse) => result?.message?.data?.weeks),
-        catchError(this.handleError)
-      );
   }
 
   get(): Observable<Week[]> {
