@@ -61,15 +61,11 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   confirmEmailMessage: string = '';
   isEditMode = false;
   errorMessage = '';
-
-  inscription$ = this.store.pipe(select(reservationSelector));
-
+  reservationState$ = this.store.pipe(select(reservationSelector));
   private validationMessages = {
     email: 'Please enter a valid email address.',
   };
-
   private _ngDestroy$ = new Subject<void>();
-
   constructor(
     private fb: UntypedFormBuilder,
     private inscriptionService: InscriptionsService,
@@ -117,70 +113,9 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     this.store.dispatch(resetCurrentParticipantNumber());
     this.store.dispatch(invokeInscriptionAPI());
 
-    combineLatest([
-      this.store.pipe(select(AuthSelector.selectCurrentUserProfile)),
-      this.inscription$,
-    ])
-      .pipe(
-        takeUntil(this._ngDestroy$),
-        tap(([externalUser, inscription]) => {
-          /*          if (externalUser?.sub?.length > 0 || inscription) {
-            this.inscriptionService
-              .getInscription$(
-                externalUser?.sub,
-                inscription.inscription,
-                inscription.inscription.state
-                  ? (<any>ReservationState)[inscription.inscription.state!]
-                  : ReservationState.TEMPORARY
-              )
-              .pipe(take(1))
-              .subscribe({
-                next: (inscription: Inscription) => {
-                  if (!inscription) {
-                    this.inscriptionService
-                      .getInscription$(
-                        '',
-                        inscription,
-                        ReservationState.TEMPORARY
-                      )
-                      .pipe(take(1))
-                      .subscribe((x) => (inscription = x));
-                  }*/
-
-          /*                  if (externalUser) {
-                    this.weekService
-                      .getWeeks(this.year)
-                      .pipe(
-                        map((weeks) => {
-                          const inscriptionsWeek = weeks.find(
-                            (week) => week.week === inscription?.week
-                          );
-                          if (inscriptionsWeek) {
-                            this.store.dispatch(
-                              InscriptionActions.setWeek({
-                                week: inscriptionsWeek,
-                              })
-                            );
-                          }
-
-                          this.store.dispatch(
-                            InscriptionActions.setInscription({ inscription })
-                          );
-                        }),
-                        take(1)
-                      )
-                      .subscribe(),
-                      take(1);
-                  }*/
-
-          this.displayInscription(inscription.inscription);
-          /*                },
-                error: (err) => (this.errorMessage = err),
-              });
-          }*/
-        })
-      )
-      .subscribe();
+    this.reservationState$
+      .pipe(takeUntil(this._ngDestroy$))
+      .subscribe((state) => this.displayInscription(state.inscription));
   }
 
   goToPreviousStep() {
@@ -199,25 +134,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     }
 
     this.update();
-
     return;
-
-    /*    this.inscriptionService
-      .updateOneSubscription(subscriptionQueryInput, inscriptionUpdateInput)
-      .pipe(take(1))
-      .subscribe((inscription: Inscription) => {
-        this.store.dispatch(
-          InscriptionActions.setInscription({
-            inscription: inscription,
-          })
-        );
-        this.store.dispatch(
-          InscriptionActions.increaseCurrentParticipantNumber()
-        );
-        this.router.navigate(['/inscriptions/participant']).then((x) => {
-          console.log('InscriptionComponent goToNextStep');
-        });
-      });*/
   }
 
   update() {

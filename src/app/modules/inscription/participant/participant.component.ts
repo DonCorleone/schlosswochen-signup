@@ -19,15 +19,7 @@ import {
   SubscriptionChild,
 } from 'netlify/models/Graphqlx';
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
-import {
-  combineLatest,
-  Observable,
-  scan,
-  Subject,
-  takeUntil,
-  takeWhile,
-  timer,
-} from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { ReservationState } from '../../../models/reservation-state';
@@ -68,9 +60,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   numOfChilds: number = 0;
   inscription!: Inscription;
-  inscription$ = this.store.pipe(select(reservationSelector));
-
-  timer$: Observable<number> | undefined;
+  reservationState$ = this.store.pipe(select(reservationSelector));
   signupForm!: UntypedFormGroup;
   currentParticipantNumber = 0;
   emailMessage: string = '';
@@ -99,29 +89,18 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const nowInS = new Date().getTime();
-
-    combineLatest([this.inscription$, this.activeRoute.params])
+    this.reservationState$
       .pipe(takeUntil(this._ngDestroy$))
-      .subscribe(([inscription, routeParams]) => {
-        if (!inscription) {
+      .subscribe((state) => {
+        if (!state) {
           return;
         }
-        if (inscription?.inscription.numOfChildren) {
-          this.numOfChilds = inscription.inscription.numOfChildren;
+        if (state?.inscription.numOfChildren) {
+          this.numOfChilds = state.inscription.numOfChildren;
         }
-        const deadline = new Date(inscription.inscription.deadline);
-        this.timer$ = timer(0, 60000).pipe(
-          scan(
-            (acc) => --acc,
-            Math.trunc((deadline.getTime() - nowInS) / 1000 / 60)
-          ),
-          takeWhile((x) => x >= 0)
-        );
 
-        this.inscription = inscription.inscription;
-
-        this.loadParticipantDetail(inscription.inscription._id);
+        this.inscription = state.inscription;
+        this.loadParticipantDetail(state.inscription._id);
         this.changeDetectorRef.markForCheck();
       });
   }
@@ -158,27 +137,24 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   goToPreviousStep() {
-    const birthday = new Date(this.signupForm.value.birthday);
-    let child = {
-      ...this.signupForm.value,
-      birthday: birthday,
-    };
+    let child = this.getChild(false);
+    if (child) {
+      this.store.dispatch(upsertChild({ child }));
 
-    this.store.dispatch(upsertChild({ child }));
-
-    if (this.currentParticipantNumber <= 1) {
-      this.router.navigate(['/inscriptions/inscription']).then((x) => {
-        console.log(
-          `ParticipantComponent navigate /inscriptions/inscription: ${x}`
-        );
-      });
-    } else {
-      this.store.dispatch(decreaseCurrentParticipantNumber());
-      this.router.navigate(['/inscriptions/participant']).then((x) => {
-        console.log(
-          `ParticipantComponent navigate /inscriptions/participant: ${x}`
-        );
-      });
+      if (this.currentParticipantNumber <= 1) {
+        this.router.navigate(['/inscriptions/inscription']).then((x) => {
+          console.log(
+            `ParticipantComponent navigate /inscriptions/inscription: ${x}`
+          );
+        });
+      } else {
+        this.store.dispatch(decreaseCurrentParticipantNumber());
+        this.router.navigate(['/inscriptions/participant']).then((x) => {
+          console.log(
+            `ParticipantComponent navigate /inscriptions/participant: ${x}`
+          );
+        });
+      }
     }
     return;
   }
@@ -192,37 +168,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const birthday = new Date(this.signupForm.value.birthday);
-
-    if (birthday.toDateString() == this.initDate.toDateString()) {
-      this.signupForm.controls['birthday'].setErrors({ required: true });
-      this.loadingIndicatorService.stop();
-      return;
-    }
-
-    let child = {
-      ...this.signupForm.value,
-      birthday: birthday,
-    };
-
-    this.saveParticipant(child, false);
-  }
-
-  saveParticipant(
-    subscriptionChild: SubscriptionChild,
-    isSaveStep: boolean
-  ): void {
-    this.store.dispatch(upsertChild({ child: subscriptionChild }));
-
-    if (isSaveStep) {
-      this.saveInscription();
-    } else {
-      this.store.dispatch(increaseCurrentParticipantNumber());
-      this.router.navigate(['/inscriptions/participant']).then((x) => {
-        console.log(
-          `ParticipantComponent navigate /inscriptions/participant: ${x}`
-        );
-      });
+    const child = this.getChild(true);
+    if (child) {
+      this.saveChild(child, false);
     }
   }
 
@@ -237,22 +185,31 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const birthday = new Date(this.signupForm.value.birthday);
-
-    if (birthday.toDateString() == this.initDate.toDateString()) {
-      this.signupForm.controls['birthday'].setErrors({ required: true });
-      this.loadingIndicatorService.stop();
-      return;
-    }
-
     if (this.signupForm.dirty) {
-      let subscriptionChild: SubscriptionChild = {
-        ...this.signupForm.value,
-        birthday: birthday,
-      };
-      this.saveParticipant(subscriptionChild, true);
+      const child = this.getChild(true);
+
+      if (child) {
+        this.saveChild(child, true);
+      }
     } else {
       this.saveInscription();
+    }
+  }
+  saveChild(
+    subscriptionChild: SubscriptionChild,
+    isSaveStep: boolean
+  ): void {
+    this.store.dispatch(upsertChild({ child: subscriptionChild }));
+
+    if (isSaveStep) {
+      this.saveInscription();
+    } else {
+      this.store.dispatch(increaseCurrentParticipantNumber());
+      this.router.navigate(['/inscriptions/participant']).then((x) => {
+        console.log(
+          `ParticipantComponent navigate /inscriptions/participant: ${x}`
+        );
+      });
     }
   }
 
@@ -284,6 +241,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       });
   }
 
+  ngOnDestroy(): void {
+    console.log('ParticipantComponent destroyed');
+    this._ngDestroy$.next();
+    this._ngDestroy$.complete();
+  }
+
   setMessage(c: AbstractControl): string {
     let messageString = '';
     if ((c.touched || c.dirty) && c.errors) {
@@ -297,11 +260,22 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     }
     return messageString;
   }
+  private getChild(checkBirthday: boolean): SubscriptionChild | undefined {
+    const birthday = new Date(this.signupForm.value.birthday);
 
-  ngOnDestroy(): void {
-    console.log('ParticipantComponent destroyed');
-    this._ngDestroy$.next();
-    this._ngDestroy$.complete();
+    if (checkBirthday) {
+      if (birthday.toDateString() == this.initDate.toDateString()) {
+        this.signupForm.controls['birthday'].setErrors({ required: true });
+        this.loadingIndicatorService.stop();
+        return undefined;
+      }
+    }
+
+    let child = {
+      ...this.signupForm.value,
+      birthday: birthday,
+    };
+    return child;
   }
 
   private displayParticipant(participant: SubscriptionChild) {
