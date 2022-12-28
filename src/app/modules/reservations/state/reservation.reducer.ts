@@ -1,6 +1,12 @@
 import { createReducer, on } from "@ngrx/store";
 import { Subscription, Week } from "../../../../../netlify/models/Graphqlx";
-import { saveNewInscriptionAPISuccess, weeksFetchAPISuccess } from "./reservation.action";
+import {
+  saveNewInscriptionAPISuccess,
+  updateInscriptionAPISuccess,
+  upsertChild,
+  weeksFetchAPISuccess
+} from "./reservation.action";
+import * as InscriptionAction from "../../inscription/state/inscription.actions";
 
 export interface StatusQuo {
   inscription: Subscription;
@@ -21,5 +27,35 @@ export const weekReducer = createReducer(
       ...state,
       inscription: newInscription,
     };
-  })
+  }),
+  on(updateInscriptionAPISuccess, (state, { updateInscription }) => ({
+    ...state,
+    inscription: updateInscription,
+  })),
+  on(upsertChild, (state, action) => {
+    const index = state.inscription.children?.findIndex(
+      (child) => child?.participant_id === action.child.participant_id
+    ); //finding index of the item
+
+    if (index! < 0 || !state.inscription?.children) {
+      return {
+        ...state,
+        inscription: {
+          ...state.inscription,
+          children: [...state.inscription.children!, action.child],
+        },
+      };
+    }
+    const newArray = [...state.inscription.children!]; //making a new array
+
+    newArray[index!] = action.child; //changing value in the new array
+
+    const inscription = { ...state.inscription };
+    inscription.children = newArray;
+
+    return {
+      ...state, //copying the orignal state
+      inscription,
+    };
+  }),
 );

@@ -1,45 +1,43 @@
-<div *ngIf="inscription$ | async as inscription">
-  <div class="alert alert-info show language-chooser">
-    {{ "LANGUAGE" | translate }}:
-    <select #langSelect (change)="translate.use(langSelect.value)">
-      <option
-        *ngFor="let lang of translate.getLangs()"
-        [selected]="lang === translate.currentLang"
-        [value]="lang"
-        class="alert-warning"
-      >
-        {{ lang }}
-      </option>
-    </select>
-  </div>
-  <ng-container *ngIf="showWeek">
-    <div
-      *ngIf="week$ | async as week"
-      class="alert alert-primary show"
-      role="alert"
+<div class="alert alert-info show language-chooser">
+  {{ "LANGUAGE" | translate }}:
+  <select #langSelect (change)="translate.use(langSelect.value)">
+    <option
+      *ngFor="let lang of translate.getLangs()"
+      [selected]="lang === translate.currentLang"
+      [value]="lang"
+      class="alert-warning"
     >
-      <span>{{ "WEEKNR" | translate }} {{ week.week }}
-        <wbr/> </span
-      ><span>({{ week.dateFrom | date: "dd.MM.":"de-CH" }}-</span
-    ><span>{{ week.dateTo | date: "dd.MM.YYYY":"de-CH" }})</span>
-    </div>
-  </ng-container>
-
+      {{ lang }}
+    </option>
+  </select>
+</div>
+<ng-container *ngIf="showWeek">
+  <div
+    *ngIf="week$ | async as week"
+    class="alert alert-primary show"
+    role="alert"
+  >
+    <span>{{ "WEEKNR" | translate }} {{ week?.week }} <wbr /> </span
+    ><span>({{ week?.dateFrom | date: "dd.MM.":"de-CH" }}-</span
+    ><span>{{ week?.dateTo | date: "dd.MM.YYYY":"de-CH" }})</span>
+  </div>
+</ng-container>
+<div *ngIf="inscription$ | async as inscription">
   <ng-container *ngIf="places$ | async as places">
     <div
       *ngIf="places && showAmount"
       [ngClass]="
-        inscription.state?.toLowerCase()?.includes('waitinglist')
+        inscription?.state?.toLowerCase()?.includes('waitinglist')
           ? 'alert-warning'
           : 'alert-success'
       "
       class="alert show"
       role="alert"
     >
-      <span *ngIf="inscription.numOfChildren! === 1">
+      <span *ngIf="inscription?.numOfChildren! === 1">
         {{ "RESERVEDPLACE" | translate }}
       </span>
-      <span *ngIf="inscription.numOfChildren! > 1">
+      <span *ngIf="inscription?.numOfChildren! > 1">
         {{ "RESERVEDPLACES" | translate }}
       </span>
       <span

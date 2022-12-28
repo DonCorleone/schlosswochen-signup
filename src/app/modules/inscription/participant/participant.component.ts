@@ -41,6 +41,15 @@ import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { ReservationState } from '../../../models/Interfaces';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
+import { selectInscription } from '../state/inscription.selector';
+import {
+  invokeUpdateInscriptionAPI,
+  upsertChild,
+} from '../../reservations/state/reservation.action';
+import { selectAppState } from '../../../shared/store/app.selector';
+import { setAPIStatus } from '../../../shared/store/app.action';
+import * as InscriptionReducer from "../state/inscription.reducer";
+import { AppState } from "../../../shared/store/appState";
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -63,6 +72,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   numOfChilds: number = 0;
   inscription!: Inscription;
+  inscription$ = this.superStore.pipe(select(selectInscription));
 
   timer$: Observable<number> | undefined;
   signupForm!: UntypedFormGroup;
@@ -85,6 +95,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private router: Router,
     private translate: TranslateService,
     private store: Store<InscriptionsReducer.InscriptionState>,
+
+    private superStore: Store,
+    private appStore: Store<AppState>,
     private changeDetectorRef: ChangeDetectorRef,
     private participantService: ParticipantService,
     private inscriptionsService: InscriptionsService,
@@ -94,19 +107,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const nowInS = new Date().getTime();
 
-    combineLatest([
-      this.store.pipe(select(InscriptionsReducer.getInscription)),
-      this.activeRoute.params,
-    ])
+    combineLatest([this.inscription$, this.activeRoute.params])
       .pipe(takeUntil(this._ngDestroy$))
       .subscribe(([inscription, routeParams]) => {
         if (!inscription) {
           return;
         }
-        if (inscription?.numOfChildren) {
-          this.numOfChilds = inscription.numOfChildren;
+        if (inscription?.inscription.numOfChildren) {
+          this.numOfChilds = inscription.inscription.numOfChildren;
         }
-        const deadline = new Date(inscription.deadline);
+        const deadline = new Date(inscription.inscription.deadline);
         this.timer$ = timer(0, 60000).pipe(
           scan(
             (acc) => --acc,
@@ -115,9 +125,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           takeWhile((x) => x >= 0)
         );
 
-        this.inscription = inscription;
+        this.inscription = inscription.inscription;
 
-        this.loadParticipantDetail(inscription._id);
+        this.loadParticipantDetail(inscription.inscription._id);
         this.changeDetectorRef.markForCheck();
       });
   }
@@ -145,21 +155,14 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           comment: '',
         });
 
-        this.store
-          .pipe(
-            select(InscriptionsReducer.getInscription),
-            takeUntil(this._ngDestroy$)
-          )
-          .subscribe((inscription) => {
-            if (inscription?.children) {
-              const participant = inscription?.children?.find(
-                (p) => p?.participant_id === participantId
-              );
-              if (participant) {
-                this.displayParticipant(participant);
-              }
-            }
-          });
+        if (this.inscription?.children) {
+          const participant = this.inscription?.children?.find(
+            (p) => p?.participant_id === participantId
+          );
+          if (participant) {
+            this.displayParticipant(participant);
+          }
+        }
       });
   }
 
@@ -170,7 +173,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       birthday: birthday,
     };
 
-    this.store.dispatch(InscriptionActions.upsertChild({ child }));
+    this.store.dispatch(upsertChild({ child }));
 
     if (this.currentParticipantNumber <= 1) {
       this.router.navigate(['/inscriptions/inscription']).then((x) => {
@@ -239,35 +242,18 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     subscriptionChild: SubscriptionChild,
     isSaveStep: boolean
   ): void {
-    this.store
-      .pipe(select(InscriptionsReducer.getInscription), take(1))
-      .subscribe((inscription) => {
-        let participantFromStore: SubscriptionChild | null | undefined;
-        if (inscription?.children) {
-          participantFromStore = inscription?.children?.find(
-            (childFromStore) =>
-              childFromStore?.participant_id ===
-              subscriptionChild?.participant_id
-          );
-        }
+    this.store.dispatch(upsertChild({ child: subscriptionChild }));
 
-        this.store.dispatch(
-          InscriptionActions.upsertChild({ child: subscriptionChild })
-        );
-
-        if (isSaveStep) {
-          this.saveInscription();
-        } else {
-          this.store.dispatch(
-            InscriptionActions.increaseCurrentParticipantNumber()
-          );
-          this.router.navigate(['/inscriptions/participant']).then((x) => {
-            console.log(
-              'ParticipantComponent navigate /inscriptions/participant'
-            );
-          });
-        }
+    if (isSaveStep) {
+      this.saveInscription();
+    } else {
+      this.store.dispatch(
+        InscriptionActions.increaseCurrentParticipantNumber()
+      );
+      this.router.navigate(['/inscriptions/participant']).then((x) => {
+        console.log('ParticipantComponent navigate /inscriptions/participant');
       });
+    }
   }
 
   goToSaveStep(): void {
@@ -301,45 +287,28 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   saveInscription() {
-    this.store
-      .pipe(select(InscriptionsReducer.getInscription), take(1))
-      .subscribe((inscriptionFromStore) => {
-        const subscriptionUpdateInput: SubscriptionUpdateInput = {
-          firstName: inscriptionFromStore.firstName,
-          lastName: inscriptionFromStore.lastName,
-          _id: inscriptionFromStore._id,
-          email: inscriptionFromStore.email,
-          phone: inscriptionFromStore.phone,
-          street1: inscriptionFromStore.street1,
-          street2: inscriptionFromStore.street2,
-          city: inscriptionFromStore.city,
+    this.store.dispatch(
+      invokeUpdateInscriptionAPI({
+        updateInscription: {
+          ...this.inscription,
           state:
-            inscriptionFromStore.state === ReservationState.TEMPORARY
+            this.inscription.state === ReservationState.TEMPORARY
               ? ReservationState.DEFINITIVE
               : ReservationState.DEFINITIVE_WAITINGLIST,
-          zip: inscriptionFromStore.zip,
-          externalUserId: inscriptionFromStore.externalUserId,
-          children: inscriptionFromStore.children,
-        };
+        },
+      })
+    );
 
-        const filter: Partial<SubscriptionQueryInput> = {
-          _id: this.inscription._id,
-        };
+    let apiStatus$ = this.appStore.pipe(select(selectAppState));
+    apiStatus$.subscribe((apState) => {
+      if (apState.apiStatus == 'success') {
+        this.appStore.dispatch(
+          setAPIStatus({ apiStatus: { apiResponseMessage: '', apiStatus: '' } })
+        );
 
-        this.inscriptionsService
-          .updateOneSubscription(filter, subscriptionUpdateInput)
-          .subscribe((inscriptionNew) => {
-            this.store.dispatch(
-              InscriptionActions.setInscription({
-                inscription: inscriptionNew,
-              })
-            );
-            this.store.dispatch(
-              InscriptionActions.resetCurrentParticipantNumber()
-            );
-            this.router.navigate(['/inscriptions/finnish']).then();
-          });
-      });
+        this.goToFinnishView();
+      }
+    });
   }
 
   setMessage(c: AbstractControl): string {
@@ -379,5 +348,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this.signupForm.controls['birthday'].setValue(
       formatDate(participant.birthday, 'yyyy-MM-dd', 'en')
     );
+  }
+
+  private goToFinnishView() {
+    this.store.dispatch(InscriptionActions.resetCurrentParticipantNumber());
+    this.router.navigate(['/inscriptions/finnish']).then();
   }
 }

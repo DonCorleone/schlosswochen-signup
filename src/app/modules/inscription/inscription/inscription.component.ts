@@ -25,18 +25,13 @@ import * as InscriptionActions from '../state/inscription.actions';
 import { Subscription as Inscription } from 'netlify/models/Graphqlx';
 import * as AuthSelector from '../../user/state/auth.selectors';
 import { ReservationService } from '../../../service/reservation.service';
-import { ReservationState } from '../../../models/Interfaces';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
 import { WeeksService } from '../../../service/weeks.service';
-import {
-  invokeInscriptionAPI,
-  invokeUpdateInscriptionAPI,
-  updateInscriptionAPISuccess,
-} from '../state/inscription.actions';
 import { selectInscription } from '../state/inscription.selector';
 import { AppState } from '../../../shared/store/appState';
 import { selectAppState } from '../../../shared/store/app.selector';
 import { setAPIStatus } from '../../../shared/store/app.action';
+import { invokeInscriptionAPI, invokeUpdateInscriptionAPI } from "../../reservations/state/reservation.action";
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error

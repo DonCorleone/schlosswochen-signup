@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { select, Store } from "@ngrx/store";
-import { Observable, Subject, take } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { map, Observable, pipe, Subject, take } from 'rxjs';
 
 import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import {
   selectIsLoggedIn,
 } from '../../user/state/auth.selectors';
 import { checkAuth, login, logout } from '../../user/state/auth.actions';
+import { selectInscription } from '../state/inscription.selector';
 
 @Component({
   selector: 'app-finnish',
@@ -31,7 +32,8 @@ export class FinnishComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private inscriptionStore: Store<InscriptionReducer.InscriptionState>,
-    private store: Store<any>
+    private store: Store<any>,
+    private superStore: Store
   ) {}
 
   ngOnInit(): void {
@@ -40,46 +42,41 @@ export class FinnishComponent implements OnInit, OnDestroy {
 
     this.store.dispatch(checkAuth());
 
-    this.inscription$ = this.inscriptionStore.pipe(
-      select(InscriptionReducer.getInscription)
-    );
+    this.inscription$ = this.superStore
+      .pipe(select(selectInscription))
+      .pipe(map((p) => p.inscription));
 
-    this.inscriptionStore
-      .pipe(
-        select(InscriptionReducer.getInscription),
-        take(1)
-      )
-      .subscribe((inscription: Inscription) => {
-        this.stateDesc = inscription.state!;
-        let contact = [];
-        contact.push(
-          inscription.firstName +
+    this.inscription$.pipe(take(1)).subscribe((inscription) => {
+      this.stateDesc = inscription.state!;
+      let contact = [];
+      contact.push(
+        inscription.firstName +
+          ' ' +
+          inscription.lastName +
+          '(' +
+          inscription.salutation +
+          ')'
+      );
+      contact.push(inscription.zip + ' ' + inscription.city);
+      contact.push(inscription.email);
+      this.inscription = contact.join(', ');
+
+      inscription.children?.forEach((child) => {
+        let participantParts = [];
+        participantParts.push(
+          child?.firstNameParticipant +
             ' ' +
-            inscription.lastName +
+            child?.lastNameParticipant +
             '(' +
-            inscription.salutation +
+            child?.salutation +
             ')'
         );
-        contact.push(inscription.zip + ' ' + inscription.city);
-        contact.push(inscription.email);
-        this.inscription = contact.join(', ');
-
-        inscription.children?.forEach((child) => {
-          let participantParts = [];
-          participantParts.push(
-            child?.firstNameParticipant +
-              ' ' +
-              child?.lastNameParticipant +
-              '(' +
-              child?.salutation +
-              ')'
-          );
-          participantParts.push(
-            '*' + new Date(child?.birthday)?.toLocaleDateString('de-CH')
-          );
-          this.participants.push(participantParts.join(', '));
-        });
+        participantParts.push(
+          '*' + new Date(child?.birthday)?.toLocaleDateString('de-CH')
+        );
+        this.participants.push(participantParts.join(', '));
       });
+    });
   }
 
   login() {

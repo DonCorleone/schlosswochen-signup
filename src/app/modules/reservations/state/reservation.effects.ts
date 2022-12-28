@@ -21,7 +21,6 @@ export class ReservationEffects {
     private weeksService: WeeksService,
     private reservationService: ReservationService,
     private store: Store,
-
     private appStore: Store<AppState>
   ) {}
 
