@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { select, Store } from "@ngrx/store";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { EMPTY, map, mergeMap, switchMap, withLatestFrom } from "rxjs";
-import { selectWeeks } from "./reservation.selector";
+import { selector } from "./reservation.selector";
 import {
   inscriptionFetchAPISuccess,
   invokeInscriptionAPI,
@@ -30,7 +30,7 @@ export class ReservationEffects {
   loadAllWeeks$ = createEffect(() =>
     this.actions$.pipe(
       ofType(invokeWeeksAPI),
-      withLatestFrom(this.store.pipe(select(selectWeeks))),
+      withLatestFrom(this.store.pipe(select(selector))),
       mergeMap(([, weeksFromStore]) => {
         if (weeksFromStore?.weeks?.length > 0) {
           return EMPTY;
@@ -84,7 +84,7 @@ export class ReservationEffects {
   loadInscription$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(invokeInscriptionAPI),
-      withLatestFrom(this.store.pipe(select(selectWeeks))),
+      withLatestFrom(this.store.pipe(select(selector))),
       mergeMap(([, inscriptionFromStore]) => {
         if (!inscriptionFromStore) {
           return EMPTY;

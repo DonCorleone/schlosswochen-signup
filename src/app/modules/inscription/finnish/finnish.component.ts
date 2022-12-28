@@ -7,7 +7,7 @@ import {
   selectIsLoggedIn,
 } from '../../user/state/auth.selectors';
 import { checkAuth, login, logout } from '../../user/state/auth.actions';
-import { selectWeeks } from '../../reservations/state/reservation.selector';
+import { selector } from '../../reservations/state/reservation.selector';
 @Component({
   selector: 'app-finnish',
   templateUrl: './finnish.component.html',
@@ -33,7 +33,7 @@ export class FinnishComponent implements OnInit, OnDestroy {
     this.store.dispatch(checkAuth());
 
     this.store.pipe(
-      select(selectWeeks),
+      select(selector),
       takeUntil(this._ngDestroy$),
       map((p) => {
 

@@ -44,7 +44,7 @@ import { setAPIStatus } from '../../../shared/store/app.action';
 import { AppState } from '../../../shared/store/appState';
 import {
   getCurrentParticipantNumber,
-  selectWeeks,
+  selector,
 } from '../../reservations/state/reservation.selector';
 
 // since an object key can be any of those types, our key can too
@@ -68,7 +68,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   numOfChilds: number = 0;
   inscription!: Inscription;
-  inscription$ = this.store.pipe(select(selectWeeks));
+  inscription$ = this.store.pipe(select(selector));
 
   timer$: Observable<number> | undefined;
   signupForm!: UntypedFormGroup;

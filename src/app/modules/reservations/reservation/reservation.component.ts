@@ -17,7 +17,7 @@ import {
   invokeSaveNewInscriptionAPI,
   invokeWeeksAPI,
 } from '../state/reservation.action';
-import { selectWeeks } from '../state/reservation.selector';
+import { selector } from '../state/reservation.selector';
 import { AppState } from '../../../shared/store/appState';
 import { selectAppState } from '../../../shared/store/app.selector';
 import { setAPIStatus } from '../../../shared/store/app.action';
@@ -38,7 +38,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     numOfChilds: [0, [Validators.required, Validators.min(1)]],
   });
   reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
-  weeks$ = this.store.pipe(select(selectWeeks)).pipe((p) => {
+  weeks$ = this.store.pipe(select(selector)).pipe((p) => {
     return this.weekService.mapWeekCapacity(p);
   });
   private _ngDestroy$ = new Subject<void>();
