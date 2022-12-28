@@ -61,6 +61,7 @@ export class SigninRedirectCallbackComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log('SigninRedirectCallbackComponent destroyed');
     this.profileSubscription?.unsubscribe();
     this.partExIdSubscription?.unsubscribe();
     this.subExIdSubscription?.unsubscribe();

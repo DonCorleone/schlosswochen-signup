@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { map, Observable, Subject, take, takeUntil } from "rxjs";
 import { Router } from '@angular/router';
-import { Subscription as Inscription } from 'netlify/models/Graphqlx';
 import {
   selectCurrentUserProfile,
   selectIsLoggedIn,

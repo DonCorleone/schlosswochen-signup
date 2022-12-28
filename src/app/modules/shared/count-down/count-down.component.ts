@@ -80,6 +80,7 @@ export class CountDownComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log('CountDownComponent destroyed');
     this._ngDestroy$.next();
     this._ngDestroy$.complete();
   }

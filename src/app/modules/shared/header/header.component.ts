@@ -49,6 +49,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log('HeaderComponent destroyed');
     this._ngDestroy$.next();
     this._ngDestroy$.complete();
   }
