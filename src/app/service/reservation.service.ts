@@ -1,51 +1,30 @@
 import { Injectable } from '@angular/core';
 import {
   catchError,
-  combineLatest,
   map,
-  mergeMap,
   Observable,
-  take,
   tap,
 } from 'rxjs';
 import { environment } from '../../environments/environment';
-import {
-  Place,
-  ReservationState,
-  WeeklyReservation
-} from '../models/Interfaces';
 import { HttpClient } from '@angular/common/http';
 import {
-  ChildrenPerStateItem,
   Subscription as Inscription,
   SubscriptionInsertInput,
-  SumPerWeekAndYear,
-  Week,
 } from 'netlify/models/Graphqlx';
 import { InsertOneInscriptionResponse } from '../../../netlify/functions/insertOneInscription';
-import * as InscriptionActions from '../modules/inscription/state/inscription.actions';
-import { Store } from '@ngrx/store';
-import * as InscriptionReducer from '../modules/inscription/state/inscription.reducer';
-import { SumChildsPerStatePayload } from '../../../netlify/functions/getChildsPerState';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReservationService {
   private readonly maxNumberOfReservations: number;
-  constructor(
-    private httpClient: HttpClient,
-    private store: Store<InscriptionReducer.InscriptionState>
-  ) {
+  constructor(private httpClient: HttpClient) {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
   }
 
   create(payload: SubscriptionInsertInput): Observable<Inscription> {
     return this.httpClient
-      .post<InsertOneInscriptionResponse>(
-        `/api/insertOneInscription`,
-        payload
-      )
+      .post<InsertOneInscriptionResponse>(`/api/insertOneInscription`, payload)
       .pipe(
         tap((p) => console.log(JSON.stringify(p))),
         map((result) => {

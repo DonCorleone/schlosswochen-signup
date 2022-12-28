@@ -12,27 +12,18 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { select, Store } from '@ngrx/store';
-
-import * as InscriptionActions from '../state/inscription.actions';
-
-import * as InscriptionsReducer from '../../inscription/state/inscription.reducer';
 import { ParticipantService } from 'src/app/service/participant.service';
 import {
   Subscription as Inscription,
   SubscriptionChild,
-  SubscriptionQueryInput,
-  SubscriptionUpdateInput,
 } from 'netlify/models/Graphqlx';
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import {
   combineLatest,
-  EMPTY,
   Observable,
   scan,
   Subject,
-  take,
   takeUntil,
   takeWhile,
   timer,
@@ -41,15 +32,20 @@ import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { ReservationState } from '../../../models/Interfaces';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
-import { selectInscription } from '../state/inscription.selector';
 import {
+  decreaseCurrentParticipantNumber,
+  increaseCurrentParticipantNumber,
   invokeUpdateInscriptionAPI,
+  resetCurrentParticipantNumber,
   upsertChild,
 } from '../../reservations/state/reservation.action';
 import { selectAppState } from '../../../shared/store/app.selector';
 import { setAPIStatus } from '../../../shared/store/app.action';
-import * as InscriptionReducer from "../state/inscription.reducer";
-import { AppState } from "../../../shared/store/appState";
+import { AppState } from '../../../shared/store/appState';
+import {
+  getCurrentParticipantNumber,
+  selectWeeks,
+} from '../../reservations/state/reservation.selector';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -72,7 +68,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   numOfChilds: number = 0;
   inscription!: Inscription;
-  inscription$ = this.superStore.pipe(select(selectInscription));
+  inscription$ = this.superStore.pipe(select(selectWeeks));
 
   timer$: Observable<number> | undefined;
   signupForm!: UntypedFormGroup;
@@ -94,8 +90,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private activeRoute: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private store: Store<InscriptionsReducer.InscriptionState>,
-
     private superStore: Store,
     private appStore: Store<AppState>,
     private changeDetectorRef: ChangeDetectorRef,
@@ -133,11 +127,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   loadParticipantDetail(inscriptionId: string) {
-    this.store
-      .pipe(
-        select(InscriptionsReducer.getCurrentParticipantNumber),
-        takeUntil(this._ngDestroy$)
-      )
+    this.superStore
+      .pipe(select(getCurrentParticipantNumber), takeUntil(this._ngDestroy$))
       .subscribe((currentParticipantNr) => {
         this.loadingIndicatorService.stop();
         this.currentParticipantNumber = currentParticipantNr;
@@ -173,30 +164,27 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       birthday: birthday,
     };
 
-    this.store.dispatch(upsertChild({ child }));
+    this.superStore.dispatch(upsertChild({ child }));
 
     if (this.currentParticipantNumber <= 1) {
       this.router.navigate(['/inscriptions/inscription']).then((x) => {
-        console.log('ParticipantComponent navigate /inscriptions/inscription');
+        console.log(`ParticipantComponent navigate /inscriptions/inscription: ${x}`);
       });
     } else {
-      this.store.dispatch(
-        InscriptionActions.decreaseCurrentParticipantNumber()
-      );
+      this.superStore.dispatch(decreaseCurrentParticipantNumber());
       this.router.navigate(['/inscriptions/participant']).then((x) => {
-        console.log('ParticipantComponent navigate /inscriptions/participant');
+        console.log(`ParticipantComponent navigate /inscriptions/participant: ${x}`);
       });
     }
     return;
   }
 
   goToNextStep(): void {
-
     if (this.manageValidity() == false) {
       return;
     }
 
-    if (this.manageDirtiness() == false){
+    if (this.manageDirtiness() == false) {
       return;
     }
 
@@ -236,11 +224,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     if (isSaveStep) {
       this.saveInscription();
     } else {
-      this.store.dispatch(
-        InscriptionActions.increaseCurrentParticipantNumber()
-      );
+      this.superStore.dispatch(increaseCurrentParticipantNumber());
       this.router.navigate(['/inscriptions/participant']).then((x) => {
-        console.log('ParticipantComponent navigate /inscriptions/participant');
+        console.log(`ParticipantComponent navigate /inscriptions/participant: ${x}`);
       });
     }
   }
@@ -276,7 +262,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   saveInscription() {
-    this.store.dispatch(
+    this.superStore.dispatch(
       invokeUpdateInscriptionAPI({
         updateInscription: {
           ...this.inscription,
@@ -301,7 +287,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   setMessage(c: AbstractControl): string {
-    var messageString = '';
+    let messageString = "";
     if ((c.touched || c.dirty) && c.errors) {
       messageString = Object.keys(c.errors)
         .map((key) =>
@@ -340,7 +326,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   private goToFinnishView() {
-    this.store.dispatch(InscriptionActions.resetCurrentParticipantNumber());
+    this.superStore.dispatch(resetCurrentParticipantNumber());
     this.router.navigate(['/inscriptions/finnish']).then();
   }
 
@@ -359,11 +345,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   private manageDirtiness(): boolean {
     if (!this.signupForm.dirty) {
-      this.store.dispatch(
-        InscriptionActions.increaseCurrentParticipantNumber()
-      );
+      this.superStore.dispatch(increaseCurrentParticipantNumber());
       this.router.navigate(['/inscriptions/participant']).then((x) => {
-        console.log('ParticipantComponent navigate /inscriptions/participant');
+        console.log(`ParticipantComponent navigate /inscriptions/participant: ${x}`);
       });
       return false;
     }

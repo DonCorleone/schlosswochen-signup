@@ -1,24 +1,11 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import {
-  combineLatest,
-  forkJoin,
-  map,
-  Observable,
-  Subject,
-  takeUntil,
-} from 'rxjs';
-import { Subscription as Inscription, Week } from 'netlify/models/Graphqlx';
-
-import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
-import { selectIsLoggedIn } from '../../user/state/auth.selectors';
-import { TranslateService } from '@ngx-translate/core';
-import { ReservationState } from '../../../models/Interfaces';
-import {
-  getDeadline,
-  selectWeeks,
-} from '../../reservations/state/reservation.selector';
-import { selectInscription } from '../../inscription/state/inscription.selector';
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { select, Store } from "@ngrx/store";
+import { combineLatest, map, Observable, Subject, takeUntil } from "rxjs";
+import { Subscription as Inscription, Week } from "netlify/models/Graphqlx";
+import { selectIsLoggedIn } from "../../user/state/auth.selectors";
+import { TranslateService } from "@ngx-translate/core";
+import { ReservationState } from "../../../models/Interfaces";
+import { getDeadline, getPlaces, selectWeeks } from "../../reservations/state/reservation.selector";
 
 @Component({
   selector: 'app-header',
@@ -41,24 +28,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private _ngDestroy$ = new Subject<void>();
 
   constructor(
-    private store: Store<InscriptionReducer.InscriptionState>,
     private superStore: Store,
     public translate: TranslateService
   ) {}
 
   ngOnInit(): void {
-    if (this.store && this.translate) {
-      this.loggedIn$ = this.store.pipe(select(selectIsLoggedIn));
-      this.deadline$ = this.store.pipe(select(getDeadline));
+    if (this.superStore && this.translate) {
+      this.loggedIn$ = this.superStore.pipe(select(selectIsLoggedIn));
+      this.deadline$ = this.superStore.pipe(select(getDeadline));
       this.inscription$ = this.superStore
-        .pipe(select(selectInscription))
+        .pipe(select(selectWeeks))
         .pipe(map((p) => p?.inscription));
       this.week$ = this.getWeek();
       this.places$ = this.translate.stream('WAITINGLIST').pipe(
         (o$) =>
           combineLatest([
             o$,
-            this.store.pipe(select(InscriptionReducer.getPlaces)),
+            this.superStore.pipe(select(getPlaces)),
           ]).pipe(
             map(([waitingListStr, places]) => {
               let placesStr = places.map((p) => p.placeNumber).join(' & ');
@@ -77,16 +63,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getWeek(): Observable<Week | undefined> {
-    const week$ = combineLatest([
-      this.superStore.pipe(select(selectInscription)),
-      this.superStore.pipe(select(selectWeeks)),
-    ]).pipe(
-      map(([week, weeks]) => {
-        return weeks.weeks.find((p) => p.week == week.inscription.week);
+    return this.superStore.pipe(select(selectWeeks)).pipe(
+      map(state => {
+        return state.weeks.find((p) => p.week == state.inscription.week);
       })
     );
-
-    return week$;
   }
 
   ngOnDestroy(): void {

@@ -6,32 +6,30 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { select, Store } from '@ngrx/store';
-
 import {
   combineLatest,
   debounceTime,
-  map,
   Subject,
-  take,
   takeUntil,
   tap,
 } from 'rxjs';
-
 import { InscriptionsService } from '../../../service/inscriptions.service';
-import * as InscriptionReducer from '../state/inscription.reducer';
-import * as InscriptionActions from '../state/inscription.actions';
 import { Subscription as Inscription } from 'netlify/models/Graphqlx';
 import * as AuthSelector from '../../user/state/auth.selectors';
 import { ReservationService } from '../../../service/reservation.service';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
 import { WeeksService } from '../../../service/weeks.service';
-import { selectInscription } from '../state/inscription.selector';
 import { AppState } from '../../../shared/store/appState';
 import { selectAppState } from '../../../shared/store/app.selector';
 import { setAPIStatus } from '../../../shared/store/app.action';
-import { invokeInscriptionAPI, invokeUpdateInscriptionAPI } from "../../reservations/state/reservation.action";
+import {
+  increaseCurrentParticipantNumber,
+  invokeInscriptionAPI,
+  invokeUpdateInscriptionAPI,
+  resetCurrentParticipantNumber
+} from "../../reservations/state/reservation.action";
+import { selectWeeks } from "../../reservations/state/reservation.selector";
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -63,7 +61,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   isEditMode = false;
   errorMessage = '';
 
-  inscription$ = this.superStore.pipe(select(selectInscription));
+  inscription$ = this.superStore.pipe(select(selectWeeks));
 
   private validationMessages = {
     email: 'Please enter a valid email address.',
@@ -78,7 +76,6 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     private reservationService: ReservationService,
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store<InscriptionReducer.InscriptionState>,
     private superStore: Store,
     private appStore: Store<AppState>,
     private loadingIndicatorService: LoadingIndicatorService
@@ -118,11 +115,11 @@ export class InscriptionComponent implements OnInit, OnDestroy {
         (value) => (this.emailMessage = this.setMessage(emailControl))
       );
 
-    this.store.dispatch(InscriptionActions.resetCurrentParticipantNumber());
-    this.store.dispatch(invokeInscriptionAPI());
+    this.superStore.dispatch(resetCurrentParticipantNumber());
+    this.superStore.dispatch(invokeInscriptionAPI());
 
     combineLatest([
-      this.store.pipe(select(AuthSelector.selectCurrentUserProfile)),
+      this.superStore.pipe(select(AuthSelector.selectCurrentUserProfile)),
       this.inscription$,
     ])
       .pipe(
@@ -227,7 +224,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
 
   update(next = true) {
 
-    this.store.dispatch(
+    this.superStore.dispatch(
       invokeUpdateInscriptionAPI({ updateInscription: { ...this.signupForm.value } })
     );
 
@@ -246,9 +243,9 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   private goToParticipantsView() {
 
     this.loadingIndicatorService.stop();
-    this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
+    this.superStore.dispatch(increaseCurrentParticipantNumber());
     this.router.navigate(['/inscriptions/participant']).then((x) => {
-      console.log('InscriptionComponent goToNextStep');
+      console.log(`InscriptionComponent goToNextStep: ${x}`);
     });
   }
 
@@ -263,7 +260,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   }
 
   setMessage(c: AbstractControl): string {
-    var messageString = '';
+    let messageString = "";
     if ((c.touched || c.dirty) && c.errors) {
       messageString = Object.keys(c.errors)
         .map((key) =>

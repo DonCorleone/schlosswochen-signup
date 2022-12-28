@@ -27,10 +27,8 @@ import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { AuthModule, AuthState } from "@auth0/auth0-angular";
 import { authReducer } from './modules/user/state/auth.reducer';
 import { EffectsModule } from '@ngrx/effects';
-import { AuthEffects } from './modules/user/state/auth.effects';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import * as inscriptionState from './modules/inscription/state/inscription.reducer';
 import { LoadingIndicatorInterceptor } from './interceptor/loading-indicator.interceptor';
 import { LoadingIndicatorService } from './service/loading-indicator.service';
 import { appReducer } from "./shared/store/app.reducer";
@@ -66,12 +64,6 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
     StoreModule.forRoot({ appState: appReducer, auth: authReducer }),
-
-    StoreModule.forFeature(
-      inscriptionState.inscriptionFeatureKey,
-      inscriptionState.inscriptionReducer
-    ),
-
     EffectsModule.forRoot([]),
 
     StoreDevtoolsModule.instrument({

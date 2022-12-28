@@ -3,13 +3,9 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { select, Store } from '@ngrx/store';
-import { combineLatestWith, forkJoin, map, Subject, takeUntil } from 'rxjs';
-
-import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
-import * as InscriptionActions from '../../inscription/state/inscription.actions';
+import { Subject } from 'rxjs';
 import { ReservationService } from 'src/app/service/reservation.service';
 import {
-  Subscription as Inscription,
   SubscriptionInsertInput,
   Week,
 } from 'netlify/models/Graphqlx';
@@ -22,14 +18,12 @@ import { LoadingIndicatorService } from '../../../service/loading-indicator.serv
 import { WeeksService } from '../../../service/weeks.service';
 import {
   invokeSaveNewInscriptionAPI,
-  invokeWeeksAPI,
-  saveNewInscriptionAPISuccess,
-} from '../state/reservation.action';
+  invokeWeeksAPI, setWeek
+} from "../state/reservation.action";
 import { selectWeeks } from '../state/reservation.selector';
 import { AppState } from '../../../shared/store/appState';
 import { selectAppState } from '../../../shared/store/app.selector';
 import { setAPIStatus } from '../../../shared/store/app.action';
-import { combineLatest } from 'rxjs/internal/operators/combineLatest';
 
 @Component({
   selector: 'app-reservation',
@@ -60,7 +54,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private reservationService: ReservationService,
     private weekService: WeeksService,
     private router: Router,
-    private store: Store<InscriptionReducer.InscriptionState>,
     private loadingIndicatorService: LoadingIndicatorService,
     private superStore: Store,
     private appStore: Store<AppState>
@@ -70,7 +63,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(invokeWeeksAPI());
+    this.superStore.dispatch(invokeWeeksAPI());
   }
 
   createWeeklyReservation(
@@ -98,8 +91,8 @@ export class ReservationComponent implements OnInit, OnDestroy {
       this.signupForm.get('numOfChilds')?.value;
 
     if (weeklyReservation) {
-      this.store.dispatch(
-        InscriptionActions.setWeek({ week: weeklyReservation.week })
+      this.superStore.dispatch(
+        setWeek({ week: weeklyReservation.week })
       );
 
       let deadline = this.calcDeadline(weeklyReservation);
@@ -111,6 +104,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
         deadline: deadline,
         reservationDate: new Date(),
         state: weeklyReservation.state,
+        children: []
       };
 
       this.save(subscriptionInsertInput);
@@ -134,7 +128,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   save(subscriptionInsertInput: Partial<SubscriptionInsertInput>) {
-    this.store.dispatch(
+    this.superStore.dispatch(
       invokeSaveNewInscriptionAPI({ newInscription: subscriptionInsertInput })
     );
 
@@ -147,7 +141,9 @@ export class ReservationComponent implements OnInit, OnDestroy {
           })
         );
 
-        this.router.navigate(['/inscriptions/inscription']);
+        this.router.navigate(['/inscriptions/inscription']).then(p => {
+          console.log(`ReservationComponent save: ${p}`)
+        });
       }
     });
   }
@@ -160,7 +156,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   goToPreviousStep() {
     this.router.navigate(['/welcome']).then((x) => {
-      console.log('ReservationComponent goToPreviousStep');
+      console.log(`ReservationComponent goToPreviousStep: ${x}`);
     });
   }
 

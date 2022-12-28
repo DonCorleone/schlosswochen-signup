@@ -1,8 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { map, Observable, pipe, Subject, take } from 'rxjs';
-
-import * as InscriptionReducer from '../../inscription/state/inscription.reducer';
+import { map, Observable, Subject, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { Subscription as Inscription } from 'netlify/models/Graphqlx';
 import {
@@ -10,8 +8,7 @@ import {
   selectIsLoggedIn,
 } from '../../user/state/auth.selectors';
 import { checkAuth, login, logout } from '../../user/state/auth.actions';
-import { selectInscription } from '../state/inscription.selector';
-
+import { selectWeeks } from "../../reservations/state/reservation.selector";
 @Component({
   selector: 'app-finnish',
   templateUrl: './finnish.component.html',
@@ -20,18 +17,14 @@ import { selectInscription } from '../state/inscription.selector';
 export class FinnishComponent implements OnInit, OnDestroy {
   title = 'FINNISH.TITLE';
   inscription$: Observable<Inscription>;
-
   loggedIn$: Observable<boolean>;
   profile$: Observable<any>;
   inscription: string;
   stateDesc: string;
   participants: string[] = [];
-
   private _ngDestroy$ = new Subject<void>();
-
   constructor(
     private router: Router,
-    private inscriptionStore: Store<InscriptionReducer.InscriptionState>,
     private store: Store<any>,
     private superStore: Store
   ) {}
@@ -43,7 +36,7 @@ export class FinnishComponent implements OnInit, OnDestroy {
     this.store.dispatch(checkAuth());
 
     this.inscription$ = this.superStore
-      .pipe(select(selectInscription))
+      .pipe(select(selectWeeks))
       .pipe(map((p) => p.inscription));
 
     this.inscription$.pipe(take(1)).subscribe((inscription) => {
@@ -86,7 +79,7 @@ export class FinnishComponent implements OnInit, OnDestroy {
   logout(): void {
     this.store.dispatch(logout());
     this.router.navigate(['/welcome']).then((x) => {
-      console.log('FinnishComponent logout');
+      console.log(`FinnishComponent logout: ${x}`);
     });
   }
 
@@ -94,7 +87,7 @@ export class FinnishComponent implements OnInit, OnDestroy {
 
   goToNextStep(): void {
     this.router.navigate(['/welcome']).then((x) => {
-      console.log('FinnishComponent goToNextStep');
+      console.log(`FinnishComponent goToNextStep: ${x}`);
     });
   }
 

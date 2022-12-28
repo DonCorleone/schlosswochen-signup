@@ -4,15 +4,18 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { EMPTY, map, mergeMap, switchMap, withLatestFrom } from "rxjs";
 import { selectWeeks } from "./reservation.selector";
 import {
-  invokeSaveNewInscriptionAPI,
+  inscriptionFetchAPISuccess,
+  invokeInscriptionAPI,
+  invokeSaveNewInscriptionAPI, invokeUpdateInscriptionAPI,
   invokeWeeksAPI,
-  saveNewInscriptionAPISuccess,
+  saveNewInscriptionAPISuccess, updateInscriptionAPISuccess,
   weeksFetchAPISuccess
 } from "./reservation.action";
 import { WeeksService } from "../../../service/weeks.service";
 import { setAPIStatus } from "../../../shared/store/app.action";
 import { ReservationService } from "../../../service/reservation.service";
 import { AppState } from "../../../shared/store/appState";
+import { InscriptionsService } from "../../../service/inscriptions.service";
 
 @Injectable()
 export class ReservationEffects {
@@ -20,6 +23,7 @@ export class ReservationEffects {
     private actions$: Actions,
     private weeksService: WeeksService,
     private reservationService: ReservationService,
+    private inscriptionService: InscriptionsService,
     private store: Store,
     private appStore: Store<AppState>
   ) {}
@@ -56,6 +60,43 @@ export class ReservationEffects {
             return saveNewInscriptionAPISuccess({ newInscription: data });
           })
         );
+      })
+    );
+  });
+
+  updateInscriptionAPI$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(invokeUpdateInscriptionAPI),
+      switchMap((action) => {
+        this.appStore.dispatch(
+          setAPIStatus({ apiStatus: { apiResponseMessage: '', apiStatus: '' } })
+        );
+        return this.inscriptionService.update(action.updateInscription).pipe(
+          map((data) => {
+            this.appStore.dispatch(
+              setAPIStatus({
+                apiStatus: { apiResponseMessage: '', apiStatus: 'success' },
+              })
+            );
+            return updateInscriptionAPISuccess({ updateInscription: data });
+          })
+        );
+      })
+    );
+  });
+  loadInscription$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(invokeInscriptionAPI),
+      withLatestFrom(this.store.pipe(select(selectWeeks))),
+      mergeMap(([, inscriptionFromStore]) => {
+        if (!inscriptionFromStore) {
+          return EMPTY;
+        }
+        return this.inscriptionService
+          .get()
+          .pipe(
+            map((data) => inscriptionFetchAPISuccess({ inscription: data }))
+          );
       })
     );
   });

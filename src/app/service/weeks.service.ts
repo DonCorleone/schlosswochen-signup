@@ -1,31 +1,30 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, combineLatest, EMPTY, map, mergeMap, Observable, take } from "rxjs";
-import { ChildrenPerStateItem, SumPerWeekAndYear, Week } from "../../../netlify/models/Graphqlx";
+import { SumPerWeekAndYear, Week } from "../../../netlify/models/Graphqlx";
 import { HttpClient } from '@angular/common/http';
 import { SumChildsPerStatePayload } from '../../../netlify/functions/getChildsPerState';
 import { Place, ReservationState, WeeklyReservation } from "../models/Interfaces";
-import * as InscriptionActions from "../modules/inscription/state/inscription.actions";
 import { Store } from "@ngrx/store";
-import * as InscriptionReducer from "../modules/inscription/state/inscription.reducer";
 import { environment } from "../../environments/environment";
 import { WeekCapacity } from "../models/week-capacity";
 import { GetWeeksResponse } from "../../../netlify/functions/getWeeks";
 import { StatusQuo } from "../modules/reservations/state/reservation.reducer";
+import { setPlaces } from "../modules/reservations/state/reservation.action";
 
 @Injectable({
   providedIn: 'root',
 })
 export class WeeksService {
-  private _sumperWeekAndStates = new BehaviorSubject<SumPerWeekAndYear[]>([]);
+  private _superWeekAndStates = new BehaviorSubject<SumPerWeekAndYear[]>([]);
 
-  public readonly sumperWeekAnsStates: Observable<SumPerWeekAndYear[]> =
-    this._sumperWeekAndStates.asObservable();
+  public readonly superWeekAnsStates: Observable<SumPerWeekAndYear[]> =
+    this._superWeekAndStates.asObservable();
 
   private readonly maxNumberOfReservations: number;
-  private year: number;
+  private readonly year: number;
   constructor(
     private httpClient: HttpClient,
-    private store: Store<InscriptionReducer.InscriptionState>
+    private superStore: Store
   ) {
     this.year = +environment.UPCOMING_YEAR;
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
@@ -37,7 +36,7 @@ export class WeeksService {
       .get<SumChildsPerStatePayload>(`/api/getChildsPerState`)
       .pipe(
         map((payload) => {
-          this._sumperWeekAndStates.next(payload?.data?.sumChildsPerState);
+          this._superWeekAndStates.next(payload?.data?.sumChildsPerState);
         }),
         catchError((err) => {
           console.log(`Error retrieving ${err}`);
@@ -52,7 +51,7 @@ export class WeeksService {
         return combineLatest(
           statusQuo.weeks.map((week) => {
 
-            return this.sumperWeekAnsStates.pipe(
+            return this.superWeekAnsStates.pipe(
               map((participantsPerStates) => {
 
                 const sumPerSate: SumPerWeekAndYear[] = participantsPerStates.filter(p => p?.week == week.week && p.year == this.year);
@@ -112,7 +111,7 @@ export class WeeksService {
 
   setPlaces(weeklyReservation: WeeklyReservation) {
     let sumParticipants = 0;
-    this.sumperWeekAnsStates
+    this.superWeekAnsStates
       .pipe(
         take(1),
         map (x => x.filter(p => weeklyReservation.week?.week! && p.year == this.year))
@@ -139,7 +138,7 @@ export class WeeksService {
           });
         }
 
-        this.store.dispatch(InscriptionActions.setPlaces({ places: places }));
+        this.superStore.dispatch(setPlaces({ places: places }));
       });
   }
 
