@@ -191,23 +191,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   goToNextStep(): void {
-    if (this.signupForm.invalid || !this.signupForm.valid) {
-      Object.keys(this.signupForm.controls).forEach((field) => {
-        // {1}
-        const control = this.signupForm.get(field); // {2}
-        control?.markAsTouched({ onlySelf: true }); // {3}
-      });
-      this.loadingIndicatorService.stop();
+
+    if (this.manageValidity() == false) {
       return;
     }
 
-    if (!this.signupForm.dirty) {
-      this.store.dispatch(
-        InscriptionActions.increaseCurrentParticipantNumber()
-      );
-      this.router.navigate(['/inscriptions/participant']).then((x) => {
-        console.log('ParticipantComponent navigate /inscriptions/participant');
-      });
+    if (this.manageDirtiness() == false){
       return;
     }
 
@@ -242,7 +231,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     subscriptionChild: SubscriptionChild,
     isSaveStep: boolean
   ): void {
-    this.store.dispatch(upsertChild({ child: subscriptionChild }));
+    this.superStore.dispatch(upsertChild({ child: subscriptionChild }));
 
     if (isSaveStep) {
       this.saveInscription();
@@ -353,5 +342,31 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   private goToFinnishView() {
     this.store.dispatch(InscriptionActions.resetCurrentParticipantNumber());
     this.router.navigate(['/inscriptions/finnish']).then();
+  }
+
+  private manageValidity(): boolean {
+    if (this.signupForm.invalid || !this.signupForm.valid) {
+      Object.keys(this.signupForm.controls).forEach((field) => {
+        // {1}
+        const control = this.signupForm.get(field); // {2}
+        control?.markAsTouched({ onlySelf: true }); // {3}
+      });
+      this.loadingIndicatorService.stop();
+      return false;
+    }
+    return true;
+  }
+
+  private manageDirtiness(): boolean {
+    if (!this.signupForm.dirty) {
+      this.store.dispatch(
+        InscriptionActions.increaseCurrentParticipantNumber()
+      );
+      this.router.navigate(['/inscriptions/participant']).then((x) => {
+        console.log('ParticipantComponent navigate /inscriptions/participant');
+      });
+      return false;
+    }
+    return true;
   }
 }

@@ -32,9 +32,9 @@ export const weekReducer = createReducer(
     ...state,
     inscription: updateInscription,
   })),
-  on(upsertChild, (state, action) => {
+  on(upsertChild, (state, { child }) => {
     const index = state.inscription.children?.findIndex(
-      (child) => child?.participant_id === action.child.participant_id
+      (child) => child?.participant_id === child?.participant_id
     ); //finding index of the item
 
     if (index! < 0 || !state.inscription?.children) {
@@ -42,13 +42,13 @@ export const weekReducer = createReducer(
         ...state,
         inscription: {
           ...state.inscription,
-          children: [...state.inscription.children!, action.child],
+          children: [...state.inscription.children!, child],
         },
       };
     }
     const newArray = [...state.inscription.children!]; //making a new array
 
-    newArray[index!] = action.child; //changing value in the new array
+    newArray[index!] = child; //changing value in the new array
 
     const inscription = { ...state.inscription };
     inscription.children = newArray;
