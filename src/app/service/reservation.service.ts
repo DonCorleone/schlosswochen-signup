@@ -26,7 +26,6 @@ export class ReservationService {
     return this.httpClient
       .post<InsertOneInscriptionResponse>(`/api/insertOneInscription`, payload)
       .pipe(
-        tap((p) => console.log(JSON.stringify(p))),
         map((result) => {
           return result?.message?.insertOneSubscription;
         }),
@@ -43,7 +42,6 @@ export class ReservationService {
         subscriptionInsertInput
       )
       .pipe(
-        tap((p) => console.log(JSON.stringify(p))),
         map((result) => {
           return result?.message?.insertOneSubscription;
         }),
