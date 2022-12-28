@@ -7,17 +7,16 @@ import {
   map,
   mergeMap,
   Observable,
-  take,
 } from 'rxjs';
 import { SumPerWeekAndYear, Week } from '../../../netlify/models/Graphqlx';
 import { HttpClient } from '@angular/common/http';
 import { SumChildsPerStatePayload } from '../../../netlify/functions/getChildsPerState';
-import { ReservationState } from '../models/Interfaces';
 import { Store } from '@ngrx/store';
 import { environment } from '../../environments/environment';
 import { WeekCapacity } from '../models/week-capacity';
 import { GetWeeksResponse } from '../../../netlify/functions/getWeeks';
 import { State } from '../modules/reservations/state/reservation.reducer';
+import { ReservationState } from "../models/reservation-state";
 
 @Injectable({
   providedIn: 'root',

@@ -30,7 +30,7 @@ import {
 } from 'rxjs';
 import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { ReservationState } from '../../../models/Interfaces';
+import { ReservationState } from '../../../models/reservation-state';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
 import {
   decreaseCurrentParticipantNumber,

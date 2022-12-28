@@ -8,9 +8,8 @@ import { ReservationService } from 'src/app/service/reservation.service';
 import { SubscriptionInsertInput, Week } from 'netlify/models/Graphqlx';
 import { environment } from '../../../../environments/environment';
 import {
-  ReservationState,
-  WeeklyReservation,
-} from '../../../models/Interfaces';
+  ReservationState
+} from '../../../models/reservation-state';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
 import { WeeksService } from '../../../service/weeks.service';
 import {
@@ -21,6 +20,13 @@ import { reservationSelector } from '../state/reservation.selector';
 import { AppState } from '../../../shared/store/appState';
 import { selectAppState } from '../../../shared/store/app.selector';
 import { setAPIStatus } from '../../../shared/store/app.action';
+
+export interface WeeklyReservation {
+  year: number;
+  week: Week;
+  numberOfReservations: number;
+  state: ReservationState;
+}
 
 @Component({
   selector: 'app-reservation',

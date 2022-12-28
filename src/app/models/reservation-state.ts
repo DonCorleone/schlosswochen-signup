@@ -6,10 +6,5 @@ export enum ReservationState {
   DEFINITIVE = 'definitive',
   DEFINITIVE_WAITINGLIST = 'definitiveWaitingList',
 }
-export interface WeeklyReservation {
-  year: number;
-  week: Week;
-  numberOfReservations: number;
-  state: ReservationState;
-}
+
 

@@ -36,7 +36,7 @@
         {{ "RESERVEDPLACE" | translate }}
       </span>
       <span *ngIf="inscription?.numOfChildren! > 1">
-        {{ "RESERVEDPLACES" | translate }} {{ inscription?.numOfChildren }}
+        {{ "RESERVEDPLACES" | translate }}{{ inscription?.numOfChildren }}
       </span>
       <span *ngIf=" inscription?.state?.toLowerCase()?.includes('waitinglist')" class="reserved-places">
         ({{ "WAITINGLIST" | translate }})

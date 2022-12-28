@@ -5,7 +5,7 @@ import {
   SubscriptionQueryInput,
   SubscriptionUpdateInput,
 } from 'netlify/models/Graphqlx';
-import { ReservationState } from '../models/Interfaces';
+import { ReservationState } from '../models/reservation-state';
 import { HttpClient } from '@angular/common/http';
 
 interface SubscriptionData {
