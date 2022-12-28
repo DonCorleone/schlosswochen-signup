@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { map, Observable, Subject, take } from 'rxjs';
+import { map, Observable, Subject, take, takeUntil } from "rxjs";
 import { Router } from '@angular/router';
 import { Subscription as Inscription } from 'netlify/models/Graphqlx';
 import {
@@ -8,7 +8,7 @@ import {
   selectIsLoggedIn,
 } from '../../user/state/auth.selectors';
 import { checkAuth, login, logout } from '../../user/state/auth.actions';
-import { selectWeeks } from "../../reservations/state/reservation.selector";
+import { selectWeeks } from '../../reservations/state/reservation.selector';
 @Component({
   selector: 'app-finnish',
   templateUrl: './finnish.component.html',
@@ -16,10 +16,9 @@ import { selectWeeks } from "../../reservations/state/reservation.selector";
 })
 export class FinnishComponent implements OnInit, OnDestroy {
   title = 'FINNISH.TITLE';
-  inscription$: Observable<Inscription>;
   loggedIn$: Observable<boolean>;
   profile$: Observable<any>;
-  inscription: string;
+  inscriptionStr: string;
   stateDesc: string;
   participants: string[] = [];
   private _ngDestroy$ = new Subject<void>();
@@ -35,41 +34,43 @@ export class FinnishComponent implements OnInit, OnDestroy {
 
     this.store.dispatch(checkAuth());
 
-    this.inscription$ = this.superStore
-      .pipe(select(selectWeeks))
-      .pipe(map((p) => p.inscription));
+    this.superStore.pipe(
+      select(selectWeeks),
+      takeUntil(this._ngDestroy$),
+      map((p) => {
 
-    this.inscription$.pipe(take(1)).subscribe((inscription) => {
-      this.stateDesc = inscription.state!;
-      let contact = [];
-      contact.push(
-        inscription.firstName +
+        const inscriptionFromState =  p.inscription;
+        this.stateDesc = inscriptionFromState.state!;
+        let contact = [];
+        contact.push(
+          inscriptionFromState.firstName +
           ' ' +
-          inscription.lastName +
+          inscriptionFromState.lastName +
           '(' +
-          inscription.salutation +
+          inscriptionFromState.salutation +
           ')'
-      );
-      contact.push(inscription.zip + ' ' + inscription.city);
-      contact.push(inscription.email);
-      this.inscription = contact.join(', ');
+        );
+        contact.push(inscriptionFromState.zip + ' ' + inscriptionFromState.city);
+        contact.push(inscriptionFromState.email);
+        this.inscriptionStr = contact.join(', ');
 
-      inscription.children?.forEach((child) => {
-        let participantParts = [];
-        participantParts.push(
-          child?.firstNameParticipant +
+        inscriptionFromState.children?.forEach((child) => {
+          let participantParts = [];
+          participantParts.push(
+            child?.firstNameParticipant +
             ' ' +
             child?.lastNameParticipant +
             '(' +
             child?.salutation +
             ')'
-        );
-        participantParts.push(
-          '*' + new Date(child?.birthday)?.toLocaleDateString('de-CH')
-        );
-        this.participants.push(participantParts.join(', '));
-      });
-    });
+          );
+          participantParts.push(
+            '*' + new Date(child?.birthday)?.toLocaleDateString('de-CH')
+          );
+          this.participants.push(participantParts.join(', '));
+        });
+      })
+    ).subscribe();
   }
 
   login() {

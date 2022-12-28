@@ -168,12 +168,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
     if (this.currentParticipantNumber <= 1) {
       this.router.navigate(['/inscriptions/inscription']).then((x) => {
-        console.log(`ParticipantComponent navigate /inscriptions/inscription: ${x}`);
+        console.log(
+          `ParticipantComponent navigate /inscriptions/inscription: ${x}`
+        );
       });
     } else {
       this.superStore.dispatch(decreaseCurrentParticipantNumber());
       this.router.navigate(['/inscriptions/participant']).then((x) => {
-        console.log(`ParticipantComponent navigate /inscriptions/participant: ${x}`);
+        console.log(
+          `ParticipantComponent navigate /inscriptions/participant: ${x}`
+        );
       });
     }
     return;
@@ -202,17 +206,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     };
 
     this.saveParticipant(child, false);
-    // if (participant.id === 0) {
-    //   this.participantService.createParticipant(participant).subscribe({
-    //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
-    //     error: err => this.errorMessage = err
-    //   });
-    // } else {
-    //   this.participantService.updateParticipant(participant).subscribe({
-    //     next: p => this.store.dispatch(ParticipantActions.setCurrentParticipant({ participant: p })),
-    //     error: err => this.errorMessage = err
-    //   });
-    // }
   }
 
   saveParticipant(
@@ -226,7 +219,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     } else {
       this.superStore.dispatch(increaseCurrentParticipantNumber());
       this.router.navigate(['/inscriptions/participant']).then((x) => {
-        console.log(`ParticipantComponent navigate /inscriptions/participant: ${x}`);
+        console.log(
+          `ParticipantComponent navigate /inscriptions/participant: ${x}`
+        );
       });
     }
   }
@@ -274,20 +269,23 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       })
     );
 
-    let apiStatus$ = this.appStore.pipe(select(selectAppState));
-    apiStatus$.subscribe((apState) => {
-      if (apState.apiStatus == 'success') {
-        this.appStore.dispatch(
-          setAPIStatus({ apiStatus: { apiResponseMessage: '', apiStatus: '' } })
-        );
+    this.appStore
+      .pipe(select(selectAppState), takeUntil(this._ngDestroy$))
+      .subscribe((apState) => {
+        if (apState.apiStatus == 'success') {
+          this.appStore.dispatch(
+            setAPIStatus({
+              apiStatus: { apiResponseMessage: '', apiStatus: '' },
+            })
+          );
 
-        this.goToFinnishView();
-      }
-    });
+          this.goToFinnishView();
+        }
+      });
   }
 
   setMessage(c: AbstractControl): string {
-    let messageString = "";
+    let messageString = '';
     if ((c.touched || c.dirty) && c.errors) {
       messageString = Object.keys(c.errors)
         .map((key) =>
@@ -347,7 +345,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     if (!this.signupForm.dirty) {
       this.superStore.dispatch(increaseCurrentParticipantNumber());
       this.router.navigate(['/inscriptions/participant']).then((x) => {
-        console.log(`ParticipantComponent navigate /inscriptions/participant: ${x}`);
+        console.log(
+          `ParticipantComponent navigate /inscriptions/participant: ${x}`
+        );
       });
       return false;
     }

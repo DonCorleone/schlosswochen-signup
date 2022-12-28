@@ -3,12 +3,9 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { select, Store } from '@ngrx/store';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { ReservationService } from 'src/app/service/reservation.service';
-import {
-  SubscriptionInsertInput,
-  Week,
-} from 'netlify/models/Graphqlx';
+import { SubscriptionInsertInput, Week } from 'netlify/models/Graphqlx';
 import { environment } from '../../../../environments/environment';
 import {
   ReservationState,
@@ -18,8 +15,8 @@ import { LoadingIndicatorService } from '../../../service/loading-indicator.serv
 import { WeeksService } from '../../../service/weeks.service';
 import {
   invokeSaveNewInscriptionAPI,
-  invokeWeeksAPI
-} from "../state/reservation.action";
+  invokeWeeksAPI,
+} from '../state/reservation.action';
 import { selectWeeks } from '../state/reservation.selector';
 import { AppState } from '../../../shared/store/appState';
 import { selectAppState } from '../../../shared/store/app.selector';
@@ -32,7 +29,6 @@ import { setAPIStatus } from '../../../shared/store/app.action';
 })
 export class ReservationComponent implements OnInit, OnDestroy {
   title = 'RESERVATION';
-
   reservationStateEnum = ReservationState;
   // maxWeeks: number = 1;
   year: number;
@@ -42,13 +38,10 @@ export class ReservationComponent implements OnInit, OnDestroy {
     numOfChilds: [0, [Validators.required, Validators.min(1)]],
   });
   reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
-
   weeks$ = this.superStore.pipe(select(selectWeeks)).pipe((p) => {
     return this.weekService.mapWeekCapacity(p);
   });
-
   private _ngDestroy$ = new Subject<void>();
-
   constructor(
     private fb: UntypedFormBuilder,
     private reservationService: ReservationService,
@@ -99,7 +92,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
         deadline: deadline,
         reservationDate: new Date(),
         state: weeklyReservation.state,
-        children: []
+        children: [],
       };
       this.save(subscriptionInsertInput);
     }
@@ -110,20 +103,21 @@ export class ReservationComponent implements OnInit, OnDestroy {
       invokeSaveNewInscriptionAPI({ newInscription: subscriptionInsertInput })
     );
 
-    let apiStatus$ = this.appStore.pipe(select(selectAppState));
-    apiStatus$.subscribe((apState) => {
-      if (apState.apiStatus == 'success') {
-        this.appStore.dispatch(
-          setAPIStatus({
-            apiStatus: { apiResponseMessage: '', apiStatus: '' },
-          })
-        );
+    this.appStore
+      .pipe(select(selectAppState), takeUntil(this._ngDestroy$))
+      .subscribe((apState) => {
+        if (apState.apiStatus == 'success') {
+          this.appStore.dispatch(
+            setAPIStatus({
+              apiStatus: { apiResponseMessage: '', apiStatus: '' },
+            })
+          );
 
-        this.router.navigate(['/inscriptions/inscription']).then(p => {
-          console.log(`ReservationComponent save: ${p}`)
-        });
-      }
-    });
+          this.router.navigate(['/inscriptions/inscription']).then((p) => {
+            console.log(`ReservationComponent save: ${p}`);
+          });
+        }
+      });
   }
 
   private calcDeadline(weeklyReservation: WeeklyReservation) {

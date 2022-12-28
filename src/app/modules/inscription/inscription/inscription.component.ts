@@ -11,6 +11,7 @@ import {
   combineLatest,
   debounceTime,
   Subject,
+  take,
   takeUntil,
   tap,
 } from 'rxjs';
@@ -27,9 +28,9 @@ import {
   increaseCurrentParticipantNumber,
   invokeInscriptionAPI,
   invokeUpdateInscriptionAPI,
-  resetCurrentParticipantNumber
-} from "../../reservations/state/reservation.action";
-import { selectWeeks } from "../../reservations/state/reservation.selector";
+  resetCurrentParticipantNumber,
+} from '../../reservations/state/reservation.action';
+import { selectWeeks } from '../../reservations/state/reservation.selector';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -111,9 +112,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     const emailControl = this.signupForm.get('email');
     emailControl?.valueChanges
       .pipe(debounceTime(1000), takeUntil(this._ngDestroy$))
-      .subscribe(
-        (value) => (this.emailMessage = this.setMessage(emailControl))
-      );
+      .subscribe((_) => (this.emailMessage = this.setMessage(emailControl)));
 
     this.superStore.dispatch(resetCurrentParticipantNumber());
     this.superStore.dispatch(invokeInscriptionAPI());
@@ -189,7 +188,6 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   }
 
   goToNextStep(): void {
-
     if (this.signupForm.invalid) {
       this.displayValidations();
       return;
@@ -222,26 +220,29 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       });*/
   }
 
-  update(next = true) {
-
+  update() {
     this.superStore.dispatch(
-      invokeUpdateInscriptionAPI({ updateInscription: { ...this.signupForm.value } })
+      invokeUpdateInscriptionAPI({
+        updateInscription: { ...this.signupForm.value },
+      })
     );
 
-    let apiStatus$ = this.appStore.pipe(select(selectAppState));
-    apiStatus$.subscribe((apState) => {
-      if (apState.apiStatus == 'success') {
-        this.appStore.dispatch(
-          setAPIStatus({ apiStatus: { apiResponseMessage: '', apiStatus: '' } })
-        );
+    this.appStore
+      .pipe(select(selectAppState), takeUntil(this._ngDestroy$))
+      .subscribe((apState) => {
+        if (apState.apiStatus == 'success') {
+          this.appStore.dispatch(
+            setAPIStatus({
+              apiStatus: { apiResponseMessage: '', apiStatus: '' },
+            })
+          );
 
-        this.goToParticipantsView();
-      }
-    });
+          this.goToParticipantsView();
+        }
+      });
   }
 
   private goToParticipantsView() {
-
     this.loadingIndicatorService.stop();
     this.superStore.dispatch(increaseCurrentParticipantNumber());
     this.router.navigate(['/inscriptions/participant']).then((x) => {
@@ -260,7 +261,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   }
 
   setMessage(c: AbstractControl): string {
-    let messageString = "";
+    let messageString = '';
     if ((c.touched || c.dirty) && c.errors) {
       messageString = Object.keys(c.errors)
         .map((key) =>
