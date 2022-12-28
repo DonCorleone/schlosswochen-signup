@@ -74,35 +74,48 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   goToNextStep(): void {
-    if (this.signupForm.invalid) {
-      this.submitted = true;
-      this.loadingIndicatorService.stop();
+    if (this.manageInvalidity()) {
       return;
     }
 
     let weeklyReservation: WeeklyReservation =
       this.signupForm.get('numOfChilds')?.value;
 
-    if (weeklyReservation) {
-      const deadline = this.calcDeadline(weeklyReservation);
-      let subscriptionInsertInput: Partial<SubscriptionInsertInput> = {
-        numOfChildren: weeklyReservation.numberOfReservations,
-        week: weeklyReservation.week.week,
-        year: weeklyReservation.year,
-        deadline: deadline,
-        reservationDate: new Date(),
-        state: weeklyReservation.state,
-        children: [],
-      };
-      this.save(subscriptionInsertInput);
+    if (!weeklyReservation) {
+      return;
     }
+    const subscriptionInsertInput =
+      this.createSubscriptionInsertInput(weeklyReservation);
+    this.save(subscriptionInsertInput);
+  }
+
+  private manageInvalidity(): boolean {
+    if (this.signupForm.invalid) {
+      this.submitted = true;
+      this.loadingIndicatorService.stop();
+      return true;
+    }
+    return false;
+  }
+
+  private createSubscriptionInsertInput(weeklyReservation: WeeklyReservation) {
+    const deadline = this.calcDeadline(weeklyReservation);
+    let subscriptionInsertInput: Partial<SubscriptionInsertInput> = {
+      numOfChildren: weeklyReservation.numberOfReservations,
+      week: weeklyReservation.week.week,
+      year: weeklyReservation.year,
+      deadline: deadline,
+      reservationDate: new Date(),
+      state: weeklyReservation.state,
+      children: [],
+    };
+    return subscriptionInsertInput;
   }
 
   save(subscriptionInsertInput: Partial<SubscriptionInsertInput>) {
     this.store.dispatch(
       invokeSaveNewInscriptionAPI({ newInscription: subscriptionInsertInput })
     );
-
     this.appStore
       .pipe(select(selectAppState), takeUntil(this._ngDestroy$))
       .subscribe((apState) => {
@@ -112,7 +125,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
               apiStatus: { apiResponseMessage: '', apiStatus: '' },
             })
           );
-
           this.router.navigate(['/inscriptions/inscription']).then((p) => {
             console.log(`ReservationComponent save: ${p}`);
           });
