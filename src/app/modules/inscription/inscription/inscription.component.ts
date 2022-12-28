@@ -30,7 +30,7 @@ import {
   invokeUpdateInscriptionAPI,
   resetCurrentParticipantNumber,
 } from '../../reservations/state/reservation.action';
-import { selector } from '../../reservations/state/reservation.selector';
+import { reservationSelector } from '../../reservations/state/reservation.selector';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -62,7 +62,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   isEditMode = false;
   errorMessage = '';
 
-  inscription$ = this.store.pipe(select(selector));
+  inscription$ = this.store.pipe(select(reservationSelector));
 
   private validationMessages = {
     email: 'Please enter a valid email address.',

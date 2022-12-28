@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { StoreModule } from '@ngrx/store';
-import { weekReducer } from './state/reservation.reducer';
+import { reservationReducer } from './state/reservation.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { ReservationEffects } from "./state/reservation.effects";
 
@@ -19,7 +19,6 @@ import { ReservationEffects } from "./state/reservation.effects";
     ReactiveFormsModule,
     SharedModule,
     TranslateModule,
-    StoreModule.forFeature('myReservation', weekReducer),
     EffectsModule.forFeature([ReservationEffects]),
   ],
   exports: [],

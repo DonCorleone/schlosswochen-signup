@@ -21,7 +21,7 @@ export const initialState: State = {
   currentParticipantNumber: 0
 };
 
-export const weekReducer = createReducer(
+export const reservationReducer = createReducer(
   initialState,
   on(weeksFetchAPISuccess, (state, { allWeeks }) => {
     return { ...state, weeks: allWeeks };

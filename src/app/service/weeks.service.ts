@@ -52,9 +52,9 @@ export class WeeksService {
 
   mapWeekCapacity(weeks$: Observable<State>): Observable<WeekCapacity[]> {
     return weeks$.pipe(
-      mergeMap((statusQuo) => {
+      mergeMap((state) => {
         return combineLatest(
-          statusQuo.weeks.map((week) => {
+          state.weeks.map((week) => {
             return this.weeklyReservation.pipe(
               map((participantsPerStates) => {
                 const sumPerSate: SumPerWeekAndYear[] =

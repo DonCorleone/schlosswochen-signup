@@ -32,6 +32,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { LoadingIndicatorInterceptor } from './interceptor/loading-indicator.interceptor';
 import { LoadingIndicatorService } from './service/loading-indicator.service';
 import { appReducer } from "./shared/store/app.reducer";
+import { reservationReducer } from "./modules/reservations/state/reservation.reducer";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -63,7 +64,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient],
       },
     }),
-    StoreModule.forRoot({ appState: appReducer, auth: authReducer }),
+    StoreModule.forRoot({ appState: appReducer, reservationState: reservationReducer, auth: authReducer }),
     EffectsModule.forRoot([]),
 
     StoreDevtoolsModule.instrument({
