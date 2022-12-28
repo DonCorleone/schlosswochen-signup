@@ -3,13 +3,12 @@ import { BehaviorSubject, catchError, combineLatest, EMPTY, map, mergeMap, Obser
 import { SumPerWeekAndYear, Week } from "../../../netlify/models/Graphqlx";
 import { HttpClient } from '@angular/common/http';
 import { SumChildsPerStatePayload } from '../../../netlify/functions/getChildsPerState';
-import { Place, ReservationState, WeeklyReservation } from "../models/Interfaces";
+import { ReservationState } from "../models/Interfaces";
 import { Store } from "@ngrx/store";
 import { environment } from "../../environments/environment";
 import { WeekCapacity } from "../models/week-capacity";
 import { GetWeeksResponse } from "../../../netlify/functions/getWeeks";
 import { StatusQuo } from "../modules/reservations/state/reservation.reducer";
-import { setPlaces } from "../modules/reservations/state/reservation.action";
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +16,7 @@ import { setPlaces } from "../modules/reservations/state/reservation.action";
 export class WeeksService {
   private _superWeekAndStates = new BehaviorSubject<SumPerWeekAndYear[]>([]);
 
-  public readonly superWeekAnsStates: Observable<SumPerWeekAndYear[]> =
+  public readonly weeklyReservation: Observable<SumPerWeekAndYear[]> =
     this._superWeekAndStates.asObservable();
 
   private readonly maxNumberOfReservations: number;
@@ -51,7 +50,7 @@ export class WeeksService {
         return combineLatest(
           statusQuo.weeks.map((week) => {
 
-            return this.superWeekAnsStates.pipe(
+            return this.weeklyReservation.pipe(
               map((participantsPerStates) => {
 
                 const sumPerSate: SumPerWeekAndYear[] = participantsPerStates.filter(p => p?.week == week.week && p.year == this.year);
@@ -107,39 +106,6 @@ export class WeeksService {
         map((result: GetWeeksResponse) => result?.message?.data?.weeks),
         catchError(this.handleError)
       );
-  }
-
-  setPlaces(weeklyReservation: WeeklyReservation) {
-    let sumParticipants = 0;
-    this.superWeekAnsStates
-      .pipe(
-        take(1),
-        map (x => x.filter(p => weeklyReservation.week?.week! && p.year == this.year))
-      )
-      .subscribe((sumChildsPerState) => {
-        sumChildsPerState?.map((p) => {
-          if (
-            p.state === ReservationState.DEFINITIVE ||
-            p.state === ReservationState.TEMPORARY
-          ) {
-            sumParticipants += p.sumPerStateAndWeek ?? 0;
-          }
-        });
-
-        let places: Place[] = [];
-        for (
-          let i = sumParticipants - weeklyReservation.numberOfReservations + 1;
-          i <= sumParticipants;
-          i++
-        ) {
-          places.push({
-            placeNumber: i,
-            reservationState: weeklyReservation.state,
-          });
-        }
-
-        this.superStore.dispatch(setPlaces({ places: places }));
-      });
   }
 
   private handleError(err: any): Observable<never> {

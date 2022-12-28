@@ -5,24 +5,20 @@ import {
   increaseCurrentParticipantNumber,
   resetCurrentParticipantNumber,
   saveNewInscriptionAPISuccess,
-  setPlaces,
   updateInscriptionAPISuccess,
   upsertChild,
   weeksFetchAPISuccess,
 } from './reservation.action';
-import { Place } from '../../../models/Interfaces';
 
 export interface StatusQuo {
   inscription: Subscription;
   weeks: ReadonlyArray<Week>;
   currentParticipantNumber: number;
-  places: Place[];
 }
 export const initialState: StatusQuo = {
   inscription: {},
   weeks: [],
-  currentParticipantNumber: 0,
-  places: [],
+  currentParticipantNumber: 0
 };
 
 export const weekReducer = createReducer(
@@ -66,13 +62,6 @@ export const weekReducer = createReducer(
       inscription,
     };
   }),
-  on(setPlaces, (state, action) => {
-    return {
-      ...state,
-      places: [...action.places],
-    };
-  }),
-
   on(increaseCurrentParticipantNumber, (state) => {
     return {
       ...state,

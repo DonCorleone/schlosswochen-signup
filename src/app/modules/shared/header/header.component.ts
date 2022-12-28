@@ -1,11 +1,10 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { select, Store } from "@ngrx/store";
-import { combineLatest, map, Observable, Subject, takeUntil } from "rxjs";
+import { map, Observable, Subject } from "rxjs";
 import { Subscription as Inscription, Week } from "netlify/models/Graphqlx";
 import { selectIsLoggedIn } from "../../user/state/auth.selectors";
 import { TranslateService } from "@ngx-translate/core";
-import { ReservationState } from "../../../models/Interfaces";
-import { getDeadline, getPlaces, selectWeeks } from "../../reservations/state/reservation.selector";
+import { getDeadline, selectWeeks } from "../../reservations/state/reservation.selector";
 
 @Component({
   selector: 'app-header',
@@ -22,11 +21,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   inscription$: Observable<Inscription>;
   week$: Observable<Week | undefined>;
-  places$: Observable<string>;
   loggedIn$: Observable<boolean>;
   deadline$: Observable<Date>;
   private _ngDestroy$ = new Subject<void>();
-
   constructor(
     private superStore: Store,
     public translate: TranslateService
@@ -40,25 +37,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         .pipe(select(selectWeeks))
         .pipe(map((p) => p?.inscription));
       this.week$ = this.getWeek();
-      this.places$ = this.translate.stream('WAITINGLIST').pipe(
-        (o$) =>
-          combineLatest([
-            o$,
-            this.superStore.pipe(select(getPlaces)),
-          ]).pipe(
-            map(([waitingListStr, places]) => {
-              let placesStr = places.map((p) => p.placeNumber).join(' & ');
-              if (
-                places[0]?.reservationState ===
-                ReservationState.TEMPORARY_WAITINGLIST
-              ) {
-                placesStr = placesStr + ` (${waitingListStr})`;
-              }
-              return placesStr;
-            })
-          ),
-        takeUntil(this._ngDestroy$)
-      );
     }
   }
 

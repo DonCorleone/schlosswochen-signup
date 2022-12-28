@@ -5,7 +5,6 @@ import {
   SubscriptionInsertInput,
   Week
 } from "../../../../../netlify/models/Graphqlx";
-import { Place } from "../../../models/Interfaces";
 
 export const invokeWeeksAPI = createAction(
   '[Weeks API] Invoke Weeks Fetch API'
@@ -40,15 +39,6 @@ export const inscriptionFetchAPISuccess = createAction(
 export const upsertChild = createAction(
   '[Inscription] Upsert Child',
   props<{ child: SubscriptionChild }>()
-);
-export const setPlaces = createAction(
-  '[Inscription] Set Places',
-  props<{ places: Place[] }>()
-);
-
-export const setWeek = createAction(
-  '[Inscription] Set Week',
-  props<{ week: Week }>()
 );
 
 export const increaseCurrentParticipantNumber = createAction(

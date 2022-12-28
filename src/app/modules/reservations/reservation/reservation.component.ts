@@ -18,7 +18,7 @@ import { LoadingIndicatorService } from '../../../service/loading-indicator.serv
 import { WeeksService } from '../../../service/weeks.service';
 import {
   invokeSaveNewInscriptionAPI,
-  invokeWeeksAPI, setWeek
+  invokeWeeksAPI
 } from "../state/reservation.action";
 import { selectWeeks } from '../state/reservation.selector';
 import { AppState } from '../../../shared/store/appState';
@@ -91,12 +91,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
       this.signupForm.get('numOfChilds')?.value;
 
     if (weeklyReservation) {
-      this.superStore.dispatch(
-        setWeek({ week: weeklyReservation.week })
-      );
-
-      let deadline = this.calcDeadline(weeklyReservation);
-
+      const deadline = this.calcDeadline(weeklyReservation);
       let subscriptionInsertInput: Partial<SubscriptionInsertInput> = {
         numOfChildren: weeklyReservation.numberOfReservations,
         week: weeklyReservation.week.week,
@@ -106,24 +101,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
         state: weeklyReservation.state,
         children: []
       };
-
       this.save(subscriptionInsertInput);
-      /*      this.reservationService
-        .insertOneSubscription(subscriptionInsertInput)
-        .pipe(takeUntil(this._ngDestroy$))
-        .subscribe((inscription: Inscription) => {
-          this.store.dispatch(
-            InscriptionActions.setInscription({ inscription })
-          );
-
-          this.weekService.setPlaces(weeklyReservation);
-
-          this.router
-            .navigate(['/inscriptions/inscription', inscription._id])
-            .then((x) => {
-              console.log('ReservationComponent goToNextStep');
-            });
-        });*/
     }
   }
 

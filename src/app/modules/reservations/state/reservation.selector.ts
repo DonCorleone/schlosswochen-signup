@@ -9,9 +9,3 @@ export const getCurrentParticipantNumber = createSelector(
   selectWeeks,
   (state) => state.currentParticipantNumber
 );
-
-export const getPlaces = createSelector(
-  selectWeeks,
-  (state) => state.places
-);
-
