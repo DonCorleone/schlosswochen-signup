@@ -15,7 +15,7 @@ import { ReservationService } from "../../../service/reservation.service";
 import { AppState } from "../../../shared/store/appState";
 
 @Injectable()
-export class ReservationReducer {
+export class ReservationEffects {
   constructor(
     private actions$: Actions,
     private weeksService: WeeksService,

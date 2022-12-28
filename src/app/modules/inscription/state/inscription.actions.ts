@@ -6,6 +6,16 @@ import {
 } from "netlify/models/Graphqlx";
 import { Place } from '../../../models/Interfaces';
 
+export const invokeUpdateInscriptionAPI = createAction(
+  '[Inscription API] Invoke update Inscription api',
+  props<{ updateInscription: Inscription }>()
+);
+
+export const updateInscriptionAPISuccess = createAction(
+  '[Inscription API] update Inscription api success',
+  props<{ updateInscription: Inscription }>()
+);
+
 export const invokeInscriptionAPI = createAction(
   '[Inscription API] Invoke Inscription Fetch API'
 );

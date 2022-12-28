@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { StoreModule } from '@ngrx/store';
 import { weekReducer } from './state/reservation.reducer';
 import { EffectsModule } from '@ngrx/effects';
-import { ReservationReducer } from './state/reservation.effects';
+import { ReservationEffects } from "./state/reservation.effects";
 
 @NgModule({
   declarations: [ReservationComponent, CapacityComponent],
@@ -20,7 +20,7 @@ import { ReservationReducer } from './state/reservation.effects';
     SharedModule,
     TranslateModule,
     StoreModule.forFeature('myReservation', weekReducer),
-    EffectsModule.forFeature([ReservationReducer]),
+    EffectsModule.forFeature([ReservationEffects]),
   ],
   exports: [],
 })

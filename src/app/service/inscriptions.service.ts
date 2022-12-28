@@ -40,33 +40,66 @@ export class InscriptionsService {
     return this.get(externalUserId);
   }
 
-  get(externalUserId?: string):Observable<Inscription> {
+  get(externalUserId?: string): Observable<Inscription> {
     let queryParam = '';
-    if (externalUserId){
+    if (externalUserId) {
       queryParam = `?externalUserId=${externalUserId}`;
     }
     return this.httpClient
-      .get<SubscriptionData>(
-        '/api/getInscription' + queryParam
-      )
+      .get<SubscriptionData>('/api/getInscription' + queryParam)
       .pipe(
         map((result: SubscriptionData) => result?.subscription),
         catchError(this.handleError)
       );
   }
 
+  update(inscription: Inscription): Observable<Inscription> {
+
+    const inscriptionQueryInput: Partial<SubscriptionQueryInput> = {
+      _id: inscription._id,
+    };
+
+    const inscriptionUpdateInput: SubscriptionUpdateInput = {
+      ...inscription
+      /*
+      firstName: inscriptionFromStore.firstName,
+      lastName: inscriptionFromStore.lastName,
+      _id: inscriptionFromStore._id,
+      email: inscriptionFromStore.email,
+      phone: inscriptionFromStore.phone,
+      street1: inscriptionFromStore.street1,
+      street2: inscriptionFromStore.street2,
+      city: inscriptionFromStore.city,
+      state:
+        inscriptionFromStore.state === ReservationState.TEMPORARY
+          ? ReservationState.DEFINITIVE
+          : ReservationState.DEFINITIVE_WAITINGLIST,
+      zip: inscriptionFromStore.zip,
+      externalUserId: inscriptionFromStore.externalUserId,
+      children: inscriptionFromStore.children,*/
+    };
+
+    return this.httpClient
+      .post<updateOneInscriptionResponse>(`/api/updateOneInscription`, {
+        query: inscriptionQueryInput,
+        set: inscriptionUpdateInput,
+      })
+      .pipe(
+        map((result: updateOneInscriptionResponse) => {
+          return result?.message?.updateOneSubscription;
+        }),
+        catchError(this.handleError)
+      );
+  }
   updateOneSubscription(
     inscriptionQueryInput: SubscriptionQueryInput,
     inscriptionUpdateInput: SubscriptionUpdateInput
   ): Observable<Inscription> {
     return this.httpClient
-      .post<updateOneInscriptionResponse>(
-        `/api/updateOneInscription`,
-        {
-          query: inscriptionQueryInput,
-          set: inscriptionUpdateInput,
-        }
-      )
+      .post<updateOneInscriptionResponse>(`/api/updateOneInscription`, {
+        query: inscriptionQueryInput,
+        set: inscriptionUpdateInput,
+      })
       .pipe(
         map((result: updateOneInscriptionResponse) => {
           return result?.message?.updateOneSubscription;

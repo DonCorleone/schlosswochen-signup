@@ -40,7 +40,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
+    RouterModule.forRoot(routes,  { enableTracing: true, relativeLinkResolution: 'legacy' }),
   ],
   exports: [RouterModule],
 })

@@ -8,6 +8,7 @@ import {
 
 import { Subscription as Inscription, Week } from 'netlify/models/Graphqlx';
 import { Place } from '../../../models/Interfaces';
+import { updateInscriptionAPISuccess } from './inscription.actions';
 
 export const inscriptionFeatureKey = 'inscription';
 
@@ -91,6 +92,11 @@ export const inscriptionReducer = createReducer<InscriptionState>(
     };
   }),
 
+  on(updateInscriptionAPISuccess, (state, { updateInscription }) => ({
+    ...state,
+    inscription: updateInscription,
+  })),
+
   /*  on(InscriptionAction.upsertParticipant, (state, action) => {
     const index = state.inscription.participants?.findIndex(
       (participant) =>
@@ -115,7 +121,7 @@ export const inscriptionReducer = createReducer<InscriptionState>(
       (child) => child?.participant_id === action.child.participant_id
     ); //finding index of the item
 
-    if (index! < 0 || !state.inscription?.children){
+    if (index! < 0 || !state.inscription?.children) {
       return {
         ...state,
         inscription: {

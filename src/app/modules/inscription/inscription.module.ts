@@ -12,6 +12,8 @@ import { FinnishComponent } from './finnish/finnish.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { StoreModule } from "@ngrx/store";
 import { inscriptionReducer } from "./state/inscription.reducer";
+import { EffectsModule } from "@ngrx/effects";
+import { InscriptionsEffects } from "./state/inscription.effects";
 
 @NgModule({
   declarations: [InscriptionComponent, ParticipantComponent, FinnishComponent],
@@ -22,7 +24,8 @@ import { inscriptionReducer } from "./state/inscription.reducer";
     FormlyModule.forRoot(),
     FormlyBootstrapModule,
 
-    StoreModule.forFeature('myWeeks', inscriptionReducer),
+    StoreModule.forFeature('myReservation', inscriptionReducer),
+    EffectsModule.forFeature([InscriptionsEffects]),
     ReservationsModule,
     SharedModule,
     TranslateModule,

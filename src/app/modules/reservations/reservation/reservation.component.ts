@@ -141,19 +141,13 @@ export class ReservationComponent implements OnInit, OnDestroy {
     let apiStatus$ = this.appStore.pipe(select(selectAppState));
     apiStatus$.subscribe((apState) => {
       if (apState.apiStatus == 'success') {
-        this.superStore
-          .pipe(select(selectWeeks), takeUntil(this._ngDestroy$))
-          .subscribe((x) => {
-            this.appStore.dispatch(
-              setAPIStatus({
-                apiStatus: { apiResponseMessage: '', apiStatus: '' },
-              })
-            );
+        this.appStore.dispatch(
+          setAPIStatus({
+            apiStatus: { apiResponseMessage: '', apiStatus: '' },
+          })
+        );
 
-            this.router.navigate([
-              '/inscriptions/inscription',
-            ]);
-          });
+        this.router.navigate(['/inscriptions/inscription']);
       }
     });
   }

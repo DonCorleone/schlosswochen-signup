@@ -28,8 +28,15 @@ import { ReservationService } from '../../../service/reservation.service';
 import { ReservationState } from '../../../models/Interfaces';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
 import { WeeksService } from '../../../service/weeks.service';
-import { invokeInscriptionAPI } from "../state/inscription.actions";
-import { selectInscription } from "../state/inscription.selector";
+import {
+  invokeInscriptionAPI,
+  invokeUpdateInscriptionAPI,
+  updateInscriptionAPISuccess,
+} from '../state/inscription.actions';
+import { selectInscription } from '../state/inscription.selector';
+import { AppState } from '../../../shared/store/appState';
+import { selectAppState } from '../../../shared/store/app.selector';
+import { setAPIStatus } from '../../../shared/store/app.action';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -78,6 +85,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store<InscriptionReducer.InscriptionState>,
     private superStore: Store,
+    private appStore: Store<AppState>,
     private loadingIndicatorService: LoadingIndicatorService
   ) {
     this.year = process?.env?.UPCOMING_YEAR ? +process?.env?.UPCOMING_YEAR : 0;
@@ -104,7 +112,6 @@ export class InscriptionComponent implements OnInit, OnDestroy {
         [Validators.required, Validators.minLength(4), Validators.maxLength(5)],
       ],
       country: ['Switzerland', [Validators.required]],
-      participants: [],
       children: [],
       externalUserId: '',
     });
@@ -121,12 +128,12 @@ export class InscriptionComponent implements OnInit, OnDestroy {
 
     combineLatest([
       this.store.pipe(select(AuthSelector.selectCurrentUserProfile)),
-      this.inscription$
+      this.inscription$,
     ])
       .pipe(
         takeUntil(this._ngDestroy$),
         tap(([externalUser, inscription]) => {
-/*          if (externalUser?.sub?.length > 0 || inscription) {
+          /*          if (externalUser?.sub?.length > 0 || inscription) {
             this.inscriptionService
               .getInscription$(
                 externalUser?.sub,
@@ -149,7 +156,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
                       .subscribe((x) => (inscription = x));
                   }*/
 
-/*                  if (externalUser) {
+          /*                  if (externalUser) {
                     this.weekService
                       .getWeeks(this.year)
                       .pipe(
@@ -175,8 +182,8 @@ export class InscriptionComponent implements OnInit, OnDestroy {
                       take(1);
                   }*/
 
-                  this.displayInscription(inscription.inscription);
-/*                },
+          this.displayInscription(inscription.inscription);
+          /*                },
                 error: (err) => (this.errorMessage = err),
               });
           }*/
@@ -190,43 +197,20 @@ export class InscriptionComponent implements OnInit, OnDestroy {
   }
 
   goToNextStep(): void {
+
     if (this.signupForm.invalid) {
-      this.loadingIndicatorService.stop();
-      Object.keys(this.signupForm.controls).forEach((field) => {
-        // {1}
-        const control = this.signupForm.get(field); // {2}
-        control?.markAsTouched({ onlySelf: true }); // {3}
-      });
+      this.displayValidations();
       return;
     }
 
     if (!this.signupForm.dirty) {
-      this.store.dispatch(
-        InscriptionActions.increaseCurrentParticipantNumber()
-      );
-      this.router.navigate(['/inscriptions/participant']).then((x) => {
-        console.log('InscriptionComponent goToNextStep');
-      });
+      this.goToParticipantsView();
       return;
     }
-    /*
 
-    let inscriptionUpdateInput: Partial<SubscriptionUpdateInput> = {
-      ...this.signupForm.value,
-    };
-*/
+    this.update();
 
-    const inscriptionForm = { inscription: this.signupForm.value };
-
-    this.store.dispatch(
-      InscriptionActions.setInscription({
-        inscription: inscriptionForm.inscription,
-      })
-    );
-    this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
-    this.router.navigate(['/inscriptions/participant']).then((x) => {
-      console.log('InscriptionComponent goToNextStep');
-    });
+    return;
 
     /*    this.inscriptionService
       .updateOneSubscription(subscriptionQueryInput, inscriptionUpdateInput)
@@ -244,6 +228,43 @@ export class InscriptionComponent implements OnInit, OnDestroy {
           console.log('InscriptionComponent goToNextStep');
         });
       });*/
+  }
+
+  update(next = true) {
+
+    this.store.dispatch(
+      invokeUpdateInscriptionAPI({ updateInscription: { ...this.signupForm.value } })
+    );
+
+    let apiStatus$ = this.appStore.pipe(select(selectAppState));
+    apiStatus$.subscribe((apState) => {
+      if (apState.apiStatus == 'success') {
+        this.appStore.dispatch(
+          setAPIStatus({ apiStatus: { apiResponseMessage: '', apiStatus: '' } })
+        );
+
+        this.goToParticipantsView();
+      }
+    });
+  }
+
+  private goToParticipantsView() {
+
+    this.loadingIndicatorService.stop();
+    this.store.dispatch(InscriptionActions.increaseCurrentParticipantNumber());
+    this.router.navigate(['/inscriptions/participant']).then((x) => {
+      console.log('InscriptionComponent goToNextStep');
+    });
+  }
+
+  private displayValidations() {
+    this.loadingIndicatorService.stop();
+    Object.keys(this.signupForm.controls).forEach((field) => {
+      // {1}
+      const control = this.signupForm.get(field); // {2}
+      control?.markAsTouched({ onlySelf: true }); // {3}
+    });
+    return;
   }
 
   setMessage(c: AbstractControl): string {
