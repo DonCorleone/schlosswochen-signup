@@ -1,5 +1,5 @@
-[functions]
-external_node_modules = ["axios"]
+[[plugins]]
+package = "@netlify/plugin-emails"
 
 [dev]
 [[redirects]]

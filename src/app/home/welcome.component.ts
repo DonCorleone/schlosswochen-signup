@@ -56,6 +56,23 @@ export class WelcomeComponent implements OnDestroy {
   }
 
   goToNextStep(): void {
+    const data = {
+      subscriberName: 'fridolin hugentobler 7000',
+      subscriberEmail: 'vitocorleone77@gmail.com',
+    };
+    //call to the Netlify Function you created
+    fetch('./.netlify/functions/triggerSubscribeEmail', {
+      method: 'POST',
+      body: JSON.stringify({
+        subscriberName: data.subscriberName,
+        subscriberEmail: data.subscriberEmail,
+        inviteeEmail: 'no-replay@schlosswochen.ch',
+      }),
+    })
+      .then((p) => console.log(`yeah ${p}`))
+      .catch((x) => console.log(`ohno ${x}`))
+      .finally(() => console.log(`live goes on`));
+
     this.loggedIn$
       ?.pipe(takeUntil(this._ngDestroy$))
       .subscribe((isLoggedIn) => {
