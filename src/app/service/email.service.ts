@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import {
   Subscription as Inscription,
-  SubscriptionChild, Week
-} from "../../../netlify/models/Graphqlx";
+  SubscriptionChild,
+  Week,
+} from '../../../netlify/models/Graphqlx';
 import { MailPayload } from '../../../netlify/functions/triggerSubscribeEmail';
+import { DatePipe } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmailService {
-  constructor() {}
-
   writeMail(updateInscription: Inscription, week: Week) {
-
     const mailPayload: MailPayload = {
+      subject: this.getSubject(updateInscription),
       year: this.getYear(updateInscription),
       salutation: this.getSalutation(updateInscription),
       state: this.getState(updateInscription),
@@ -59,8 +59,11 @@ export class EmailService {
     return `Woche ${subscription.week}`;
   }
 
-  getDates(dateFrom: string, dateTo: string): string {
-    return `${dateFrom} - ${dateTo}`;
+  getDates(dateFrom: Date, dateTo: Date): string {
+    const datepipe: DatePipe = new DatePipe('de-CH');
+    return `${datepipe.transform(dateFrom, 'dd.MM.YYYY') ?? ''} - ${
+      datepipe.transform(dateTo, 'dd.MM.YYYY') ?? ''
+    }`;
   }
 
   getName(subscription: Inscription): string {
@@ -71,14 +74,14 @@ export class EmailService {
     return `${subscription.street1}`;
   }
 
-  getStreet2(subscription: Inscription): string {
+  getStreet2(subscription: Inscription): string | undefined {
     return `${
-      subscription.street2 !== '' ? subscription.street2 + '<br>' : ''
+      subscription.street2 !== '' ? subscription.street2 : undefined
     }`;
   }
 
   getCity(subscription: Inscription): string {
-    return `${subscription.zip} ${subscription.city}<br>`;
+    return `${subscription.zip} ${subscription.city}`;
   }
 
   getCountry(subscription: Inscription): string {
@@ -94,43 +97,53 @@ export class EmailService {
   }
 
   getToday(): string {
-    return `${new Date().toString()}`;
+    const datepipe: DatePipe = new DatePipe('de-CH');
+    return datepipe.transform(new Date(), 'dd.MM.YYYY HH:mm') ?? '';
   }
 
   getYear(subscription: Inscription): string {
     return subscription.year?.toString() ?? '';
   }
 
-  getParticipantsPart(subscription: Inscription): string {
-
-    if (!subscription.children){
-      return '';
+  getParticipantsPart(subscription: Inscription): object {
+    if (!subscription.children) {
+      return {};
     }
-    var participantPart = `<ul>`;
+
+    let arrayOfStrings: string[] = [];
 
     subscription.children.forEach((participant) => {
-
-      if (participant){
-        const comment = participant?.comment?.replace(/\r?\n/g, '<br />');
-        participantPart =
-          participantPart +
-          `
-          <li>
-            ${participant.firstNameParticipant} ${participant.lastNameParticipant}
+      if (participant) {
+        const comment = participant?.comment?.replace(/\r?\n/g, ' - ');
+        arrayOfStrings.push(
+          `${participant.firstNameParticipant} ${
+            participant.lastNameParticipant
+          }
               (${participant.salutation},
-                *${String(participant.birthday.getDate()).padStart(2, '0')}.${String(
-            participant.birthday.getMonth() + 1
-          ).padStart(2, '0')}.${participant.birthday.getFullYear()}
-              )<br>
+                *${String(participant.birthday.getDate()).padStart(
+                  2,
+                  '0'
+                )}.${String(participant.birthday.getMonth() + 1).padStart(
+            2,
+            '0'
+          )}.${participant.birthday.getFullYear()}
+              ) -
             Fotos veröffentlichen erlaubt: ${
-            participant.fotoAllowed ? 'ja' : 'nein'
-          }<br>
-            Kommentar: ${comment}<br>
-          </li>
-        `;
+              participant.fotoAllowed ? 'ja' : 'nein'
+            } -
+            Kommentar: ${comment}
+        `
+        );
       }
     });
 
-    return participantPart + `</ul>`;
+    return JSON.parse(JSON.stringify(arrayOfStrings));
+  }
+
+  private getSubject(subscription: Inscription) {
+    const ix = subscription?.state?.indexOf('WaitingList');
+    return ix && ix > 0
+      ? 'Bestätigung Wartelisteneintrag Schlosswochen'
+      : 'Bestätigung Anmeldung Schlosswochen';
   }
 }

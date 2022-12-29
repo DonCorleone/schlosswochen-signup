@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from "@angular/core";
+import localeCh from '@angular/common/locales/de-CH';
+registerLocaleData(localeCh);
 import {
   HTTP_INTERCEPTORS,
   HttpClient,
@@ -33,6 +35,7 @@ import { LoadingIndicatorInterceptor } from './interceptor/loading-indicator.int
 import { LoadingIndicatorService } from './service/loading-indicator.service';
 import { appReducer } from "./shared/store/app.reducer";
 import { reservationReducer } from "./modules/reservations/state/reservation.reducer";
+import { registerLocaleData } from "@angular/common";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -87,6 +90,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       useClass: LoadingIndicatorInterceptor,
       multi: true,
     },
+    { provide: LOCALE_ID, useValue: 'de-CH'},
   ],
   bootstrap: [AppComponent],
 })

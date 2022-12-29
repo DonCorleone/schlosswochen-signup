@@ -20,7 +20,10 @@
       <p>
         {{name}}<br />
         {{street1}}<br />
-        {{street2}} {{city}}<br />
+        {{#if street2}}
+        {{street2}} <br />
+        {{/if}}
+        {{city}}<br />
         {{country}}
       </p>
       <h4><strong>Kontakt:</strong></h4>
@@ -31,7 +34,11 @@
 
       <hr />
       <h3>Teilnehmende</h3>
-      {{participants}}
+      <ul>
+        {{#each participants}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ul>
       <br />
       <p>
         Danke für die Anmeldung! Diese ist hiermit definitiv und verpflichtend
