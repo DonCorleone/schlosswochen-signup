@@ -4,7 +4,20 @@ import { Subscription as Inscription } from "../models/Graphqlx";
 import { InscriptionsService } from "../../src/app/service/inscriptions.service";
 
 export interface MailPayload {
-  inscription: Inscription
+  year: string,
+  salutation: string,
+  state: string,
+  week: string,
+  date: string,
+  name: string,
+  street1: string,
+  street2:string,
+  city: string,
+  country: string,
+  email: string,
+  phone: string,
+  participants: string,
+  datetoday: string
 }
 
 const handler: Handler = async function (event) {
@@ -27,11 +40,10 @@ const handler: Handler = async function (event) {
     method: 'POST',
     body: JSON.stringify({
       from: process.env['EMAIL_SENDER'],
-      to: requestPayload.inscription.email,
-      subject: "all you can eat",
+      to: requestPayload.email,
+      subject: "Hallo Neva",
       parameters: {
-        name: requestPayload.inscription.firstName,
-        email: requestPayload.inscription.email,
+        ...requestPayload
       },
     }),
   });

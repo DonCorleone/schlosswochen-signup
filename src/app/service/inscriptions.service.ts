@@ -136,19 +136,4 @@ export class InscriptionsService {
       zip: '',
     };
   }
-
-  writeMail(updateInscription: Inscription) {
-
-    const mailPayload: MailPayload = {
-      inscription: updateInscription
-    }
-    //call to the Netlify Function you created
-    fetch('./.netlify/functions/triggerSubscribeEmail', {
-      method: 'POST',
-      body: JSON.stringify(mailPayload),
-    })
-      .then((p) => console.log(`yeah ${p}`))
-      .catch((x) => console.log(`ohno ${x}`))
-      .finally(() => console.log(`live goes on`));
-  }
 }

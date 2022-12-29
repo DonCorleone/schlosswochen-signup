@@ -16,9 +16,10 @@ import { select, Store } from '@ngrx/store';
 import {
   Subscription as Inscription,
   SubscriptionChild,
+  Week,
 } from 'netlify/models/Graphqlx';
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
-import { Subject, takeUntil } from 'rxjs';
+import { combineLatestWith, map, Observable, Subject, takeUntil } from 'rxjs';
 import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { ReservationState } from '../../../models/reservation-state';
@@ -36,8 +37,9 @@ import { AppState } from '../../../shared/store/appState';
 import {
   getCurrentParticipantNumber,
   getInscription,
+  reservationSelector,
 } from '../../reservations/state/reservation.selector';
-
+import { EmailService } from '../../../service/email.service';
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
 function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
@@ -83,7 +85,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private appStore: Store<AppState>,
     private changeDetectorRef: ChangeDetectorRef,
     private inscriptionsService: InscriptionsService,
-    private loadingIndicatorService: LoadingIndicatorService
+    private loadingIndicatorService: LoadingIndicatorService,
+
+    private emailService: EmailService
   ) {}
 
   ngOnInit(): void {
@@ -214,7 +218,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       state:
         this.inscription.state === ReservationState.TEMPORARY
           ? ReservationState.DEFINITIVE
-          : ReservationState.DEFINITIVE_WAITINGLIST
+          : ReservationState.DEFINITIVE_WAITINGLIST,
     };
     this.store.dispatch(
       invokeUpdateInscriptionAPI({
@@ -222,21 +226,41 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.appStore
-      .pipe(select(selectAppState), takeUntil(this._ngDestroy$))
-      .subscribe((apState) => {
-        if (apState.apiStatus == 'success') {
-          this.appStore.dispatch(
-            setAPIStatus({
-              apiStatus: { apiResponseMessage: '', apiStatus: '' },
-            })
-          );
+    const appState$ = this.appStore.pipe(select(selectAppState));
 
-          this.inscriptionsService.writeMail(updateInscription);
+    const weekState$ = this.getWeek();
 
-          this.goToFinnishView();
-        }
-      });
+    // Combine the changes by adding them together
+    appState$
+      .pipe(
+        takeUntil(this._ngDestroy$),
+        combineLatestWith(weekState$),
+        map(([appState, weekState]) => {
+          if (appState.apiStatus == 'success') {
+            this.appStore.dispatch(
+              setAPIStatus({
+                apiStatus: { apiResponseMessage: '', apiStatus: '' },
+              })
+            );
+
+            if (!weekState?.week) {
+              // Error!
+              return;
+            }
+            this.emailService.writeMail(this.inscription, weekState);
+
+            this.goToFinnishView();
+          }
+        })
+      )
+      .subscribe((x) => console.log(x));
+  }
+  getWeek(): Observable<Week | undefined> {
+    return this.store.pipe(select(reservationSelector)).pipe(
+      map((state) => {
+        return state.weeks.find((p) => p.week == state.inscription.week);
+      })
+    );
   }
 
   ngOnDestroy(): void {
