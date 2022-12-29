@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ParticipantService } from '../service/participant.service';
 import { InscriptionsService } from '../service/inscriptions.service';
 import { Observable, Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
@@ -17,7 +16,6 @@ export class SigninRedirectCallbackComponent implements OnInit, OnDestroy {
   private profileSubscription: Subscription;
 
   constructor(
-    private participantService: ParticipantService,
     private inscriptionsService: InscriptionsService,
     private store: Store<any>,
     private router: Router

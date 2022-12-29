@@ -7,6 +7,7 @@ import {
 } from 'netlify/models/Graphqlx';
 import { ReservationState } from '../models/reservation-state';
 import { HttpClient } from '@angular/common/http';
+import { MailPayload } from "../../../netlify/functions/triggerSubscribeEmail";
 
 interface SubscriptionData {
   subscription: Inscription;
@@ -61,22 +62,6 @@ export class InscriptionsService {
 
     const inscriptionUpdateInput: SubscriptionUpdateInput = {
       ...inscription
-      /*
-      firstName: inscriptionFromStore.firstName,
-      lastName: inscriptionFromStore.lastName,
-      _id: inscriptionFromStore._id,
-      email: inscriptionFromStore.email,
-      phone: inscriptionFromStore.phone,
-      street1: inscriptionFromStore.street1,
-      street2: inscriptionFromStore.street2,
-      city: inscriptionFromStore.city,
-      state:
-        inscriptionFromStore.state === ReservationState.TEMPORARY
-          ? ReservationState.DEFINITIVE
-          : ReservationState.DEFINITIVE_WAITINGLIST,
-      zip: inscriptionFromStore.zip,
-      externalUserId: inscriptionFromStore.externalUserId,
-      children: inscriptionFromStore.children,*/
     };
 
     return this.httpClient
@@ -150,5 +135,20 @@ export class InscriptionsService {
       year: inscription.year,
       zip: '',
     };
+  }
+
+  writeMail(updateInscription: Inscription) {
+
+    const mailPayload: MailPayload = {
+      inscription: updateInscription
+    }
+    //call to the Netlify Function you created
+    fetch('./.netlify/functions/triggerSubscribeEmail', {
+      method: 'POST',
+      body: JSON.stringify(mailPayload),
+    })
+      .then((p) => console.log(`yeah ${p}`))
+      .catch((x) => console.log(`ohno ${x}`))
+      .finally(() => console.log(`live goes on`));
   }
 }

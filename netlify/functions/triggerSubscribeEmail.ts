@@ -1,5 +1,11 @@
 import { Handler } from '@netlify/functions';
 import fetch from 'node-fetch';
+import { Subscription as Inscription } from "../models/Graphqlx";
+import { InscriptionsService } from "../../src/app/service/inscriptions.service";
+
+export interface MailPayload {
+  inscription: Inscription
+}
 
 const handler: Handler = async function (event) {
   if (event.body === null) {
@@ -9,26 +15,23 @@ const handler: Handler = async function (event) {
     };
   }
 
-  const requestBody = JSON.parse(event.body) as {
-    subscriberName: string;
-    subscriberEmail: string;
-    inviteeEmail: string;
-  };
+  const requestPayload: MailPayload = JSON.parse(event.body ?? '');
 
   //automatically generated snippet from the email preview
   //sends a request to an email handler for a subscribed email
   await fetch(`${process.env['URL']}/.netlify/functions/emails/subscribed`, {
+
     headers: {
       'netlify-emails-secret': process.env['NETLIFY_EMAILS_SECRET'] as string,
     },
     method: 'POST',
     body: JSON.stringify({
-      from: requestBody.inviteeEmail,
-      to: requestBody.subscriberEmail,
-      subject: "You've been subscribed 7000",
+      from: process.env['EMAIL_SENDER'],
+      to: requestPayload.inscription.email,
+      subject: "all you can eat",
       parameters: {
-        name: requestBody.subscriberName,
-        email: requestBody.subscriberEmail,
+        name: requestPayload.inscription.firstName,
+        email: requestPayload.inscription.email,
       },
     }),
   });

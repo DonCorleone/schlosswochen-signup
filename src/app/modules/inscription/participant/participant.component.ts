@@ -13,7 +13,6 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { ParticipantService } from 'src/app/service/participant.service';
 import {
   Subscription as Inscription,
   SubscriptionChild,
@@ -35,8 +34,9 @@ import { selectAppState } from '../../../shared/store/app.selector';
 import { setAPIStatus } from '../../../shared/store/app.action';
 import { AppState } from '../../../shared/store/appState';
 import {
-  getCurrentParticipantNumber, getInscription
-} from "../../reservations/state/reservation.selector";
+  getCurrentParticipantNumber,
+  getInscription,
+} from '../../reservations/state/reservation.selector';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -75,14 +75,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   private initDate = new Date();
 
   constructor(
-    private fb: UntypedFormBuilder,
+    private untypedFormBuilder: UntypedFormBuilder,
     private activeRoute: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
     private store: Store,
     private appStore: Store<AppState>,
     private changeDetectorRef: ChangeDetectorRef,
-    private participantService: ParticipantService,
     private inscriptionsService: InscriptionsService,
     private loadingIndicatorService: LoadingIndicatorService
   ) {}
@@ -113,7 +112,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
         const participantId: string = `${inscriptionId}-${+currentParticipantNr}`;
 
-        this.signupForm = this.fb.group({
+        this.signupForm = this.untypedFormBuilder.group({
           salutation: ['', [Validators.required]],
           firstNameParticipant: ['', [Validators.required]],
           lastNameParticipant: ['', [Validators.required]],
@@ -194,10 +193,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       this.saveInscription();
     }
   }
-  saveChild(
-    subscriptionChild: SubscriptionChild,
-    isSaveStep: boolean
-  ): void {
+  saveChild(subscriptionChild: SubscriptionChild, isSaveStep: boolean): void {
     this.store.dispatch(upsertChild({ child: subscriptionChild }));
 
     if (isSaveStep) {
@@ -213,15 +209,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   saveInscription() {
+    const updateInscription: Inscription = {
+      ...this.inscription,
+      state:
+        this.inscription.state === ReservationState.TEMPORARY
+          ? ReservationState.DEFINITIVE
+          : ReservationState.DEFINITIVE_WAITINGLIST
+    };
     this.store.dispatch(
       invokeUpdateInscriptionAPI({
-        updateInscription: {
-          ...this.inscription,
-          state:
-            this.inscription.state === ReservationState.TEMPORARY
-              ? ReservationState.DEFINITIVE
-              : ReservationState.DEFINITIVE_WAITINGLIST,
-        },
+        updateInscription,
       })
     );
 
@@ -234,6 +231,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               apiStatus: { apiResponseMessage: '', apiStatus: '' },
             })
           );
+
+          this.inscriptionsService.writeMail(updateInscription);
 
           this.goToFinnishView();
         }
