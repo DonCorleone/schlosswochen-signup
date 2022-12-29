@@ -35,9 +35,8 @@ import { selectAppState } from '../../../shared/store/app.selector';
 import { setAPIStatus } from '../../../shared/store/app.action';
 import { AppState } from '../../../shared/store/appState';
 import {
-  getCurrentParticipantNumber,
-  reservationSelector,
-} from '../../reservations/state/reservation.selector';
+  getCurrentParticipantNumber, getInscription
+} from "../../reservations/state/reservation.selector";
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just "string" raises an error
@@ -60,7 +59,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   numOfChilds: number = 0;
   inscription!: Inscription;
-  reservationState$ = this.store.pipe(select(reservationSelector));
+  inscription$ = this.store.pipe(select(getInscription));
   signupForm!: UntypedFormGroup;
   currentParticipantNumber = 0;
   emailMessage: string = '';
@@ -89,18 +88,18 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.reservationState$
+    this.inscription$
       .pipe(takeUntil(this._ngDestroy$))
-      .subscribe((state) => {
-        if (!state) {
+      .subscribe((inscriptionFromState) => {
+        if (!inscriptionFromState) {
           return;
         }
-        if (state?.inscription.numOfChildren) {
-          this.numOfChilds = state.inscription.numOfChildren;
+        if (inscriptionFromState.numOfChildren) {
+          this.numOfChilds = inscriptionFromState.numOfChildren;
         }
 
-        this.inscription = state.inscription;
-        this.loadParticipantDetail(state.inscription._id);
+        this.inscription = inscriptionFromState;
+        this.loadParticipantDetail(inscriptionFromState._id);
         this.changeDetectorRef.markForCheck();
       });
   }

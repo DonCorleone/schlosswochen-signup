@@ -49,8 +49,8 @@ export class WeeksService {
       );
   }
 
-  mapWeekCapacity(weeks$: Observable<State>): Observable<WeekCapacity[]> {
-    return weeks$.pipe(
+  mapWeekCapacity(stateObservable: Observable<State>): Observable<WeekCapacity[]> {
+    return stateObservable.pipe(
       mergeMap((state) => {
         return combineLatest(
           state.weeks.map((week) => {

@@ -4,7 +4,12 @@ import { map, Observable, Subject } from "rxjs";
 import { Subscription as Inscription, Week } from "netlify/models/Graphqlx";
 import { selectIsLoggedIn } from "../../user/state/auth.selectors";
 import { TranslateService } from "@ngx-translate/core";
-import { getDeadline, reservationSelector } from "../../reservations/state/reservation.selector";
+import {
+  getDeadline,
+  getInscription,
+  getWeeks,
+  reservationSelector
+} from "../../reservations/state/reservation.selector";
 
 @Component({
   selector: 'app-header',
@@ -34,8 +39,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.loggedIn$ = this.store.pipe(select(selectIsLoggedIn));
       this.deadline$ = this.store.pipe(select(getDeadline));
       this.inscription$ = this.store
-        .pipe(select(reservationSelector))
-        .pipe(map((p) => p?.inscription));
+        .pipe(select(getInscription));
       this.week$ = this.getWeek();
     }
   }
