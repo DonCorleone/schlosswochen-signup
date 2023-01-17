@@ -7,9 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { ReservationService } from 'src/app/service/reservation.service';
 import { SubscriptionInsertInput, Week } from 'netlify/models/Graphqlx';
 import { environment } from '../../../../environments/environment';
-import {
-  ReservationState
-} from '../../../models/reservation-state';
+import { ReservationState } from '../../../models/reservation-state';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
 import { WeeksService } from '../../../service/weeks.service';
 import {
@@ -48,6 +46,8 @@ export class ReservationComponent implements OnInit, OnDestroy {
     return this.weekService.mapWeekCapacity(p);
   });
   private _ngDestroy$ = new Subject<void>();
+
+  isPublished: boolean;
   constructor(
     private fb: UntypedFormBuilder,
     private reservationService: ReservationService,
@@ -62,6 +62,11 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.weeks$.pipe(
+      takeUntil(this._ngDestroy$))
+      .subscribe((x) => {
+      this.isPublished = x.map((y) => y.published).every(Boolean);
+    });
     this.store.dispatch(invokeWeeksAPI());
   }
 
@@ -137,7 +142,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
         }
       });
   }
-
   private calcDeadline(weeklyReservation: WeeklyReservation) {
     let deadlineMs =
       (5 + weeklyReservation.numberOfReservations * 3) * 60 * 1000;
