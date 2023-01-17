@@ -28,14 +28,6 @@ const handler: Handler = async (event, context) => {
     event.body ?? ''
   );
 
-  console.log('insertOneSubscription body ' + event.body);
-  console.log(
-    'insertOneSubscription update '+ JSON.stringify( requestPayload.query)
-  );
-  console.log(
-    'insertOneSubscription query ' + JSON.stringify(requestPayload.set)
-  );
-
   return fetch(
     `https://realm.mongodb.com/api/client/v2.0/app/${process.env
       .APP_ID_REALM!}/graphql`,
@@ -61,7 +53,7 @@ const handler: Handler = async (event, context) => {
               firstName
               lastName
               numOfChildren
-              participants {
+              children {
                 _id
                 birthday
                 comment

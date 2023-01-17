@@ -1,5 +1,5 @@
-[functions]
-external_node_modules = ["axios"]
+[[plugins]]
+package = "@netlify/plugin-emails"
 
 [dev]
 [[redirects]]
@@ -11,14 +11,3 @@ status = 200
 command = "npm run build --configuration=production"
 functions = "netlify/functions"
 publish = "dist/Schlosswochen-Inscription"
-
-#[[redirects]]
-#from = "/api/*"
-#to =  "/.netlify/functions/:splat"
-#status = 200
-
-#[[redirects]]
-#from = "/*"
-#to = "/index.html"
-#status = 200
-

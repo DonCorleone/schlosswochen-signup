@@ -5,8 +5,9 @@ import {
   SubscriptionQueryInput,
   SubscriptionUpdateInput,
 } from 'netlify/models/Graphqlx';
-import { ReservationState } from '../models/Interfaces';
+import { ReservationState } from '../models/reservation-state';
 import { HttpClient } from '@angular/common/http';
+import { MailPayload } from "../../../netlify/functions/triggerSubscribeEmail";
 
 interface SubscriptionData {
   subscription: Inscription;
@@ -37,29 +38,53 @@ export class InscriptionsService {
       }
       return of(this.initializeInscription(inscription, reservationState));
     }
+    return this.get(externalUserId);
+  }
 
+  get(externalUserId?: string): Observable<Inscription> {
+    let queryParam = '';
+    if (externalUserId) {
+      queryParam = `?externalUserId=${externalUserId}`;
+    }
     return this.httpClient
-      .get<SubscriptionData>(
-        `/api/getInscription?externalUserId=${externalUserId}`
-      )
+      .get<SubscriptionData>('/api/getInscription' + queryParam)
       .pipe(
         map((result: SubscriptionData) => result?.subscription),
         catchError(this.handleError)
       );
   }
 
+  update(inscription: Inscription): Observable<Inscription> {
+
+    const inscriptionQueryInput: Partial<SubscriptionQueryInput> = {
+      _id: inscription._id,
+    };
+
+    const inscriptionUpdateInput: SubscriptionUpdateInput = {
+      ...inscription
+    };
+
+    return this.httpClient
+      .post<updateOneInscriptionResponse>(`/api/updateOneInscription`, {
+        query: inscriptionQueryInput,
+        set: inscriptionUpdateInput,
+      })
+      .pipe(
+        map((result: updateOneInscriptionResponse) => {
+          return result?.message?.updateOneSubscription;
+        }),
+        catchError(this.handleError)
+      );
+  }
   updateOneSubscription(
     inscriptionQueryInput: SubscriptionQueryInput,
     inscriptionUpdateInput: SubscriptionUpdateInput
   ): Observable<Inscription> {
     return this.httpClient
-      .post<updateOneInscriptionResponse>(
-        `/api/updateOneInscription`,
-        {
-          query: inscriptionQueryInput,
-          set: inscriptionUpdateInput,
-        }
-      )
+      .post<updateOneInscriptionResponse>(`/api/updateOneInscription`, {
+        query: inscriptionQueryInput,
+        set: inscriptionUpdateInput,
+      })
       .pipe(
         map((result: updateOneInscriptionResponse) => {
           return result?.message?.updateOneSubscription;
@@ -99,7 +124,7 @@ export class InscriptionsService {
       firstName: '',
       lastName: '',
       numOfChildren: inscription.numOfChildren,
-      participants: [],
+      children: [],
       phone: '',
       reservationDate: inscription.reservationDate,
       salutation: '',

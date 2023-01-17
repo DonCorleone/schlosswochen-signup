@@ -46,7 +46,6 @@ export class CountDownComponent implements OnInit, OnDestroy {
         return time - x;
       }),
       tap((timeLeft) => {
-        console.log(timeLeft);
         if (timeLeft === 1) {
           this.routerService.navigate(['']);
         }
@@ -81,6 +80,7 @@ export class CountDownComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log('CountDownComponent destroyed');
     this._ngDestroy$.next();
     this._ngDestroy$.complete();
   }

@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ParticipantService } from '../service/participant.service';
 import { InscriptionsService } from '../service/inscriptions.service';
 import { Observable, Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
@@ -17,7 +16,6 @@ export class SigninRedirectCallbackComponent implements OnInit, OnDestroy {
   private profileSubscription: Subscription;
 
   constructor(
-    private participantService: ParticipantService,
     private inscriptionsService: InscriptionsService,
     private store: Store<any>,
     private router: Router
@@ -47,13 +45,13 @@ export class SigninRedirectCallbackComponent implements OnInit, OnDestroy {
           this.subExIdSubscription = this.inscriptionsService
             .updateOneSubscription(varQuery, varSet)
             .subscribe((subscriptionResult) => {
-              this.partExIdSubscription = this.participantService
+/*              this.partExIdSubscription = this.participantService
                 .updateExternalUserId(participantArray, x.sub)
                 .subscribe((participantResult) => {
                   if (participantResult == participantArray.length) {
                     this.router.navigate(['/welcome']).then();
                   }
-                });
+                });*/
             });
         });
     }
@@ -61,6 +59,7 @@ export class SigninRedirectCallbackComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log('SigninRedirectCallbackComponent destroyed');
     this.profileSubscription?.unsubscribe();
     this.partExIdSubscription?.unsubscribe();
     this.subExIdSubscription?.unsubscribe();

@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from "@angular/core";
+import localeCh from '@angular/common/locales/de-CH';
+registerLocaleData(localeCh);
 import {
   HTTP_INTERCEPTORS,
   HttpClient,
@@ -24,15 +26,16 @@ import { UnauthorizedComponent } from './home/unauthorized.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
-import { AuthModule } from '@auth0/auth0-angular';
+import { AuthModule, AuthState } from "@auth0/auth0-angular";
 import { authReducer } from './modules/user/state/auth.reducer';
 import { EffectsModule } from '@ngrx/effects';
-import { AuthEffects } from './modules/user/state/auth.effects';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import * as inscriptionState from './modules/inscription/state/inscription.reducer';
 import { LoadingIndicatorInterceptor } from './interceptor/loading-indicator.interceptor';
 import { LoadingIndicatorService } from './service/loading-indicator.service';
+import { appReducer } from "./shared/store/app.reducer";
+import { reservationReducer } from "./modules/reservations/state/reservation.reducer";
+import { registerLocaleData } from "@angular/common";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -64,14 +67,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient],
       },
     }),
-    StoreModule.forRoot({ auth: authReducer }), // State object here like described
-
-    StoreModule.forFeature(
-      inscriptionState.inscriptionFeatureKey,
-      inscriptionState.inscriptionReducer
-    ),
-
-    EffectsModule.forRoot([AuthEffects]),
+    StoreModule.forRoot({ appState: appReducer, reservationState: reservationReducer, auth: authReducer }),
+    EffectsModule.forRoot([]),
 
     StoreDevtoolsModule.instrument({
       name: 'Schlosswochen Inscription',
@@ -93,6 +90,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       useClass: LoadingIndicatorInterceptor,
       multi: true,
     },
+    { provide: LOCALE_ID, useValue: 'de-CH'},
   ],
   bootstrap: [AppComponent],
 })

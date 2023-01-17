@@ -13,7 +13,7 @@
             [title]="title"
           ></app-header>
         </div>
-        <div *ngIf="weekVMs$ | async as weekVMs" class="form-group mb-2">
+        <div *ngIf="weeks$ | async as weeks" class="form-group mb-2">
           <div
             *ngIf="submitted && reservationsPerWeekCtlr?.errors?.min"
             class="alert alert-danger fade show"
@@ -21,20 +21,20 @@
           >
             {{ "SELECTIONREQUIRED" | translate }}:
           </div>
-          <div *ngFor="let weekVM of weekVMs">
-            <div *ngIf="weekVM && weekVM.week" class="weekBlock">
+          <div *ngFor="let week of weeks">
+            <div *ngIf="week && week.week" class="weekBlock">
               <div class="weekOverview">
                 <h2 class="text-light">
-                  {{ "WEEKNR" | translate }} {{ weekVM.week }}
+                  {{ "WEEKNR" | translate }} {{ week.week }}
                 </h2>
                 <p class="text-light">
-                  {{ weekVM.dateFrom | date: "dd.MM.YYYY":"de-CH" }} -
-                  {{ weekVM.dateTo | date: "dd.MM.YYYY":"de-CH" }}
+                  {{ week.dateFrom | date: "dd.MM.YYYY":"de-CH" }} -
+                  {{ week.dateTo | date: "dd.MM.YYYY":"de-CH" }}
                 </p>
               </div>
-              <app-capacity [weekVM]="weekVM"></app-capacity>
+              <app-capacity [weekVM]="week"></app-capacity>
               <div
-                *ngIf="weekVM.published && weekVM.freePlacesThisWeek > 0"
+                *ngIf="week.freePlacesThisWeek > 0"
                 class="weekReservation"
               >
                 <div class="radio-header text-light">
@@ -44,9 +44,9 @@
                   <div
                     *ngFor="
                       let reservation of [].constructor(
-                        weekVM.freePlacesThisWeek > maxNumberOfReservations
+                        week.freePlacesThisWeek > maxNumberOfReservations
                           ? maxNumberOfReservations
-                          : weekVM.freePlacesThisWeek
+                          : week.freePlacesThisWeek
                       );
                       let j = index
                     "
@@ -60,12 +60,12 @@
                           'numOfChilds_def_' +
                           (j + 1).toString() +
                           '_week_' +
-                          weekVM.week.toString()
+                          week.week.toString()
                         "
                         [value]="
                           createWeeklyReservation(
                             year,
-                            weekVM,
+                            week,
                             j + 1,
                             reservationStateEnum.TEMPORARY
                           )
@@ -79,7 +79,7 @@
                 </div>
               </div>
               <div
-                *ngIf="weekVM.published && weekVM.freePlacesThisWeek < maxNumberOfReservations"
+                *ngIf="week.freePlacesThisWeek < maxNumberOfReservations"
                 class="weekReservation"
               >
                 <div class="radio-header text-light">
@@ -103,12 +103,12 @@
                           'numOfChilds_wl_' +
                           (j + 1).toString() +
                           '_week_' +
-                          weekVM.week.toString()
+                          week.week.toString()
                         "
                         [value]="
                           createWeeklyReservation(
                             year,
-                            weekVM,
+                            week,
                             j + 1,
                             reservationStateEnum.TEMPORARY_WAITINGLIST
                           )

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { WeekVM } from '../../../models/Interfaces';
+import { WeekCapacity } from "../../../models/week-capacity";
 
 @Component({
   selector: 'app-capacity',
@@ -7,5 +7,5 @@ import { WeekVM } from '../../../models/Interfaces';
   styleUrls: ['./capacity.component.scss'],
 })
 export class CapacityComponent {
-  @Input() weekVM: WeekVM;
+  @Input() weekVM: WeekCapacity;
 }
