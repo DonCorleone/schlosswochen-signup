@@ -28,7 +28,7 @@ const handler: Handler = async (event, context) => {
       body: JSON.stringify({
         query: `
           query ($year: Int) {
-            weeks(query: { year: $year }, sortBy: WEEK_ASC) {
+            weeks(query: { year: $year published:true }, sortBy: WEEK_ASC) {
               dateFrom
               dateTo
               week
