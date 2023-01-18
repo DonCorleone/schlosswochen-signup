@@ -34,6 +34,7 @@ const handler: Handler = async (event, context) => {
               week
               maxParticipants
               published
+              isLocked
             }
           }
       `,

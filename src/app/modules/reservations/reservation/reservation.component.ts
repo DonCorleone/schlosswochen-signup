@@ -47,7 +47,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   });
   private _ngDestroy$ = new Subject<void>();
 
-  isPublished: boolean;
+  isLocked: boolean;
   constructor(
     private fb: UntypedFormBuilder,
     private reservationService: ReservationService,
@@ -65,7 +65,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     this.weeks$.pipe(
       takeUntil(this._ngDestroy$))
       .subscribe((x) => {
-      this.isPublished = x.map((y) => y.published).every(Boolean);
+      this.isLocked = x.map((y) => y.isLocked).every(Boolean);
     });
     this.store.dispatch(invokeWeeksAPI());
   }
