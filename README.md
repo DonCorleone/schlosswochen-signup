@@ -10,4 +10,4 @@ https://github.com/ngx-translate/core
 
 https://stackoverflow.com/questions/67572355/webpack-5-angular-polyfill-for-node-js-crypto-js
 
-https://transform.tools/graphql-to-typescript-mongodb
+[MongoDB Schema > Typescript](https://transform.tools/graphql-to-typescript-mongodb)
