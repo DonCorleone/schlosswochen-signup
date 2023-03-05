@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import {
   Subscription as Inscription,
-  SubscriptionChild,
-  Week,
-} from '../../../netlify/models/Graphqlx';
+  Week_Capacity
+} from "../../../netlify/models/Graphqlx";
 import { MailPayload } from '../../../netlify/functions/triggerSubscribeEmail';
 import { DatePipe } from '@angular/common';
 
@@ -11,7 +10,7 @@ import { DatePipe } from '@angular/common';
   providedIn: 'root',
 })
 export class EmailService {
-  writeMail(updateInscription: Inscription, week: Week) {
+  writeMail(updateInscription: Inscription, week: Week_Capacity) {
     const mailPayload: MailPayload = {
       subject: this.getSubject(updateInscription),
       year: this.getYear(updateInscription),

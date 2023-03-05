@@ -16,8 +16,8 @@ import { select, Store } from '@ngrx/store';
 import {
   Subscription as Inscription,
   SubscriptionChild,
-  Week,
-} from 'netlify/models/Graphqlx';
+  Week, Week_Capacity
+} from "netlify/models/Graphqlx";
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import { combineLatestWith, map, Observable, Subject, takeUntil } from 'rxjs';
 import { formatDate } from '@angular/common';
@@ -255,7 +255,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       )
       .subscribe((x) => console.log(x));
   }
-  getWeek(): Observable<Week | undefined> {
+  getWeek(): Observable<Week_Capacity | undefined> {
     return this.store.pipe(select(reservationSelector)).pipe(
       map((state) => {
         return state.weeks.find((p) => p.week == state.inscription.week);

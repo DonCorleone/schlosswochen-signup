@@ -219,7 +219,6 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       state: inscription.state,
       zip: inscription.zip,
       country: inscription.country,
-      externalUserId: inscription.externalUserId,
       children: inscription.children,
     });
   }

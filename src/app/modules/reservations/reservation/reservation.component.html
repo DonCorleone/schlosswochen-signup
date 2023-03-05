@@ -40,9 +40,9 @@
                   {{ week.dateTo | date: "dd.MM.YYYY":"de-CH" }}
                 </p>
               </div>
-              <app-capacity *ngIf="!week.isLocked && week.published" [weekVM]="week"></app-capacity>
+              <app-capacity *ngIf="!isLocked && week.published" [weekVM]="week"></app-capacity>
               <div
-                *ngIf="!week.isLocked && week.published && week.freePlacesThisWeek > 0"
+                *ngIf="!isLocked && week.published && week.freePlacesThisWeek > 0"
                 class="weekReservation"
               >
                 <div class="radio-header text-light">
@@ -87,7 +87,7 @@
                 </div>
               </div>
               <div
-                *ngIf="week.published && week.freePlacesThisWeek < maxNumberOfReservations"
+                *ngIf="!isLocked && week.published && week.freePlacesThisWeek < maxNumberOfReservations"
                 class="weekReservation"
               >
                 <div class="radio-header text-light">

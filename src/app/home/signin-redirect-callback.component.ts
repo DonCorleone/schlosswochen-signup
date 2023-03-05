@@ -38,21 +38,20 @@ export class SigninRedirectCallbackComponent implements OnInit, OnDestroy {
           const varQuery: Partial<SubscriptionQueryInput> = {
             _id: inscriptionId
           };
-          const varSet: Partial<SubscriptionUpdateInput> = {
-            externalUserId: x.sub
-          };
+          /*           const varSet: Partial<SubscriptionUpdateInput> = {
+                      externalUserId: x.sub
+                    };
 
-          this.subExIdSubscription = this.inscriptionsService
-            .updateOneSubscription(varQuery, varSet)
-            .subscribe((subscriptionResult) => {
-/*              this.partExIdSubscription = this.participantService
-                .updateExternalUserId(participantArray, x.sub)
-                .subscribe((participantResult) => {
-                  if (participantResult == participantArray.length) {
-                    this.router.navigate(['/welcome']).then();
-                  }
-                });*/
-            });
+                    this.subExIdSubscription = this.inscriptionsService
+                      .updateOneSubscription(varQuery, varSet)                    .subscribe((subscriptionResult) => {
+          /*              this.partExIdSubscription = this.participantService
+                          .updateExternalUserId(participantArray, x.sub)
+                          .subscribe((participantResult) => {
+                            if (participantResult == participantArray.length) {
+                              this.router.navigate(['/welcome']).then();
+                            }
+                          });
+            });*/
         });
     }
     this.router.navigate(['/welcome']).then();

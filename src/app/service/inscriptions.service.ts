@@ -120,7 +120,6 @@ export class InscriptionsService {
       country: '',
       deadline: inscription.deadline,
       email: '',
-      externalUserId: '',
       firstName: '',
       lastName: '',
       numOfChildren: inscription.numOfChildren,

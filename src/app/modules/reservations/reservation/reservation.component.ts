@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
 import { ReservationService } from 'src/app/service/reservation.service';
-import { SubscriptionInsertInput, Week } from 'netlify/models/Graphqlx';
+import { SubscriptionInsertInput, Week_Capacity } from "netlify/models/Graphqlx";
 import { environment } from '../../../../environments/environment';
 import { ReservationState } from '../../../models/reservation-state';
 import { LoadingIndicatorService } from '../../../service/loading-indicator.service';
@@ -21,7 +21,7 @@ import { setAPIStatus } from '../../../shared/store/app.action';
 
 export interface WeeklyReservation {
   year: number;
-  week: Week;
+  week: Week_Capacity;
   numberOfReservations: number;
   state: ReservationState;
 }
@@ -33,6 +33,7 @@ export interface WeeklyReservation {
 })
 export class ReservationComponent implements OnInit, OnDestroy {
   title = 'RESERVATION';
+  isLocked = true;
   reservationStateEnum = ReservationState;
   // maxWeeks: number = 1;
   year: number;
@@ -47,7 +48,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
   });
   private _ngDestroy$ = new Subject<void>();
 
-  isLocked: boolean;
   constructor(
     private fb: UntypedFormBuilder,
     private reservationService: ReservationService,
@@ -59,20 +59,16 @@ export class ReservationComponent implements OnInit, OnDestroy {
   ) {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
     this.year = +environment.UPCOMING_YEAR;
+    this.isLocked = environment.IS_LOCKED !== 'false';
   }
 
   ngOnInit(): void {
-    this.weeks$.pipe(
-      takeUntil(this._ngDestroy$))
-      .subscribe((x) => {
-      this.isLocked = x.map((y) => y.isLocked).every(Boolean);
-    });
     this.store.dispatch(invokeWeeksAPI());
   }
 
   createWeeklyReservation(
     year: number,
-    week: Week,
+    week: Week_Capacity,
     reservations: number,
     state: ReservationState
   ): WeeklyReservation {
