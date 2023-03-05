@@ -33,7 +33,7 @@ export interface WeeklyReservation {
 })
 export class ReservationComponent implements OnInit, OnDestroy {
   title = 'RESERVATION';
-  isLocked = true;
+  production = true;
   reservationStateEnum = ReservationState;
   // maxWeeks: number = 1;
   year: number;
@@ -59,7 +59,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   ) {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
     this.year = +environment.UPCOMING_YEAR;
-    this.isLocked = environment.IS_LOCKED !== 'false';
+    this.production = environment.CONTEXT === 'production';
   }
 
   ngOnInit(): void {

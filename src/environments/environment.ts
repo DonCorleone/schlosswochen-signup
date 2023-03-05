@@ -13,7 +13,7 @@ export const environment = {
   MAX_NUMBER_OF_RESERVATIONS: '',
   MAX_NUMBER_OF_WEEKS: '',
   UPCOMING_YEAR: '',
-  IS_LOCKED: '',
+  CONTEXT: 'production',
 };
 
 /*
