@@ -24,7 +24,7 @@
         class="btn btn-primary mr-3"
         id="save-button"
       >
-        <span>{{ "WIZARD.SAVE" | translate }}</span> <i class="bi-save"></i>
+        <span>{{ "WIZARD.SAVE" | translate }}</span> <i class="bi-save space"></i>
       </button>
     </ng-container>
     <ng-container *ngIf="exitStep">
@@ -33,7 +33,7 @@
         class="btn btn-primary mr-3"
         id="exit-button"
       >
-        <span>{{ "WIZARD.EXIT" | translate }}</span> <i class="bi-check2"></i>
+        <span>{{ "WIZARD.EXIT" | translate }}</span> <i class="bi-check2 space"></i>
       </button>
     </ng-container>
     <ng-container *ngIf="!saveStep && !exitStep">
