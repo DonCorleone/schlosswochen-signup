@@ -6,7 +6,8 @@
 >
 
   <div class="wizard-content">
-    <h1>{{title | translate}}</h1>
+    <app-header [title]="title" [showCountdown]="false"></app-header>
+
     <div *ngIf="inscriptionStr" class="wizard-content-body bg-dark">
       <!-- div class="question text-warning" *ngIf="inscription">
         {{ "FINNISH.LOGINQUESTION" | translate }}
@@ -21,7 +22,7 @@
         </div>
       </div>
 
-      <div *ngIf="inscriptionStr" class="card">
+      <div class="card">
         <div class="card-body">
           <h5 class="card-title text-warning">{{ "FINNISH.CONTACT" | translate }}</h5>
           <p class="card-text text-secondary">{{ inscriptionStr }}</p>
