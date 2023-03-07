@@ -21,9 +21,7 @@ export class ShellComponent implements OnInit {
   }
 
   routeTo(url: string) {
-    if (confirm(`Are you sure you want to leave and go to ${url}?`)) {
       this.redirect(url);
-    }
   }
 
   ngOnInit(): void {

@@ -85,7 +85,8 @@
   "WIZARD": {
     "PREVIOUS": "Previous",
     "SAVE": "Save",
-    "NEXT": "Next"
+    "NEXT": "Next",
+    "EXIT": "Exit",
   },
   "STATE": "State",
   "STATE.definitive": "Definitive",
