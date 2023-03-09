@@ -32,6 +32,7 @@
       "M": "Herr",
       "D": "Andere"
     },
+    "SALUTATIONPH": "Anrede wählen ..",
     "SALUTATIONMISSING": "Bitte eine Anrede auswählen.",
     "FIRSTNAME": "Vorname",
     "FIRSTNAMEMISSING": "Bitte einen Vornamen eingeben.",

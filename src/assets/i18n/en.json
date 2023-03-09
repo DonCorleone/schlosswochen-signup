@@ -31,6 +31,7 @@
       "M": "Sir",
       "D": "Divers"
     },
+    "SALUTATIONPH": "Select a Salutation ..",
     "SALUTATIONMISSING": "Please select a Salutation.",
     "FIRSTNAME": "First Name",
     "FIRSTNAMEMISSING": "Please enter your first name.",
@@ -86,7 +87,7 @@
     "PREVIOUS": "Previous",
     "SAVE": "Save",
     "NEXT": "Next",
-    "EXIT": "Exit",
+    "EXIT": "Exit"
   },
   "STATE": "State",
   "STATE.definitive": "Definitive",
