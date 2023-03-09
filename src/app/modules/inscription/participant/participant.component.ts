@@ -67,6 +67,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   emailMessage: string = '';
   confirmEmailMessage: string = '';
   errorMessage = '';
+
+  isSafari: boolean;
   FIRSTNAMEREQUIRED = 'PARTICIPANT.FIRSTNAMEREQUIRED';
   private _ngDestroy$ = new Subject<void>();
   private validationMessages = {
@@ -75,6 +77,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     match: 'The confirmation does not match the email address.',
   };
   private initDate = new Date();
+
 
   constructor(
     private untypedFormBuilder: UntypedFormBuilder,
@@ -88,7 +91,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private loadingIndicatorService: LoadingIndicatorService,
 
     private emailService: EmailService
-  ) {}
+  ) {
+    this.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  }
 
   ngOnInit(): void {
     this.inscription$

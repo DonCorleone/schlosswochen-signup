@@ -36,7 +36,7 @@
               formControlName="salutation"
               id="salutationId"
             >
-              <option selected value="">
+              <option disabled value="" [disabled]="!isSafari">
                 {{ "PARTICIPANT.SALUTATIONPH" | translate }}
               </option>
               <option value="F">

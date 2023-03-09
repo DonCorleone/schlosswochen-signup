@@ -27,11 +27,12 @@
                     signupForm.get('salutation')?.dirty) &&
                   !signupForm.get('salutation')?.valid
               }"
+              [selectedIndex]="1"
               class="form-control"
               formControlName="salutation"
               id="salutationId"
             >
-              <option selected value="">
+              <option selected value="" [disabled]="!isSafari">
                 {{ "CONTACT.SALUTATIONPH" | translate }}
               </option>
               <option value="F">

@@ -66,6 +66,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     email: 'Please enter a valid email address.',
   };
   private _ngDestroy$ = new Subject<void>();
+  isSafari: boolean;
   constructor(
     private fb: UntypedFormBuilder,
     private inscriptionService: InscriptionsService,
@@ -78,6 +79,8 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     private loadingIndicatorService: LoadingIndicatorService
   ) {
     this.year = process?.env?.UPCOMING_YEAR ? +process?.env?.UPCOMING_YEAR : 0;
+
+    this.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   }
 
   ngOnInit(): void {
