@@ -83,7 +83,7 @@ export class FinnishComponent implements OnInit, OnDestroy {
   goToPreviousStep() {}
 
   goToNextStep(): void {
-    document.location.href = 'https://www.schlosswochen.ch';
+    document.location.href = 'https://www.schlosswochen.ch/schlosswochen/Start';
   }
 
   ngOnDestroy(): void {

@@ -90,6 +90,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       reservationDate: new Date(),
       deadline: new Date(),
       week: 0,
+      year: 0,
       salutation: ['', [Validators.required]],
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
@@ -208,6 +209,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     this.signupForm.patchValue({
       _id: inscription._id,
       week: inscription.week,
+      year: inscription.year,
       numOfChildren: inscription.numOfChildren,
       deadline: inscription.deadline,
       reservationDate: inscription.reservationDate,
