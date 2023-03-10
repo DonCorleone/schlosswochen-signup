@@ -22,7 +22,7 @@
     "WAITINGLISTALLPLACES": "Alle Reservierungen kommen auf die Warteliste"
   },
   "WAITINGLIST": "Warteliste",
-  "WELCOME": "<h2>Willkommen zu den Anmeldungen für die Schlosswochen</h2>\n<br>\n <p>\n Sie können im nächsten Schritt <strong\n style=\"font-size:larger\">maximal 3 Kinder</strong> für <strong style=\"font-size:larger\">maximal 1\n Woche</strong>\n anmelden. <br>\n </p>\n\n Die Kinder müssen <strong\n style=\"font-size:larger\">mindestens 4&half; Jahre </strong> alt sein. <br>\n </p>\n\n <p>\n Sie setzen\n als erstes eine provisorische Anmeldung ab, die ihnen die\n nächst freien Plätze garantiert. Danach haben sie eine\n angemessene Zeit\n zur verfügung um Ihre Angaben zu tätigen. <br><em style=\"font-size:smaller\">Die Anmeldung\n erhält nach den\n letzten Schritt den Status ‘definitiv’. Sollte die Zeit verstreichen,\n wird die Reservation\n automatisch gelöscht.</em>\n </p>\n\n <p>\n Alle <strong style=\"font-size:larger\">Plätze über dem maximum </strong>\n landen der Reihe nach auf der <strong style=\"font-size:larger\">Warteliste.</strong> Sie\n erfahren von uns, falls\n ihre Kinder aufrücken und ihre Anmeldung\n umgewandelt wird.\n </p><p>Mit dem Abschluss dieses Vorgangs <strong style=\"font-size:larger\"> bestätigen Sie, die <a href=\"https://www.schlosswochen.ch/assets/pdf/agb_schlosswochen_20220411.pdf\" target=\"_blank\">AGB</a> gelesen</strong> zu haben. \n\n <p><strong style=\"font-size:larger\">Klicken\n Sie bitte nun auf [>] resp. [Weiter]</strong></p>",
+  "WELCOME": "<h2>Willkommen zu den Anmeldungen für die Schlosswochen</h2>\n<br>\n <p>\n Sie können im nächsten Schritt <strong\n style=\"font-size:larger\">maximal 3 Kinder</strong> für <strong style=\"font-size:larger\">maximal 1\n Woche</strong>\n anmelden. <br>\n </p>\n\n Die Kinder müssen <strong\n style=\"font-size:larger\">mindestens 4&half; Jahre </strong> alt sein. <br>\n </p>\n\n <p>\n Sie setzen\n als erstes eine provisorische Anmeldung ab, die ihnen die\n nächst freien Plätze garantiert. Danach haben sie eine\n angemessene Zeit\n zur verfügung um Ihre Angaben zu tätigen. <br><em style=\"font-size:smaller\">Die Anmeldung\n erhält nach den\n letzten Schritt den Status ‘definitiv’. Sollte die Zeit verstreichen,\n wird die Reservation\n automatisch gelöscht.</em>\n </p>\n\n <p>\n Alle <strong style=\"font-size:larger\">Plätze über dem maximum </strong>\n landen der Reihe nach auf der <strong style=\"font-size:larger\">Warteliste.</strong> Sie\n erfahren von uns, falls\n ihre Kinder aufrücken und ihre Anmeldung\n umgewandelt wird.\n </p><p>Mit dem Abschluss dieses Vorgangs <strong style=\"font-size:larger\"> bestätigen Sie, die <a href=\"https://www.schlosswochen.ch/assets/pdf/agb_schlosswochen_20230309.pdf\" target=\"_blank\">AGB</a> gelesen</strong> zu haben. \n\n <p><strong style=\"font-size:larger\">Klicken\n Sie bitte nun auf [>] resp. [Weiter]</strong></p>",
   "CONTACT": {
     "HELLO": "Hello",
     "TITLE": "Kontakt",
@@ -32,6 +32,7 @@
       "M": "Herr",
       "D": "Andere"
     },
+    "SALUTATIONPH": "Anrede wählen ..",
     "SALUTATIONMISSING": "Bitte eine Anrede auswählen.",
     "FIRSTNAME": "Vorname",
     "FIRSTNAMEMISSING": "Bitte einen Vornamen eingeben.",
@@ -87,7 +88,8 @@
   "WIZARD": {
     "PREVIOUS": "Zurück",
     "SAVE": "Speichern",
-    "NEXT": "Weiter"
+    "NEXT": "Weiter",
+    "EXIT": "Fertig"
   },
   "STATE": "Status",
   "STATE.definitive": "Definitiv",

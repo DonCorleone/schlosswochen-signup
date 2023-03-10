@@ -15,7 +15,7 @@
         </div>
         <div *ngIf="weeks$ | async as weeks" class="form-group mb-2">
           <div
-            *ngIf="!weeks || isLocked"
+            *ngIf="!weeks || production"
             class="alert alert-warning fade show opening-soon"
             role="warning"
           >
@@ -40,9 +40,9 @@
                   {{ week.dateTo | date: "dd.MM.YYYY":"de-CH" }}
                 </p>
               </div>
-              <app-capacity *ngIf="!week.isLocked && week.published" [weekVM]="week"></app-capacity>
+              <app-capacity *ngIf="!production || week.published" [weekVM]="week"></app-capacity>
               <div
-                *ngIf="!week.isLocked && week.published && week.freePlacesThisWeek > 0"
+                *ngIf="(!production || week.published) && week.freePlacesThisWeek > 0"
                 class="weekReservation"
               >
                 <div class="radio-header text-light">
@@ -87,7 +87,7 @@
                 </div>
               </div>
               <div
-                *ngIf="week.published && week.freePlacesThisWeek < maxNumberOfReservations"
+                *ngIf="(!production || week.published) && week.freePlacesThisWeek < maxNumberOfReservations"
                 class="weekReservation"
               >
                 <div class="radio-header text-light">

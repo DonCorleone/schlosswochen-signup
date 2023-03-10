@@ -16,8 +16,8 @@ import { select, Store } from '@ngrx/store';
 import {
   Subscription as Inscription,
   SubscriptionChild,
-  Week,
-} from 'netlify/models/Graphqlx';
+  Week, Week_Capacity
+} from "netlify/models/Graphqlx";
 import { InscriptionsService } from 'src/app/service/inscriptions.service';
 import { combineLatestWith, map, Observable, Subject, takeUntil } from 'rxjs';
 import { formatDate } from '@angular/common';
@@ -67,6 +67,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   emailMessage: string = '';
   confirmEmailMessage: string = '';
   errorMessage = '';
+
+  isSafari: boolean;
   FIRSTNAMEREQUIRED = 'PARTICIPANT.FIRSTNAMEREQUIRED';
   private _ngDestroy$ = new Subject<void>();
   private validationMessages = {
@@ -75,6 +77,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     match: 'The confirmation does not match the email address.',
   };
   private initDate = new Date();
+
 
   constructor(
     private untypedFormBuilder: UntypedFormBuilder,
@@ -88,7 +91,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private loadingIndicatorService: LoadingIndicatorService,
 
     private emailService: EmailService
-  ) {}
+  ) {
+    this.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  }
 
   ngOnInit(): void {
     this.inscription$
@@ -255,7 +260,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       )
       .subscribe((x) => console.log(x));
   }
-  getWeek(): Observable<Week | undefined> {
+  getWeek(): Observable<Week_Capacity | undefined> {
     return this.store.pipe(select(reservationSelector)).pipe(
       map((state) => {
         return state.weeks.find((p) => p.week == state.inscription.week);

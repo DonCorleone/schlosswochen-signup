@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions';
-import { GetWeeksResponse } from "./getWeeks";
+import { GetWeeksCapacityResponse } from "./getWeeks";
 
 const fetch = require('node-fetch');
 
@@ -50,7 +50,7 @@ const handler: Handler = async (event, context) => {
     }
   )
     .then((res: any) => res.json())
-    .then((result: GetWeeksResponse) => {
+    .then((result: GetWeeksCapacityResponse) => {
       return {
         statusCode: 200,
         body: JSON.stringify({ message: result }),

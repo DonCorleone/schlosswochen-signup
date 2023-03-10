@@ -3,7 +3,7 @@ import {
   Subscription as Inscription,
   SubscriptionChild,
   SubscriptionInsertInput,
-  Week
+  Week, Week_Capacity
 } from "../../../../../netlify/models/Graphqlx";
 
 export const invokeWeeksAPI = createAction(
@@ -11,7 +11,7 @@ export const invokeWeeksAPI = createAction(
 );
 export const weeksFetchAPISuccess = createAction(
   '[Weeks API] Fetch API Success',
-  props<{ allWeeks: Week[] }>()
+  props<{ allWeeks: Week_Capacity[] }>()
 );
 export const invokeSaveNewInscriptionAPI = createAction(
   '[Inscription API] Invoke save new Inscription api',

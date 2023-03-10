@@ -18,16 +18,25 @@
 
     <ng-content></ng-content>
 
-    <ng-container *ngIf="saveStep; else nextCase">
+    <ng-container *ngIf="saveStep">
       <button
         (click)="goToSaveStep()"
         class="btn btn-primary mr-3"
         id="save-button"
       >
-        <span>{{ "WIZARD.SAVE" | translate }}</span> <i class="bi-save"></i>
+        <span>{{ "WIZARD.SAVE" | translate }}</span> <i class="bi-save space"></i>
       </button>
     </ng-container>
-    <ng-template #nextCase>
+    <ng-container *ngIf="exitStep">
+      <button
+        (click)="goToExitStep()"
+        class="btn btn-primary mr-3"
+        id="exit-button"
+      >
+        <span>{{ "WIZARD.EXIT" | translate }}</span> <i class="bi-check2 space"></i>
+      </button>
+    </ng-container>
+    <ng-container *ngIf="!saveStep && !exitStep">
       <button
         (click)="goToNextStep()"
         [class.disabled]="!nextEnabled"
@@ -37,7 +46,7 @@
         <span>{{ "WIZARD.NEXT" | translate }}</span>
         <i class="bi-chevron-right"></i>
       </button>
-    </ng-template>
+    </ng-container>
   </div>
   <div class="footer"></div>
 </section>

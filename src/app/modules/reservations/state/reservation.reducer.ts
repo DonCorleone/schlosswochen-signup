@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { Subscription, Week } from '../../../../../netlify/models/Graphqlx';
+import { Subscription, Week, Week_Capacity } from "../../../../../netlify/models/Graphqlx";
 import {
   decreaseCurrentParticipantNumber,
   increaseCurrentParticipantNumber,
@@ -12,7 +12,7 @@ import {
 
 export interface State {
   inscription: Subscription;
-  weeks: ReadonlyArray<Week>;
+  weeks: ReadonlyArray<Week_Capacity>;
   currentParticipantNumber: number;
 }
 export const initialState: State = {

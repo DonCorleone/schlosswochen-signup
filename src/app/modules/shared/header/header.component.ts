@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { select, Store } from "@ngrx/store";
 import { map, Observable, Subject } from "rxjs";
-import { Subscription as Inscription, Week } from "netlify/models/Graphqlx";
+import { Subscription as Inscription, Week, Week_Capacity } from "netlify/models/Graphqlx";
 import { selectIsLoggedIn } from "../../user/state/auth.selectors";
 import { TranslateService } from "@ngx-translate/core";
 import {
@@ -25,7 +25,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Input() titlePostfix = '';
 
   inscription$: Observable<Inscription>;
-  week$: Observable<Week | undefined>;
+  week$: Observable<Week_Capacity | undefined>;
   loggedIn$: Observable<boolean>;
   deadline$: Observable<Date>;
   private _ngDestroy$ = new Subject<void>();
@@ -44,7 +44,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  getWeek(): Observable<Week | undefined> {
+  getWeek(): Observable<Week_Capacity | undefined> {
     return this.store.pipe(select(reservationSelector)).pipe(
       map(state => {
         return state.weeks.find((p) => p.week == state.inscription.week);

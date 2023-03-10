@@ -71,6 +71,7 @@ const handler: Handler = async (event, context) => {
               street1
               street2
               week
+              year
               zip
             }
           }

@@ -66,6 +66,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     email: 'Please enter a valid email address.',
   };
   private _ngDestroy$ = new Subject<void>();
+  isSafari: boolean;
   constructor(
     private fb: UntypedFormBuilder,
     private inscriptionService: InscriptionsService,
@@ -78,6 +79,8 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     private loadingIndicatorService: LoadingIndicatorService
   ) {
     this.year = process?.env?.UPCOMING_YEAR ? +process?.env?.UPCOMING_YEAR : 0;
+
+    this.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   }
 
   ngOnInit(): void {
@@ -87,6 +90,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       reservationDate: new Date(),
       deadline: new Date(),
       week: 0,
+      year: 0,
       salutation: ['', [Validators.required]],
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
@@ -205,6 +209,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
     this.signupForm.patchValue({
       _id: inscription._id,
       week: inscription.week,
+      year: inscription.year,
       numOfChildren: inscription.numOfChildren,
       deadline: inscription.deadline,
       reservationDate: inscription.reservationDate,
@@ -219,7 +224,6 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       state: inscription.state,
       zip: inscription.zip,
       country: inscription.country,
-      externalUserId: inscription.externalUserId,
       children: inscription.children,
     });
   }

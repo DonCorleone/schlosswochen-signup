@@ -9,14 +9,14 @@
         <div class="form-group row mb-2">
           <app-header [title]="title"></app-header>
         </div>
-        <!-- <formly-form
-          [form]="signupForm"
-          [fields]="fields"
-          [model]="model"
-          [options]="options">
-        </formly-form> -->
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="salutationId">
+          <label
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
+            for="salutationId"
+          >
             {{ "CONTACT.SALUTATION.TITLE" | translate }}:
           </label>
           <div class="col-lg-8 col-md-8">
@@ -27,28 +27,40 @@
                     signupForm.get('salutation')?.dirty) &&
                   !signupForm.get('salutation')?.valid
               }"
+              [selectedIndex]="1"
               class="form-control"
               formControlName="salutation"
               id="salutationId"
             >
-              <option disabled hidden selected value="">
-                {{ "CONTACT.SALUTATIONMISSING" | translate }}
+              <option selected value="" [disabled]="!isSafari">
+                {{ "CONTACT.SALUTATIONPH" | translate }}
               </option>
-              <option value="F">{{ "CONTACT.SALUTATION.F" | translate }}</option>
-              <option value="M">{{ "CONTACT.SALUTATION.M" | translate }}</option>
-              <option value="D">{{ "CONTACT.SALUTATION.D" | translate }}</option>
+              <option value="F">
+                {{ "CONTACT.SALUTATION.F" | translate }}
+              </option>
+              <option value="M">
+                {{ "CONTACT.SALUTATION.M" | translate }}
+              </option>
+              <option value="D">
+                {{ "CONTACT.SALUTATION.D" | translate }}
+              </option>
             </select>
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('salutation')?.errors?.required">{{
                 "CONTACT.SALUTATIONMISSING" | translate
-                }}</span></span
+              }}</span></span
             >
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="firstNameId">{{
-            "CONTACT.FIRSTNAME" | translate
-            }}</label>
+          <label
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
+            for="firstNameId"
+            >{{ "CONTACT.FIRSTNAME" | translate }}</label
+          >
           <div class="col-lg-8 col-md-8">
             <input
               [ngClass]="{
@@ -67,14 +79,19 @@
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('firstName')?.errors?.required">{{
                 "CONTACT.FIRSTNAMEMISSING" | translate
-                }}</span>
+              }}</span>
             </span>
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="lastNameId">{{
-            "CONTACT.LASTNAME" | translate
-            }}</label>
+          <label
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
+            for="lastNameId"
+            >{{ "CONTACT.LASTNAME" | translate }}</label
+          >
           <div class="col-lg-8 col-md-8">
             <input
               [ngClass]="{
@@ -93,14 +110,19 @@
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('lastName')?.errors?.required">{{
                 "CONTACT.LASTNAMEMISSING" | translate
-                }}</span>
+              }}</span>
             </span>
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="phoneId">{{
-            "CONTACT.PHONE" | translate
-            }}</label>
+          <label
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
+            for="phoneId"
+            >{{ "CONTACT.PHONE" | translate }}</label
+          >
           <div class="col-lg-8 col-md-8">
             <input
               [ngClass]="{
@@ -119,14 +141,19 @@
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('phone')?.errors?.required">{{
                 "CONTACT.PHONEMISSING" | translate
-                }}</span></span
+              }}</span></span
             >
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="emailId">{{
-            "CONTACT.EMAIL" | translate
-            }}</label>
+          <label
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
+            for="emailId"
+            >{{ "CONTACT.EMAIL" | translate }}</label
+          >
           <div class="col-lg-8 col-md-8">
             <input
               [ngClass]="{
@@ -145,7 +172,7 @@
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('email')?.errors?.required">{{
                 "CONTACT.EMAILMISSING" | translate
-                }}</span>
+              }}</span>
               <span *ngIf="emailMessage">
                 {{ emailMessage }}
               </span>
@@ -153,9 +180,14 @@
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="street1Id">{{
-            "CONTACT.ADDRESS1" | translate
-            }}</label>
+          <label
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
+            for="street1Id"
+            >{{ "CONTACT.ADDRESS1" | translate }}</label
+          >
           <div class="col-lg-8 col-md-8">
             <input
               class="form-control"
@@ -168,9 +200,14 @@
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="street2Id">{{
-            "CONTACT.ADDRESS2" | translate
-            }}</label>
+          <label
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
+            for="street2Id"
+            >{{ "CONTACT.ADDRESS2" | translate }}</label
+          >
           <div class="col-lg-8 col-md-8">
             <input
               class="form-control"
@@ -183,8 +220,13 @@
           </div>
         </div>
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="cityId"
-          >{{ "CONTACT.ZIP" | translate }} |
+          <label
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
+            for="cityId"
+            >{{ "CONTACT.ZIP" | translate }} |
             {{ "CONTACT.CITY" | translate }}</label
           >
           <div class="col-xl-2 col-lg-3 col-md-3 col-zip">
@@ -205,13 +247,13 @@
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('zip')?.errors?.required">{{
                 "CONTACT.ZIPMISSING" | translate
-                }}</span>
+              }}</span>
               <span *ngIf="signupForm.get('zip')?.errors?.minlength">{{
                 "CONTACT.ZIPMINLENGTH" | translate
-                }}</span>
+              }}</span>
               <span *ngIf="signupForm.get('zip')?.errors?.maxlength">{{
                 "CONTACT.ZIPMAXLENGTH" | translate
-                }}</span>
+              }}</span>
             </span>
           </div>
           <div class="col-xxl-6 col-xl-6 col-lg-5 col-md-5 col-city">
@@ -232,15 +274,20 @@
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('city')?.errors?.required">{{
                 "CONTACT.CITYMISSING" | translate
-                }}</span>
+              }}</span>
             </span>
           </div>
         </div>
 
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="countryId">{{
-            "CONTACT.COUNTRY" | translate
-            }}</label>
+          <label
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
+            for="countryId"
+            >{{ "CONTACT.COUNTRY" | translate }}</label
+          >
           <div class="col-lg-8 col-md-8">
             <input
               [ngClass]="{
@@ -259,7 +306,7 @@
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('country')?.errors?.required">{{
                 "CONTACT.COUNTRYMISSING" | translate
-                }}</span>
+              }}</span>
             </span>
           </div>
         </div>

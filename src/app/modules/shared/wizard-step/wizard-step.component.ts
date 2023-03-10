@@ -9,6 +9,7 @@ import { LoadingIndicatorService } from '../../../service/loading-indicator.serv
 })
 export class WizardStepComponent implements OnInit {
   @Input() saveStep: boolean = false;
+  @Input() exitStep: boolean = false;
   @Input() nextEnabled: boolean = true;
   @Input() previousEnabled: boolean = true;
   @Output() previousStepClicked = new EventEmitter();
@@ -29,17 +30,21 @@ export class WizardStepComponent implements OnInit {
     this.loadingIndicatorService.stop();
   }
 
-  goToPreviousStep() {
+  goToPreviousStep(): void {
     this.loadingIndicatorService.start();
     this.previousStepClicked.emit();
   }
 
-  goToNextStep() {
+  goToNextStep(): void {
     this.loadingIndicatorService.start();
     this.nextStepClicked.emit();
   }
 
-  goToSaveStep() {
+  goToSaveStep(): void {
     this.saveStepClicked.emit();
+  }
+
+  goToExitStep(): void {
+    document.location.href = 'https://www.schlosswochen.ch';
   }
 }

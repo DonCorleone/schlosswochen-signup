@@ -1,24 +1,25 @@
 import { Handler } from '@netlify/functions';
-import { Week } from 'netlify/models/Graphqlx';
+import { Week_Capacity } from "netlify/models/Graphqlx";
 
 const fetch = require('node-fetch');
 
 export interface Data {
-  weeks: Week[];
+  week_capacities: Week_Capacity[];
 }
 
-export interface GetWeeksPayload {
+export interface GetWeekCapacityPayload {
   data: Data;
 }
 
-export interface GetWeeksResponse {
-  message: GetWeeksPayload;
+export interface GetWeeksCapacityResponse {
+  message: GetWeekCapacityPayload;
 }
 
 const handler: Handler = async (event, context) => {
-  return fetch(
-    `https://realm.mongodb.com/api/client/v2.0/app/${process.env
-      .APP_ID_REALM!}/graphql`,
+
+  const url = `https://realm.mongodb.com/api/client/v2.0/app/${process.env.APP_ID_REALM!}/graphql`;
+  console.log(url);
+  return fetch(url,
     {
       method: 'POST',
       headers: {
@@ -27,23 +28,27 @@ const handler: Handler = async (event, context) => {
       },
       body: JSON.stringify({
         query: `
-          query ($year: Int) {
-            weeks(query: { year: $year }, sortBy: WEEK_ASC) {
-              dateFrom
-              dateTo
-              week
-              maxParticipants
-              published
-              isLocked
+        query ($year: Int) {
+          week_capacities(query: {year: $year}, sortBy: WEEK_ASC) {
+            week
+            year
+            dateFrom
+            dateTo
+            maxParticipants
+            published
+            capacity {
+              state
+              sumPerStateAndWeek
             }
           }
+        }
       `,
         variables: { year: event?.queryStringParameters?.year },
       }),
     }
   )
     .then((res: any) => res.json())
-    .then((result: GetWeeksResponse) => {
+    .then((result: GetWeeksCapacityResponse) => {
       return {
         statusCode: 200,
         body: JSON.stringify({ message: result }),

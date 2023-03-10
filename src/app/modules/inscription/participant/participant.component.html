@@ -10,11 +10,18 @@
         <div class="form-group row mb-2">
           <app-header
             [titlePostfix]="currentParticipantNumber.toString()"
-            [title]="title"></app-header>
+            [title]="title"
+          ></app-header>
         </div>
 
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="salutationId">
+          <label
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
+            for="salutationId"
+          >
             {{ "PARTICIPANT.SALUTATION.TITLE" | translate }}
           </label>
           <div class="col-lg-8 col-md-8">
@@ -29,12 +36,18 @@
               formControlName="salutation"
               id="salutationId"
             >
-              <option disabled hidden selected value="">
+              <option disabled value="" [disabled]="!isSafari">
                 {{ "PARTICIPANT.SALUTATIONPH" | translate }}
               </option>
-              <option value="F">{{ "PARTICIPANT.SALUTATION.F" | translate }}</option>
-              <option value="M">{{ "PARTICIPANT.SALUTATION.M" | translate }}</option>
-              <option value="D">{{ "PARTICIPANT.SALUTATION.D" | translate }}</option>
+              <option value="F">
+                {{ "PARTICIPANT.SALUTATION.F" | translate }}
+              </option>
+              <option value="M">
+                {{ "PARTICIPANT.SALUTATION.M" | translate }}
+              </option>
+              <option value="D">
+                {{ "PARTICIPANT.SALUTATION.D" | translate }}
+              </option>
             </select>
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('salutation')?.errors?.required">
@@ -46,7 +59,10 @@
 
         <div class="form-group row mb-2">
           <label
-            class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light"
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
             for="firstNameParticipantId"
           >
             {{ "PARTICIPANT.FIRSTNAME" | translate }}
@@ -70,7 +86,7 @@
               <span
                 *ngIf="signupForm.get('firstNameParticipant')?.errors?.required"
               >
-                {{ "PARTICIPANT.FIRSTNAMEMISSING" | translate}}
+                {{ "PARTICIPANT.FIRSTNAMEMISSING" | translate }}
               </span>
             </span>
           </div>
@@ -78,7 +94,10 @@
 
         <div class="form-group row mb-2">
           <label
-            class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light"
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
             for="lastNameParticipantId"
           >
             {{ "PARTICIPANT.LASTNAME" | translate }}</label
@@ -102,14 +121,20 @@
               <span
                 *ngIf="signupForm.get('lastNameParticipant')?.errors?.required"
               >
-                {{ "PARTICIPANT.LASTNAMEMISSING" | translate}}
+                {{ "PARTICIPANT.LASTNAMEMISSING" | translate }}
               </span>
             </span>
           </div>
         </div>
 
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="birthdayId">
+          <label
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
+            for="birthdayId"
+          >
             {{ "PARTICIPANT.BIRTHDAY" | translate }}
           </label>
           <div class="col-lg-8 col-md-8">
@@ -129,7 +154,7 @@
             />
             <span class="invalid-feedback">
               <span *ngIf="signupForm.get('birthday')?.errors?.required">
-                {{ "PARTICIPANT.BIRTHDAYMISSING" | translate}}
+                {{ "PARTICIPANT.BIRTHDAYMISSING" | translate }}
               </span>
             </span>
           </div>
@@ -137,7 +162,10 @@
 
         <div class="form-group row mb-2 flex-sm-nowrap">
           <label
-            class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light"
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
             for="fotoAllowedId"
           >
             {{ "PARTICIPANT.FOTOALLOWED" | translate }}
@@ -154,7 +182,13 @@
         </div>
 
         <div class="form-group row mb-2">
-          <label class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label text-light" for="commentId">
+          <label
+            class="
+              col-xl-2 col-lg-3 col-md-4 col-sm-4 col-form-label
+              text-light
+            "
+            for="commentId"
+          >
             {{ "PARTICIPANT.COMMENT" | translate }}
           </label>
           <div class="col-lg-8 col-md-8">
