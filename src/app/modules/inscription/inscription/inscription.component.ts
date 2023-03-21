@@ -154,7 +154,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
         if (apState.apiStatus == 'success') {
           this.appStore.dispatch(
             setAPIStatus({
-              apiStatus: { apiResponseMessage: '', apiStatus: '' },
+              apiStatus: { apiResponseMessage: '', apiStatus: '', data: undefined},
             })
           );
 
