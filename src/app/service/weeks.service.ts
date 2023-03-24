@@ -71,7 +71,7 @@ export class WeeksService {
       .pipe(
         map(
           (result: GetWeeksCapacityResponse) =>
-            result?.message?.data.week_capacities
+            result?.message?.data?.week_capacities
         ),
         catchError(this.handleError)
       );
