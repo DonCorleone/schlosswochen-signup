@@ -114,18 +114,20 @@ export class EmailService {
     subscription.children.forEach((participant) => {
       if (participant) {
         const comment = participant?.comment?.replace(/\r?\n/g, ' - ');
+
+        const birthday = new Date(participant.birthday);
         arrayOfStrings.push(
           `${participant.firstNameParticipant} ${
             participant.lastNameParticipant
           }
               (${participant.salutation},
-                *${String(participant.birthday.getDate()).padStart(
+                *${String(birthday.getDate()).padStart(
                   2,
                   '0'
-                )}.${String(participant.birthday.getMonth() + 1).padStart(
+                )}.${String(birthday.getMonth() + 1).padStart(
             2,
             '0'
-          )}.${participant.birthday.getFullYear()}
+          )}.${new Date(birthday).getFullYear()}
               ) -
             Fotos veröffentlichen erlaubt: ${
               participant.fotoAllowed ? 'ja' : 'nein'

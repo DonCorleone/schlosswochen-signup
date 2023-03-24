@@ -46,13 +46,13 @@ export class ReservationEffects {
       ofType(invokeSaveNewInscriptionAPI),
       switchMap((action) => {
         this.appStore.dispatch(
-          setAPIStatus({ apiStatus: { apiResponseMessage: '', apiStatus: '' } })
+          setAPIStatus({ apiStatus: { apiResponseMessage: '', apiStatus: '', data: undefined } })
         );
         return this.reservationService.create(action.newInscription).pipe(
           map((data) => {
             this.appStore.dispatch(
               setAPIStatus({
-                apiStatus: { apiResponseMessage: '', apiStatus: 'success' },
+                apiStatus: { apiResponseMessage: '', apiStatus: 'success', data },
               })
             );
             return saveNewInscriptionAPISuccess({ newInscription: data });
@@ -66,13 +66,13 @@ export class ReservationEffects {
       ofType(invokeUpdateInscriptionAPI),
       switchMap((action) => {
         this.appStore.dispatch(
-          setAPIStatus({ apiStatus: { apiResponseMessage: '', apiStatus: '' } })
+          setAPIStatus({ apiStatus: { apiResponseMessage: '', apiStatus: '', data: undefined } })
         );
         return this.inscriptionService.update(action.updateInscription).pipe(
           map((data) => {
             this.appStore.dispatch(
               setAPIStatus({
-                apiStatus: { apiResponseMessage: '', apiStatus: 'success' },
+                apiStatus: { apiResponseMessage: data.state ?? '', apiStatus: 'success', data },
               })
             );
             return updateInscriptionAPISuccess({ updateInscription: data });

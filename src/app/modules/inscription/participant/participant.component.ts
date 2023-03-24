@@ -14,6 +14,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import {
+  Subscription,
   Subscription as Inscription,
   SubscriptionChild,
   Week, Week_Capacity
@@ -107,19 +108,19 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         }
 
         this.inscription = inscriptionFromState;
-        this.loadParticipantDetail(inscriptionFromState._id);
+        this.loadParticipantDetail(inscriptionFromState);
         this.changeDetectorRef.markForCheck();
       });
   }
 
-  loadParticipantDetail(inscriptionId: string) {
+  loadParticipantDetail(inscription: Subscription) {
     this.store
       .pipe(select(getCurrentParticipantNumber), takeUntil(this._ngDestroy$))
       .subscribe((currentParticipantNr) => {
         this.loadingIndicatorService.stop();
         this.currentParticipantNumber = currentParticipantNr;
 
-        const participantId: string = `${inscriptionId}-${+currentParticipantNr}`;
+        const participantId: string = `${inscription._id}-${+currentParticipantNr}`;
 
         this.signupForm = this.untypedFormBuilder.group({
           salutation: ['', [Validators.required]],
@@ -132,8 +133,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           comment: '',
         });
 
-        if (this.inscription?.children) {
-          const participant = this.inscription?.children?.find(
+        if (inscription?.children) {
+          const participant = inscription?.children?.find(
             (p) => p?.participant_id === participantId
           );
           if (participant) {
@@ -219,7 +220,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   saveInscription() {
     const updateInscription: Inscription = {
-      ...this.inscription,
+      ...(this.inscription),
       state:
         this.inscription.state === ReservationState.TEMPORARY
           ? ReservationState.DEFINITIVE
@@ -242,9 +243,11 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         combineLatestWith(weekState$),
         map(([appState, weekState]) => {
           if (appState.apiStatus == 'success') {
+
+            const savedInscription = appState.data as Inscription;
             this.appStore.dispatch(
               setAPIStatus({
-                apiStatus: { apiResponseMessage: '', apiStatus: '' },
+                apiStatus: { apiResponseMessage: '', apiStatus: '', data: undefined },
               })
             );
 
@@ -252,7 +255,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               // Error!
               return;
             }
-            this.emailService.writeMail(this.inscription, weekState);
+            this.emailService.writeMail(savedInscription, weekState);
 
             this.goToFinnishView();
           }

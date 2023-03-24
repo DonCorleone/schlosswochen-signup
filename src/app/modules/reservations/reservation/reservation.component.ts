@@ -129,7 +129,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
         if (apState.apiStatus == 'success') {
           this.appStore.dispatch(
             setAPIStatus({
-              apiStatus: { apiResponseMessage: '', apiStatus: '' },
+              apiStatus: { apiResponseMessage: '', apiStatus: '', data: undefined },
             })
           );
           this.router.navigate(['/inscriptions/inscription']).then((p) => {
