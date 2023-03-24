@@ -64,6 +64,9 @@ export class WeeksService {
   }
 
   get(): Observable<Week_Capacity[]> {
+
+    console.log(JSON.stringify(environment));
+
     return this.httpClient
       .get<GetWeeksCapacityResponse>(
         `/api/getWeeks?year=${environment.UPCOMING_YEAR}`
