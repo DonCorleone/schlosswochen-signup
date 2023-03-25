@@ -11,6 +11,7 @@
           <app-header
             [titlePostfix]="currentParticipantNumber.toString()"
             [title]="title"
+            [inscription]="(inscription$ | async)"
           ></app-header>
         </div>
 

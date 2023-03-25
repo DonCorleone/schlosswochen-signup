@@ -14,10 +14,9 @@ const handler: Handler = async (event, context) => {
       },
       body: JSON.stringify({
         query: `
-          query ($externalUserId: String!) {
-            subscription(query: { externalUserId: $externalUserId }) {
+          query {
+            subscription {
               _id
-              externalUserId
               reservationDate
               week
               year
@@ -32,7 +31,7 @@ const handler: Handler = async (event, context) => {
               zip
               city
               country
-              participants {
+              children {
                 participant_id
                 externalUserId
                 salutation
@@ -44,8 +43,7 @@ const handler: Handler = async (event, context) => {
               }
             }
           }
-      `,
-        variables: { externalUserId: event?.queryStringParameters?.userId },
+      `
       }),
     }
   )

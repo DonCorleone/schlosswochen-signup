@@ -30,7 +30,7 @@ import {
   invokeUpdateInscriptionAPI,
   resetCurrentParticipantNumber,
 } from '../../reservations/state/reservation.action';
-import { getInscription } from "../../reservations/state/reservation.selector";
+import { getInscription } from '../../reservations/state/reservation.selector';
 
 // since an object key can be any of those types, our key can too
 // in TS 3.0+, putting just :  raises an error
@@ -115,7 +115,7 @@ export class InscriptionComponent implements OnInit, OnDestroy {
       .subscribe((_) => (this.emailMessage = this.setMessage(emailControl)));
 
     this.store.dispatch(resetCurrentParticipantNumber());
-    this.store.dispatch(invokeInscriptionAPI());
+    // this.store.dispatch(invokeInscriptionAPI());
 
     this.inscription$
       .pipe(takeUntil(this._ngDestroy$))
@@ -154,7 +154,11 @@ export class InscriptionComponent implements OnInit, OnDestroy {
         if (apState.apiStatus == 'success') {
           this.appStore.dispatch(
             setAPIStatus({
-              apiStatus: { apiResponseMessage: '', apiStatus: '', data: undefined},
+              apiStatus: {
+                apiResponseMessage: '',
+                apiStatus: '',
+                data: undefined,
+              },
             })
           );
 
