@@ -22,23 +22,20 @@
     ><span>{{ week?.dateTo | date: "dd.MM.YYYY":"de-CH" }})</span>
   </div>
 </ng-container>
-<div *ngIf="inscription$ | async as inscription">
+<div *ngIf="inscription">
     <div *ngIf="showAmount"
       [ngClass]="
-        inscription?.state?.toLowerCase()?.includes('waitinglist')
+        inscription.state?.toLowerCase()?.includes('waitinglist')
           ? 'alert-warning'
           : 'alert-success'
       "
       class="alert show"
       role="alert"
     >
-      <span *ngIf="inscription?.numOfChildren! === 1">
-        {{ "RESERVEDPLACE" | translate }}
+      <span *ngIf="inscription.numOfChildren! > 0">
+        {{ "RESERVEDPLACES" | translate }}{{ inscription.numOfChildren }}
       </span>
-      <span *ngIf="inscription?.numOfChildren! > 1">
-        {{ "RESERVEDPLACES" | translate }}{{ inscription?.numOfChildren }}
-      </span>
-      <span *ngIf=" inscription?.state?.toLowerCase()?.includes('waitinglist')" class="reserved-places">
+      <span *ngIf=" inscription.state?.toLowerCase()?.includes('waitinglist')" class="reserved-places">
         ({{ "WAITINGLIST" | translate }})
       </span>
     </div>
