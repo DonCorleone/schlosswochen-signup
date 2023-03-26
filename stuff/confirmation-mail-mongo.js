@@ -24,10 +24,10 @@ async function buildEmailDataTxt(subscription) {
       // Require:
       var postmark = require("postmark");
       // Access to SendGrid API Key value stored in Stitch Secret
-      const postmarkApiKey = context.values.get("postmark-api-key");
+      const postmarkApiKey = context.values.get("postmark-api-value");
       // Send an email:
       var client = new postmark.ServerClient(
-        "e8834af5-0fdd-4bdc-802e-b3dc527afa31"
+        postmarkApiKey
       );
 
       var recipientEmail = subscription.email;
@@ -108,21 +108,21 @@ function buildEmailContentFromTemplate(
    <body>
     <div id='body'>
       <div id='title'>
-        <h2>Schlosswochen 2022</h2>
+        <h2>Schlosswochen ${subscribtion.year}</h2>
       </div>
       <p>
         <h4><strong>Liebe${
-          subscribtion.salutation == "M"
-            ? "r"
-            : subscribtion.salutation == "D"
-            ? "R"
-            : ""
-        } ${subscribtion.firstName} ${subscribtion.lastName}</strong></h4></p>
-      <div class="text">Besten Dank für die Anmeldung zu den Schlosswochen 2022. Folgende Angaben wurden uns erfolgreich übermittelt:</div>
+    subscribtion.salutation == "M"
+      ? "r"
+      : subscribtion.salutation == "D"
+        ? "R"
+        : ""
+  } ${subscribtion.firstName} ${subscribtion.lastName}</strong></h4></p>
+      <div class="text">Besten Dank für die Anmeldung zu den Schlosswochen ${subscribtion.year}. Folgende Angaben wurden uns erfolgreich übermittelt:</div>
       <h3>Status</h3>
       <p>${
-        subscribtion.state == "definitive" ? "Angemeldet" : "Auf der Warteliste"
-      }</p>
+    subscribtion.state == "definitive" ? "Angemeldet" : "Auf der Warteliste"
+  }</p>
       <h3>Woche ${subscribtion.week}</h3>
       <p>${padDate(dateFrom)} - ${padDate(dateTo)}</p>
       <hr>
@@ -145,7 +145,7 @@ function buildEmailContentFromTemplate(
       <h3>Teilnehmende</h3>
       ${participantPart}
       <br>
-        <p>Danke für die Anmeldung! Diese ist hiermit definitiv und verpflichtend gem. <a href="https://www.schlosswochen.ch/assets/pdf/agb_schlosswochen_20220411.pdf" target="_blank">AGB</a>.<br>
+        <p>Danke für die Anmeldung! Diese ist hiermit definitiv und verpflichtend gem. <a href="https://www.schlosswochen.ch/assets/pdf/agb_schlosswochen_${subscribtion.year}.pdf" target="_blank">AGB</a>.<br>
         Kurz vor Beginn der Schlosswochen werden weitere Informationen von uns versendet.<br>
         <br>
         Wir freuen uns auf kreative und lustige Schlosswochen mit den Kindern.<br>
@@ -176,11 +176,11 @@ Liebe${
     subscribtion.salutation == "M"
       ? "r"
       : subscribtion.salutation == "D"
-      ? "R"
-      : ""
+        ? "R"
+        : ""
   } ${subscribtion.firstName} ${subscribtion.lastName}
 
-Besten Dank für die Anmeldung zu den Schlosswochen 2022.
+Besten Dank für die Anmeldung zu den Schlosswochen ${subscribtion.year}.
 Folgende Angaben wurden uns erfolgreich übermittelt:
 
 ** Status
@@ -205,7 +205,7 @@ ${subscribtion.phone}
 ** Teilnehmende
 ${participantPart}
 
-Danke für die Anmeldung! Diese ist hiermit definitiv und verpflichtend gem. AGB. (https://www.schlosswochen.ch/assets/pdf/agb_schlosswochen_20220411.pdf)
+Danke für die Anmeldung! Diese ist hiermit definitiv und verpflichtend gem. AGB. (https://www.schlosswochen.ch/assets/pdf/agb_schlosswochen_${subscribtion.year}.pdf)
 Kurz vor Beginn der Schlosswochen werden weitere Informationen von uns versendet.
 
 Wir freuen uns auf kreative und lustige Schlosswochen mit den Kindern.
