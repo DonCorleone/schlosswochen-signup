@@ -1,17 +1,13 @@
-import { Injectable } from '@angular/core';
-import {
-  catchError,
-  map,
-  Observable,
-} from 'rxjs';
-import { Week_Capacity } from '../../../netlify/models/Graphqlx';
-import { HttpClient } from '@angular/common/http';
-import { Store } from '@ngrx/store';
-import { environment } from '../../environments/environment';
-import { WeekCapacityCalculated } from '../models/week-capacity-calculated';
-import { State } from '../modules/reservations/state/reservation.reducer';
-import { ReservationState } from '../models/reservation-state';
-import { GetWeeksCapacityResponse } from '../../../netlify/functions/getWeeks';
+import {Injectable} from '@angular/core';
+import {catchError, map, Observable,} from 'rxjs';
+import {Week_Capacity} from '../../../netlify/models/Graphqlx';
+import {HttpClient} from '@angular/common/http';
+import {Store} from '@ngrx/store';
+import {environment} from '../../environments/environment';
+import {WeekCapacityCalculated} from '../models/week-capacity-calculated';
+import {State} from '../modules/reservations/state/reservation.reducer';
+import {ReservationState} from '../models/reservation-state';
+import {GetWeeksCapacityResponse} from '../../../netlify/functions/getWeeks';
 
 @Injectable({
   providedIn: 'root',
@@ -30,8 +26,7 @@ export class WeeksService {
     return stateObservable.pipe(
       map((x) => {
         return x.weeks?.map((week) => {
-          const x = this.mapWeekVM(week);
-          return x;
+          return this.mapWeekVM(week);
         });
       })
     );
