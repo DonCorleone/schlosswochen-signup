@@ -3,7 +3,7 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { select, Store } from '@ngrx/store';
-import { Subject, takeUntil } from 'rxjs';
+import {map, Observable, Subject, takeUntil} from 'rxjs';
 import { ReservationService } from 'src/app/service/reservation.service';
 import { SubscriptionInsertInput, Week_Capacity } from "netlify/models/Graphqlx";
 import { environment } from '../../../../environments/environment';
@@ -35,7 +35,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   title = 'RESERVATION';
   production = true;
   reservationStateEnum = ReservationState;
-  // maxWeeks: number = 1;
+  unpublished$: Observable<boolean>;
   year: number;
   maxNumberOfReservations: number = 1;
   submitted = false;
@@ -44,13 +44,17 @@ export class ReservationComponent implements OnInit, OnDestroy {
   });
   reservationsPerWeekCtlr = this.signupForm.get('numOfChilds');
   weeks$ = this.store.pipe(select(reservationSelector)).pipe((p) => {
+
+    const y = this.weekService.mapWeekCapacity(p);
+    this.unpublished$ = y.pipe(
+      map(a => a.some(b => !b.published))
+    )
     return this.weekService.mapWeekCapacity(p);
   });
   private _ngDestroy$ = new Subject<void>();
 
   constructor(
     private fb: UntypedFormBuilder,
-    private reservationService: ReservationService,
     private weekService: WeeksService,
     private router: Router,
     private loadingIndicatorService: LoadingIndicatorService,
