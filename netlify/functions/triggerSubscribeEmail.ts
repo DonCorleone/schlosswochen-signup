@@ -18,7 +18,8 @@ export interface MailPayload {
   email: string,
   phone: string,
   participants: object,
-  datetoday: string
+  datetoday: string,
+  waitinglist: boolean
 }
 
 const handler: Handler = async function (event) {

@@ -38,15 +38,19 @@
       </ul>
       <br />
       <p>
-        Danke für die Anmeldung! Diese ist hiermit definitiv und verpflichtend
-        gem.
-        <a
-          href="https://www.schlosswochen.ch/schlosswochen/agb"
-          target="_blank"
+        {{#if waitinglist}}
+          <p>sorry gäu</p>
+        {{else}}
+          Danke für die Anmeldung! Diese ist hiermit definitiv und verpflichtend
+          gem.
+          <a
+            href="https://www.schlosswochen.ch/schlosswochen/agb"
+            target="_blank"
           >AGB</a
-        >.<br />
-        Kurz vor Beginn der Schlosswochen werden weitere Informationen von uns
-        versendet.<br />
+          >.<br />
+          Kurz vor Beginn der Schlosswochen werden weitere Informationen von uns
+          versendet.<br />
+        {{/if}}
         <br />
         Wir freuen uns auf kreative und lustige Schlosswochen mit den
         Kindern.<br />

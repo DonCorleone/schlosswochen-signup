@@ -27,6 +27,7 @@ export class EmailService {
       phone: this.getPhone(updateInscription),
       participants: this.getParticipantsPart(updateInscription),
       datetoday: this.getToday(),
+      waitinglist: this.getWaitinglist(updateInscription)
     };
     //call to the Netlify Function you created
     fetch('./.netlify/functions/triggerSubscribeEmail', {
@@ -142,9 +143,15 @@ export class EmailService {
   }
 
   private getSubject(subscription: Inscription) {
-    const ix = subscription?.state?.indexOf('WaitingList');
-    return ix && ix > 0
+
+    const getWaitinglist = this.getWaitinglist(subscription);
+    return getWaitinglist
       ? 'Bestätigung Wartelisteneintrag Schlosswochen'
       : 'Bestätigung Anmeldung Schlosswochen';
+  }
+
+  private getWaitinglist(subscription: Inscription): boolean {
+    const ix = subscription?.state?.indexOf('WaitingList');
+    return (ix ? ix > 0 : false);
   }
 }
