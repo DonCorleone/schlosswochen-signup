@@ -1,64 +1,70 @@
 <html>
-  <head> </head>
-  <body>
-    <div id="body">
-      <div id="title">
-        <h2>Schlosswochen {{year}}</h2>
-      </div>
-      <h4><strong>{{salutation}}</strong></h4>
-      <p class="text">
-        Besten Dank für die Anmeldung zu den Schlosswochen {{year}}. Folgende
-        Angaben wurden uns erfolgreich übermittelt:
-      </p>
-      <h3>Status</h3>
-      <p>{{state}}</p>
-      <h3>{{week}}</h3>
-      <p>{{date}}</p>
-      <hr />
-      <h3>Kontaktangaben</h3>
-      <h4><strong>Anschrift:</strong></h4>
-      <p>
-        {{name}}<br />
-        {{street1}}<br />
-        {{city}}<br />
-        {{country}}
-      </p>
-      <h4><strong>Kontakt:</strong></h4>
-      <p>
-        {{email}}<br />
-        {{phone}}<br />
-      </p>
+<head><title>Schlosswochenanmeldung</title></head>
+<body>
+<div id="body">
+  <div id="title">
+    <h2>Schlosswochen {{ year }}</h2>
+  </div>
+  <h4><strong>{{ salutation }}</strong></h4>
+  <p class="text">
+    Besten Dank für die Anmeldung zu den Schlosswochen {{ year }}. Folgende
+    Angaben wurden uns erfolgreich übermittelt:
+  </p>
+  <h3>Status</h3>
+  <p>{{ state }}</p>
+  <h3>{{ week }}</h3>
+  <p>{{ date }}</p>
+  <hr/>
+  <h3>Kontaktangaben</h3>
+  <h4><strong>Anschrift:</strong></h4>
+  <p>
+    {{ name }}<br/>
+    {{ street1 }}<br/>
+    {{ city }}<br/>
+    {{ country }}
+  </p>
+  <h4><strong>Kontakt:</strong></h4>
+  <p>
+    {{ email }}<br/>
+    {{ phone }}<br/>
+  </p>
 
-      <hr />
-      <h3>Teilnehmende</h3>
-      <ul>
-        {{#each participants}}
-        <li>{{this}}</li>
-        {{/each}}
-      </ul>
-      <br />
-      <p>
-        {{#if waitinglist}}
-          <p>sorry gäu</p>
-        {{else}}
-          Danke für die Anmeldung! Diese ist hiermit definitiv und verpflichtend
-          gem.
-          <a
-            href="https://www.schlosswochen.ch/schlosswochen/agb"
-            target="_blank"
-          >AGB</a
-          >.<br />
-          Kurz vor Beginn der Schlosswochen werden weitere Informationen von uns
-          versendet.<br />
-        {{/if}}
-        <br />
-        Wir freuen uns auf kreative und lustige Schlosswochen mit den
-        Kindern.<br />
-        <br />
-        Herzliche Grüsse<br />
-        Das Schlosswochen-Team<br />
-      </p>
-    </div>
-    <p>Luzern {{datetoday}}</p>
-  </body>
+  <hr/>
+  <h3>Teilnehmende</h3>
+  <ul>
+    {{ #each participants }}
+    <li>{{ this }}</li>
+    {{ /each }}
+  </ul>
+  <br/>
+  <p>
+    {{ #if waitinglist }}
+    Sollten Plätze frei werden, werden wir die Wartelisten-Reservationen in der Reihenfolge des Eingangs berücksichtigen
+    und Sie informieren.
+    Weitere Informationen zu den Schlosswochen finden Sie auf unserer
+    <a href="https://www.schlosswochen.ch/schlosswochen" target="_blank">Website</a
+    > und in den
+    <a href="https://www.schlosswochen.ch/schlosswochen/agb" target="_blank"
+    > AGB</a>.
+    {{ else }}
+    Danke für die Anmeldung! Diese ist hiermit definitiv und verpflichtend
+    gem.
+    <a
+      href="https://www.schlosswochen.ch/schlosswochen/agb"
+      target="_blank"
+    >AGB</a
+    >.<br/>
+    Kurz vor Beginn der Schlosswochen werden weitere Informationen von uns
+    versendet.<br/>
+    {{ /if }}
+    <br/>
+    Wir freuen uns auf kreative und lustige Schlosswochen mit den
+    Kindern.<br/>
+    <br/>
+    Herzliche Grüsse<br/>
+    Das Schlosswochen-Team<br/>
+  </p>
+</div>
+<p>Luzern {{ datetoday }}</p>
+</body>
 </html>
