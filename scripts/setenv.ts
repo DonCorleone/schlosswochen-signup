@@ -17,7 +17,8 @@ const environmentFileContent = isProduction
    MAX_NUMBER_OF_RESERVATIONS: "${process.env.MAX_NUMBER_OF_RESERVATIONS}",
    MAX_NUMBER_OF_WEEKS: "${process.env.MAX_NUMBER_OF_WEEKS}",
    UPCOMING_YEAR: "${process.env.UPCOMING_YEAR}",
-   CONTEXT: "${process.env.CONTEXT}"
+   CONTEXT: "${process.env.CONTEXT}",
+   OPENINGSOON: "${process.env.OPENINGSOON}"
 };`
   : `export const environment = {
    production: false,
@@ -30,7 +31,8 @@ const environmentFileContent = isProduction
    MAX_NUMBER_OF_RESERVATIONS: "${process.env.MAX_NUMBER_OF_RESERVATIONS}",
    MAX_NUMBER_OF_WEEKS: "${process.env.MAX_NUMBER_OF_WEEKS}",
    UPCOMING_YEAR: "${process.env.UPCOMING_YEAR}",
-   CONTEXT: "${process.env.CONTEXT}"
+   CONTEXT: "${process.env.CONTEXT}",
+   OPENINGSOON: "${process.env.OPENINGSOON}"
 };`; // write the content to the respective file
 writeFile(targetPath, environmentFileContent, function (err: any) {
   if (err) {

@@ -14,6 +14,7 @@ export const environment = {
   MAX_NUMBER_OF_WEEKS: '',
   UPCOMING_YEAR: '',
   CONTEXT: 'production',
+  OPENINGSOON: false,
 };
 
 /*
