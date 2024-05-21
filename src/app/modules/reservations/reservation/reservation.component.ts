@@ -52,6 +52,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     return this.weekService.mapWeekCapacity(p);
   });
   private _ngDestroy$ = new Subject<void>();
+  openingSoon: boolean;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -64,6 +65,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
     this.year = +environment.UPCOMING_YEAR;
     this.production = environment.CONTEXT === 'production';
+    this.openingSoon = environment.OPENINGSOON;
   }
 
   ngOnInit(): void {
