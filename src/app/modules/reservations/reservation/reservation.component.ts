@@ -65,7 +65,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     this.maxNumberOfReservations = +environment.MAX_NUMBER_OF_RESERVATIONS!;
     this.year = +environment.UPCOMING_YEAR;
     this.production = environment.CONTEXT === 'production';
-    this.openingSoon = environment.OPENINGSOON;
+    this.openingSoon = environment.OPENINGSOON === 'true';
   }
 
   ngOnInit(): void {
