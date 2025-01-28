@@ -8,10 +8,10 @@ package = "@netlify/plugin-emails"
   status = 301
   force = true
 
-[[redirects]]
-from = "/api/*"
-to =  "http://localhost:9999/.netlify/functions/:splat"
-status = 200
+#[[redirects]]
+#from = "/api/*"
+#to =  "http://localhost:9999/.netlify/functions/:splat"
+#status = 200
 
 [build]
 command = "npm run build --configuration=production"
