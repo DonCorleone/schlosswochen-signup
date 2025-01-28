@@ -3,6 +3,12 @@ package = "@netlify/plugin-emails"
 
 [dev]
 [[redirects]]
+  from = "https://up.schlosswochen.ch/*"
+  to = "https://schlosswochen.ch/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
 from = "/api/*"
 to =  "http://localhost:9999/.netlify/functions/:splat"
 status = 200
